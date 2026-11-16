@@ -1,0 +1,353 @@
+#!/usr/bin/env python3
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2026 Mike Mol
+"""⟡promote-frontier — which modules can be promoted WITHOUT inheriting a callee's debt.
+
+⚑⚑ THE FRONTIER IS NOT "WHICH FILES ARE CLEAN", AND THAT DISTINCTION IS THE WHOLE
+POINT. paperkit MEASURED (2026-08-30) what happens when a file is promoted ahead of
+its callees: converting three suites from `sys.path.insert` + bare import to named
+imports moved them from 3 own findings to 231, from 0 to 17, and from 0 to 312. The
+injection was HIDING the debt, not causing it — under a bare `import grade` a checker
+cannot follow the edge at all, so the callee's errors are unreachable and the declarer
+reads clean. Name the module and the edge becomes followable; the DECLARER then eats a
+number it did not create, and under a per-file gate with no partial credit it cannot
+land.
+
+⚑ SO EACH SITE IS GATED ON ITS CALLEE, NOT ON ITSELF, and the migration is a
+topological walk from the leaves inward rather than a sweep. Converting a module whose
+callee is dirty turns a silent hole into a BLOCKED EDIT — strictly worse than leaving
+it, because the injection at least still runs. This mode computes the set for which
+that cannot happen: a module is ON THE FRONTIER when it is clean AND every module it
+transitively imports is clean.
+
+⚑⚑ AND "HAVE WE FINISHED?" HAS NO ANSWER WITHOUT THIS. Asked that today, the only
+figure available was a NUMERATOR — nine files clean of roughly a hundred and ten. A
+count of clean files reports progress against the wrong denominator, because the ones
+that CAN move next are a much smaller set than the ones that are dirty. The frontier is
+the denominator that makes the question answerable.
+"""
+
+from __future__ import annotations
+
+import ast
+import subprocess
+import sys
+from pathlib import Path
+
+_ROOT = Path(__file__).absolute().parent.parent
+if str(_ROOT) not in sys.path:
+    sys.path.insert(0, str(_ROOT))
+
+try:
+    from scripts.check_hook_set import _sibling_names
+except ImportError as _e:  # pragma: no cover - adoption-shaped, not reachable in-repo
+    sys.stderr.write(f"promote_frontier: cannot import a sibling ({_e}).\n")
+    sys.exit(0)
+
+_VENV_PY = _ROOT / ".venv" / "bin" / "python3"
+_PYPROJECT = _ROOT / "pyproject.toml"
+_SCRIPTS = _ROOT / "scripts"
+
+
+def _clean_set() -> set[str]:
+    """Return the basenames under `scripts/` that ruff reports no finding for.
+
+    ⚑ DERIVED FROM THE CHECKER, NEVER A CURATED LIST. A hand-kept roster of "clean
+    modules" is a second authority that drifts the moment anyone edits one, which is
+    the shape this repo files most often. The checker is asked, every run.
+    """
+    argv = [
+        str(_VENV_PY), "-m", "ruff", "check", "--config", str(_PYPROJECT),
+        "--no-cache", "--output-format", "concise", "--quiet", str(_SCRIPTS),
+    ]
+    p = subprocess.run(argv, capture_output=True, text=True, check=False)
+    dirty = set()
+    for line in p.stdout.splitlines():
+        head = line.split(":", 1)[0]
+        if head.endswith(".py"):
+            dirty.add(Path(head).name)
+    every = {q.name for q in _SCRIPTS.glob("*.py")}
+    return every - dirty
+
+
+def _edges() -> dict[str, set[str]]:
+    """Return each module's DIRECT `scripts.*` imports, as basenames.
+
+    ⚑ QUALIFIED IMPORTS ARE THE ONLY SPELLING HERE AND A BARE-NAME READER SEES NONE.
+    `pycodemod --importers pycheck_verdict` reports 0 import sites while
+    `pycheck_analyze.py` demonstrably imports it, because that mode matches bare module
+    names and these files write `from scripts.pycheck_verdict import …`. A census keyed
+    on one spelling reports its own boundary as the subject's — so this reuses
+    `check_hook_set._sibling_names`, which reads the AST and handles both spellings.
+    """
+    out: dict[str, set[str]] = {}
+    for path in sorted(_SCRIPTS.glob("*.py")):
+        try:
+            tree = ast.parse(path.read_text(encoding="utf-8"), filename=path.name)
+        except (SyntaxError, OSError, UnicodeDecodeError):
+            continue
+        out[path.name] = {f"{m}.py" for m in _sibling_names(tree)}
+    return out
+
+
+def _bare_edges() -> dict[str, set[str]]:
+    """Return each module's imports of a SIBLING BY BARE NAME, as basenames.
+
+    ⚑⚑ THIS IS THE EDGE SET `_edges` STRUCTURALLY CANNOT SEE, AND ITS ABSENCE MADE THE
+    WHOLE FRONTIER WRONG. `_edges` reads `from scripts.X import …` — the honest,
+    checkable spelling. But 92 of 108 modules still mutate `sys.path` and then import a
+    sibling by BARE name (`import ratchet`, `from reuse_catalog import generate`), which
+    is not a `scripts.*` import and reads as NO EDGE AT ALL. So every unmigrated module
+    looked like a leaf, `--rank` reported "0 blocked", and the cheapest files looked
+    convertible.
+
+    ⚑⚑⚑ THEY WERE THE BEST-HIDDEN, NOT THE NEAREST DONE. MEASURED 2026-08-30 on the
+    first conversion attempted: `gen_reuse_graph.py` reported EIGHT own findings, and
+    naming its callee honestly took it to **752** — `reuse_catalog` (332) plus that
+    module's own callees, all previously unreachable. paperkit measured the identical
+    shape (3 -> 231, 0 -> 312) and the rule that follows is in `pyproject.toml`: type
+    the callee, verify it clean, THEN name it. A ranking keyed on own-findings inverts
+    that order, because own-findings are LOW exactly when the injection is hiding most.
+
+    ⚑ SO THE BARE EDGE IS THE ONE THAT MATTERS FOR SCHEDULING. A module's real cost is
+    its own debt plus everything its bare imports drag in the moment they become
+    honest — which is what `--closure` reports and what `--rank` could not.
+    """
+    every = {q.stem for q in _SCRIPTS.glob("*.py")}
+    out: dict[str, set[str]] = {}
+    for path in sorted(_SCRIPTS.glob("*.py")):
+        try:
+            tree = ast.parse(path.read_text(encoding="utf-8"), filename=path.name)
+        except (SyntaxError, OSError, UnicodeDecodeError):
+            continue
+        hit: set[str] = set()
+        for node in ast.walk(tree):
+            if isinstance(node, ast.ImportFrom):
+                mod = (node.module or "").split(".", 1)[0]
+                if mod in every and mod != path.stem:
+                    hit.add(f"{mod}.py")
+            elif isinstance(node, ast.Import):
+                for alias in node.names:
+                    mod = alias.name.split(".", 1)[0]
+                    if mod in every and mod != path.stem:
+                        hit.add(f"{mod}.py")
+        out[path.name] = hit
+    return out
+
+
+def _closure(name: str, edges: dict[str, set[str]]) -> set[str]:
+    """Return every module `name` transitively imports, excluding itself."""
+    seen: set[str] = set()
+    frontier = set(edges.get(name, set()))
+    while frontier:
+        nxt = frontier.pop()
+        if nxt in seen or nxt == name:
+            continue
+        seen.add(nxt)
+        frontier |= edges.get(nxt, set())
+    return seen
+
+
+def frontier() -> tuple[list[str], list[tuple[str, list[str]]], list[str]]:
+    """Return (promotable, blocked-with-blockers, dirty) over `scripts/`.
+
+    ⚑ THREE STATES, NOT TWO, AND THE MIDDLE ONE IS THE FINDING. A clean module whose
+    callee is dirty is NOT promotable and NOT itself a paydown target — it is WAITING,
+    and naming what it waits on is what turns a wall into a queue. Collapsing it into
+    "not ready" would hide that the blocker is one file away.
+    """
+    clean = _clean_set()
+    edges = _edges()
+    promotable: list[str] = []
+    blocked: list[tuple[str, list[str]]] = []
+    dirty: list[str] = []
+    for name in sorted(edges):
+        if name not in clean:
+            dirty.append(name)
+            continue
+        blockers = sorted(d for d in _closure(name, edges) if d not in clean)
+        if blockers:
+            blocked.append((name, blockers))
+        else:
+            promotable.append(name)
+    return promotable, blocked, dirty
+
+
+def _counts() -> dict[str, int]:
+    """Return per-module finding counts under `scripts/`, dirtiest last.
+
+    ⚑ THE COUNT IS THE SCHEDULING INPUT AND NOTHING PRODUCED IT. `--statistics` groups
+    by RULE across the whole tree, which answers "what kind of debt" and cannot answer
+    "which file moves next". Ranking by hand over 92 modules is judgement in the turn;
+    this is the same read, keyed by FILE.
+    """
+    argv = [
+        str(_VENV_PY), "-m", "ruff", "check", "--config", str(_PYPROJECT),
+        "--no-cache", "--output-format", "concise", "--quiet", str(_SCRIPTS),
+    ]
+    p = subprocess.run(argv, capture_output=True, text=True, check=False)
+    out: dict[str, int] = {}
+    for line in p.stdout.splitlines():
+        head = line.split(":", 1)[0]
+        if head.endswith(".py"):
+            name = Path(head).name
+            out[name] = out.get(name, 0) + 1
+    return out
+
+
+def _render_closure() -> int:
+    """Print each dirty module's CLOSURE cost — own debt plus its callees' — ascending.
+
+    ⚑ THE COLUMN THAT DECIDES IS `total`, NOT `own`. `own` is what a converted file
+    would still owe if its callees were already clean; `total` is what the converting
+    edit actually has to clear, because naming a callee makes its debt reachable and
+    the per-file gate has no partial credit. A file with own=8 and total=752 is not a
+    cheap file — it is a file standing on 744 findings it currently cannot see.
+
+    ⚑⚑ A MODULE WITH `own == total` IS A GENUINE LEAF and is the only safe entry point.
+    Those are the frontier: convert them first, and each conversion shrinks the closure
+    of everything above it. That is the topological walk `pyproject.toml` prescribes,
+    made computable rather than asserted.
+    """
+    counts = _counts()
+    edges = _bare_edges()
+    _promotable, _blocked, dirty = frontier()
+    rows: list[tuple[int, int, int, str]] = []
+    for name in dirty:
+        own = counts.get(name, 0)
+        deps = _closure(name, edges)
+        total = own + sum(counts.get(d, 0) for d in deps)
+        rows.append((total, own, len(deps), name))
+    rows.sort()
+    sys.stdout.write("--   total     own  deps  module  (ascending by CLOSURE cost) --\n")
+    for total, own, ndeps, name in rows:
+        leaf = "  ← LEAF" if total == own else ""
+        sys.stdout.write(f"  {total:7d} {own:7d} {ndeps:5d}  {name}{leaf}\n")
+    leaves = sum(1 for t, o, _n, _m in rows if t == o)
+    sys.stdout.write(
+        f"\npromote-frontier: {len(rows)} dirty · {leaves} LEAF (own == total, "
+        f"safe to convert first)\n"
+        "  ⚑ own is what the file owes ALONE; total is what a conversion must clear,\n"
+        "    because naming a callee makes its debt reachable. Convert LEAVES first.\n")
+    return 0
+
+
+def _render_rank() -> int:
+    """Print the dirty modules by finding count, cheapest first.
+
+    ⚑⚑ CHEAPEST-FIRST IS THE ORDER, AND IT IS A SORT RATHER THAN A JUDGEMENT — the
+    same rule the Agda driver states for its own queue ("what order?" is a SORT, not a
+    judgement call; do not re-derive it as one). A module near the bottom of this list
+    can be clean-roomed in one pass; one near the top is a decomposition arc.
+
+    ⚑ AND THE COUNT IS NOT THE WORK. A file with 40 findings that are all `ANN001` is
+    an afternoon of annotations; a file with 12 spread across `C901`, `PLR0915` and
+    `BLE001` is a redesign. The count ranks; it does not estimate.
+    """
+    counts = _counts()
+    promotable, _blocked, dirty = frontier()
+    ranked = sorted((counts.get(n, 0), n) for n in dirty)
+    sys.stdout.write("-- DIRTY, cheapest first (finding count · module) --\n")
+    for n, name in ranked:
+        sys.stdout.write(f"  {n:6d}  {name}\n")
+    sys.stdout.write(
+        f"\npromote-frontier: {len(promotable)} clean · {len(dirty)} dirty · "
+        f"{sum(counts.values())} finding(s)\n")
+    return 0
+
+
+def _render() -> int:
+    """Print the frontier, its blocked ring, and the totals."""
+    promotable, blocked, dirty = frontier()
+    sys.stdout.write("-- PROMOTABLE (clean, and every transitive callee is clean) --\n")
+    for name in promotable:
+        sys.stdout.write(f"  {name}\n")
+    if blocked:
+        sys.stdout.write("\n-- CLEAN BUT BLOCKED (waiting on a dirty callee) --\n")
+        for name, blockers in blocked:
+            sys.stdout.write(f"  {name}\n")
+            for b in blockers:
+                sys.stdout.write(f"      needs {b}\n")
+    total = len(promotable) + len(blocked) + len(dirty)
+    sys.stdout.write(
+        f"\npromote-frontier: {len(promotable)} promotable · {len(blocked)} blocked · "
+        f"{len(dirty)} dirty · {total} module(s)\n")
+    sys.stdout.write(
+        "  ⛑ PROMOTABLE is the answer to 'what can move next'. DIRTY is the "
+        "paydown backlog.\n  BLOCKED is neither: each is one callee away, so its "
+        "blocker is the higher-value target.\n")
+    return 0
+
+
+def _selftest() -> int:
+    """Run the cases and return an exit code."""
+    failures = 0
+    cases = 0
+
+    edges = _edges()
+
+    # ⚑ THE QUALIFIED-IMPORT ARM, which is the whole reason this does not reuse
+    # `pycodemod --importers`: that mode reports 0 sites for pycheck_verdict while
+    # pycheck_analyze imports it. If this reader ever loses the qualified spelling it
+    # silently reports every module as a leaf and calls the whole tree promotable.
+    cases += 1
+    if "pycheck_verdict.py" not in edges.get("pycheck_analyze.py", set()):
+        sys.stderr.write(
+            "selftest: the edge reader missed a `from scripts.X import Y` import\n")
+        failures += 1
+
+    # A module with no sibling imports is a leaf, not an error.
+    cases += 1
+    if edges.get("pycheck_message.py"):
+        sys.stderr.write("selftest: pycheck_message should import no sibling\n")
+        failures += 1
+
+    # ⚑ THE CLOSURE MUST BE TRANSITIVE. hook_pycheck reaches pycheck_verdict only
+    # through pycheck_analyze; a one-hop reader calls it promotable while a callee two
+    # hops down is dirty — the exact mis-scheduling this mode exists to prevent.
+    cases += 1
+    if "pycheck_verdict.py" not in _closure("hook_pycheck.py", edges):
+        sys.stderr.write("selftest: the closure stopped before a two-hop callee\n")
+        failures += 1
+
+    # ⚑⚑ THE BARE-EDGE ARM, WITHOUT WHICH THE WHOLE RANKING INVERTS. `_edges` sees only
+    # `from scripts.X import …`; 92 modules import siblings by BARE name under a
+    # `sys.path` mutation, and reading zero edges for them made every one look like a
+    # leaf. MEASURED: gen_reuse_graph reported 8 own findings and cost 752 on
+    # conversion. If this reader ever stops seeing bare sibling imports, `--closure`
+    # silently degrades back into `--rank` and reports the best-HIDDEN files as the
+    # cheapest.
+    cases += 1
+    bare = _bare_edges()
+    if "reuse_catalog.py" not in bare.get("gen_reuse_graph.py", set()):
+        sys.stderr.write(
+            "selftest: the bare-edge reader missed `from reuse_catalog import …`\n")
+        failures += 1
+
+    # ⚑ AND IT MUST NOT COUNT A MODULE AS ITS OWN CALLEE — a self-edge would make every
+    # file report an inflated closure and never reach the leaf state.
+    cases += 1
+    if any(name in deps for name, deps in bare.items()):
+        sys.stderr.write("selftest: the bare-edge reader recorded a self-import\n")
+        failures += 1
+
+    if failures:
+        sys.stderr.write(f"promote_frontier selftest: {failures} failure(s)\n")
+        return 1
+    sys.stdout.write(f"promote_frontier selftest: {cases}/{cases}\n")
+    return 0
+
+
+def main(argv: list[str]) -> int:
+    """CLI: render the frontier, or run the cases."""
+    if "--selftest" in argv:
+        return _selftest()
+    if "--closure" in argv:
+        return _render_closure()
+    if "--rank" in argv:
+        return _render_rank()
+    return _render()
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))

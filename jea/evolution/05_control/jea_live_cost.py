@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """jea_live_cost.py — D1/D2 (REFRAMED): the jea schedule cost is READ OFF the LIVE Kron-solve of the
 discovered conductance graph, re-solved per window -- it is NOT a fitted/guessed scalar.
 
@@ -43,12 +45,15 @@ Witnesses (each [W]):
     cross-thermal-state extrapolation is structurally argued (work-terms scale by gnorm) but not
     hot-validated on this idle host -- the synthetic sweep (W2/live_dispatcher mode) is the reactivity proof.
 """
+
 # --- jea-evolution rung bootstrap: jea/ foundation + sibling rungs on the path (see 00_SYLLABUS.md) ---
 import os as _os, sys as _sys, glob as _glob
-_EVO = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))   # .../jea/evolution
+
+_EVO = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))  # .../jea/evolution
 _sys.path[:0] = [_os.path.dirname(_EVO), *sorted(_glob.glob(_os.path.join(_EVO, "*", "")))]
 # --- end bootstrap ---
 import os, sys, time
+
 os.environ.setdefault("CUDA_PATH", "/usr")
 import numpy as np, cupy as cp
 
@@ -62,19 +67,24 @@ from live_dispatcher import poll
 import jea_engine as E
 from jea_cost import deep_chain, strata_count, measure
 from jea_generator_dag import build_dag
-from witness_sanity import single_edge_gains      # Δ-A2: disjoint-by-construction binding-edge probe
+from witness_sanity import single_edge_gains  # Δ-A2: disjoint-by-construction binding-edge probe
 
 NSM = cp.cuda.Device().attributes["MultiProcessorCount"]
-_REF = dict(T=46.0, link_state=1.0)          # cool reference state: gnorm(ref) := 1
+_REF = dict(T=46.0, link_state=1.0)  # cool reference state: gnorm(ref) := 1
 
 
 # ---- Shadow D: t_launch -- MEASURED launch latency (replaces guessed launch) -------------------------
 _noop = cp.RawKernel(r'extern "C" __global__ void noop(){}', "noop")
+
+
 def measure_t_launch(reps=50):
-    _noop((1,), (1,), ()); cp.cuda.Stream.null.synchronize()
+    _noop((1,), (1,), ())
+    cp.cuda.Stream.null.synchronize()
     best = 1e9
     for _ in range(reps):
-        t0 = time.perf_counter(); _noop((1,), (1,), ()); cp.cuda.Stream.null.synchronize()
+        t0 = time.perf_counter()
+        _noop((1,), (1,), ())
+        cp.cuda.Stream.null.synchronize()
         best = min(best, (time.perf_counter() - t0) * 1e3)
     return best
 
@@ -84,9 +94,12 @@ def operating_bw(imc, T, link_state):
     """jea-on-dGPU operating scenario: data crosses PCIe (dma) + iGPU contender, under live T/link."""
     return compute_bw(imc, dma=True, igpu=True, T=T, link_state=link_state)
 
+
 def gnorm(imc, tel):
     """the ONLY per-window variable: live g_eff relative to the cool reference. <1 = throttled/contended."""
-    return operating_bw(imc, tel["T"], tel["link_state"]) / operating_bw(imc, _REF["T"], _REF["link_state"])
+    return operating_bw(imc, tel["T"], tel["link_state"]) / operating_bw(
+        imc, _REF["T"], _REF["link_state"]
+    )
 
 
 # ---- Shadow B: binding edge by STRUCTURAL SENSITIVITY over the live graph (NOT decide()'s ternary) ---
@@ -97,11 +110,19 @@ def binding_edge(imc, tel):
     Derived from the real solve (compute_bw), decide-free."""
     base = operating_bw(imc, tel["T"], tel["link_state"])
     base_state = dict(dma=True, igpu=True, T=tel["T"], link_state=tel["link_state"])
-    ev = lambda st: compute_bw(imc, dma=st["dma"], igpu=st["igpu"], T=st["T"], link_state=st["link_state"])
-    gains = single_edge_gains(base, base_state,
-                              {"iMC/iGPU": {"igpu": False},          # drop iGPU shunt only
-                               "PCIe/DMA": {"dma": False},           # drop DMA shunt only
-                               "thermal":  {"T": _REF["T"]}}, ev)    # relax thermal gate only
+    ev = lambda st: compute_bw(
+        imc, dma=st["dma"], igpu=st["igpu"], T=st["T"], link_state=st["link_state"]
+    )
+    gains = single_edge_gains(
+        base,
+        base_state,
+        {
+            "iMC/iGPU": {"igpu": False},  # drop iGPU shunt only
+            "PCIe/DMA": {"dma": False},  # drop DMA shunt only
+            "thermal": {"T": _REF["T"]},
+        },
+        ev,
+    )  # relax thermal gate only
     return max(gains, key=gains.get), gains
 
 
@@ -110,17 +131,17 @@ def tau_measured(g):
     """execute-time per schedule at the live state, MEASURED on the real engine (replaces GUESSED P_COOP)."""
     t_L = T_LAUNCH
     out = {}
-    times, _ = measure(g)                                    # real coop/strat wall-times (warmed)
+    times, _ = measure(g)  # real coop/strat wall-times (warmed)
     S = strata_count(g)
     for s in ("coop", "strat"):
         L = S if s == "strat" else 1
-        out[s] = max(times[s] - L * t_L, 1e-6)               # subtract the structural launch stage
+        out[s] = max(times[s] - L * t_L, 1e-6)  # subtract the structural launch stage
     return out, S, times
 
 
 def total_time(sched, S, tau, g_norm):
     L = S if sched == "strat" else 1
-    return L * T_LAUNCH + tau[sched] / g_norm                # work-term scaled by the LIVE solve
+    return L * T_LAUNCH + tau[sched] / g_norm  # work-term scaled by the LIVE solve
 
 
 def oracle(S, tau, g_norm):
@@ -134,43 +155,65 @@ if __name__ == "__main__":
     tel = poll()
 
     print("D1/D2 — jea schedule cost READ from the LIVE Kron-solve (not fitted scalars)\n")
-    print(f"  host: iMC {imc/1e9:.1f} GB/s, NSM {NSM}; live poll: gov={tel['gov']} clk={tel['clk']:.1f}GHz "
-          f"T={tel['T']:.0f}C link={tel['link_state']:.2f}")
-    print(f"  MEASURED t_launch (noop) = {T_LAUNCH*1e3:.2f} us\n")
+    print(
+        f"  host: iMC {imc / 1e9:.1f} GB/s, NSM {NSM}; live poll: gov={tel['gov']} clk={tel['clk']:.1f}GHz "
+        f"T={tel['T']:.0f}C link={tel['link_state']:.2f}"
+    )
+    print(f"  MEASURED t_launch (noop) = {T_LAUNCH * 1e3:.2f} us\n")
 
     # --- W1: the work-rate is the live g_eff, re-polled. Show gnorm at the live state. ---
     gn = gnorm(imc, tel)
     w1 = operating_bw(imc, tel["T"], tel["link_state"]) > 0
-    print(f"W1 LIVE WORK-RATE: operating compute_bw (live Kron g_eff) = "
-          f"{operating_bw(imc, tel['T'], tel['link_state'])/1e9:.1f} GB/s; gnorm(live)={gn:.3f}  [{w1}]")
+    print(
+        f"W1 LIVE WORK-RATE: operating compute_bw (live Kron g_eff) = "
+        f"{operating_bw(imc, tel['T'], tel['link_state']) / 1e9:.1f} GB/s; gnorm(live)={gn:.3f}  [{w1}]"
+    )
 
     # --- W2: binding edge SHIFTS under a synthetic state sweep (the anti-scalar witness). ---
     print("\nW2 BINDING-EDGE SHIFTS (structural sensitivity over the live graph; decide-free):")
-    sweep = [("idle",       dict(T=45,  link_state=1.0)),
-             ("warm-95C",   dict(T=95,  link_state=1.0)),     # below the 100C trip: gate still 1
-             ("throttle-105", dict(T=105, link_state=1.0)),   # crosses the trip -> thermal binds
-             ("throttle-120", dict(T=120, link_state=0.50))]
+    sweep = [
+        ("idle", dict(T=45, link_state=1.0)),
+        ("warm-95C", dict(T=95, link_state=1.0)),  # below the 100C trip: gate still 1
+        ("throttle-105", dict(T=105, link_state=1.0)),  # crosses the trip -> thermal binds
+        ("throttle-120", dict(T=120, link_state=0.50)),
+    ]
     edges_seen = []
     for nm, st in sweep:
         be, gains = binding_edge(imc, st)
         edges_seen.append(be)
         bw = operating_bw(imc, st["T"], st["link_state"]) / 1e9
-        g_str = " ".join(f"{k}:{v/1e9:+.1f}" for k, v in gains.items())
-        print(f"  {nm:13s} T={st['T']:>3}C link={st['link_state']:.2f} -> bw={bw:5.1f} GB/s | "
-              f"gains[{g_str}] | binds = {be}")
-    w2 = len(set(edges_seen)) >= 2                            # the binding edge genuinely moves with state
+        g_str = " ".join(f"{k}:{v / 1e9:+.1f}" for k, v in gains.items())
+        print(
+            f"  {nm:13s} T={st['T']:>3}C link={st['link_state']:.2f} -> bw={bw:5.1f} GB/s | "
+            f"gains[{g_str}] | binds = {be}"
+        )
+    w2 = len(set(edges_seen)) >= 2  # the binding edge genuinely moves with state
     print(f"  binding edge takes {len(set(edges_seen))} distinct values -> not a scalar  [{w2}]")
-    print(f"  HOST FINDING (measured, not forced): PCIe/DMA is structurally DOMINATED here -- the iGPU")
-    print(f"  shunt (12.8 GB/s) steals more than the DMA shunt (7.76 GB/s), so PCIe never binds on this")
-    print(f"  box; the binding edge moves iMC/iGPU -> thermal across the trip. A box with a discrete GPU")
-    print(f"  on an idle link and no iGPU would surface PCIe -- the identity is the SOLVE's output, per-host.")
+    print(
+        f"  HOST FINDING (measured, not forced): PCIe/DMA is structurally DOMINATED here -- the iGPU"
+    )
+    print(
+        f"  shunt (12.8 GB/s) steals more than the DMA shunt (7.76 GB/s), so PCIe never binds on this"
+    )
+    print(
+        f"  box; the binding edge moves iMC/iGPU -> thermal across the trip. A box with a discrete GPU"
+    )
+    print(
+        f"  on an idle link and no iGPU would surface PCIe -- the identity is the SOLVE's output, per-host."
+    )
 
     # --- W3: the decomposition is sound at the live state (identity), and the two schedules respond
     #         DIFFERENTLY to the live solve -- shown by a labeled throttle projection (gnorm<1). ---
     print("\nW3 ORACLE == MEASUREMENT (live-state consistency) + throttle PROJECTION:")
-    print(f"  NOTE: at the live state gnorm={gn:.3f}, so total_time = L·t_launch + tau reconstructs the")
-    print(f"  measured time EXACTLY BY CONSTRUCTION (tau := measured - L·t_launch). The validated content")
-    print(f"  is the clean launch/work SPLIT + winner read off the solve, not a surprise prediction.")
+    print(
+        f"  NOTE: at the live state gnorm={gn:.3f}, so total_time = L·t_launch + tau reconstructs the"
+    )
+    print(
+        f"  measured time EXACTLY BY CONSTRUCTION (tau := measured - L·t_launch). The validated content"
+    )
+    print(
+        f"  is the clean launch/work SPLIT + winner read off the solve, not a surprise prediction."
+    )
     cases = [("deep-narrow", deep_chain(200)), ("wide", build_dag(512, 3))]
     oks = []
     for nm, g in cases:
@@ -179,24 +222,41 @@ if __name__ == "__main__":
         meas = "coop" if times["coop"] < times["strat"] else "strat"
         # PROJECTION: re-solve at a throttled state (gnorm=0.4); the work term inflates, launch term does NOT.
         gn_hot = 0.4
-        tt_c_h = total_time("coop", S, tau, gn_hot); tt_s_h = total_time("strat", S, tau, gn_hot)
+        tt_c_h = total_time("coop", S, tau, gn_hot)
+        tt_s_h = total_time("strat", S, tau, gn_hot)
         pred_hot = oracle(S, tau, gn_hot)
         oks.append(pred == meas)
-        print(f"  {nm:11s} S={S:>3} | live: meas '{meas}' == oracle '{pred}'  [{pred==meas}]")
-        print(f"               throttle proj gnorm=0.4: coop {tt_c_h:.2f} strat {tt_s_h:.2f} ms -> '{pred_hot}' "
-              f"(work-bound terms inflate; launch term fixed)")
+        print(f"  {nm:11s} S={S:>3} | live: meas '{meas}' == oracle '{pred}'  [{pred == meas}]")
+        print(
+            f"               throttle proj gnorm=0.4: coop {tt_c_h:.2f} strat {tt_s_h:.2f} ms -> '{pred_hot}' "
+            f"(work-bound terms inflate; launch term fixed)"
+        )
     w3 = all(oks)
     print(f"  oracle matches measurement at the live state on all cases  [{w3}]")
 
     # --- W4: provenance flip. ---
     w4 = w1 and w2 and (T_LAUNCH > 0)
-    print(f"\nW4 PROVENANCE FLIP: GUESSED P_COOP=20 + FALSIFIED fitted-t_work are GONE; replaced by "
-          f"MEASURED t_launch + MEASURED tau + LIVE compute_bw.  [{w4}]")
+    print(
+        f"\nW4 PROVENANCE FLIP: GUESSED P_COOP=20 + FALSIFIED fitted-t_work are GONE; replaced by "
+        f"MEASURED t_launch + MEASURED tau + LIVE compute_bw.  [{w4}]"
+    )
 
     ok = w1 and w2 and w3 and w4
-    print(f"\n  {'PASS' if ok else 'FAIL'} — the jea schedule cost is the LIVE Kron-solve of the discovered")
-    print(f"  graph (compute_bw re-polled per window), with the binding edge derived by sensitivity (not")
-    print(f"  decide()'s magic-constant ternary) and the winner read off the solve. The fitted/guessed")
-    print(f"  scalars are retired. STANDING RESIDUAL (honest handoff): cross-thermal-state extrapolation")
-    print(f"  is structurally argued (work scales by gnorm) but not hot-validated on this idle host;")
-    print(f"  W2's synthetic sweep is the reactivity proof, exactly as live_dispatcher's own w3 is.")
+    print(
+        f"\n  {'PASS' if ok else 'FAIL'} — the jea schedule cost is the LIVE Kron-solve of the discovered"
+    )
+    print(
+        f"  graph (compute_bw re-polled per window), with the binding edge derived by sensitivity (not"
+    )
+    print(
+        f"  decide()'s magic-constant ternary) and the winner read off the solve. The fitted/guessed"
+    )
+    print(
+        f"  scalars are retired. STANDING RESIDUAL (honest handoff): cross-thermal-state extrapolation"
+    )
+    print(
+        f"  is structurally argued (work scales by gnorm) but not hot-validated on this idle host;"
+    )
+    print(
+        f"  W2's synthetic sweep is the reactivity proof, exactly as live_dispatcher's own w3 is."
+    )

@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 # gen_reuse_index.py — regenerate catalog/reuse-index.md, the substrate's REUSE GUARD: a name ->
 # canonical-home index of every data/record STRUCTURE, so a re-implementer (LLM or human) can look
 # up "does X already exist, and where" BEFORE re-deriving it. The discoverability fix for the class
@@ -13,8 +15,9 @@
 # Consume: grep catalog/reuse-index.md for your concept (V4 / Real / Wedge / Monoid / Stream /
 # Trace / DivStr / …). Regenerate: scripts/gen_reuse_index.py (idempotent, ~2min).
 import os, sys
+
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from reuse_catalog import generate          # noqa: E402
+from reuse_catalog import generate  # noqa: E402
 
 if __name__ == "__main__":
     filt = sys.argv[1] if len(sys.argv) > 1 else ""

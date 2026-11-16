@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """cd_arith — Cayley-Dickson arithmetic over flat real tuples.
 
 The Python instance of the *doubling generator* (the same construction that

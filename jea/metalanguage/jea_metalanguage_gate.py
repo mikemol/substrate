@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """jea_metalanguage_gate.py — Σ6: the regression gate for the metalanguage / Σ instruments.
 
 The Σ apparatus (the cross-language correspondence front-ends + readouts) grew to ~11 modules with NO
@@ -10,15 +12,39 @@ in jea_regression_gate). Fired per-commit from .githooks/pre-commit on staged je
 two root Σ modules) -- the G9 escalation: an automatable correctness class moved to a non-skippable layer.
 
 Each check returns "PASS" / "SKIP: <reason>", or raises -> FAIL. Exit nonzero on any FAIL.
+
+⚑ AND THE PURE/TOOLCHAIN SPLIT ABOVE HAD A THIRD CASE IT COLLAPSED INTO THE WRONG ONE
+(found 2026-08-25). "PURE modules (stdlib/sympy) always run" reads as a claim about the
+CODE; it was silently also a claim about the ENVIRONMENT — that sympy is present. It was
+not: `pyproject.toml` did not declare it, and five checks (jea_sympy_bridge, jea_octave_gen,
+jea_ir_unify, jea_omml_octave, jea_omml_render) failed with `ModuleNotFoundError`, which
+`main`'s blanket `except Exception` rendered as "a Σ instrument regressed". Two checks in the
+SAME RUN (jea_cuda, jea_seam_provenance) reported an absent dep correctly, so the run
+simultaneously demonstrated the right behaviour and the wrong one.
+
+⚑⚑ INSTALLING THE PACKAGE HIDES THIS RATHER THAN FIXING IT, so both halves were done. The
+repair is a THIRD outcome, `DEP-MISSING`, which is still BLOCKING — a declared dependency is
+not optional, and downgrading it to SKIP would convert a hard requirement into a silent pass,
+the failure mode `check_mypy_ratchet` records (an unrunnable tool must REFUSE, never report a
+clean census). What changes is the DIAGNOSIS, not the verdict: it names the missing package
+and the manifest that must declare it, so the reader repairs the environment instead of
+hunting a regression in an instrument that never moved.
+
+⚑ NOT-IMPORTABLE is a fact about the ENVIRONMENT; REGRESSED is a fact about the CODE. Only
+an import failure of a DECLARED dep is reclassified — an ImportError raised from inside a
+check's own logic still reads as FAIL, because there the import is the thing under test.
 """
-import sys, os, tempfile
+
+import sys, os, re, tempfile
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-sys.path.insert(0, os.path.dirname(HERE))      # jea/ root (jea_oneforest, jea_omml_domain live there)
+sys.path.insert(0, os.path.dirname(HERE))  # jea/ root (jea_oneforest, jea_omml_domain live there)
 
 
 def chk_pyalg():
     import jea_pyalg as A
+
     I = A.Intern()
     a = I.intern(A.IR(kind="Name", op="x", children=()))
     b = I.intern(A.IR(kind="Name", op="x", children=()))
@@ -48,13 +74,13 @@ def chk_pyalg_referential():
 
     # (1) DISTINCT REFERENTS must not collapse — one minimal pair per dropped-str-field class:
     distinct = [
-        ("Attribute.attr",      "a.foo\n",           "a.bar\n"),
-        ("free Name (abs/str)", "abs(z)\n",          "str(z)\n"),
-        ("alias (import)",      "import os\n",        "import sys\n"),
-        ("alias.name (from)",   "from m import n\n",  "from m import q\n"),
-        ("ImportFrom.module",   "from a import x\n",  "from b import x\n"),
-        ("keyword.arg",         "f(k=1)\n",           "f(j=1)\n"),
-        ("Global.names",        "global x\n",         "global y\n"),
+        ("Attribute.attr", "a.foo\n", "a.bar\n"),
+        ("free Name (abs/str)", "abs(z)\n", "str(z)\n"),
+        ("alias (import)", "import os\n", "import sys\n"),
+        ("alias.name (from)", "from m import n\n", "from m import q\n"),
+        ("ImportFrom.module", "from a import x\n", "from b import x\n"),
+        ("keyword.arg", "f(k=1)\n", "f(j=1)\n"),
+        ("Global.names", "global x\n", "global y\n"),
     ]
     # BOTH arms must satisfy referential identity (Ⓤ.Σ1-fix gave cst the same free-vs-bound split as
     # ast). The cst arm runs only when libcst resolves (toolchain-gated, like jea_cuda); ast always.
@@ -64,16 +90,28 @@ def chk_pyalg_referential():
     for arm, lower in arms:
         for label, s1, s2 in distinct:
             i1, i2 = pair(lower, s1, s2)
-            assert i1 != i2, f"[{arm}] false-DUPLICATE: distinct {label} interned to ONE id ({s1!r}≡{s2!r})"
+            assert i1 != i2, (
+                f"[{arm}] false-DUPLICATE: distinct {label} interned to ONE id ({s1!r}≡{s2!r})"
+            )
         # (2) the DUAL — the fix must NOT over-distinguish: a BOUND-name rename must still role-quotient.
         # Same referential `.foo`, renamed bound receiver/param ⇒ the SAME id (the alpha-orbit holds);
         # a referential `.attr` difference under that same shape must STILL split.
-        fa, fb = pair(lower, "def f(self, x):\n    return self.foo + x\n",
-                             "def g(this, y):\n    return this.foo + y\n")
-        assert fa == fb, f"[{arm}] alpha-equivalence LOST: renamed bound names must role-quotient to one id"
-        fa2, fc = pair(lower, "def f(self, x):\n    return self.foo + x\n",
-                              "def h(self, x):\n    return self.bar + x\n")
-        assert fa2 != fc, f"[{arm}] referential .attr must split even under an alpha-equivalent body"
+        fa, fb = pair(
+            lower,
+            "def f(self, x):\n    return self.foo + x\n",
+            "def g(this, y):\n    return this.foo + y\n",
+        )
+        assert fa == fb, (
+            f"[{arm}] alpha-equivalence LOST: renamed bound names must role-quotient to one id"
+        )
+        fa2, fc = pair(
+            lower,
+            "def f(self, x):\n    return self.foo + x\n",
+            "def h(self, x):\n    return self.bar + x\n",
+        )
+        assert fa2 != fc, (
+            f"[{arm}] referential .attr must split even under an alpha-equivalent body"
+        )
 
     # (3) STRUCTURAL scalar fields beyond names (the Ⓤ.audit sweep of ast's 39 scalar fields): a
     # conversion / async-flag / match-attr / singleton-KIND is referential-or-structural ⇒ the KEY,
@@ -82,43 +120,84 @@ def chk_pyalg_referential():
     # specific: the cst arm represents f-strings/t-strings differently and may collapse the conversion
     # (a documented cst residual; the cross-arm convergence target was the referential NAME class).
     ast_only = [
-        ("FormattedValue.conversion", 'f"{x!r}"\n',                  'f"{x!s}"\n'),
-        ("comprehension.is_async",    'async def f():\n return [x async for x in y]\n',
-                                      'async def f():\n return [x for x in y]\n'),
-        ("MatchClass.kwd_attrs",      'match v:\n case C(x=1): pass\n', 'match v:\n case C(y=1): pass\n'),
-        ("MatchSingleton kind",       'match v:\n case None: pass\n',   'match v:\n case True: pass\n'),
+        ("FormattedValue.conversion", 'f"{x!r}"\n', 'f"{x!s}"\n'),
+        (
+            "comprehension.is_async",
+            "async def f():\n return [x async for x in y]\n",
+            "async def f():\n return [x for x in y]\n",
+        ),
+        (
+            "MatchClass.kwd_attrs",
+            "match v:\n case C(x=1): pass\n",
+            "match v:\n case C(y=1): pass\n",
+        ),
+        ("MatchSingleton kind", "match v:\n case None: pass\n", "match v:\n case True: pass\n"),
     ]
     for label, s1, s2 in ast_only:
         i1, i2 = pair(A.lower_source, s1, s2)
         assert i1 != i2, f"[ast] structural drop: {label} collapsed below key ({s1!r}≡{s2!r})"
     detail = "ast+cst" if len(arms) == 2 else "ast (cst: libcst absent)"
-    return (f"PASS (referential→key on {detail}: 7 name classes split + 4 structural "
-            f"(conversion/async/match) on ast; alpha-quotient + value-abstraction preserved)")
+    return (
+        f"PASS (referential→key on {detail}: 7 name classes split + 4 structural "
+        f"(conversion/async/match) on ast; alpha-quotient + value-abstraction preserved)"
+    )
 
 
 def chk_trace_lazy():
     import jea_pyalg as A
-    I = A.Intern(); D = A.PyDivStr(I)
-    root = I.intern(A.IR(kind="seq", op="s", children=tuple(
-        I.intern(A.IR(kind="a", op=str(k), children=())) for k in range(5))))
+
+    I = A.Intern()
+    D = A.PyDivStr(I)
+    root = I.intern(
+        A.IR(
+            kind="seq",
+            op="s",
+            children=tuple(I.intern(A.IR(kind="a", op=str(k), children=())) for k in range(5)),
+        )
+    )
     t = D.trace(root)
-    assert tuple(h for h, _ in D.trace_steps(root)) == A.head_spine(t), "trace_steps must match eager head_spine"
-    assert A.trace_fold_lazy(D, root, lambda a: 0, lambda h, b, r: r + 1) == A.grade(t), "lazy grade must match"
-    assert A.trace_fold_lazy(D, root, lambda a: a, lambda h, b, r: r) == A.collapse(t), "lazy collapse must match"
+    assert tuple(h for h, _ in D.trace_steps(root)) == A.head_spine(t), (
+        "trace_steps must match eager head_spine"
+    )
+    assert A.trace_fold_lazy(D, root, lambda a: 0, lambda h, b, r: r + 1) == A.grade(t), (
+        "lazy grade must match"
+    )
+    assert A.trace_fold_lazy(D, root, lambda a: a, lambda h, b, r: r) == A.collapse(t), (
+        "lazy collapse must match"
+    )
     # deep chain: the lazy path survives where eager trace() RecursionErrors (Σ-TRACE-LAZY's whole point)
-    deep = I.intern(A.IR(kind="seq", op="s", children=tuple(
-        I.intern(A.IR(kind="a", op=str(k), children=())) for k in range(4000))))
-    assert A.trace_fold_lazy(D, deep, lambda a: 0, lambda h, b, r: r + 1) == 4000, "deep-chain lazy grade"
+    deep = I.intern(
+        A.IR(
+            kind="seq",
+            op="s",
+            children=tuple(I.intern(A.IR(kind="a", op=str(k), children=())) for k in range(4000)),
+        )
+    )
+    assert A.trace_fold_lazy(D, deep, lambda a: 0, lambda h, b, r: r + 1) == 4000, (
+        "deep-chain lazy grade"
+    )
     # full_skeleton-lazy (the tree dual): generator matches the tuple; a 4000-deep tree survives (the old
     # recursion RecursionErrors), and the generator early-stops.
-    skel = I.intern(A.IR(kind="op", op="+", children=(
-        I.intern(A.IR(kind="x", op="a", children=())), I.intern(A.IR(kind="x", op="b", children=())))))
-    assert tuple(A.full_skeleton_steps(I, skel)) == A.full_skeleton(I, skel), "skeleton generator must match tuple"
+    skel = I.intern(
+        A.IR(
+            kind="op",
+            op="+",
+            children=(
+                I.intern(A.IR(kind="x", op="a", children=())),
+                I.intern(A.IR(kind="x", op="b", children=())),
+            ),
+        )
+    )
+    assert tuple(A.full_skeleton_steps(I, skel)) == A.full_skeleton(I, skel), (
+        "skeleton generator must match tuple"
+    )
     nest = I.intern(A.IR(kind="x", op="z", children=()))
     for _ in range(4000):
         nest = I.intern(A.IR(kind="w", op="w", children=(nest,)))
     assert len(A.full_skeleton(I, nest)) == 4001, "deep-tree full_skeleton must not RecursionError"
-    assert next(A.full_skeleton_steps(I, nest)) == ("w", "", "w", ""), "skeleton generator early-stops"
+    assert next(A.full_skeleton_steps(I, nest)) == ("w", "", "w", ""), (
+        "skeleton generator early-stops"
+    )
     return "PASS"
 
 
@@ -128,82 +207,144 @@ def chk_extrude_ir():
     # orbital identity holds + the partition's witnessed losses/fixities (value-collapse + bound-alpha
     # on the RESIDUE side; referential/operator distinctness on the FIXED side).
     import jea_extrude_ir as E
+
     r = E.orbital_identity("def f(x, y):\n    z = x + y\n    return z * 2\n")
     assert r["ir_fixed"], "extrude must round-trip at the IR level (orbital identity)"
     assert not r["uncovered"], f"covered corpus left uncovered kinds: {r['uncovered']}"
-    assert r["steps"] <= 2, f"canonical byte cycle must reach a fixed point in <=2 steps (got {r['steps']})"
+    assert r["steps"] <= 2, (
+        f"canonical byte cycle must reach a fixed point in <=2 steps (got {r['steps']})"
+    )
     P = E.seam_partition()["witnessed"]
-    assert P["value_collapse(1≡2)"] and P["bound_alpha(f≡g)"], "RESIDUE: value/bound abstraction must hold"
-    assert P["fixed: a.foo≠a.bar"] and P["fixed: a+b≠a-b"], "FIXED: referential/operator must stay distinct"
+    assert P["value_collapse(1≡2)"] and P["bound_alpha(f≡g)"], (
+        "RESIDUE: value/bound abstraction must hold"
+    )
+    assert P["fixed: a.foo≠a.bar"] and P["fixed: a+b≠a-b"], (
+        "FIXED: referential/operator must stay distinct"
+    )
     # never-discard-residue: the projection is lossy, but the kept residue cofactor REPLAYS to a faithful
     # RETRACTION (split-idempotent). Multi-literal case so the projection genuinely collapses.
     R = E.retraction("z = f(1, 2) + 3\n")
-    assert R["proj_lost"], "projection must lose (collapse distinct literals) -- else the test is vacuous"
-    assert R["retraction_faithful"], "residue replay must recover every literal (recon(skel,residue)==orig)"
+    assert R["proj_lost"], (
+        "projection must lose (collapse distinct literals) -- else the test is vacuous"
+    )
+    assert R["retraction_faithful"], (
+        "residue replay must recover every literal (recon(skel,residue)==orig)"
+    )
     # Ⓤ.retract-full: the COMPLETE (AST-faithful) retraction recovers values (A) AND names/defnames (C)
     # even under ALPHA-COLLAPSE (two alpha-equivalent defs share one skeleton node). Non-vacuous: the
     # projection must be AST-UNfaithful on this case, the full retraction AST-faithful.
     Fc = E.full_retraction("def f(x):\n    return x\ndef g(y):\n    return y\n")
-    assert not Fc["proj_faithful"], "alpha-collapse projection must be AST-unfaithful (else test vacuous)"
-    assert Fc["ast_faithful"], "full retraction must recover the collapsed defname+param (AST-faithful)"
+    assert not Fc["proj_faithful"], (
+        "alpha-collapse projection must be AST-unfaithful (else test vacuous)"
+    )
+    assert Fc["ast_faithful"], (
+        "full retraction must recover the collapsed defname+param (AST-faithful)"
+    )
     # field-tags (B): heterogeneous-field statements (decorators+returns, if/for/while-else) that used to
     # hit #UNCOVERED now reconstruct AST-faithfully via the field-split residue. Non-vacuous: projection
     # (no field-split) is AST-unfaithful on the decorated/annotated def.
     Fb = E.full_retraction("@dec\ndef f() -> int:\n    return 1\n")
-    assert not Fb["proj_faithful"], "decorated/returns def projection must be AST-unfaithful (else vacuous)"
-    assert Fb["ast_faithful"], "field-split residue (B) must reconstruct decorators+returns (AST-faithful)"
-    for s in ("if p < 3:\n    return p\nelse:\n    return 0\n", "for i in xs:\n    s = s + i\nelse:\n    s = 0\n",
-              "while n > 0:\n    n = n - 1\n"):
-        assert E.full_retraction(s)["ast_faithful"], f"field-split (B) must reconstruct control-flow else: {s!r}"
+    assert not Fb["proj_faithful"], (
+        "decorated/returns def projection must be AST-unfaithful (else vacuous)"
+    )
+    assert Fb["ast_faithful"], (
+        "field-split residue (B) must reconstruct decorators+returns (AST-faithful)"
+    )
+    for s in (
+        "if p < 3:\n    return p\nelse:\n    return 0\n",
+        "for i in xs:\n    s = s + i\nelse:\n    s = 0\n",
+        "while n > 0:\n    n = n - 1\n",
+    ):
+        assert E.full_retraction(s)["ast_faithful"], (
+            f"field-split (B) must reconstruct control-flow else: {s!r}"
+        )
     # deeper field-split sub-layers: ast.arguments internals (defaults/annotations/*args/**kwargs/kw-only/
     # posonly via ast.unparse), class bases/metaclass/decorators, try/except/as/else/finally.
-    for s in ("def f(a, b=1, *args, c, d=2, **kw):\n    return a\n",
-              "def f(p, /, q, *, r):\n    return p\n",
-              "class C(B, metaclass=M):\n    x = 1\n",
-              "@reg\nclass C(B):\n    pass\n",
-              "try:\n    a = 1\nexcept E as e:\n    a = 2\nelse:\n    a = 3\nfinally:\n    a = 4\n"):
-        assert E.full_retraction(s)["ast_faithful"], f"args/class/try field-split must reconstruct: {s!r}"
+    for s in (
+        "def f(a, b=1, *args, c, d=2, **kw):\n    return a\n",
+        "def f(p, /, q, *, r):\n    return p\n",
+        "class C(B, metaclass=M):\n    x = 1\n",
+        "@reg\nclass C(B):\n    pass\n",
+        "try:\n    a = 1\nexcept E as e:\n    a = 2\nelse:\n    a = 3\nfinally:\n    a = 4\n",
+    ):
+        assert E.full_retraction(s)["ast_faithful"], (
+            f"args/class/try field-split must reconstruct: {s!r}"
+        )
     # expression frontier: containers / dict-spread / subscript / slice / starred / kw-call / ifexp /
     # lambda / comprehensions / f-string / augassign -- all decomposed (sub-structure shares the skeleton).
-    for s in ("l = [1, 2, 3]\n", "d = {'a': 1, **e}\n", "v = a[1:2:3]\n", "f(*xs, **kw)\n",
-              "z = a if c else b\n", "g = lambda x: x + 1\n", "ys = [x * 2 for x in xs if x > 0]\n",
-              "d = {k: v for k, v in items}\n", 's = f"{x!r} and {y}"\n', "x += 1\n"):
+    for s in (
+        "l = [1, 2, 3]\n",
+        "d = {'a': 1, **e}\n",
+        "v = a[1:2:3]\n",
+        "f(*xs, **kw)\n",
+        "z = a if c else b\n",
+        "g = lambda x: x + 1\n",
+        "ys = [x * 2 for x in xs if x > 0]\n",
+        "d = {k: v for k, v in items}\n",
+        's = f"{x!r} and {y}"\n',
+        "x += 1\n",
+    ):
         assert E.full_retraction(s)["ast_faithful"], f"expression-frontier must reconstruct: {s!r}"
     # simple statements (Ⓤ.retract-stmt): with/assert/raise/del/import/annassign/break/global + yield/await,
     # AND the three regressions the whole-file scale test caught (IfExp field-order, asname collapse,
     # Ellipsis repr). Match is the one deferred layer.
-    for s in ("with a as b, c:\n    pass\n", "assert x, 'm'\n", "raise E from c\n", "del x, y\n",
-              "import sys as _s\nimport sys\n", "from a.b import c as d\n", "x: int = 1\n",
-              "def g():\n    yield from xs\n", "x: Tuple[int, ...]\n",
-              "head = n.k + (f'[{n.op}]' if n.op else '')\n"):
+    for s in (
+        "with a as b, c:\n    pass\n",
+        "assert x, 'm'\n",
+        "raise E from c\n",
+        "del x, y\n",
+        "import sys as _s\nimport sys\n",
+        "from a.b import c as d\n",
+        "x: int = 1\n",
+        "def g():\n    yield from xs\n",
+        "x: Tuple[int, ...]\n",
+        "head = n.k + (f'[{n.op}]' if n.op else '')\n",
+    ):
         assert E.full_retraction(s)["ast_faithful"], f"statement/regression must reconstruct: {s!r}"
     # Match patterns (Ⓤ.retract-match): value/sequence/star/mapping/class/as/or/wildcard/guard/singleton,
     # nested. + the extended-slice regression the full-tree scale test caught (a[:, l] numpy indexing).
-    for s in ("match c:\n    case [x, *r]:\n        a = 1\n    case {1: v, **rest}:\n        a = 2\n"
-              "    case Point(x=0, y=yy) | Line() if g:\n        a = 3\n    case 1 | 2 as n:\n        a = 4\n"
-              "    case _:\n        a = 5\n",
-              "out = a[:, l]\nx = m[i, j]\n"):
+    for s in (
+        "match c:\n    case [x, *r]:\n        a = 1\n    case {1: v, **rest}:\n        a = 2\n"
+        "    case Point(x=0, y=yy) | Line() if g:\n        a = 3\n    case 1 | 2 as n:\n        a = 4\n"
+        "    case _:\n        a = 5\n",
+        "out = a[:, l]\nx = m[i, j]\n",
+    ):
         assert E.full_retraction(s)["ast_faithful"], f"match/extended-slice must reconstruct: {s!r}"
     # Ⓤ.byte-exact: the grade ladder closes. A commented source -> skeleton(projection) ∧ ast(structure)
     # ∧ byte(CST, code==src) all hold, and the trivia is PURE GAUGE (ast-equal delta). Non-vacuous: the
     # source has comments ast strips and byte recovers.
     csrc = "# top\ndef f(x):\n    return x + 1  # inline\n"
-    g = E.grades(csrc); bg = E.byte_grade(csrc)
+    g = E.grades(csrc)
+    bg = E.byte_grade(csrc)
     assert g["skeleton"] and g["ast"] and g["byte"], f"grade ladder must hold all three: {g}"
-    assert bg["byte_exact"] and bg["pure_gauge"] and bg["comments"] >= 2, f"byte-exact + pure-gauge: {bg}"
+    assert bg["byte_exact"] and bg["pure_gauge"] and bg["comments"] >= 2, (
+        f"byte-exact + pure-gauge: {bg}"
+    )
     # Ⓤ.template: the residue's USE -- same-skeleton/different-residue clusters into a template, the
     # varying residue positions are the holes (Free⊣Forgetful substitution). Non-vacuous: a const-varying
     # pair clusters with the const as a hole; an exact-dup pair clusters with ZERO holes; a unique stays out.
-    tr = E.templatize([("s2", "def s2(v):\n    return v * 2\n"), ("s3", "def s3(v):\n    return v * 3\n"),
-                       ("d1", "def k():\n    return 0\n"), ("d2", "def k():\n    return 0\n"),
-                       ("u", "def u(p):\n    return p - 1\n")])
-    assert tr["n_skeletons"] == 3, f"5 units, 2 dup-pairs + 1 unique -> 3 skeletons (got {tr['n_skeletons']})"
+    tr = E.templatize(
+        [
+            ("s2", "def s2(v):\n    return v * 2\n"),
+            ("s3", "def s3(v):\n    return v * 3\n"),
+            ("d1", "def k():\n    return 0\n"),
+            ("d2", "def k():\n    return 0\n"),
+            ("u", "def u(p):\n    return p - 1\n"),
+        ]
+    )
+    assert tr["n_skeletons"] == 3, (
+        f"5 units, 2 dup-pairs + 1 unique -> 3 skeletons (got {tr['n_skeletons']})"
+    )
     bylab = {tuple(sorted(c["labels"])): c for c in tr["clusters"]}
     assert bylab[("s2", "s3")]["holes"] == 2, "scale pair: name + multiplier-const are the 2 holes"
-    assert dict(bylab[("s2", "s3")]["fillings"][0])["p1"] in ("2", "3"), "the multiplier const is a hole value"
+    assert dict(bylab[("s2", "s3")]["fillings"][0])["p1"] in ("2", "3"), (
+        "the multiplier const is a hole value"
+    )
     assert bylab[("d1", "d2")]["holes"] == 0, "exact duplicates must cluster with ZERO holes"
-    return ("PASS (Ⓤ.byte+retract+template: orbital identity; seam; AST-faithful full language incl. Match "
-            "— 133/133 real modules; ladder closed (byte-exact, trivia=gauge); residue→template extraction)")
+    return (
+        "PASS (Ⓤ.byte+retract+template: orbital identity; seam; AST-faithful full language incl. Match "
+        "— 133/133 real modules; ladder closed (byte-exact, trivia=gauge); residue→template extraction)"
+    )
 
 
 def chk_haskell_trace():
@@ -214,12 +355,19 @@ def chk_haskell_trace():
     # addressing (the constant store cell is shared by every state). (The ghc -O Core grounding of the
     # primops readMutVar#/writeMutVar#/+# is in __main__/core_primops; the gate stays toolchain-free.)
     import jea_haskell_trace as T
+
     s0 = ("loop", {"r": 0, "c": 7})
     rm = T.trace_intern(T.step_mod(4), s0)
-    assert rm["verdict"] == "CLOSED:cycle" and rm["cycle_len"] == 4, "forever mod-4 loop must close to a 4-cycle"
-    assert T.shared_fanin(rm, "c") == rm["n_states"], "constant cell must be shared by every state (content-addressed)"
+    assert rm["verdict"] == "CLOSED:cycle" and rm["cycle_len"] == 4, (
+        "forever mod-4 loop must close to a 4-cycle"
+    )
+    assert T.shared_fanin(rm, "c") == rm["n_states"], (
+        "constant cell must be shared by every state (content-addressed)"
+    )
     rt = T.trace_intern(T.step_to(5), s0)
-    assert rt["verdict"] == "CLOSED:halt" and rt["final"][1]["r"] == 5, "bounded loop must halt with final r=5"
+    assert rt["verdict"] == "CLOSED:halt" and rt["final"][1]["r"] == 5, (
+        "bounded loop must halt with final r=5"
+    )
     ru = T.trace_intern(T.step_unbounded, s0, max_steps=200)
     assert ru["verdict"] == "SUSPENDED:grows", "unbounded loop must suspend (fixpoint grows)"
     return "PASS (Ⓣ: trace-intern Haskell step — cycle closes, bounded halts, unbounded suspends; say which)"
@@ -227,10 +375,14 @@ def chk_haskell_trace():
 
 def chk_pysim():
     import jea_pysim
-    src = "def f(x):\n    return x + x\ndef g(y):\n    return y + y\n"   # f,g alpha-equivalent
-    p = tempfile.NamedTemporaryFile("w", suffix=".py", delete=False); p.write(src); p.close()
+
+    src = "def f(x):\n    return x + x\ndef g(y):\n    return y + y\n"  # f,g alpha-equivalent
+    p = tempfile.NamedTemporaryFile("w", suffix=".py", delete=False)
+    p.write(src)
+    p.close()
     try:
-        C = jea_pysim.Corpus(); C.add_file(p.name)
+        C = jea_pysim.Corpus()
+        C.add_file(p.name)
         assert len(C.units) == 2, f"expected 2 units, got {len(C.units)}"
         sf = C.shared_fraction(C.units[0], C.units[1])
         assert sf == 1.0, f"alpha-equivalent defs must share fully (got {sf})"
@@ -242,7 +394,9 @@ def chk_pysim():
 def chk_omml():
     import jea_omml
     from jea_pyalg import Intern
-    I = Intern(); root, parts = jea_omml.lower_omml(jea_omml._SAMPLES["ECB-output"], I)
+
+    I = Intern()
+    root, parts = jea_omml.lower_omml(jea_omml._SAMPLES["ECB-output"], I)
     assert I.nodes[root].kind == "App", "E(k,p) must lower to App"
     assert not parts, "explicit m:func must produce NO partition"
     I2 = Intern()
@@ -254,18 +408,27 @@ def chk_omml():
 def chk_omml_domain():
     import jea_omml_domain as D
     from jea_pyalg import Intern, IR, CrossMix
-    I = Intern(); X = CrossMix(I)
-    f = I.intern(IR(kind="Name", op="f", children=())); x = I.intern(IR(kind="Name", op="x", children=()))
-    app = I.intern(IR(kind="App", children=(f, x))); mul = I.intern(IR(kind="BinOp", op="Mult", children=(f, x)))
-    adj = D.Partition("ADJACENCY", app, mul, "application", "multiplication", X.cross_term(app, mul))
+
+    I = Intern()
+    X = CrossMix(I)
+    f = I.intern(IR(kind="Name", op="f", children=()))
+    x = I.intern(IR(kind="Name", op="x", children=()))
+    app = I.intern(IR(kind="App", children=(f, x)))
+    mul = I.intern(IR(kind="BinOp", op="Mult", children=(f, x)))
+    adj = D.Partition(
+        "ADJACENCY", app, mul, "application", "multiplication", X.cross_term(app, mul)
+    )
     assert isinstance(D.resolve(adj, D.EMPTY), D.Partition), "empty domain must preserve the fork"
     r = D.resolve(adj, D.TYPE_THEORY)
-    assert isinstance(r, D.Resolved) and r.reading == "application", "type-theory must commit ADJACENCY=application"
+    assert isinstance(r, D.Resolved) and r.reading == "application", (
+        "type-theory must commit ADJACENCY=application"
+    )
     return "PASS"
 
 
 def chk_oneforest():
     import jea_oneforest
+
     F = jea_oneforest.OneForest()
     F.add_python("spec", "def axpy(x, y):\n    return x + y\n", "axpy")
     F.add_python("impl", "def axpy(x, y):\n    return x + y\n", "axpy")
@@ -273,70 +436,98 @@ def chk_oneforest():
     assert rows and rows[0]["realizes"], "identical impl must REALIZE spec (degree 0)"
     # FIDELITY (gate) ∧ COMPLETENESS (coverage). With a full mirror, coverage is complete + no orphans.
     cov0 = F.coverage("spec", "impl", floor=0.6)
-    assert cov0["complete"] and not cov0["a_orphans"] and not cov0["b_orphans"], \
+    assert cov0["complete"] and not cov0["a_orphans"] and not cov0["b_orphans"], (
         "full mirror must be coverage-complete (no orphans either side)"
+    )
     # Recall the bare gate can't see: a unit with NO mirror is an ORPHAN, and a missing manifest pair
     # is caught — the precision-not-recall blind spot, now gated.
-    F.add_python("spec", "def dot(u, v):\n    return sum(a * b for a, b in zip(u, v))\n", "dot")  # no impl
-    F.add_python("impl", "def scale(x, k):\n    return x * k\n", "scale")                           # no spec
+    F.add_python(
+        "spec", "def dot(u, v):\n    return sum(a * b for a, b in zip(u, v))\n", "dot"
+    )  # no impl
+    F.add_python("impl", "def scale(x, k):\n    return x * k\n", "scale")  # no spec
     cov = F.coverage("spec", "impl", floor=0.6)
     assert not cov["complete"], "an unmirrored unit must make coverage INCOMPLETE"
-    assert "dot" in {o["unit"] for o in cov["a_orphans"]}, "spec:dot (no impl) must be flagged an orphan"
-    assert "scale" in {o["unit"] for o in cov["b_orphans"]}, "impl:scale (no spec) must be flagged an orphan"
+    assert "dot" in {o["unit"] for o in cov["a_orphans"]}, (
+        "spec:dot (no impl) must be flagged an orphan"
+    )
+    assert "scale" in {o["unit"] for o in cov["b_orphans"]}, (
+        "impl:scale (no spec) must be flagged an orphan"
+    )
     mani = F.coverage("spec", "impl", floor=0.6, manifest={"axpy": "axpy", "dot": "dot"})
-    assert not mani["manifest_complete"] and mani["manifest_misses"], \
+    assert not mani["manifest_complete"] and mani["manifest_misses"], (
         "a pinned structural symmetry (dot→dot) absent on impl must be a regression miss"
+    )
     # The correspondence is DISCOVERED + SYMMETRIC (mutual-best), not declared. axpy↔axpy is each side's
     # reciprocal best (EXACT, degree 0); dot/scale have no reciprocal partner ⇒ the symmetry unpairs them.
     corr = F.correspondence("spec", "impl", floor=0.6)
     assert not corr["symmetric"], "an unpaired unit must break the symmetric (total) correspondence"
-    assert any(p["a"] == "axpy" and p["b"] == "axpy" and p["exact"] for p in corr["pairs"]), \
+    assert any(p["a"] == "axpy" and p["b"] == "axpy" and p["exact"] for p in corr["pairs"]), (
         "axpy↔axpy must be the mutual-best EXACT (degree 0) correspondent"
-    assert "dot" in corr["a_orphans"] and "scale" in corr["b_orphans"], \
+    )
+    assert "dot" in corr["a_orphans"] and "scale" in corr["b_orphans"], (
         "dot/scale (no reciprocal partner) must be orphans of the symmetry"
+    )
     # COMPARABILITY guard: a correspondence is only meaningful where the arms' canonical vocabularies
     # overlap. Two Python arms share vocab (comparable); a vocabulary-DISJOINT arm (here a minted foreign
     # kind — the Python-AST-kinds vs single-'AgdaCore'-kind situation in miniature) must be flagged NOT
     # comparable, so the tool refuses to emit vacuous "numbers quotiented of meaning" as a verdict.
     import jea_pyalg
-    assert corr["comparable"] and "FunctionDef" in corr["shared_vocab"], \
+
+    assert corr["comparable"] and "FunctionDef" in corr["shared_vocab"], (
         "two Python arms must be comparable (overlapping vocabulary)"
+    )
     # A foreign arm: a binary node of two atoms under DISJOINT kinds (the Python-vs-Agda-core situation in
     # miniature). At the LABEL rung it's incomparable; QUOTIENT FURTHER and the GENERIC PAIR still
     # corresponds — comparability is rung-relative, "incomparable at labels" is NOT "nothing corresponds".
     leaf1 = F.I.intern(jea_pyalg.IR(kind="Foreign", op="a"))
     leaf2 = F.I.intern(jea_pyalg.IR(kind="Foreign", op="b"))
-    F.add_units("foreign", [("pair", F.I.intern(jea_pyalg.IR(kind="Foreign", children=(leaf1, leaf2))))])
+    F.add_units(
+        "foreign", [("pair", F.I.intern(jea_pyalg.IR(kind="Foreign", children=(leaf1, leaf2))))]
+    )
     inc = F.correspondence("spec", "foreign", floor=0.6)
-    assert not inc["comparable"] and not inc["shared_vocab"], \
+    assert not inc["comparable"] and not inc["shared_vocab"], (
         "disjoint-vocabulary arms (cf. Python vs Agda-core) must be NOT comparable at the LABEL rung"
+    )
     ss = F.shared_structure("spec", "foreign")
-    assert ss["generic_pair_shared"] and ss["leaf_shared"], \
+    assert ss["generic_pair_shared"] and ss["leaf_shared"], (
         "the generic pair (2,(leaf,leaf)) must correspond across the vocabulary gap at the label-free shape rung"
+    )
     # Apply CrossMul AGAIN at the shape rung: re-intern by shape, and the cross-term that was VACUOUS across
     # the vocabulary gap (label-level shared_fraction 0) becomes a real graded correspondence.
-    lab = max(F.cross.shared_fraction(r, fr) for _, r in F.arms["spec"] for _, fr in F.arms["foreign"])
+    lab = max(
+        F.cross.shared_fraction(r, fr) for _, r in F.arms["spec"] for _, fr in F.arms["foreign"]
+    )
     G = F.quotient_to_shape()
-    shp = max(G.cross.shared_fraction(r, fr) for _, r in G.arms["spec"] for _, fr in G.arms["foreign"])
-    assert lab == 0.0 < shp, \
+    shp = max(
+        G.cross.shared_fraction(r, fr) for _, r in G.arms["spec"] for _, fr in G.arms["foreign"]
+    )
+    assert lab == 0.0 < shp, (
         "CrossMul re-applied at the shape rung must turn the vacuous label-level 0 into a real correspondence"
-    assert G.correspondence("spec", "foreign", floor=0.0)["comparable"], \
+    )
+    assert G.correspondence("spec", "foreign", floor=0.0)["comparable"], (
         "the shape-quotiented forest must be comparable (a shared shape vocabulary)"
+    )
     # The correspondence is a TRUNCATABLE graded profile S(g) by shape-size, NEVER a scalar. Identical
     # shape => flat 1.0 at every grade; genuinely different => starts at the universal floor and DECAYS
     # (shares the small universal vocabulary, sheds the distinctive content) — the curve the scalar hid.
     raxpy = dict(G.arms["spec"])["axpy"]
     self_p = G.profile(raxpy, raxpy, gmax=6)
-    assert all(f == 1.0 for _, f in self_p), "self-profile must be FLAT 1.0 (identical at every grade)"
+    assert all(f == 1.0 for _, f in self_p), (
+        "self-profile must be FLAT 1.0 (identical at every grade)"
+    )
     cross_p = G.profile(raxpy, dict(G.arms["spec"])["dot"], gmax=6)
-    assert cross_p[-1][1] < 1.0 and jea_oneforest.OneForest.cliff(cross_p, 0.9) < jea_oneforest.OneForest.cliff(self_p, 0.9), \
+    assert cross_p[-1][1] < 1.0 and jea_oneforest.OneForest.cliff(
+        cross_p, 0.9
+    ) < jea_oneforest.OneForest.cliff(self_p, 0.9), (
         "a genuinely-different pair's profile must DECAY (cliff earlier than the flat self-profile), not collapse to one number"
+    )
     return "PASS"
 
 
 def chk_sympy_bridge():
     import jea_sympy_bridge as B
     import sympy as sp
+
     a, b = sp.symbols("a b")
     assert B.fixpoint_test((a * b) / (a + b))["fixpoint"], "forest<->sympy must be a fixpoint"
     return "PASS"
@@ -345,6 +536,7 @@ def chk_sympy_bridge():
 def chk_octave():
     import jea_octave_gen as O
     import sympy as sp
+
     a, b = sp.symbols("a b")
     oct_src = O.emit_octave_from_sympy("schur", (a * b) / (a + b))["octave"]
     assert "a.*b" in oct_src.replace(" ", ""), f"octave must be element-wise; got:\n{oct_src}"
@@ -355,21 +547,27 @@ def chk_ir_unify():
     import jea_ir_unify as U
     import sympy as sp
     from jea_pyalg import Intern, IR, full_skeleton
+
     a, b = sp.symbols("a b")
-    I = Intern(); r = U.lower_sympy_structured((a * b) / (a + b), I)
+    I = Intern()
+    r = U.lower_sympy_structured((a * b) / (a + b), I)
     back = U.project_unified(I, r)
-    I2 = Intern(); r2 = U.lower_sympy_structured(back, I2)
+    I2 = Intern()
+    r2 = U.lower_sympy_structured(back, I2)
     assert full_skeleton(I, r) == full_skeleton(I2, r2), "structured sympy lowering must round-trip"
     I3 = Intern()
     av = I3.intern(IR(kind="Name", op="a", payload=("a",), children=()))
     bv = I3.intern(IR(kind="Name", op="b", payload=("b",), children=()))
     bo = I3.intern(IR(kind="BinOp", op="Add", children=(av, bv)))
-    assert U.project_unified(I3, bo) == sp.Symbol("a") + sp.Symbol("b"), "project_unified must read OMML BinOp (k=2 Op)"
+    assert U.project_unified(I3, bo) == sp.Symbol("a") + sp.Symbol("b"), (
+        "project_unified must read OMML BinOp (k=2 Op)"
+    )
     return "PASS"
 
 
 def chk_omml_octave():
     import jea_omml_octave as P
+
     out = P.omml_to_octave(P._SAMPLES["ECB_output"], "f")
     assert "E(k, p)" in out["octave"], f"OMML E(k,p) must reach octave; got:\n{out['octave']}"
     return "PASS"
@@ -382,11 +580,16 @@ def chk_omml_render():
     # lets render SHOW ι while octave/value treats it as identity.
     import jea_omml_render as R
     from jea_omml_octave import omml_to_sympy
+
     for label, (omml, expect) in R._MANIFEST.items():
         got = R.render_omml(omml)
         assert got == expect, f"render {label}: got {got!r} != {expect!r}"
-    assert "ι_{𝒮→𝓑}(" in R.render_omml(R._MANIFEST["CFB-stUpd"][0]), "O3: CFB ι coercion must render"
-    assert "ι_{𝓑→𝔹*}(" in R.render_omml(R._MANIFEST["ChaCha20-output"][0]), "O3: ChaCha ι must render"
+    assert "ι_{𝒮→𝓑}(" in R.render_omml(R._MANIFEST["CFB-stUpd"][0]), (
+        "O3: CFB ι coercion must render"
+    )
+    assert "ι_{𝓑→𝔹*}(" in R.render_omml(R._MANIFEST["ChaCha20-output"][0]), (
+        "O3: ChaCha ι must render"
+    )
     e1, _, _ = omml_to_sympy(R._MANIFEST["CFB-stUpd"][0])
     e2, _, _ = omml_to_sympy(R._MANIFEST["CFB-output"][0])
     assert e1 == e2, f"O2: ι must erase on the value side (CFB-stUpd {e1} != CFB-output {e2})"
@@ -395,29 +598,38 @@ def chk_omml_render():
 
 def chk_picircuit():
     import jea_picircuit  # noqa: F401  (import-only: a circuit-classify instrument; covered structurally elsewhere)
+
     return "PASS"
 
 
 def chk_grammar_fixpoint():
     import jea_grammar_fixpoint as G
+
     anbn = {"S": [["a", "S", "b"], []]}
     assert G.recognize(anbn, ["a", "a", "b", "b"], "S")["accept"], "aⁿbⁿ must accept aabb"
     assert not G.recognize(anbn, ["a", "a", "b"], "S")["accept"], "aⁿbⁿ must reject aab"
     r = G.recognize({"E": [["E", "+", "E"], ["x"]]}, ["x", "+", "x", "+", "x"], "E")
     assert r["accept"], "ambiguous E must accept"
     xid = r["intern"].table.get(("tok", "", "x", "", ()))
-    assert xid is not None and r["intern"].fanin[xid] >= 2, "shared token must have fan-in (SPPF sharing)"
+    assert xid is not None and r["intern"].fanin[xid] >= 2, (
+        "shared token must have fan-in (SPPF sharing)"
+    )
     return "PASS"
 
 
 def chk_mat260_verify():
     import jea_mat260_verify as V
+
     rep = V.verify(V._CIPHERS)
     # the embedded fixture has TWO correct equivalence pairs (CBC stUpd==output; CTR==ChaCha20 stUpd).
     # (Asserting the machinery on a controlled fixture -- NOT mat260-corpus facts, which drift; the live
     # corpus is verified via --manifest. The old "== 3" asserted a now-stale CFB≡OFB class.)
-    assert len(rep["classes"]) == 2, f"expected 2 fixture equivalence classes, got {len(rep['classes'])}"
-    assert rep["realizes"] and rep["realizes"][2] == 0, "equal terms must gate at degree 0 (REALIZES)"
+    assert len(rep["classes"]) == 2, (
+        f"expected 2 fixture equivalence classes, got {len(rep['classes'])}"
+    )
+    assert rep["realizes"] and rep["realizes"][2] == 0, (
+        "equal terms must gate at degree 0 (REALIZES)"
+    )
     # Σ4b operator extraction (the agdai-free side; the full agda-vs-omml gate runs on the real .agdai)
     assert V.omml_cipher_ops(V._CIPHERS["ECB-output"]) == {"E"}, "OMML op extraction (E)"
     assert V.omml_cipher_ops(V._CIPHERS["ECB-stUpd"]) == {"()"}, "OMML unit op ()"
@@ -431,7 +643,10 @@ def chk_cuda():
     except Exception:
         return "SKIP: libclang absent"
     import jea_cuda
-    r = jea_cuda.fixpoint_test("__global__ void saxpy(float* x, float* y) {\n  int i = threadIdx.x;\n  y[i] = x[i] + y[i];\n}\n")
+
+    r = jea_cuda.fixpoint_test(
+        "__global__ void saxpy(float* x, float* y) {\n  int i = threadIdx.x;\n  y[i] = x[i] + y[i];\n}\n"
+    )
     assert r["fixpoint"], "cuda lower<->project must be a fixpoint"
     return "PASS"
 
@@ -439,6 +654,7 @@ def chk_cuda():
 def chk_agdai():
     import jea_agdai
     from jea_pyalg import Intern
+
     assert hasattr(jea_agdai, "core_intern_agdai") and hasattr(jea_agdai, "intern_signature")
     # Φ7: when the shim is BUILT and a test interface exists, this check is correct-by-construction --
     # it decodes Emit.agdai (~1s) and asserts the Φ7a (clause LHS patterns) + Φ7b (datatype->constructor
@@ -465,8 +681,10 @@ def chk_agdai():
     clause_arities = [len(n.children) for n in I.nodes if n.op == "Clause"]
     assert clause_arities, "Φ7a regression: no Clause nodes (LHS patterns not walked)"
     assert max(clause_arities) >= 2, "Φ7a regression: clauses carry no LHS patterns (body-only)"
-    return (f"PASS (Φ7: decoded Emit.agdai -> {len(rep['units'])} units, "
-            f"{len(clause_arities)} clauses, members on {len(rep['members'])} parent(s))")
+    return (
+        f"PASS (Φ7: decoded Emit.agdai -> {len(rep['units'])} units, "
+        f"{len(clause_arities)} clauses, members on {len(rep['members'])} parent(s))"
+    )
 
 
 def chk_sppf_torsor():
@@ -475,10 +693,12 @@ def chk_sppf_torsor():
     # nonzero if equivariance/freeness/transitivity/nondegeneracy fails. The SHAPE that B1's
     # witness-mandatory obligation (Σ-SEAM-GLUE) and ΞG's gauge-invariance both instantiate.
     import subprocess, os
+
     here = os.path.dirname(os.path.abspath(__file__))
-    r = subprocess.run([sys.executable, os.path.join(here, "jea_sppf_torsor.py")],
-                       capture_output=True, text=True)
-    assert r.returncode == 0, f"torsor verdict failed: {r.stdout.strip().splitlines()[-1:] }"
+    r = subprocess.run(
+        [sys.executable, os.path.join(here, "jea_sppf_torsor.py")], capture_output=True, text=True
+    )
+    assert r.returncode == 0, f"torsor verdict failed: {r.stdout.strip().splitlines()[-1:]}"
     assert "IS a torsor-bundle" in r.stdout, "torsor verifier did not confirm the bundle"
     return "PASS (parse forest = torsor-bundle: fiber invariant, span gauge, free+transitive)"
 
@@ -488,9 +708,13 @@ def chk_seam_provenance():
     # — the M2 transcription link, mechanically checked. Opportunistic: needs M40Closure.agdai
     # built in _build; SKIPs cleanly otherwise (the agda decode is on-demand, jea_agdai discipline).
     import subprocess, os
+
     here = os.path.dirname(os.path.abspath(__file__))
-    r = subprocess.run([sys.executable, os.path.join(here, "jea_seam_provenance.py")],
-                       capture_output=True, text=True)
+    r = subprocess.run(
+        [sys.executable, os.path.join(here, "jea_seam_provenance.py")],
+        capture_output=True,
+        text=True,
+    )
     if r.returncode != 0:
         raise AssertionError(f"provenance DIVERGED: {r.stdout.strip().splitlines()[-1:]}")
     if "SKIP:" in r.stdout:
@@ -500,41 +724,100 @@ def chk_seam_provenance():
 
 
 CHECKS = [
-    ("jea_pyalg",       chk_pyalg),         ("jea_pyalg.lazy",  chk_trace_lazy),
-    ("jea_pyalg.refr",  chk_pyalg_referential),
-    ("jea_extrude_ir",  chk_extrude_ir),
+    ("jea_pyalg", chk_pyalg),
+    ("jea_pyalg.lazy", chk_trace_lazy),
+    ("jea_pyalg.refr", chk_pyalg_referential),
+    ("jea_extrude_ir", chk_extrude_ir),
     ("jea_haskell_trace", chk_haskell_trace),
-    ("jea_pysim",       chk_pysim),
-    ("jea_omml",        chk_omml),          ("jea_omml_domain", chk_omml_domain),
-    ("jea_oneforest",   chk_oneforest),     ("jea_sympy_bridge", chk_sympy_bridge),
-    ("jea_octave_gen",  chk_octave),        ("jea_ir_unify",    chk_ir_unify),
-    ("jea_omml_octave", chk_omml_octave),   ("jea_omml_render", chk_omml_render),
-    ("jea_picircuit",   chk_picircuit),
+    ("jea_pysim", chk_pysim),
+    ("jea_omml", chk_omml),
+    ("jea_omml_domain", chk_omml_domain),
+    ("jea_oneforest", chk_oneforest),
+    ("jea_sympy_bridge", chk_sympy_bridge),
+    ("jea_octave_gen", chk_octave),
+    ("jea_ir_unify", chk_ir_unify),
+    ("jea_omml_octave", chk_omml_octave),
+    ("jea_omml_render", chk_omml_render),
+    ("jea_picircuit", chk_picircuit),
     ("jea_mat260_verify", chk_mat260_verify),
     ("jea_grammar_fixpoint", chk_grammar_fixpoint),
-    ("jea_sppf_torsor",  chk_sppf_torsor),
+    ("jea_sppf_torsor", chk_sppf_torsor),
     ("jea_seam_provenance", chk_seam_provenance),
-    ("jea_cuda",        chk_cuda),          ("jea_agdai",       chk_agdai),
+    ("jea_cuda", chk_cuda),
+    ("jea_agdai", chk_agdai),
 ]
 
 
+MANIFEST = os.path.join(os.path.dirname(HERE), os.pardir, "pyproject.toml")
+
+
+def _declared():
+    """The distribution names `pyproject.toml` declares, lowercased.
+
+    ⚑ READ FROM THE MANIFEST, never a roster here. A hardcoded list of "deps that may be
+    missing" is current only as of its last edit — the defect `run_selftests.DIRS` was
+    converted away from — and it would have to be updated in lockstep with the very file
+    that is the authority, which is the second spelling the reclassification exists to avoid.
+    A parse failure returns the empty set, so an unreadable manifest reclassifies NOTHING
+    and every import failure stays a FAIL: the degradation is toward the strict verdict.
+    """
+    try:
+        import tomllib
+
+        with open(MANIFEST, "rb") as fh:
+            deps = tomllib.load(fh).get("project", {}).get("dependencies", [])
+    except Exception:
+        return frozenset()
+    names = set()
+    for spec in deps:
+        # strip extras/markers/version bounds: `psycopg[binary]`, `salt>=3008.2`
+        head = re.split(r"[\[<>=!~;\s]", spec, maxsplit=1)[0].strip()
+        if head:
+            names.add(head.lower().replace("-", "_"))
+    return frozenset(names)
+
+
 def main():
-    fails, npass, nskip = [], 0, 0
+    declared = _declared()
+    fails, depmiss, npass, nskip = [], [], 0, 0
     for name, fn in CHECKS:
         try:
             r = fn()
+        except ModuleNotFoundError as e:
+            # ⚑ THE TOP-LEVEL PACKAGE is what the manifest names: `import sympy.abc` and
+            # `import sympy` are one declaration. An UNdeclared missing module stays a FAIL —
+            # it is either a genuine regression or an undeclared dependency, and both are the
+            # gate's business to refuse.
+            root = (e.name or "").split(".")[0].lower().replace("-", "_")
+            if root and root in declared:
+                r = (
+                    f"DEP-MISSING: {root} is declared in pyproject.toml but not installed "
+                    f"(run `uv sync`) — the instrument did not regress"
+                )
+            else:
+                r = f"FAIL: {type(e).__name__}: {e}"
         except Exception as e:
             r = f"FAIL: {type(e).__name__}: {e}"
-        tag = r.split()[0].rstrip(":")     # first token (PASS may carry a ": detail" suffix)
+        tag = r.split()[0].rstrip(":")  # first token (PASS may carry a ": detail" suffix)
         print(f"  meta-gate {name:<18} {r}")
         if tag == "PASS":
             npass += 1
         elif tag == "SKIP":
             nskip += 1
+        elif tag == "DEP-MISSING":
+            depmiss.append(name)
         else:
             fails.append(name)
+    # ⚑ BOTH BLOCK, and they are reported SEPARATELY because they have different repairs:
+    # a FAIL is paid down in the instrument, a DEP-MISSING in the environment/manifest.
+    if depmiss:
+        print(
+            f"meta-gate: FAILED — {', '.join(depmiss)} (a DECLARED dependency is not "
+            f"installed; this is an ENVIRONMENT fault, not a Σ regression — `uv sync`)"
+        )
     if fails:
         print(f"meta-gate: FAILED — {', '.join(fails)} (a Σ instrument regressed)")
+    if depmiss or fails:
         return 1
     print(f"meta-gate: OK ({npass} pass, {nskip} skip)")
     return 0

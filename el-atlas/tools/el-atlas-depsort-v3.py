@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 el-atlas-depsort-v3.py (v3.4) — empirical constitutive analysis (reviewer's name, adopted).
 

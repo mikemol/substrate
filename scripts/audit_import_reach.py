@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """audit_import_reach.py — transitive load-bearing reach via the import graph.
 
 The per-type counts in audit_type_load_bearing.py are DIRECT (degree-1): files
@@ -10,25 +12,36 @@ direct users out through the reverse-import graph).
 
 Usage: audit_import_reach.py [NAME ...]   (default: a built-in spine list)
 """
+
 import os, re, sys, collections
-from _agdatext import strip
+import _agdatext
+import os as _o, sys as _s
+
+_s.path.insert(
+    0, _o.path.join(_o.path.dirname(_o.path.dirname(_o.path.abspath(__file__))), "scratch")
+)
+from agda_lex import HEADER as _HEADER  # THE header authority; never re-derive
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "agda", "Substrate"))
 
 mod_of, file_of, text_of, toks_of = {}, {}, {}, {}
-modre  = re.compile(r"^module\s+(\S+)\s+where", re.M)
-impre  = re.compile(r"^\s*(?:open\s+import|import)\s+([A-Za-z0-9_.'-]+)", re.M)
+modre = _HEADER  # was ^module\s+(\S+)\s+where — missed 149 parameterized headers + 2 unicode names
+impre = re.compile(r"^\s*(?:open\s+import|import)\s+([\w.'-]+)", re.M)
 
 for dp, _, fns in os.walk(ROOT):
     for fn in fns:
-        if not fn.endswith(".agda"): continue
+        if not fn.endswith(".agda"):
+            continue
         p = os.path.join(dp, fn)
         raw = open(p, encoding="utf-8").read()
-        t = strip(raw)
+        t = _agdatext.strip(raw)
         m = modre.search(t)
-        if not m: continue
+        if not m:
+            continue
         name = m.group(1)
-        mod_of[p] = name; file_of[name] = p; text_of[name] = t
+        mod_of[p] = name
+        file_of[name] = p
+        text_of[name] = t
         toks_of[name] = set(re.split(r"[\s()\[\]{};,.\"]+", t))
 
 # import graph: module -> set of imported modules (restricted to our set)
@@ -44,6 +57,7 @@ for n, deps in imports.items():
     for d in deps:
         importers[d].add(n)
 
+
 def bfs_reach(seeds):
     """transitive importers of any module in `seeds`, with BFS depth."""
     depth = {s: 0 for s in seeds}
@@ -56,19 +70,37 @@ def bfs_reach(seeds):
                 q.append(v)
     return depth
 
+
 def direct_users(name):
     return {n for n in file_of if name in toks_of[n]}
 
-SPINE = sys.argv[1:] or ["_≡_","ℕ","Fin","Vec","Word","Linear","Σ","Permutation",
-                          "UPArrow","Canonical","List","Gen","CategoryOf","DivStr","Wedge"]
+
+SPINE = sys.argv[1:] or [
+    "_≡_",
+    "ℕ",
+    "Fin",
+    "Vec",
+    "Word",
+    "Linear",
+    "Σ",
+    "Permutation",
+    "UPArrow",
+    "Canonical",
+    "List",
+    "Gen",
+    "CategoryOf",
+    "DivStr",
+    "Wedge",
+]
 
 print(f"== transitive reach ({len(file_of)} modules in graph) ==")
 print(f"{'type':14s} {'direct':>7s} {'transitive':>11s} {'max-sep':>8s}  depth-histogram")
 for name in SPINE:
     if name not in (set().union(*[toks_of[n] for n in file_of])):
-        print(f"{name:14s}   (not found)"); continue
+        print(f"{name:14s}   (not found)")
+        continue
     du = direct_users(name)
-    depth = bfs_reach(du)                 # depth 0 = direct users themselves
+    depth = bfs_reach(du)  # depth 0 = direct users themselves
     downstream = {m: d for m, d in depth.items() if d > 0}
     hist = collections.Counter(downstream.values())
     histstr = " ".join(f"{k}:{hist[k]}" for k in sorted(hist))
@@ -79,8 +111,12 @@ for name in SPINE:
 alldepth = []
 for n in file_of:
     d = bfs_reach({n})
-    if len(d) > 1: alldepth.append(max(d.values()))
-print(f"\nimport graph: max dependency-cone depth across modules = {max(alldepth) if alldepth else 0}")
+    if len(d) > 1:
+        alldepth.append(max(d.values()))
+print(
+    f"\nimport graph: max dependency-cone depth across modules = {max(alldepth) if alldepth else 0}"
+)
 fanin = sorted(((len(importers[n]), n) for n in file_of), reverse=True)[:8]
 print("highest direct fan-in (most direct importers):")
-for c, n in fanin: print(f"    {c:4d}  {n}")
+for c, n in fanin:
+    print(f"    {c:4d}  {n}")

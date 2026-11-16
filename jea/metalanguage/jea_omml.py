@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """jea_omml.py — Σ-OMML: the real OMML (Office Math Markup Language) front-end into the SPPF.
 
 Lowers OMML `<m:oMath>…</m:oMath>` into jea_pyalg IR. The companion to jea_omml_domain (Σ3, the
@@ -32,9 +34,11 @@ THE CLOSED VOCABULARY (measured from mat260's renderOMML; recursive pattern-matc
 Pure stdlib + jea_pyalg. Front-end (sibling of jea_pyalg/jea_cuda in metalanguage/). Returns plain
 partition tuples so it stays dependency-light; jea_omml_domain wraps them into Partitions + cross_terms.
 """
+
 from __future__ import annotations
 import sys, os
 import xml.etree.ElementTree as ET
+
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from jea_pyalg import Intern, IR
 
@@ -53,9 +57,10 @@ def _q(name: str) -> str:
 
 class OmmlLowerer:
     """OMML -> IR. Records App/Mul forks (juxtaposition) as partition tuples for the Σ3 carrier."""
+
     def __init__(self, intern: Intern):
         self.I = intern
-        self.partitions: list[tuple] = []        # (tag, strand_a_id, strand_b_id, label_a, label_b)
+        self.partitions: list[tuple] = []  # (tag, strand_a_id, strand_b_id, label_a, label_b)
 
     def _name(self, txt: str) -> int:
         return self.I.intern(IR(kind="Name", op=txt, children=(), payload=(txt,)))
@@ -72,31 +77,37 @@ class OmmlLowerer:
                 # ι_{sub}: carrier-injection coercion (renderOMML of opInject/opFromBlk). One argument,
                 # the coerced core -> Coercion(sub, core), NOT App(Name "?"). (O1, JeaCoercionAsk §1.)
                 args = self._args_of(el.find(_q("e")))
-                core = args[0] if len(args) == 1 else self.I.intern(IR(kind="Args", children=tuple(args)))
+                core = (
+                    args[0]
+                    if len(args) == 1
+                    else self.I.intern(IR(kind="Args", children=tuple(args)))
+                )
                 return self.I.intern(IR(kind="Coercion", op=sub, children=(core,), payload=(sub,)))
             opname = self._text_of(fname)
             args = self._args_of(el.find(_q("e")))
             fn = self._name(opname)
             return self.I.intern(IR(kind="App", children=(fn,) + tuple(args), payload=(opname,)))
         if t == "d":
-            es = [c for c in el if _tag(c) == "e"]                 # skip dPr (visual delimiter props)
+            es = [c for c in el if _tag(c) == "e"]  # skip dPr (visual delimiter props)
             lowered = [self._collapse([self.lower(x) for x in e]) for e in es]
             lowered = [x for x in lowered if x is not None]
             if len(lowered) == 1:
-                return lowered[0]                                  # grouping / parenthesised single expr
-            return self.I.intern(IR(kind="Args", children=tuple(lowered)))   # an argument list
+                return lowered[0]  # grouping / parenthesised single expr
+            return self.I.intern(IR(kind="Args", children=tuple(lowered)))  # an argument list
         if t == "sSub":
             e_el, sub_el = el.find(_q("e")), el.find(_q("sub"))
             base = self._collapse([self.lower(x) for x in e_el]) if e_el is not None else None
             subc = self._collapse([self.lower(x) for x in sub_el]) if sub_el is not None else None
-            return self.I.intern(IR(kind="Subscript", children=tuple(c for c in (base, subc) if c is not None)))
+            return self.I.intern(
+                IR(kind="Subscript", children=tuple(c for c in (base, subc) if c is not None))
+            )
         if t == "r":
             txt = (el.text or "").strip()
             if txt in _OPS:
                 return ("OP", _OPS[txt])
             return self._name(txt)
         if t == "brk":
-            return None                                            # layout break -> dropped
+            return None  # layout break -> dropped
         # fallthrough (e, sub, anything else): lower the child sequence
         return self._collapse([self.lower(c) for c in el])
 
@@ -143,8 +154,9 @@ class OmmlLowerer:
             i = 1
             while i < len(items):
                 if isinstance(items[i], tuple) and items[i][0] == "OP" and i + 1 < len(items):
-                    result = self.I.intern(IR(kind="BinOp", op=items[i][1],
-                                              children=(result, items[i + 1])))
+                    result = self.I.intern(
+                        IR(kind="BinOp", op=items[i][1], children=(result, items[i + 1]))
+                    )
                     i += 2
                 else:
                     i += 1
@@ -152,12 +164,12 @@ class OmmlLowerer:
         if len(items) == 1:
             return items[0]
         # JUXTAPOSITION (no operator, no m:func): App-vs-Mul ambiguity -> a Σ3 partition.
-        a = self.I.intern(IR(kind="App", children=tuple(items)))                  # application reading
+        a = self.I.intern(IR(kind="App", children=tuple(items)))  # application reading
         mul = items[0]
         for x in items[1:]:
-            mul = self.I.intern(IR(kind="BinOp", op="Mult", children=(mul, x)))    # product reading
+            mul = self.I.intern(IR(kind="BinOp", op="Mult", children=(mul, x)))  # product reading
         self.partitions.append(("ADJACENCY", a, mul, "application", "multiplication"))
-        return a                                                                   # default strand
+        return a  # default strand
 
 
 def lower_omml(omml_str: str, intern: Intern) -> tuple:
@@ -173,16 +185,20 @@ def lower_omml(omml_str: str, intern: Intern) -> tuple:
 
 # a few real mat260 manifest entries, embedded so the demo is self-contained (no cross-repo path dep).
 _SAMPLES = {
-    "ECB-stUpd":  "<m:oMath><m:r>()</m:r></m:oMath>",
-    "ECB-output": ('<m:oMath><m:func><m:fName><m:r>E</m:r></m:fName><m:e><m:d><m:dPr>'
-                   '<m:begChr m:val="("/><m:endChr m:val=")"/><m:sepChr m:val=","/></m:dPr>'
-                   '<m:e><m:r>k</m:r></m:e><m:e><m:r>p</m:r></m:e></m:d></m:e></m:func></m:oMath>'),
-    "CBC-stUpd":  ('<m:oMath><m:func><m:fName><m:r>E</m:r></m:fName><m:e><m:d><m:dPr>'
-                   '<m:begChr m:val="("/><m:endChr m:val=")"/><m:sepChr m:val=","/></m:dPr>'
-                   '<m:e><m:r>k</m:r></m:e><m:e><m:brk/><m:d><m:dPr><m:begChr m:val="("/>'
-                   '<m:endChr m:val=")"/></m:dPr><m:e><m:r>p</m:r><m:r>⊕</m:r><m:sSub><m:e>'
-                   '<m:r>s</m:r></m:e><m:sub><m:r>i−1</m:r></m:sub></m:sSub></m:e></m:d></m:e>'
-                   '</m:d></m:e></m:func></m:oMath>'),
+    "ECB-stUpd": "<m:oMath><m:r>()</m:r></m:oMath>",
+    "ECB-output": (
+        "<m:oMath><m:func><m:fName><m:r>E</m:r></m:fName><m:e><m:d><m:dPr>"
+        '<m:begChr m:val="("/><m:endChr m:val=")"/><m:sepChr m:val=","/></m:dPr>'
+        "<m:e><m:r>k</m:r></m:e><m:e><m:r>p</m:r></m:e></m:d></m:e></m:func></m:oMath>"
+    ),
+    "CBC-stUpd": (
+        "<m:oMath><m:func><m:fName><m:r>E</m:r></m:fName><m:e><m:d><m:dPr>"
+        '<m:begChr m:val="("/><m:endChr m:val=")"/><m:sepChr m:val=","/></m:dPr>'
+        '<m:e><m:r>k</m:r></m:e><m:e><m:brk/><m:d><m:dPr><m:begChr m:val="("/>'
+        '<m:endChr m:val=")"/></m:dPr><m:e><m:r>p</m:r><m:r>⊕</m:r><m:sSub><m:e>'
+        "<m:r>s</m:r></m:e><m:sub><m:r>i−1</m:r></m:sub></m:sSub></m:e></m:d></m:e>"
+        "</m:d></m:e></m:func></m:oMath>"
+    ),
 }
 
 
@@ -204,8 +220,10 @@ if __name__ == "__main__":
         root, parts = lower_omml(omml, I)
         print(f"--- {name} ---")
         print("\n".join("  " + ln for ln in _render(I, root)))
-        print(f"  partitions (App/Mul forks): {len(parts)}  "
-              f"{'(clean: explicit m:func, no ambiguity)' if not parts else parts}")
+        print(
+            f"  partitions (App/Mul forks): {len(parts)}  "
+            f"{'(clean: explicit m:func, no ambiguity)' if not parts else parts}"
+        )
         print()
 
     # the AMBIGUOUS case mat260 never writes: bare juxtaposition `ab` -> the Σ3 partition fires.
@@ -214,4 +232,6 @@ if __name__ == "__main__":
     root, parts = lower_omml("<m:oMath><m:e><m:r>a</m:r><m:r>b</m:r></m:e></m:oMath>", I)
     print("\n".join("  " + ln for ln in _render(I, root)))
     print(f"  partitions: {len(parts)}  -> {[(t, la, lb) for t, _, _, la, lb in parts]}")
-    print("  (this tuple feeds jea_omml_domain.Partition; the audience carrier then commits a strand.)")
+    print(
+        "  (this tuple feeds jea_omml_domain.Partition; the audience carrier then commits a strand.)"
+    )

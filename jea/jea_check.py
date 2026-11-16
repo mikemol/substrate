@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """jea_check — the shared self-test harness for jea/ strictify + probe scripts.
 
 The test-fixtures home the consolidation map (Π) had been waiting on: at RFS ≥3 the

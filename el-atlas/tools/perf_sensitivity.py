@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 perf_sensitivity.py — the final view: edge SENSITIVITY from the same Kron solve (candidate KSN),
 + the tropical<->conductance semiring clarification (the min-vs-G_AND subtlety, done right).

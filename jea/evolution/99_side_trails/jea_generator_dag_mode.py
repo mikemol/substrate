@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 # SIDE-TRAIL (off the main spine) -- explored, then absorbed/superseded; not a rung of the linear ladder. See ../00_SYLLABUS.md
 """jea_generator_dag_mode.py — INTEGRATION: M2d's eager/lazy reduction-mode knob, added to the
 production cooperative-generator evaluator (jea_generator_dag).
@@ -25,20 +27,26 @@ The controller still relaxes K (for eager); MODE is read live from its own contr
 it, the M2d way, from the workload's canonicality-demand C). run() demonstrates the Pareto on a real
 tree; jea_agda_dispatch drives an Agda-emitted term through this under oracle control.
 """
+
 # --- jea-evolution rung bootstrap: jea/ foundation + sibling rungs on the path (see 00_SYLLABUS.md) ---
 import os as _os, sys as _sys, glob as _glob
-_EVO = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))   # .../jea/evolution
+
+_EVO = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))  # .../jea/evolution
 _sys.path[:0] = [_os.path.dirname(_EVO), *sorted(_glob.glob(_os.path.join(_EVO, "*", "")))]
 # --- end bootstrap ---
 import os
+
 os.environ.setdefault("CUDA_PATH", "/usr")
 import numpy as np, cupy as cp
 from math import gcd
 from fractions import Fraction
 import jea_core
-from jea_generator_dag import build_dag                       # reuse the random-tree builder
+from jea_generator_dag import build_dag  # reuse the random-tree builder
 
-_SRC = jea_core.Q128_CUDA + jea_core.CTRL_CUDA + r'''
+_SRC = (
+    jea_core.Q128_CUDA
+    + jea_core.CTRL_CUDA
+    + r"""
 __device__ __forceinline__ int bl(u64 x){ return x ? 64 - __clzll(x) : 0; }   // bit-width (0 for 0)
 extern "C" __global__
 void generator_dag_mode(
@@ -112,7 +120,8 @@ void generator_dag_mode(
     }
     cycles_by[w] = c;
 }
-'''
+"""
+)
 _kern = jea_core.build_kernel(_SRC, "generator_dag_mode", int128=True)
 residency = jea_core.residency
 
@@ -123,39 +132,96 @@ def run_g_mode(g, mode, K0=4, maxcyc=4_000_000):
     the measured gcd-work, the non-canonical count, and the escalate flags."""
     nsm = cp.cuda.Device().attributes["MultiProcessorCount"]
     nblocks = min(20, nsm)
-    N = g["N"]; L = g["L"]
+    N = g["N"]
+    L = g["L"]
     per_sm, max_resident, _n, regs = residency(_kern, 32)
     assert nblocks <= max_resident, f"residency: {nblocks} launched > {max_resident} resident"
 
-    vN = cp.asarray(g["vN"], cp.uint64); vD = cp.asarray(g["vD"], cp.uint64)
-    lch = cp.asarray(g["lch"], cp.int32); rch = cp.asarray(g["rch"], cp.int32); op = cp.asarray(g["op"], cp.int32)
+    vN = cp.asarray(g["vN"], cp.uint64)
+    vD = cp.asarray(g["vD"], cp.uint64)
+    lch = cp.asarray(g["lch"], cp.int32)
+    rch = cp.asarray(g["rch"], cp.int32)
+    op = cp.asarray(g["op"], cp.int32)
     ready = cp.asarray([1 if i < L else 0 for i in range(N)], cp.int32)
     initf = cp.asarray([1 if i < L else 0 for i in range(N)], cp.int32)
-    a = cp.zeros(N, cp.uint64); b = cp.zeros(N, cp.uint64)
-    naN = cp.zeros(N, cp.uint64); naD = cp.zeros(N, cp.uint64); steps = cp.zeros(N, cp.int32); esc = cp.zeros(N, cp.int32)
+    a = cp.zeros(N, cp.uint64)
+    b = cp.zeros(N, cp.uint64)
+    naN = cp.zeros(N, cp.uint64)
+    naD = cp.zeros(N, cp.uint64)
+    steps = cp.zeros(N, cp.int32)
+    esc = cp.zeros(N, cp.int32)
     combines = list(range(L, N))
     per_block = [[] for _ in range(nblocks)]
-    for k, ci in enumerate(combines): per_block[k % nblocks].append(ci)
+    for k, ci in enumerate(combines):
+        per_block[k % nblocks].append(ci)
     maxown = max((len(x) for x in per_block), default=1) or 1
     own = np.full((nblocks, maxown), -1, np.int32)
     for w in range(nblocks):
-        for j, ci in enumerate(per_block[w]): own[w, j] = ci
-    own_count = cp.asarray([len(x) for x in per_block], cp.int32); own = cp.asarray(own.ravel(), cp.int32)
+        for j, ci in enumerate(per_block[w]):
+            own[w, j] = ci
+    own_count = cp.asarray([len(x) for x in per_block], cp.int32)
+    own = cp.asarray(own.ravel(), cp.int32)
 
-    Kbuf = cp.full(1, K0, cp.int32); obsmax = cp.zeros(1, cp.int32); modebuf = cp.full(1, mode, cp.int32)
-    pending = cp.full(1, len(combines), cp.int32); cyc = cp.zeros(nblocks, cp.int64); err = cp.zeros(1, cp.int32)
-    _kern((nblocks,), (32,),
-          (Kbuf, obsmax, pending, modebuf, vN, vD, lch, rch, op, ready, initf, a, b, naN, naD, steps, esc,
-           own, own_count, cyc, err, np.int32(nblocks), np.int32(maxown), np.int64(maxcyc)))
+    Kbuf = cp.full(1, K0, cp.int32)
+    obsmax = cp.zeros(1, cp.int32)
+    modebuf = cp.full(1, mode, cp.int32)
+    pending = cp.full(1, len(combines), cp.int32)
+    cyc = cp.zeros(nblocks, cp.int64)
+    err = cp.zeros(1, cp.int32)
+    _kern(
+        (nblocks,),
+        (32,),
+        (
+            Kbuf,
+            obsmax,
+            pending,
+            modebuf,
+            vN,
+            vD,
+            lch,
+            rch,
+            op,
+            ready,
+            initf,
+            a,
+            b,
+            naN,
+            naD,
+            steps,
+            esc,
+            own,
+            own_count,
+            cyc,
+            err,
+            np.int32(nblocks),
+            np.int32(maxown),
+            np.int64(maxcyc),
+        ),
+    )
     cp.cuda.Stream.null.synchronize()
     root = g["root"]
     gn, gd, ge = vN.get(), vD.get(), esc.get()
-    live_c = ge[L:] == 0                                       # over COMBINES only: the MODE knob acts on
-    noncanon = int((np.gcd(gn[L:][live_c], gd[L:][live_c]) != 1).sum())  # combines, not the (maybe-unreduced) leaves
-    return dict(rn=int(gn[root]), rd=int(gd[root]), esc_root=int(ge[root]), gwork=int(steps.get().sum()),
-                noncanon=noncanon, nesc=int(ge.sum()), pending=int(pending.get()[0]), err=int(err.get()[0]),
-                Kfinal=int(Kbuf.get()[0]), obsmax=int(obsmax.get()[0]), regs=regs, launched=nblocks,
-                vN=gn, vD=gd, esc=ge)                          # per-node stored values + escalate flags
+    live_c = ge[L:] == 0  # over COMBINES only: the MODE knob acts on
+    noncanon = int(
+        (np.gcd(gn[L:][live_c], gd[L:][live_c]) != 1).sum()
+    )  # combines, not the (maybe-unreduced) leaves
+    return dict(
+        rn=int(gn[root]),
+        rd=int(gd[root]),
+        esc_root=int(ge[root]),
+        gwork=int(steps.get().sum()),
+        noncanon=noncanon,
+        nesc=int(ge.sum()),
+        pending=int(pending.get()[0]),
+        err=int(err.get()[0]),
+        Kfinal=int(Kbuf.get()[0]),
+        obsmax=int(obsmax.get()[0]),
+        regs=regs,
+        launched=nblocks,
+        vN=gn,
+        vD=gd,
+        esc=ge,
+    )  # per-node stored values + escalate flags
 
 
 def oracle_decide(eager, lazy, C, W_T=1.0, W_C=1.0):
@@ -169,23 +235,50 @@ def oracle_decide(eager, lazy, C, W_T=1.0, W_C=1.0):
 
 
 if __name__ == "__main__":
-    g = build_dag(L=128, seed=3); truth = g["truth"]          # L=128 fits u64; L>=256 overflows -> the 128-bit carrier's job
-    eager = run_g_mode(g, 1); lazy = run_g_mode(g, 0)
-    e_ok = (Fraction(eager["rn"], eager["rd"]) == truth) and eager["err"] == 0 and eager["pending"] == 0
-    l_ok = (Fraction(lazy["rn"], lazy["rd"]) == truth) and lazy["err"] == 0 and lazy["pending"] == 0  # reduce-at-readout
+    g = build_dag(L=128, seed=3)
+    truth = g["truth"]  # L=128 fits u64; L>=256 overflows -> the 128-bit carrier's job
+    eager = run_g_mode(g, 1)
+    lazy = run_g_mode(g, 0)
+    e_ok = (
+        (Fraction(eager["rn"], eager["rd"]) == truth)
+        and eager["err"] == 0
+        and eager["pending"] == 0
+    )
+    l_ok = (
+        (Fraction(lazy["rn"], lazy["rd"]) == truth) and lazy["err"] == 0 and lazy["pending"] == 0
+    )  # reduce-at-readout
     fstar = oracle_decide(eager, lazy, 0)[1]
-    dec_lo, _ = oracle_decide(eager, lazy, 0.0); dec_hi, _ = oracle_decide(eager, lazy, max(2 * fstar, 1.0))
+    dec_lo, _ = oracle_decide(eager, lazy, 0.0)
+    dec_hi, _ = oracle_decide(eager, lazy, max(2 * fstar, 1.0))
 
-    print(f"INTEGRATION: eager/lazy MODE knob in the production cooperative evaluator — {g['L']} leaves, "
-          f"{g['N']-g['L']} combines, {eager['launched']} blocks ({eager['regs']} regs)\n")
-    print(f"  EAGER: gcd-work={eager['gwork']:>7}  non-canonical={eager['noncanon']:>4}  root={eager['rn']}/{eager['rd']}  exact={e_ok}")
-    print(f"  LAZY : gcd-work={lazy['gwork']:>7}  non-canonical={lazy['noncanon']:>4}  root(unreduced)={lazy['rn']}/{lazy['rd']}  exact(reduced)={l_ok}")
-    print(f"  oracle f* (value<->trace bridge-null) C*={fstar:.4f};  decide(C=0)={'eager' if dec_lo else 'lazy'}, "
-          f"decide(C={max(2*fstar,1.0):.2f})={'eager' if dec_hi else 'lazy'}")
-    w_pareto = (lazy["gwork"] < eager["gwork"]) and (lazy["noncanon"] > 0) and (eager["noncanon"] == 0)
+    print(
+        f"INTEGRATION: eager/lazy MODE knob in the production cooperative evaluator — {g['L']} leaves, "
+        f"{g['N'] - g['L']} combines, {eager['launched']} blocks ({eager['regs']} regs)\n"
+    )
+    print(
+        f"  EAGER: gcd-work={eager['gwork']:>7}  non-canonical={eager['noncanon']:>4}  root={eager['rn']}/{eager['rd']}  exact={e_ok}"
+    )
+    print(
+        f"  LAZY : gcd-work={lazy['gwork']:>7}  non-canonical={lazy['noncanon']:>4}  root(unreduced)={lazy['rn']}/{lazy['rd']}  exact(reduced)={l_ok}"
+    )
+    print(
+        f"  oracle f* (value<->trace bridge-null) C*={fstar:.4f};  decide(C=0)={'eager' if dec_lo else 'lazy'}, "
+        f"decide(C={max(2 * fstar, 1.0):.2f})={'eager' if dec_hi else 'lazy'}"
+    )
+    w_pareto = (
+        (lazy["gwork"] < eager["gwork"]) and (lazy["noncanon"] > 0) and (eager["noncanon"] == 0)
+    )
     w_flip = (dec_lo == 0) and (dec_hi == 1)
     ok = e_ok and l_ok and w_pareto and w_flip
-    print(f"\n  exact both modes={e_ok and l_ok}  Pareto real={w_pareto}  oracle flips across f*={w_flip}")
-    print(f"\n  {'PASS' if ok else 'FAIL'} — the M2d eager/lazy reduction-mode Pareto now lives in the PRODUCTION")
-    print(f"  cooperative-generator evaluator (alongside the K-window control), exact both ways, escalate-")
-    print(f"  don't-truncate preserved. jea_agda_dispatch drives an Agda-emitted term through this.")
+    print(
+        f"\n  exact both modes={e_ok and l_ok}  Pareto real={w_pareto}  oracle flips across f*={w_flip}"
+    )
+    print(
+        f"\n  {'PASS' if ok else 'FAIL'} — the M2d eager/lazy reduction-mode Pareto now lives in the PRODUCTION"
+    )
+    print(
+        f"  cooperative-generator evaluator (alongside the K-window control), exact both ways, escalate-"
+    )
+    print(
+        f"  don't-truncate preserved. jea_agda_dispatch drives an Agda-emitted term through this."
+    )

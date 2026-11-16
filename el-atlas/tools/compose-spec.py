@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Compose el-atlas-spec.md from the spec-src/ btree (S43 architecture).
 Recursive sorted walk; METADATA files are node frontmatter, never composed;
 .md leaves concatenate in lexicographic order ('0' < '00' < ... < '15' < 'A').

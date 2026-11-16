@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """jea_engine.py — the consolidated JEA evaluator. C1 + C2 of the consolidation arc.
 
 C1: ONE parameterized combine, carrier as a compile-time typedef (-DCARRIER_U128) + mode/K runtime params,
@@ -27,7 +29,9 @@ Witnesses (each [W]):
    the combine (the C2 dedup proof). Combine body appears ONCE (in combine_window), called by both.
 5. ONE SOURCE: every (scheduler x carrier) kernel compiled from the identical _SRC (only -DCARRIER_U128).
 """
+
 import os
+
 os.environ.setdefault("CUDA_PATH", "/usr")
 import numpy as np, cupy as cp
 from math import gcd
@@ -36,7 +40,10 @@ import jea_core
 from jea_generator_dag import build_dag
 from jea_generator_strat import _lh, strata_of
 
-_SRC = jea_core.Q128_CUDA + jea_core.CTRL_CUDA + r'''
+_SRC = (
+    jea_core.Q128_CUDA
+    + jea_core.CTRL_CUDA
+    + r"""
 // ---- the ONE per-node combine (carrier typedef + mode); both schedulers call this ----
 __device__ int combine_window(int slot, int K, int mode,
     u64* vNl,u64* vNh,u64* vDl,u64* vDh, const int* lch,const int* rch,const int* op,
@@ -122,99 +129,248 @@ void sched_strat(const int* snodes, int ns, int K, int mode,
         if (r >= 0) atomicMax((int*)obsmax, steps[slot] > 0 ? steps[slot] : 1);
     }
 }
-'''
-def _ascii(s): assert s.isascii(); return s
-def _build(name, c128): return cp.RawKernel(_ascii(_SRC), name, options=("--device-int128",) + (("-DCARRIER_U128",) if c128 else ()))
-_KERN = {("coop", 64): _build("sched_coop", 0), ("coop", 128): _build("sched_coop", 1),
-         ("strat", 64): _build("sched_strat", 0), ("strat", 128): _build("sched_strat", 1)}
+"""
+)
+
+
+def _ascii(s):
+    assert s.isascii()
+    return s
+
+
+def _build(name, c128):
+    return cp.RawKernel(
+        _ascii(_SRC), name, options=("--device-int128",) + (("-DCARRIER_U128",) if c128 else ())
+    )
+
+
+_KERN = {
+    ("coop", 64): _build("sched_coop", 0),
+    ("coop", 128): _build("sched_coop", 1),
+    ("strat", 64): _build("sched_strat", 0),
+    ("strat", 128): _build("sched_strat", 1),
+}
 
 
 def _setup(g):
     N, L = g["N"], g["L"]
-    vNl, vNh = _lh(g["vN"]); vDl, vDh = _lh(g["vD"])
-    a = dict(vNl=vNl, vNh=vNh, vDl=vDl, vDh=vDh,
-             lch=cp.asarray(g["lch"], cp.int32), rch=cp.asarray(g["rch"], cp.int32), op=cp.asarray(g["op"], cp.int32),
-             ready=cp.asarray([1 if i < L else 0 for i in range(N)], cp.int32),
-             initf=cp.asarray([1 if i < L else 0 for i in range(N)], cp.int32),
-             steps=cp.zeros(N, cp.int32), esc=cp.zeros(N, cp.int32))
-    for k in ("al","ah","bl","bh","naNl","naNh","naDl","naDh"): a[k] = cp.zeros(N, cp.uint64)
+    vNl, vNh = _lh(g["vN"])
+    vDl, vDh = _lh(g["vD"])
+    a = dict(
+        vNl=vNl,
+        vNh=vNh,
+        vDl=vDl,
+        vDh=vDh,
+        lch=cp.asarray(g["lch"], cp.int32),
+        rch=cp.asarray(g["rch"], cp.int32),
+        op=cp.asarray(g["op"], cp.int32),
+        ready=cp.asarray([1 if i < L else 0 for i in range(N)], cp.int32),
+        initf=cp.asarray([1 if i < L else 0 for i in range(N)], cp.int32),
+        steps=cp.zeros(N, cp.int32),
+        esc=cp.zeros(N, cp.int32),
+    )
+    for k in ("al", "ah", "bl", "bh", "naNl", "naNh", "naDl", "naDh"):
+        a[k] = cp.zeros(N, cp.uint64)
     return a
 
 
 def _node_args(a):
-    return (a["vNl"],a["vNh"],a["vDl"],a["vDh"],a["lch"],a["rch"],a["op"],a["ready"],a["initf"],
-            a["al"],a["ah"],a["bl"],a["bh"],a["naNl"],a["naNh"],a["naDl"],a["naDh"],a["steps"],a["esc"])
+    return (
+        a["vNl"],
+        a["vNh"],
+        a["vDl"],
+        a["vDh"],
+        a["lch"],
+        a["rch"],
+        a["op"],
+        a["ready"],
+        a["initf"],
+        a["al"],
+        a["ah"],
+        a["bl"],
+        a["bh"],
+        a["naNl"],
+        a["naNh"],
+        a["naDl"],
+        a["naDh"],
+        a["steps"],
+        a["esc"],
+    )
 
 
 def run_engine(g, carrier=64, mode=1, schedule="coop", K0=4, maxcyc=4_000_000):
-    N, L = g["N"], g["L"]; a = _setup(g)
+    N, L = g["N"], g["L"]
+    a = _setup(g)
     if schedule == "coop":
-        nsm = cp.cuda.Device().attributes["MultiProcessorCount"]; nblocks = min(20, nsm)
-        combines = list(range(L, N)); per = [[] for _ in range(nblocks)]
-        for k, ci in enumerate(combines): per[k % nblocks].append(ci)
+        nsm = cp.cuda.Device().attributes["MultiProcessorCount"]
+        nblocks = min(20, nsm)
+        combines = list(range(L, N))
+        per = [[] for _ in range(nblocks)]
+        for k, ci in enumerate(combines):
+            per[k % nblocks].append(ci)
         maxown = max((len(x) for x in per), default=1) or 1
         own = np.full((nblocks, maxown), -1, np.int32)
         for wi in range(nblocks):
-            for j, ci in enumerate(per[wi]): own[wi, j] = ci
-        own_c = cp.asarray([len(x) for x in per], cp.int32); own = cp.asarray(own.ravel(), cp.int32)
-        Kb=cp.full(1,K0,cp.int32); om=cp.zeros(1,cp.int32); pend=cp.full(1,len(combines),cp.int32)
-        mb=cp.full(1,mode,cp.int32); cyc=cp.zeros(nblocks,cp.int64); err=cp.zeros(1,cp.int32)
-        _KERN[("coop",carrier)]((nblocks,),(32,), (Kb,om,pend,mb)+_node_args(a)+(own,own_c,cyc,err,np.int32(nblocks),np.int32(maxown),np.int64(maxcyc)))
+            for j, ci in enumerate(per[wi]):
+                own[wi, j] = ci
+        own_c = cp.asarray([len(x) for x in per], cp.int32)
+        own = cp.asarray(own.ravel(), cp.int32)
+        Kb = cp.full(1, K0, cp.int32)
+        om = cp.zeros(1, cp.int32)
+        pend = cp.full(1, len(combines), cp.int32)
+        mb = cp.full(1, mode, cp.int32)
+        cyc = cp.zeros(nblocks, cp.int64)
+        err = cp.zeros(1, cp.int32)
+        _KERN[("coop", carrier)](
+            (nblocks,),
+            (32,),
+            (Kb, om, pend, mb)
+            + _node_args(a)
+            + (own, own_c, cyc, err, np.int32(nblocks), np.int32(maxown), np.int64(maxcyc)),
+        )
     else:  # strat
-        nsm = cp.cuda.Device().attributes["MultiProcessorCount"]; nblocks = 8*nsm
-        om=cp.zeros(1,cp.int32); nd=cp.zeros(1,cp.int32); K=K0
-        for sn in [cp.asarray(s,cp.int32) for s in strata_of(g)]:
-            ns=int(sn.size)
+        nsm = cp.cuda.Device().attributes["MultiProcessorCount"]
+        nblocks = 8 * nsm
+        om = cp.zeros(1, cp.int32)
+        nd = cp.zeros(1, cp.int32)
+        K = K0
+        for sn in [cp.asarray(s, cp.int32) for s in strata_of(g)]:
+            ns = int(sn.size)
             while True:
-                nd[0]=0
-                _KERN[("strat",carrier)]((nblocks,),(256,), (sn,np.int32(ns),np.int32(K),np.int32(mode))+_node_args(a)+(nd,om))
-                if int(nd.get()[0])==0: break
+                nd[0] = 0
+                _KERN[("strat", carrier)](
+                    (nblocks,),
+                    (256,),
+                    (sn, np.int32(ns), np.int32(K), np.int32(mode)) + _node_args(a) + (nd, om),
+                )
+                if int(nd.get()[0]) == 0:
+                    break
                 K = jea_core.relax_q_ref(K, int(om.get()[0]))
     cp.cuda.Stream.null.synchronize()
-    r = g["root"]; gNl,gNh,gDl,gDh,ge = a["vNl"].get(),a["vNh"].get(),a["vDl"].get(),a["vDh"].get(),a["esc"].get()
-    rn=(int(gNh[r])<<64)|int(gNl[r]); rd=(int(gDh[r])<<64)|int(gDl[r])
-    nc=sum(1 for i in range(L,N) if ge[i]==0 and ((int(gNh[i])<<64)|int(gNl[i])) and
-           gcd((int(gNh[i])<<64)|int(gNl[i]),(int(gDh[i])<<64)|int(gDl[i]))!=1)
+    r = g["root"]
+    gNl, gNh, gDl, gDh, ge = (
+        a["vNl"].get(),
+        a["vNh"].get(),
+        a["vDl"].get(),
+        a["vDh"].get(),
+        a["esc"].get(),
+    )
+    rn = (int(gNh[r]) << 64) | int(gNl[r])
+    rd = (int(gDh[r]) << 64) | int(gDl[r])
+    nc = sum(
+        1
+        for i in range(L, N)
+        if ge[i] == 0
+        and ((int(gNh[i]) << 64) | int(gNl[i]))
+        and gcd((int(gNh[i]) << 64) | int(gNl[i]), (int(gDh[i]) << 64) | int(gDl[i])) != 1
+    )
     return dict(rn=rn, rd=rd, esc_root=int(ge[r]), noncanon=nc)
 
 
 def build_mul_tree(vals):
-    vN=list(vals); vD=[1]*len(vals); lch=[-1]*len(vals); rch=[-1]*len(vals); op=[-1]*len(vals)
-    fv=[Fraction(v,1) for v in vals]; level=list(range(len(vals)))
-    while len(level)>1:
-        nxt=[]
-        for i in range(0,len(level)-1,2):
-            li,ri=level[i],level[i+1]; idx=len(vN); vN.append(0);vD.append(0);lch.append(li);rch.append(ri);op.append(1)
-            fv.append(fv[li]*fv[ri]); nxt.append(idx)
-        if len(level)%2: nxt.append(level[-1])
-        level=nxt
-    return dict(vN=vN,vD=vD,lch=lch,rch=rch,op=op,L=len(vals),N=len(vN),root=level[0],truth=fv[level[0]])
+    vN = list(vals)
+    vD = [1] * len(vals)
+    lch = [-1] * len(vals)
+    rch = [-1] * len(vals)
+    op = [-1] * len(vals)
+    fv = [Fraction(v, 1) for v in vals]
+    level = list(range(len(vals)))
+    while len(level) > 1:
+        nxt = []
+        for i in range(0, len(level) - 1, 2):
+            li, ri = level[i], level[i + 1]
+            idx = len(vN)
+            vN.append(0)
+            vD.append(0)
+            lch.append(li)
+            rch.append(ri)
+            op.append(1)
+            fv.append(fv[li] * fv[ri])
+            nxt.append(idx)
+        if len(level) % 2:
+            nxt.append(level[-1])
+        level = nxt
+    return dict(
+        vN=vN,
+        vD=vD,
+        lch=lch,
+        rch=rch,
+        op=op,
+        L=len(vals),
+        N=len(vN),
+        root=level[0],
+        truth=fv[level[0]],
+    )
 
 
 if __name__ == "__main__":
-    g = build_dag(128, 3); truth = g["truth"]
-    e = run_engine(g, 64, 1, "coop"); l = run_engine(g, 64, 0, "coop")
-    w1 = Fraction(e["rn"],e["rd"])==truth and e["esc_root"]==0 and e["noncanon"]==0 and \
-         Fraction(l["rn"],l["rd"])==truth and l["noncanon"]>0
-    g2 = build_dag(256, 3); t2 = g2["truth"]; tb = max(abs(t2.numerator),t2.denominator).bit_length()
-    e64=run_engine(g2,64,1,"coop"); e128=run_engine(g2,128,1,"coop")
-    primes=[1000000007,1000000009,1000000021,1000000033,1000000087,1000000093,1000000097,1000000103]
-    ov=run_engine(build_mul_tree(primes),128,1,"coop")
-    w2 = tb>64 and e64["esc_root"]==1 and e128["esc_root"]==0 and Fraction(e128["rn"],e128["rd"])==t2 and ov["esc_root"]==1
+    g = build_dag(128, 3)
+    truth = g["truth"]
+    e = run_engine(g, 64, 1, "coop")
+    l = run_engine(g, 64, 0, "coop")
+    w1 = (
+        Fraction(e["rn"], e["rd"]) == truth
+        and e["esc_root"] == 0
+        and e["noncanon"] == 0
+        and Fraction(l["rn"], l["rd"]) == truth
+        and l["noncanon"] > 0
+    )
+    g2 = build_dag(256, 3)
+    t2 = g2["truth"]
+    tb = max(abs(t2.numerator), t2.denominator).bit_length()
+    e64 = run_engine(g2, 64, 1, "coop")
+    e128 = run_engine(g2, 128, 1, "coop")
+    primes = [
+        1000000007,
+        1000000009,
+        1000000021,
+        1000000033,
+        1000000087,
+        1000000093,
+        1000000097,
+        1000000103,
+    ]
+    ov = run_engine(build_mul_tree(primes), 128, 1, "coop")
+    w2 = (
+        tb > 64
+        and e64["esc_root"] == 1
+        and e128["esc_root"] == 0
+        and Fraction(e128["rn"], e128["rd"]) == t2
+        and ov["esc_root"] == 1
+    )
     # C2: strat reproduces, and coop == strat on the same DAG (schedule orthogonal to combine)
-    s128 = run_engine(g2,128,1,"strat")
-    w3 = Fraction(s128["rn"],s128["rd"])==t2 and s128["esc_root"]==0
-    sc = run_engine(g,64,1,"strat")
-    w4 = (sc["rn"],sc["rd"])==(e["rn"],e["rd"]) and (s128["rn"],s128["rd"])==(e128["rn"],e128["rd"])
-    w5 = _SRC.count("u128 nl=ld(vNl") == 1                  # the combine body is written ONCE
-    print("C1+C2 -- one combine (carrier typedef) + scheduling as a strategy over it (coop / strat)\n")
+    s128 = run_engine(g2, 128, 1, "strat")
+    w3 = Fraction(s128["rn"], s128["rd"]) == t2 and s128["esc_root"] == 0
+    sc = run_engine(g, 64, 1, "strat")
+    w4 = (sc["rn"], sc["rd"]) == (e["rn"], e["rd"]) and (s128["rn"], s128["rd"]) == (
+        e128["rn"],
+        e128["rd"],
+    )
+    w5 = _SRC.count("u128 nl=ld(vNl") == 1  # the combine body is written ONCE
+    print(
+        "C1+C2 -- one combine (carrier typedef) + scheduling as a strategy over it (coop / strat)\n"
+    )
     print(f"1. COOP u64 eager==truth canonical; lazy==truth non-canon={l['noncanon']}: {w1}")
-    print(f"2. CARRIER WIDENS ({tb}b: c64 esc={e64['esc_root']}, c128 exact) + u128 overflow esc={ov['esc_root']}: {w2}")
-    print(f"3. STRAT reproduces the fold (u128 DAG exact={Fraction(s128['rn'],s128['rd'])==t2}): {w3}")
+    print(
+        f"2. CARRIER WIDENS ({tb}b: c64 esc={e64['esc_root']}, c128 exact) + u128 overflow esc={ov['esc_root']}: {w2}"
+    )
+    print(
+        f"3. STRAT reproduces the fold (u128 DAG exact={Fraction(s128['rn'], s128['rd']) == t2}): {w3}"
+    )
     print(f"4. SAME COMBINE (coop == strat on same DAG, both carriers): {w4}")
-    print(f"5. ONE SOURCE (combine body written ONCE, called by both schedulers; all kernels one _SRC): {w5}")
+    print(
+        f"5. ONE SOURCE (combine body written ONCE, called by both schedulers; all kernels one _SRC): {w5}"
+    )
     ok = w1 and w2 and w3 and w4 and w5
-    print(f"\n  {'PASS' if ok else 'FAIL'} — C2: scheduling is a STRATEGY over the C1 combine. combine_window is")
-    print(f"  one device function; coop + strat call it (no copied combine). coop==strat proves the schedule")
-    print(f"  is orthogonal to the combine. Collapses dag/dag_mode (coop) + strat (strat). (C4 = jea_cost's structural")
-    print(f"  oracle, C5 = jea_regression_gate, both built; carrier ops are the graded carrier (jea_carrier). LEGACY dep.)")
+    print(
+        f"\n  {'PASS' if ok else 'FAIL'} — C2: scheduling is a STRATEGY over the C1 combine. combine_window is"
+    )
+    print(
+        f"  one device function; coop + strat call it (no copied combine). coop==strat proves the schedule"
+    )
+    print(
+        f"  is orthogonal to the combine. Collapses dag/dag_mode (coop) + strat (strat). (C4 = jea_cost's structural"
+    )
+    print(
+        f"  oracle, C5 = jea_regression_gate, both built; carrier ops are the graded carrier (jea_carrier). LEGACY dep.)"
+    )

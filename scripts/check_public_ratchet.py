@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """check_public_ratchet.py — EVERY `open … public` re-export is DEBT; ratchet them down.
 
 A module re-exports ONLY what it DEFINES. A wholesale `open X public` (no
@@ -30,6 +32,7 @@ forbids GROWTH and rewards paydown.
 Blocking gate. Exit 0 = clean, 1 = a new wholesale re-export appeared.
 Usage: check_public_ratchet.py [--quiet]
 """
+
 import os
 import re
 import sys
@@ -37,8 +40,7 @@ import sys
 import ratchet
 from check_carrier_locality import ROOT, strip_comments, agda_files
 
-BASELINE = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                        "public_ratchet_baseline.txt")
+BASELINE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "public_ratchet_baseline.txt")
 
 # The unit is the STATEMENT, not the line: Agda accepts import directives in any order and
 # across continuation lines, so `public` may sit on line 1 with `using (…)` on line 2, or after
@@ -75,8 +77,11 @@ def census():
                 i += 1
                 continue
             ind, stmt, j = len(m.group(1)), [lines[i]], i + 1
-            while j < len(lines) and lines[j].strip() and \
-                    (len(lines[j]) - len(lines[j].lstrip())) > ind:
+            while (
+                j < len(lines)
+                and lines[j].strip()
+                and (len(lines[j]) - len(lines[j].lstrip())) > ind
+            ):
                 stmt.append(lines[j])
                 j += 1
             opened = m.group(2)
@@ -87,14 +92,36 @@ def census():
 
 
 def main():
+    # ⚑ ROUTED THROUGH THE AUTHORITY (T17/T11).  `--dry-run` already worked —
+    # `set_ratchet` reads it from argv — but a TYPO did not fail: `--queit` was
+    # accepted and the gate ran verbose-but-passing (§7e).  `--dry-run` is NOT
+    # listed: `ratchet.UNIVERSAL_FLAGS` declares it for every caller.
+    if (
+        rc := ratchet.check_argv(sys.argv, {"--quiet", "--list"}, "check_public_ratchet.py")
+    ) is not None:
+        return rc
     quiet = "--quiet" in sys.argv
     return ratchet.set_ratchet(
-        census(), BASELINE, "public-ratchet", quiet,
+        census(),
+        BASELINE,
+        "public-ratchet",
+        quiet,
+        list_keys="--list" in sys.argv,
         noun="`open … public` re-export(s)",
+        # ⚑ Ⓡ3 — THE KEY GRAMMAR IS THE GATE'S TO DECLARE, and only the gate knows
+        # it. A `<relpath>::<opened>` key's IDENTITY is the opened name: when a file
+        # is decomposed, `Quotient.agda::Canonical` becomes
+        # `Quotient/Canonical.agda::Canonical` — the SAME debt at a new home, which
+        # the set form can only read as one paydown plus one addition, so it
+        # REFUSES. MEASURED: 139 genuine paydowns blocked behind ~100 such pairs,
+        # leaving this gate permanently red and therefore not gating anything.
+        # Only 1:1 pairs are credited; a 1→N fan-out remains growth.
+        key_move=lambda k: k.split("::", 1)[1],
         refuse_hint="A module re-exports ONLY what it DEFINES. Bind the names at their "
-                    "OWNER (a direct, NON-public `open`) in each consumer, or narrow "
-                    "this re-export with `using (…)`. A wholesale re-export copies the "
-                    "whole upstream API into every consumer's core.")
+        "OWNER (a direct, NON-public `open`) in each consumer, or narrow "
+        "this re-export with `using (…)`. A wholesale re-export copies the "
+        "whole upstream API into every consumer's core.",
+    )
 
 
 if __name__ == "__main__":

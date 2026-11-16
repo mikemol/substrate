@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """untethered_disjunct_advisory.py — UN-TETHERED ⊎-DISJUNCT ADVISORY (post-commit).
 
 THE PATTERN. A `⊎`-valued signature is VACUOUS when one disjunct does not mention
@@ -39,40 +41,57 @@ as a typechecked term — a refutation of each disjunct at a concrete index, the
 Neither existing gate covers this: tautology_advisory.py tests textual `X ≡ X`
 only; check_up_nonvacuity.sh greps only `Witness = λ _ _ → ⊤`.
 """
+
 import re, sys, glob, os
+from _agdatext import strip as _strip  # THE comment authority
 
 ALLOW = {  # verified-intentional asymmetric disjuncts (name → why)
 }
 
+
 def strip_comments(src):
     return "\n".join(re.sub(r"--.*$", "", ln) for ln in src.splitlines())
+
 
 def split_top(s, sep):
     out, depth, cur, i = [], 0, "", 0
     while i < len(s):
         c = s[i]
-        if c in "([{": depth += 1
-        elif c in ")]}": depth -= 1
+        if c in "([{":
+            depth += 1
+        elif c in ")]}":
+            depth -= 1
         if depth == 0 and s.startswith(sep, i):
-            out.append(cur); cur = ""; i += len(sep); continue
-        cur += c; i += 1
-    out.append(cur); return out
+            out.append(cur)
+            cur = ""
+            i += len(sep)
+            continue
+        cur += c
+        i += 1
+    out.append(cur)
+    return out
+
 
 def sigs_of(src):
     out, cur, name = [], None, None
     for ln in src.splitlines():
         m = re.match(r"^([a-zA-Z][\w'₂ᴬ→-]*)\s*:\s*(.*)$", ln)
         if m:
-            if cur is not None: out.append((name, cur))
+            if cur is not None:
+                out.append((name, cur))
             name, cur = m.group(1), m.group(2)
         elif cur is not None and ln.startswith(("  ", "\t")) and "=" not in ln:
             cur += " " + ln.strip()
         elif cur is not None:
-            out.append((name, cur)); cur = name = None
-    if cur is not None: out.append((name, cur))
+            out.append((name, cur))
+            cur = name = None
+    if cur is not None:
+        out.append((name, cur))
     return out
 
+
 IDENT = re.compile(r"[A-Za-z_][\w'₀-₉ᴬ-ᵿ⟦⟧-]*")
+
 
 def binders_of(ty):
     """Names bound in the telescope: the `x y` of every `(x y : T)` / `{x y : T}`."""
@@ -83,9 +102,11 @@ def binders_of(ty):
                 names.add(w)
     return names
 
+
 def mentions(disjunct, names):
     toks = set(IDENT.findall(disjunct))
     return names & toks
+
 
 def check(ty):
     """Return (disjuncts, mention-sets) if the ⊎-mention-sets are unequal, else None."""
@@ -100,6 +121,7 @@ def check(ty):
     if all(s == sets[0] for s in sets):
         return None
     return parts, sets
+
 
 quiet = "--quiet" in sys.argv
 paths = [a for a in sys.argv[1:] if not a.startswith("--")] or ["agda/Substrate"]
@@ -129,7 +151,9 @@ if not quiet:
             mark = " <-- mentions fewest" if i == small else ""
             print(f"      disjunct {i}: {p.strip()[:88]}")
             print(f"        mentions {sorted(s) if s else '{}'}{mark}")
-print(f"untethered-⊎ advisory: {len(hits)} asymmetric ⊎-signature(s) "
-      f"({len(ALLOW)} allowlisted). ADVISORY — never blocks; a real non-vacuity "
-      f"check is a refutation POLE shipped as a term.")
+print(
+    f"untethered-⊎ advisory: {len(hits)} asymmetric ⊎-signature(s) "
+    f"({len(ALLOW)} allowlisted). ADVISORY — never blocks; a real non-vacuity "
+    f"check is a refutation POLE shipped as a term."
+)
 sys.exit(0)

@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """synth_pyrig.py — ⟡pyrig-synth / -graph / -UP: Agda-core → python (the mirror of
 synth_agda_prototype). Read the TYPECHECKED core `PyAstRig.agdai` through the SHARED SPPF
 term-algebra interner (jea_agdai → the same Intern jea_pyalg uses for pyast), reconstruct the
@@ -24,14 +26,26 @@ living in SPPF.inside/OrientationRig, not in PyAstRig; the functor sees two symm
 leaves their algebra to the caller. Honest boundary, and it is INFORMATION (the functor cannot tell them
 apart; the semiring structure does).
 """
+
 import sys, os
+
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import jea_agdai as A
 import jea_pyalg as P
 
 DEFAULT_AGDAI = os.path.join(
-    os.path.dirname(os.path.abspath(__file__)), "..", "..",
-    "agda", "_build", "2.8.0", "agda", "Substrate", "WitnessTower", "Wedge", "PyAstRig.agdai")
+    os.path.dirname(os.path.abspath(__file__)),
+    "..",
+    "..",
+    "agda",
+    "_build",
+    "2.8.0",
+    "agda",
+    "Substrate",
+    "WitnessTower",
+    "Wedge",
+    "PyAstRig.agdai",
+)
 
 
 # ── DISCOVER: intern the .agdai into the shared SPPF term algebra ─────────────────────
@@ -51,12 +65,24 @@ def _module_agdai(main_agdai, def_qname):
 
 
 # ── graph helpers over the interned Agda core ────────────────────────────────────────
-def _op(I, i):  return I.nodes[i].op or ""
-def _ch(I, i):  return I.nodes[i].children
-def _is_qname(op): return bool(op) and "." in op
-def _clauses(I, root): return [c for c in _ch(I, root) if _op(I, c) == "Clause"]
+def _op(I, i):
+    return I.nodes[i].op or ""
+
+
+def _ch(I, i):
+    return I.nodes[i].children
+
+
+def _is_qname(op):
+    return bool(op) and "." in op
+
+
+def _clauses(I, root):
+    return [c for c in _ch(I, root) if _op(I, c) == "Clause"]
+
+
 def _pat_body(I, clause):
-    ch = _ch(I, clause)                       # Clause = [ …implicits…, PATTERN, BODY ]
+    ch = _ch(I, clause)  # Clause = [ …implicits…, PATTERN, BODY ]
     return (ch[-2], ch[-1]) if len(ch) >= 2 else (None, None)
 
 
@@ -87,13 +113,19 @@ def _subtree_qnames(I, root):
 
 
 def _is_proof(I, root):
-    return any(q.endswith("._≡_") or q.endswith("._≡_.refl") or q.endswith(".cong₂")
-               or q.endswith(".cong") or "≡" in q for q in _subtree_qnames(I, root))
+    return any(
+        q.endswith("._≡_")
+        or q.endswith("._≡_.refl")
+        or q.endswith(".cong₂")
+        or q.endswith(".cong")
+        or "≡" in q
+        for q in _subtree_qnames(I, root)
+    )
 
 
 # ── RECONSTRUCT the presentation from the definition graph (⟡pyrig-synth-UP) ─────────
 def reconstruct(I, res, agdai):
-    units = dict(res["units"])                          # full-qname -> root
+    units = dict(res["units"])  # full-qname -> root
     short = {n: n.split(".")[-1] for n in units}
 
     # 1. CALL GRAPH: each def -> the qnames it APPLIES in its clause bodies (calls, not mentions)
@@ -111,7 +143,7 @@ def reconstruct(I, res, agdai):
     #    recover F = {ctor: (arity, recursive-positions)} from its clauses.
     folds, functor = [], {}
     for name, root in units.items():
-        if _op(I, root) != "Defn" or name not in calls[name]:      # must be self-recursive
+        if _op(I, root) != "Defn" or name not in calls[name]:  # must be self-recursive
             continue
         ctor_cases, reconstructs, local = 0, False, {}
         for cl in _clauses(I, root):
@@ -120,11 +152,12 @@ def reconstruct(I, res, agdai):
                 continue
             ph, arity = _op(I, pat), len(_ch(I, pat))
             ctor_cases += 1
-            if _op(I, body) == ph:                                 # body rebuilds the constructor
+            if _op(I, body) == ph:  # body rebuilds the constructor
                 reconstructs = True
                 bch = _ch(I, body)
-                recpos = tuple(k for k in range(min(arity, len(bch)))
-                               if _subtree_has(I, bch[k], name))   # a field carrying a self-call = X
+                recpos = tuple(
+                    k for k in range(min(arity, len(bch))) if _subtree_has(I, bch[k], name)
+                )  # a field carrying a self-call = X
                 local[ph.split(".")[-1]] = (arity, recpos)
             else:
                 local.setdefault(ph.split(".")[-1], (arity, ()))
@@ -166,7 +199,7 @@ def reconstruct(I, res, agdai):
     ext = set()
     for name in units:
         if short[name] in evals:
-            ext |= {q for q in calls[name] if q not in units}       # external calls of the evaluator
+            ext |= {q for q in calls[name] if q not in units}  # external calls of the evaluator
     ctor_names = set(functor)
     for q in ext:
         p = _module_agdai(agdai, q)
@@ -190,7 +223,7 @@ def reconstruct(I, res, agdai):
                     got[cs] = "mul"
                 elif any(x.endswith(".+-monoid") for x in bq):
                     got[cs] = "add"
-            if len(got) >= 2:                                       # a genuine rig-fold assignment
+            if len(got) >= 2:  # a genuine rig-fold assignment
                 roles = got
                 break
         if roles:
@@ -208,7 +241,9 @@ def _pyname(c):
 
 def _summand(ctor, arity, recpos):
     x, a = len(recpos), arity - len(recpos)
-    parts = ([f"X^{x}" if x > 1 else "X"] if x else []) + ([f"A^{a}" if a > 1 else "A"] if a else [])
+    parts = ([f"X^{x}" if x > 1 else "X"] if x else []) + (
+        [f"A^{a}" if a > 1 else "A"] if a else []
+    )
     return f"{'·'.join(parts) or '1'} ({ctor})"
 
 
@@ -216,14 +251,18 @@ _RIGSYM = {"mul": "×", "add": "+"}
 
 
 def emit(agdai_path, functor, folds, comps, evals, roles, orbits):
-    order = sorted(functor.items(), key=lambda kv: (kv[1][0], kv[0]))     # by (arity, name)
+    order = sorted(functor.items(), key=lambda kv: (kv[1][0], kv[0]))  # by (arity, name)
+
     def _tag(c, ar):
         return f" [{_RIGSYM[roles[c]]}]" if c in roles and ar >= 1 else ""
+
     F = " + ".join(_summand(c, ar, rp) + _tag(c, ar) for c, (ar, rp) in order)
     L = []
     w = L.append
     w(f'"""GENERATED by synth_pyrig.py from {os.path.relpath(agdai_path)}.')
-    w("The rig category recovered from the definition graph as an initial F-algebra + catamorphism.")
+    w(
+        "The rig category recovered from the definition graph as an initial F-algebra + catamorphism."
+    )
     w(f"  polynomial functor  F(X) = {F}")
     w(f"  rig roles (recovered from inside's clauses: *-monoid⇒×, +-monoid⇒+): {roles}")
     w(f"  fold(s)/fmap        : {folds}")
@@ -232,7 +271,9 @@ def emit(agdai_path, functor, folds, comps, evals, roles, orbits):
     w('"""')
     w("from dataclasses import dataclass")
     w("")
-    w("# --- μF : the initial F-algebra (one class per constructor; arity from the clause patterns) ---")
+    w(
+        "# --- μF : the initial F-algebra (one class per constructor; arity from the clause patterns) ---"
+    )
     w("class SPPF: pass")
     for c, (ar, _rp) in order:
         py = _pyname(c)
@@ -247,14 +288,18 @@ def emit(agdai_path, functor, folds, comps, evals, roles, orbits):
                 w(f"    f{k}: object")
     w("")
     if folds:
-        w(f"# --- {folds[0]} = fmap : the functor's action on A (relabel A-fields, recurse at X-positions) ---")
+        w(
+            f"# --- {folds[0]} = fmap : the functor's action on A (relabel A-fields, recurse at X-positions) ---"
+        )
         w("def mapSPPF(f, t):")
         for c, (ar, rp) in order:
             py = _pyname(c)
             if ar == 0:
                 w(f"    if isinstance(t, {py}): return t")
             else:
-                args = ", ".join((f"mapSPPF(f, t.f{k})" if k in rp else f"f(t.f{k})") for k in range(ar))
+                args = ", ".join(
+                    (f"mapSPPF(f, t.f{k})" if k in rp else f"f(t.f{k})") for k in range(ar)
+                )
                 w(f"    if isinstance(t, {py}): return {py}({args})")
         w("    raise TypeError(t)")
         w("")
@@ -265,23 +310,33 @@ def emit(agdai_path, functor, folds, comps, evals, roles, orbits):
         w("")
     if orbits:
         _oname = "pyRecon" if "pyRecon" in orbits else orbits[0]
-        w(f"# --- {_oname} : the orbit COORDINATE — a point = an orbit representative reconstructed")
-        w("#     with a residue (the group element; in Agda a LehmerPath, decode'd to a permutation).")
+        w(
+            f"# --- {_oname} : the orbit COORDINATE — a point = an orbit representative reconstructed"
+        )
+        w(
+            "#     with a residue (the group element; in Agda a LehmerPath, decode'd to a permutation)."
+        )
         w("#     `a = recon(rep, residue)`. NB the FORGET direction (normalize: point → canonical")
-        w("#     orbit-rep = the interning key) is NOT modelled in PyAstRig — that is ⟡pyrig-normalizer,")
+        w(
+            "#     orbit-rep = the interning key) is NOT modelled in PyAstRig — that is ⟡pyrig-normalizer,"
+        )
         w("#     so this extrudes the coordinate + torsor, NOT a running orbit-intern.")
         w("def pyRecon(rep, residue):")
         w("    return act(residue, rep)")
         w("")
     if evals:
-        w(f"# --- cata : the UNIQUE F-algebra morphism out of μF (`alg` = constructor ↦ operation) ---")
+        w(
+            f"# --- cata : the UNIQUE F-algebra morphism out of μF (`alg` = constructor ↦ operation) ---"
+        )
         w("def cata(alg, t):")
         for c, (ar, rp) in order:
             py = _pyname(c)
             if ar == 0:
                 w(f"    if isinstance(t, {py}): return alg['{py}']")
             else:
-                args = ", ".join((f"cata(alg, t.f{k})" if k in rp else f"t.f{k}") for k in range(ar))
+                args = ", ".join(
+                    (f"cata(alg, t.f{k})" if k in rp else f"t.f{k}") for k in range(ar)
+                )
                 w(f"    if isinstance(t, {py}): return alg['{py}']({args})")
         w("    raise TypeError(t)")
         w("")
@@ -292,11 +347,11 @@ def emit(agdai_path, functor, folds, comps, evals, roles, orbits):
         items = []
         for c, (ar, rp) in order:
             py = _pyname(c)
-            if ar == 0:                              # the multiplicative unit (rig has no zero)
+            if ar == 0:  # the multiplicative unit (rig has no zero)
                 items.append(f"'{py}': semiring['one']")
-            elif ar == 1:                            # the generator: valued by `val`
+            elif ar == 1:  # the generator: valued by `val`
                 items.append(f"'{py}': val")
-            else:                                    # a binary product: its RECOVERED rig operation
+            else:  # a binary product: its RECOVERED rig operation
                 items.append(f"'{py}': semiring['{roles.get(c, 'mul')}']")
         w("    return cata({" + ", ".join(items) + "}, t)")
         w("")
@@ -306,7 +361,7 @@ def emit(agdai_path, functor, folds, comps, evals, roles, orbits):
 def emit_orbit_normalizer(agdai_main):
     # ⟡pyrig-synth-normalize: if the sibling normalizer module is present, extrude `normalize`
     # (the orbit interning KEY) so orbit-interning RUNS: intern(normalize(t)) interns orbits.
-    norm = agdai_main[:-len(".agdai")] + "Normalize.agdai"
+    norm = agdai_main[: -len(".agdai")] + "Normalize.agdai"
     if not os.path.exists(norm):
         return ""
     I, res = discover(norm)
@@ -321,13 +376,17 @@ def emit_orbit_normalizer(agdai_main):
         return cs
 
     # the LEAF-FOLD (positions): a self-recursive SPPF-fold whose clause bodies build a List.
-    has_leaf = any(_op(I, r) == "Defn" and (n in bodycalls(r))
-                   and any(".List" in q for q in bodycalls(r))
-                   for n, r in units.items())
+    has_leaf = any(
+        _op(I, r) == "Defn" and (n in bodycalls(r)) and any(".List" in q for q in bodycalls(r))
+        for n, r in units.items()
+    )
     # normalize: a non-recursive def whose body CALLS mapSPPF (relabel by the rank of the positions).
-    has_norm = any(_op(I, r) == "Defn" and (n not in bodycalls(r))
-                   and any(q.endswith(".mapSPPF") for q in bodycalls(r))
-                   for n, r in units.items())
+    has_norm = any(
+        _op(I, r) == "Defn"
+        and (n not in bodycalls(r))
+        and any(q.endswith(".mapSPPF") for q in bodycalls(r))
+        for n, r in units.items()
+    )
     if not (has_leaf and has_norm):
         return ""
     L = []
@@ -336,13 +395,17 @@ def emit_orbit_normalizer(agdai_main):
     w("# === ORBIT INTERNING (⟡pyrig-synth-normalize) — extruded from PyAstRigNormalize.agdai ===")
     w("# positions: the leaf-fold, recognised as a cata into List (gen↦[g], one↦[], ⊗/⊕↦append).")
     w("def positions(t):")
-    w("    return cata({'gen': (lambda g: [g]), 'one': [], "
-      "'otimes': (lambda a, b: a + b), 'oplus': (lambda a, b: a + b)}, t)")
+    w(
+        "    return cata({'gen': (lambda g: [g]), 'one': [], "
+        "'otimes': (lambda a, b: a + b), 'oplus': (lambda a, b: a + b)}, t)"
+    )
     w("# rank: first-appearance index (Agda: [] ↦ 0; x∷xs ↦ 0 if x≟y else suc(rank xs y)).")
     w("def rank(xs, y):")
     w("    return xs.index(y) if y in xs else len(xs)")
     w("# normalize: the orbit KEY = mapSPPF (rank (positions t)) t. PROVEN orbit-invariant in Agda")
-    w("# (normalize-orbit-inv: normalize(act σ t) == normalize(t)), so intern(normalize(t)) interns ORBITS.")
+    w(
+        "# (normalize-orbit-inv: normalize(act σ t) == normalize(t)), so intern(normalize(t)) interns ORBITS."
+    )
     w("def normalize(t):")
     w("    ps = positions(t)")
     w("    return mapSPPF(lambda i: rank(ps, i), t)")
@@ -364,29 +427,39 @@ def demo(src):
     t = {0: 1, 1: 0, 2: 2}
     st = {i: s[t[i]] for i in range(3)}
     val = {0: 2, 1: 3, 2: 5}
-    N = {"add": (lambda a, b: a + b), "mul": (lambda a, b: a * b), "one": 1}   # the ℕ semiring
+    N = {"add": (lambda a, b: a + b), "mul": (lambda a, b: a * b), "one": 1}  # the ℕ semiring
     print("demo: reconstructed rig category runs — the Agda-proved laws, in python:")
     print(f"  act-id    act(id,x) == x                        -> {act(idp, spine) == spine}")
-    print(f"  act-∘     act(s∘t,x) == act(s, act(t,x))        -> {act(st, spine) == act(s, act(t, spine))}")
+    print(
+        f"  act-∘     act(s∘t,x) == act(s, act(t,x))        -> {act(st, spine) == act(s, act(t, spine))}"
+    )
     lhs = pyEval(N, (lambda i: val[i]), act(s, spine))
-    rhs = pyEval(N, (lambda i: val[s[i]]), spine)                # valuation v∘s
+    rhs = pyEval(N, (lambda i: val[s[i]]), spine)  # valuation v∘s
     print(f"  equivar   pyEval(v, act s x) == pyEval(v∘s, x)  -> {lhs == rhs}   ({lhs}=={rhs})")
     print(f"  torsor    s≠t ⇒ act s spine ≠ act t spine       -> {act(s, spine) != act(t, spine)}")
     # the ×/+ roles are RECOVERED, so ⊗ folds to product, ⊕ to sum — check on a mixed term:
-    mixed = otimes(gen(0), oplus(gen(1), gen(2)))               # 2 × (3 + 5) = 16
-    print(f"  rig-roles ⊗↦× ⊕↦+ recovered: 2×(3+5) = {pyEval(N, (lambda i: val[i]), mixed)}  (==16)")
+    mixed = otimes(gen(0), oplus(gen(1), gen(2)))  # 2 × (3 + 5) = 16
+    print(
+        f"  rig-roles ⊗↦× ⊕↦+ recovered: 2×(3+5) = {pyEval(N, (lambda i: val[i]), mixed)}  (==16)"
+    )
     if "pyRecon" in ns:
         pyRecon = ns["pyRecon"]
-        print(f"  orbit-coord pyRecon(rep,id)==rep -> {pyRecon(spine, idp) == spine}; "
-              f"distinct residues → distinct points -> {pyRecon(spine, s) != pyRecon(spine, t)}")
+        print(
+            f"  orbit-coord pyRecon(rep,id)==rep -> {pyRecon(spine, idp) == spine}; "
+            f"distinct residues → distinct points -> {pyRecon(spine, s) != pyRecon(spine, t)}"
+        )
     if "normalize" in ns:
         normalize = ns["normalize"]
-        moved = act(s, spine)                          # same orbit as spine (a position permutation)
-        other = otimes(gen(0), gen(1))                 # a different structure ⇒ a different orbit
-        print(f"  ORBIT-INTERN normalize(spine)==normalize(act s spine) -> "
-              f"{normalize(spine) == normalize(moved)}  (proven: normalize-orbit-inv)")
-        print(f"  distinct orbit → distinct key -> {normalize(spine) != normalize(other)}  "
-              f"⇒ intern(normalize(t)) interns ORBITS, not points")
+        moved = act(s, spine)  # same orbit as spine (a position permutation)
+        other = otimes(gen(0), gen(1))  # a different structure ⇒ a different orbit
+        print(
+            f"  ORBIT-INTERN normalize(spine)==normalize(act s spine) -> "
+            f"{normalize(spine) == normalize(moved)}  (proven: normalize-orbit-inv)"
+        )
+        print(
+            f"  distinct orbit → distinct key -> {normalize(spine) != normalize(other)}  "
+            f"⇒ intern(normalize(t)) interns ORBITS, not points"
+        )
 
 
 def main():
@@ -400,8 +473,10 @@ def main():
     if out:
         with open(out, "w") as f:
             f.write(src)
-        print(f"synth_pyrig: wrote {out}  (F={functor}, folds {folds}, comps {comps}, evals {evals}, "
-              f"roles {roles}, orbits {orbits})")
+        print(
+            f"synth_pyrig: wrote {out}  (F={functor}, folds {folds}, comps {comps}, evals {evals}, "
+            f"roles {roles}, orbits {orbits})"
+        )
     else:
         sys.stdout.write(src)
     if "--demo" in sys.argv:

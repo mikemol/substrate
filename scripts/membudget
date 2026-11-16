@@ -6,132 +6,337 @@
 # within a global budget — and is RECURSION-AWARE so a membudget-launched job may itself
 # call membudget without deadlock or double-counting:
 #
-#   * TOP-LEVEL run (no MEMBUDGET_PARENT): leases <MB> from the GLOBAL budget and launches
-#     the command in a fresh `systemd-run --scope` with MemoryMax=<MB> (one cgroup for the
-#     whole subtree).
-#   * NESTED run (MEMBUDGET_PARENT set): SUBALLOCATES <MB> from its PARENT's reservation
-#     (not the global pool the ancestor already consumed) and runs the command IN-SCOPE
-#     (no new cgroup — nested `systemd-run --scope` would make a SIBLING cgroup, escaping
-#     the parent's cap; staying in-scope keeps the top-level MemoryMax bounding the subtree).
-#   * REFUSE (exit 3) if the relevant budget (global or parent) can't cover the request —
-#     so over-subscription is blocked, not OOM'd. A child needed by its parent draws from
-#     the parent's reservation (sized for the subtree), so it never deadlocks on the global
-#     pool. Leases release on exit + cascade-GC when an owner (or its parent) dies.
+# ⚑ CHILD ALLOCATION IS DISJOINT FROM PARENT ALLOCATION (user, 2026-08-05). EVERY lease —
+#   top-level or nested — leases <MB> from the GLOBAL budget and runs under a `systemd-run
+#   --scope` with its OWN MemoryMax=<MB>. Nesting affects PARENTAGE (cascade-GC, deadlock
+#   detection) and nothing else: not the pool, not the cap, not the retry ladder.
+#
+#   WHY, and it is a statement about GRADE, not about size: a lease is not a slice of a
+#   caller's allowance, it is a statement of how much THIS unit of work may cost. The local
+#   cap bounds LOCAL complexity. A recursive derive is not more of the same work — it is work
+#   at another grade — so charging it to the caller's local bound conflates the two. That is
+#   what the previous design did (suballocate from the parent's mb, no cgroup, no retry), and
+#   why a 192MB suite lease read `unfit` when it contained a derive it was never sized for.
+#
+#   * REFUSE (exit 3) if the GLOBAL budget can't cover the request — over-subscription is
+#     blocked, not OOM'd. Leases release on exit + cascade-GC when an owner (or its parent) dies.
+#   * A child that does not fit BLOCKS on the global pool exactly like any other lease — that
+#     is the semaphore self-throttling, not a fault. If the tree's total demand exceeds
+#     TOTAL_MB it is over-subscribed and `run` says so (BLOCKED with need/free/total; REFUSED
+#     if it can never fit). MEMBUDGET_NOBLOCK / MEMBUDGET_TIMEOUT fail fast instead of waiting.
+#   * ⚑ MEASURED (`membudget verify`, 2026-08-05): a nested `systemd-run --user --scope` is a
+#     SIBLING under `app.slice`, NOT a child of the caller's scope — both land at
+#     `app.slice/run-p*.scope`. So the ancestor's MemoryMax does NOT bound the subtree, and
+#     the LEDGER is the only thing holding the sum to TOTAL_MB. That is correct for disjoint
+#     allocation (a child bounded by its caller's cap would not be disjoint), and it is the
+#     inverse of what this header asserted before: the retired note said nesting stays
+#     in-scope BECAUSE a sibling would escape the cap. The escape is real; treating it as
+#     disqualifying was the error. ⚑ Do not re-derive this from the comment — run `verify`.
 #
 # Usage:
-#   membudget init [TOTAL_MB]              # create/reset ledger (default 70% RAM)
+#   membudget init [TOTAL_MB]              # create the ledger if absent (default: min(70% RAM, 8192)); never overwrites
+#   membudget init --reset TOTAL_MB        # resize TOTAL_MB in place, keeping every live lease
 #   membudget status                       # TOTAL / top-level-leased / global-free + lease tree
 #   membudget run <MB> <label> -- <cmd...> # lease MB (global or sub), run, release
 set -euo pipefail
 
 SELF="$(realpath "$0")"; SELFDIR="$(dirname "$SELF")"
 case ":$PATH:" in *":$SELFDIR:"*) ;; *) export PATH="$SELFDIR:$PATH";; esac   # children can call `membudget`
+# ⚑⚑⚑ RESOLVED ABSOLUTE, NOT BARE `python3` (2026-10-02, caught live while attempting the
+# label_lease swap to mtools' port). `python3 -m substrate.label_lease` below used to rely on an
+# ACCIDENT: bare python3 resolves `substrate.*` only when invoked with cwd AT THE REPO ROOT, where
+# `substrate/` is a real subdirectory on sys.path[0]. Measured: the SAME call fails with
+# ModuleNotFoundError when cwd is `agda/` (exactly where `make -C agda -j` runs it from), and the
+# failure is SWALLOWED by the `2>/dev/null || echo "$def"` fallback — so the autobudget has been
+# silently falling back to the bare default whenever a build invoked it from inside agda/, with
+# nothing to say so. Falls back to bare `python3` when no venv sits at this relative path (a
+# hypothetical adopter without this exact layout), which is the status quo for that case.
+PYVENV="$SELFDIR/../.venv/bin/python3"
+[ -x "$PYVENV" ] || PYVENV="python3"
+# ⚑ THE LEDGER'S LOCATION NEEDS $MEMBUDGET_FILE OR $HOME (summit, 2026-09-23). With neither, there is
+# no ledger to read — refused NAMED, not as bash's `HOME: unbound variable` under `set -u`, which read
+# like a crash in the tool. An empty MEMBUDGET_FILE counts as unset, matching mtools' fence.admit.
+if [ -z "${MEMBUDGET_FILE:-}" ] && [ -z "${HOME:-}" ]; then
+  echo "membudget: REFUSED — no ledger location: set MEMBUDGET_FILE (or HOME for the default ~/.cache/membudget/budget.cotype)" >&2
+  exit 4
+fi
 FILE="${MEMBUDGET_FILE:-$HOME/.cache/membudget/budget.cotype}"
-LOCK="$FILE.lock"
 mkdir -p "$(dirname "$FILE")"
-LOCK_TIMEOUT="${MEMBUDGET_LOCK_TIMEOUT:-10}"
 
-# ───────────────────────── LOCK KERNEL — disruption-proof BY CONSTRUCTION ─────────────────────────
-# The mutex must survive ANY way a holder can vanish (SIGKILL, the cgroup OOM-killer, session teardown,
-# a crash) AND must never let one waiter block forever. Two invariants, enforced here so no other code
-# can violate them:
+# ──────────────── THE LEDGER LIVES IN ITS OWN FILE (⟡ledger-parametric) ─────────────────
+# ⚑⚑⚑ AND THE GATE'S OWN ARGUMENT IS WHY. This script carried 13 shellcheck findings across 858
+# lines; the gate's unit is the FILE with no partial credit, so every individual fix passed and
+# every refusal reverted the whole thing — partial progress could not accumulate, and the only
+# landing move was one write reconstructing the build's memory governor to change thirteen lines.
+# **That is the per-file gate saying the file does too much**, and the answer is the one
+# `items.py` got: split until the unit of repair is the unit of concern.
 #
-#  1. THE LOCK FD NEVER CROSSES A FORK. with_lock OPENS the fd and unlock CLOSES it, so the descriptor
-#     exists only inside a critical section — which never forks (pure file-IO). No child (agda, the
-#     systemd scope, anything) can inherit it, so the KERNEL releases the lock the instant the holder's
-#     last fd closes, i.e. the moment it dies, by any signal. There is no userspace cleanup to be skipped
-#     because there is none — death-release is the kernel's job and we never defeat it by leaking the fd.
-#     (The starvation bug was exactly this: a persistent fd was inherited by the long-lived child, so a
-#     killed holder's lock stayed held by the child's copy → cross-repo deadlock.)
-#  2. ACQUIRE IS BOUNDED. flock -w "$LOCK_TIMEOUT" never blocks forever. Because (1) makes a DEAD holder
-#     auto-release, a timeout can only mean a LIVE, wedged holder (e.g. SIGSTOP) — with_lock returns
-#     non-zero and the caller retries/aborts; it never hangs the machine.
+# ⚑⚑ THE LOCK STATE WENT WITH ITS CONSUMERS, WHICH THE FIRST CUT GOT WRONG. It left `LOCK` and
+# `LOCK_TIMEOUT` here and GAINED two findings rather than losing any: they were read at exactly
+# two lines, both inside `with_lock`, so once that moved out shellcheck correctly called them
+# unused. **Extraction that leaves state behind moves the coupling instead of cutting it.**
 #
-# Critical sections must stay pure file-IO (never fork/sleep/wait while holding the lock) so the hold is
-# microseconds and (2) effectively never fires in normal operation.
-with_lock() {  # → 0 holding the lock (fd in $LKFD); → 1 on timeout, with no fd left open
-  exec {LKFD}>"$LOCK"
-  flock -w "$LOCK_TIMEOUT" "$LKFD" && return 0
-  exec {LKFD}>&-; return 1
-}
-unlock() { flock -u "$LKFD" 2>/dev/null; { exec {LKFD}>&-; } 2>/dev/null; return 0; }   # brace-group the exec:
-# a bare `exec {LKFD}>&- 2>/dev/null` makes the 2>/dev/null PERMANENT (exec+redirect, no command) → it
-# silently swallowed the whole script's stderr (own messages, child stderr, tracebacks) for the rest of the
-# run. The brace group keeps the fd-close but scopes the 2>/dev/null to the group (stderr preserved).
-
-# Liveness, PID-REUSE-PROOF: a lease owner is "pid:starttime" (field 22 of /proc/pid/stat). A recycled
-# PID has a different starttime, so a dead owner's lease can never be kept alive by an unrelated process.
-_starttime() { awk '{print $22}' "/proc/$1/stat" 2>/dev/null; }
-_alive() { local pid=${1%%:*} st=${1#*:}; kill -0 "$pid" 2>/dev/null && [ "$(_starttime "$pid")" = "$st" ]; }
-_self_owner() { printf '%s:%s' "$$" "$(_starttime "$$")"; }
-
-# Target top-level budget: 8 GiB, but never exceed 70% of RAM (safe on smaller boxes).
-default_total() { awk '/MemTotal/{p=int($2*7/10/1024); print (p<8192)?p:8192}' /proc/meminfo; }
-# ensure(): create the ledger if absent. MUST run UNDER the lock (every caller acquires it first) — the
-# create is then serialised, so a cold `make -j` first wave cannot race concurrent `cat >` into a
-# truncated/corrupt ledger (a half-written TOTAL_MB read as an empty budget).
-ensure() { [ -f "$FILE" ] || cat > "$FILE" <<EOF
-# membudget cotype — recursion-aware concurrent memory-budget semaphore (scripts/membudget).
-# Global free = TOTAL_MB - Σ top-level LEASE mb; a nested lease draws from its PARENT's mb.
-# LEASE <id> <mb> <pid:starttime> <epoch> <parent|-> <label>
-TOTAL_MB $(default_total)
-EOF
-}
-
-gc() { # drop leases whose owner pid died, then cascade-drop leases whose parent vanished
-  local tmp chg=1
-  while [ "$chg" = 1 ]; do
-    chg=0; tmp=$(mktemp "$FILE.gc.XXXXXX")   # SAME dir as $FILE → mv is an atomic rename (never a cross-fs
-                                             # copy that can partially fail under /tmp pressure and strand gc)
-    while IFS= read -r line; do
-      case "$line" in
-        LEASE\ *) set -- $line   # $2=id $4=pid:starttime $6=parent
-          if ! _alive "$4"; then chg=1; continue; fi                                  # dead owner (or reused PID)
-          if [ "$6" != "-" ] && ! grep -q "^LEASE $6 " "$FILE"; then chg=1; continue; fi  # cascade: parent vanished
-          printf '%s\n' "$line" >> "$tmp" ;;
-        *) printf '%s\n' "$line" >> "$tmp" ;;
-      esac
-    done < "$FILE"
-    # rewrite ONLY when this pass actually dropped a lease. Rewriting unconditionally turned every gc
-    # into a ledger-change event → woke every blocked waiter → each ran gc → rewrote again: a self-
-    # feeding churn storm that saturated the GLOBAL lock and starved other repos. No drop → no rewrite.
-    if [ "$chg" = 1 ]; then mv "$tmp" "$FILE"; else rm -f "$tmp"; fi
-  done
-}
-read_total()    { awk '$1=="TOTAL_MB"{print $2; exit}' "$FILE"; }
-budget_of()     { [ "$1" = "-" ] && read_total || awk -v i="$1" '$1=="LEASE"&&$2==i{print $3; exit}' "$FILE"; }
-claimed_under() { awk -v p="$1" '$1=="LEASE"&&$6==p{s+=$3} END{print s+0}' "$FILE"; }
-_snapshot() {   # ONE awk pass → "<budget> <used>" for $parent (budget empty if the parent vanished). Halves
-                # the fork count in the hot poll loop AND shortens the under-lock critical section.
+# ⚑ WHAT THE LEDGER NEEDS FROM THIS SCOPE IS `$FILE`, and it ASSERTS that rather than assuming it.
+# The lock path and the timeout it derives itself, because the lock IS `$FILE.lock` — a
+# derivation, not a parameter, and threading it through call sites would state a dependency that
+# is not real.
+#
+# ⚑ SOURCED, NOT EXECED: the ledger defines functions and runs nothing, so this is inert beyond
+# the definitions. It provides: with_lock unlock _starttime _alive _self_owner default_total
+# ensure _lease_fields gc read_total budget_of claimed_under _any_dead release.
+# shellcheck source=membudget-ledger
+. "$SELFDIR/membudget-ledger"
+_snapshot() {   # ONE awk pass → "<budget> <used>" against the GLOBAL pool. Halves the fork count in the
+                # hot poll loop AND shortens the under-lock critical section.
+                #
+                # ⚑ DISJOINT CHILD ALLOCATION (user, 2026-08-05: *"I want the child resource allocation
+                # disjoint from the parent resource allocation"*).  This function used to answer a
+                # DIFFERENT question for a nested lease:
+                #
+                #     $1=="LEASE" && $2==p  {pmb=$3}        # budget := the parent's own mb
+                #     $1=="LEASE" && $6==p  {used+=$3}      # used   := its direct children
+                #     END { if (p=="-") b=tot; else b=pmb }
+                #
+                # i.e. a child was charged against the CALLER'S LOCAL RESERVATION.  The local cap exists
+                # to bound LOCAL complexity; a recursive derive is work at another GRADE, and charging
+                # it to the caller's bound conflates the two — which is why `worklist_gate`'s suite read
+                # `unfit` at a 192MB lease that was never sized to cover a derive.
+                #
+                # Now every lease — top-level or nested — draws from TOTAL_MB and sums EVERY live lease
+                # as used.  `$1` is retained (callers still pass $parent) so the parent-liveness refusal
+                # at the call sites keeps working: an empty budget still means "the ledger has no
+                # TOTAL_MB", and the caller distinguishes the vanished-parent case separately.
+                #
+                # A child that does not fit BLOCKS on the global pool like every other lease — which is
+                # the semaphore self-throttling, exactly as `make -j` relies on. There is ONE pool, so
+                # there is no second holder to deadlock against. (A `_deadlock_risk` warning shipped
+                # here for about an hour on the theory that a waiting parent pins its child's memory;
+                # retired same-day — see the note above `_parent_alive`. It fired on the normal case.)
+  # ⚑ TWO TOTALS → `DUP`, which the caller refuses by name (see read_total in membudget-ledger).
   awk -v p="$1" '
-    $1=="TOTAL_MB"            {tot=$2; haveTot=1}
-    $1=="LEASE" && $2==p      {pmb=$3; havePmb=1}
-    $1=="LEASE" && $6==p      {used+=$3}
-    END { if (p=="-") {b=tot; haveB=haveTot} else {b=pmb; haveB=havePmb}
-          if (haveB) printf "%s %s\n", b, used+0; else printf " %s\n", used+0 }' "$FILE"
+    $1=="TOTAL_MB"            {tot=$2; nTot++}
+    $1=="LEASE"               {used+=$3}
+    END { if (nTot>1) printf "DUP %s\n", used+0
+          else if (nTot==1) printf "%s %s\n", tot, used+0
+          else printf " %s\n", used+0 }' "$FILE"
 }
-_any_dead() {   # lock-free liveness probe: succeed (0) if ANY lease's owner pid is dead. The expensive
-                # kill-0 scan must stay OFF the global lock — a blocked waiter only takes the lock for gc
-                # when there is actually something to reap, else the herd's scans re-saturate the lock.
-  local o
-  for o in $(awk '$1=="LEASE"{print $4}' "$FILE" 2>/dev/null); do
-    _alive "$o" || return 0
+_parent_alive() { # is lease $1 still in the ledger? ("-" = no parent = trivially fine)
+  [ "$1" = "-" ] && return 0
+  grep -q "^LEASE $1 " "$FILE" 2>/dev/null
+}
+# ⚑ RETIRED: `_deadlock_risk` (added and removed 2026-08-05). It walked the lease chain and warned
+#   when an ancestor held a lease big enough to cover the request, on the theory that a parent
+#   waiting on its child pins the memory the child needs.
+#
+#   THAT IS NOT A DEADLOCK, IT IS THE SEMAPHORE. Under disjoint allocation there is exactly ONE
+#   pool. A child waiting on it is waiting on the same global pool as every other lease — that is
+#   `make -j` self-throttling, the mechanism working as designed, not a cycle. "Ancestor" in the
+#   dependency sense does not name a distinct resource holder here; the global pool is the only
+#   holder, and it is not waiting on anything.
+#
+#   The witness I mistook for the bug: TOTAL=512, outer 384, inner 256. Nothing is deadlocked —
+#   the TREE WANTS 640 OF 512. That is an over-subscribed budget, which `run` already reports
+#   precisely (BLOCKED with need/free/total, then REFUSED-impossible if it can never fit).
+#
+#   Retained as a comment because the reasoning error is the reusable part: I generalised
+#   "parent-charging made waiting impossible" into "so waiting must now be dangerous", and built
+#   a detector for a cycle that the single-pool design cannot express. A warning that fires on
+#   the normal case trains people to ignore it.
+_probe() {  # `membudget probe` — the leaf of `verify`: report THIS process's lease context.
+            # Exists because the question "did my child get its own cgroup, and what pool was it
+            # charged against" was being asked with an inline `sh -c` that reads the ledger and
+            # /proc/self/cgroup. That judgement belongs in the program: an inline probe dies with the
+            # shell that ran it, so the next person re-derives it — differently.
+  printf 'parent=%s\n' "${MEMBUDGET_PARENT:--}"
+  printf 'cgroup=%s\n' "$(awk -F: 'NR==1{print $3}' /proc/self/cgroup 2>/dev/null)"
+  printf 'ledger_leases=%s\n' "$(awk '$1=="LEASE"{n++} END{print n+0}' "$FILE")"
+  printf 'ledger_used_mb=%s\n' "$(awk '$1=="LEASE"{s+=$3} END{print s+0}' "$FILE")"
+  printf 'ledger_total_mb=%s\n' "$(read_total)"
+}
+cmd_verify_ceiling() { # ⚑⚑ THE CEILING CONTRACT, AS AN EXECUTABLE ASSERTION — the guard for the
+                       # defect a downstream consumer sat in, invisibly, for weeks.
+                       #
+                       # THREE PROPERTIES, each of which was FALSE before 2026-08-14:
+                       #   1. an explicit AGDA_MB_DEFAULT above the ceiling is HONOURED, not clamped
+                       #      — mat260 set 1024, got 384 the moment history existed, and the
+                       #      workaround appeared to work because the no-history path returns early;
+                       #   2. clamping is LOUD — a recorded peak above the ceiling means the lease is
+                       #      knowingly below the measured need, i.e. the module is expected to
+                       #      OOM-kill into a wall.  That state must never be silent again;
+                       #   3. the number still goes to STDOUT and the warning to STDERR — callers
+                       #      read the lease from stdout, so a diagnostic there would corrupt it.
+                       #
+                       # ⚑ Runs entirely in a temp dir against a synthetic ledger.  No systemd, no
+                       # lease, no global budget — this is arithmetic over a TSV and must stay cheap
+                       # enough that nobody is tempted to skip it.
+  local d rc=0 out err
+  d="$(mktemp -d)" || { echo "verify-ceiling: mktemp failed" >&2; return 1; }
+  printf 'Heavy.agda\t12.0\t600\n' > "$d/.agda-times.tsv"
+
+  # (1) explicit request above the ceiling is honoured
+  out="$(AGDA_MB_DEFAULT=1024 AGDA_MB_MAX=384 _auto_mb "$d/Heavy.agda" 2>/dev/null)"
+  if [ "$out" -lt 600 ] 2>/dev/null; then
+    echo "verify-ceiling: FAIL(1) peak=600 AGDA_MB_DEFAULT=1024 -> lease $out; an explicit request" \
+         "above the ceiling was clamped, which is the mat260 defect" >&2
+    rc=1
+  else
+    echo "verify-ceiling: ok(1) explicit 1024 honoured over a 384 ceiling (lease $out >= peak 600)"
+  fi
+
+  # (2) clamping is loud, and (3) the warning is on stderr while the number is on stdout
+  err="$(AGDA_MB_MAX=384 AGDA_MB_DEFAULT=192 _auto_mb "$d/Heavy.agda" 2>&1 >/dev/null)"
+  out="$(AGDA_MB_MAX=384 AGDA_MB_DEFAULT=192 _auto_mb "$d/Heavy.agda" 2>/dev/null)"
+  case "$err" in
+    *"BELOW the measured need"*)
+      echo "verify-ceiling: ok(2) a peak above the ceiling warns on stderr" ;;
+    *)
+      echo "verify-ceiling: FAIL(2) peak=600 ceiling=384 clamped SILENTLY (stderr: '${err:-<empty>}')" >&2
+      rc=1 ;;
+  esac
+  case "$out" in
+    384) echo "verify-ceiling: ok(3) stdout carries only the lease ($out)" ;;
+    *)   echo "verify-ceiling: FAIL(3) stdout was '$out', expected the bare lease 384" >&2; rc=1 ;;
+  esac
+
+  rm -rf "$d"
+  [ "$rc" = 0 ] && echo "verify-ceiling: PASS (3 of 3)"
+  return "$rc"
+}
+
+cmd_verify() { # ⚑ THE DISJOINTNESS CONTRACT, AS AN EXECUTABLE ASSERTION.
+               # Nests a real lease inside a real lease and checks the three properties that define
+               # "child allocation disjoint from parent allocation":
+               #   1. the child is CHARGED GLOBALLY  — tree used == outer+inner, not outer alone
+               #   2. the child has its OWN CGROUP    — inner cgroup path != outer cgroup path
+               # and REPORTS (does not assert) whether the inner scope is nested beneath the outer.
+               # ⚑ MEASURED HERE: it is NOT — systemd makes it a SIBLING under app.slice, so the
+               # ancestor's MemoryMax does not bound the subtree and the LEDGER is the sole enforcer
+               # of the global sum. That is what disjoint means; it is reported so the property is
+               # visible rather than assumed, in EITHER direction. I was one edit away from asserting
+               # the opposite from an inherited comment — which is how the original claim survived.
+  # ⚑ THE OUTER LEASE MUST BE A REAL LEASE. My first cut took `outer_cg` from /proc/self/cgroup of
+  # THIS process and then ran one nested lease — but `verify` is invoked from a plain shell, so the
+  # "outer" cgroup was the TERMINAL's and the "inner" lease was itself TOP. It printed a green
+  # own-cgroup result that asserted nothing about nesting, and flagged nested-beneath against a
+  # comparison that was never meaningful. A fixture that does not reproduce the shape under test
+  # cannot witness it — so re-enter through `run` twice and read BOTH cgroups from probes.
+  local out inner_cg outer_cg used tot rc=0
+  if [ "${MEMBUDGET_PARENT:--}" = "-" ]; then
+    exec "$SELF" run "$(( ${1:-256} * 2 ))" verify-outer -- "$SELF" verify "${1:-256}"
+  fi
+  outer_cg="$(awk -F: 'NR==1{print $3}' /proc/self/cgroup 2>/dev/null)"
+  out=$("$SELF" run "${1:-256}" verify-inner -- "$SELF" probe) || rc=$?
+  [ "$rc" = 0 ] || { printf '%s\n' "$out" >&2; echo "membudget: verify FAILED — nested run exited $rc" >&2; return 1; }
+  inner_cg=$(printf '%s\n' "$out" | awk -F= '$1=="cgroup"{print $2}')
+  used=$(printf '%s\n' "$out" | awk -F= '$1=="ledger_used_mb"{print $2}')
+  tot=$(printf '%s\n'  "$out" | awk -F= '$1=="ledger_total_mb"{print $2}')
+  printf 'outer cgroup : %s\n' "${outer_cg:-<none>}"
+  printf 'inner cgroup : %s\n' "${inner_cg:-<none>}"
+  printf 'while nested : used=%sMB of %sMB (global)\n' "$used" "$tot"
+  local ok=1
+  if [ "${inner_cg:-}" = "${outer_cg:-}" ]; then
+    echo "  ✗ own-cgroup: inner ran in the OUTER scope — containment is NOT disjoint" >&2; ok=0
+  else
+    echo "  ✓ own-cgroup: inner has a scope distinct from the caller's"
+  fi
+  # REPORTED, NOT ASSERTED — either answer is consistent with disjoint allocation, and which one
+  # holds is a fact about the local systemd, not about this script. It decides only WHO enforces
+  # the sum: the ancestor's cgroup as well, or the ledger alone.
+  case "${inner_cg:-}" in
+    "${outer_cg:-}"/*) echo "  · nesting: inner is BENEATH outer — the ancestor's MemoryMax also bounds the subtree" ;;
+    *) echo "  · nesting: inner is a SIBLING of outer (systemd puts both under app.slice), so the ancestor's MemoryMax does NOT bound it — the ledger alone holds the tree to TOTAL_MB" ;;
+  esac
+  # The global sum is now the load-bearing invariant, so CHECK it rather than trusting the report.
+  if [ -n "$used" ] && [ -n "$tot" ] && [ "$used" -gt "$tot" ]; then
+    echo "  ✗ global-sum: ${used}MB leased exceeds TOTAL_MB=${tot}MB — over-subscription" >&2; ok=0
+  else
+    echo "  ✓ global-sum: ${used}MB of ${tot}MB, both leases counted against the global pool"
+  fi
+  [ "$ok" = 1 ] && echo "membudget: verify OK — child allocation is disjoint from parent allocation"
+  [ "$ok" = 1 ]
+}
+
+# ⚑⚑ `init` NEVER OVERWRITES; `init --reset N` RESIZES IN PLACE (agreed with mtools' fence.admit,
+# 2026-09-22). This used to `rm -f` the ledger and recreate it — measured by mtools' cross-client
+# audit to WIPE A LIVE LEASE (the job kept running uncounted, over-subscribing the pool) and to open
+# a window with no TOTAL_MB in which a concurrent client exits 4. A census of ~/github found no code
+# calling `init` and no caller relying on the wipe. So:
+#   init [N]          create a missing ledger (or add a total to one with none); otherwise report
+#                     and change nothing — a second `init` is harmless.
+#   init --reset N    rewrite TOTAL_MB to N under the lock, atomically (temp + rename), keeping
+#                     every live lease. Refuses a ledger with two totals rather than "repairing" it.
+_valid_mb() { case "$1" in ''|*[!0-9]*|0) return 1 ;; *) return 0 ;; esac; }
+_set_total() {   # UNDER the lock: replace the single TOTAL_MB line, or append one when there is none
+  local tmp="$FILE.tmp.$$"
+  awk -v n="$1" '$1=="TOTAL_MB"{print "TOTAL_MB " n; seen=1; next} {print} END{if(!seen) print "TOTAL_MB " n}' "$FILE" > "$tmp" && mv "$tmp" "$FILE"
+}
+# ⚑ UNIT, PORTED FROM mtools' mikemol-membudget (⟡membudget-unit, W42, 2026-10-02): `init --unit
+# WORD` declares what TOTAL counts; a ledger with no UNIT line counts MB, unchanged. Same awk
+# `{print}` pass-through shape as `_set_total`, so every other line (including a UNIT line this
+# does NOT touch when called to set the total, and vice versa) survives untouched.
+_set_unit() {   # UNDER the lock: replace the single UNIT line, or append one when there is none
+  local tmp="$FILE.tmp.$$"
+  awk -v u="$1" '$1=="UNIT"{print "UNIT " u; seen=1; next} {print} END{if(!seen) print "UNIT " u}' "$FILE" > "$tmp" && mv "$tmp" "$FILE"
+}
+# _unit_operand <argv...>: echo "WORD rest..." when --unit WORD is present (removed from rest),
+# else echo "- rest...". A unit is one word; a missing or empty operand after --unit is a usage
+# error (exit 2), since one ledger word cannot carry whitespace.
+_unit_operand() {
+  local out=() u="-" found=0
+  while [ $# -gt 0 ]; do
+    if [ "$1" = "--unit" ] && [ "$found" = 0 ]; then
+      found=1; shift
+      [ -n "${1:-}" ] || { echo "membudget: --unit needs a word, e.g. --unit contexts" >&2; exit 2; }
+      u="$1"; shift; continue
+    fi
+    out+=("$1"); shift
   done
-  return 1
+  printf '%s' "$u"
+  printf ' %s' "${out[@]}"
+  printf '\n'
 }
-# release a lease. Best-effort: if the lock is wedged we just return — the lease is reaped later by gc
-# (dead owner), so a failed release never leaks budget permanently. NEVER blocks unboundedly.
-release()       { with_lock || return 0; grep -v "^LEASE $1 " "$FILE" > "$FILE.t" 2>/dev/null && mv "$FILE.t" "$FILE" || true; unlock; }
+cmd_init() {
+  local unit rest reset="" n
+  read -r unit rest <<<"$(_unit_operand "$@")"
+  # shellcheck disable=SC2086  # $rest is a word-split operand list by construction (see _unit_operand)
+  set -- $rest
+  n="${1:-}"
+  if [ "$n" = "--reset" ]; then reset=1; n="${2:-}"
+    _valid_mb "$n" || { echo "membudget: init --reset needs a positive MB, e.g. init --reset 8192" >&2; exit 2; }
+  elif [ -n "$n" ]; then
+    _valid_mb "$n" || { echo "membudget: init takes a positive MB, got '$n'" >&2; exit 2; }
+  fi
+  with_lock || { echo "membudget: lock busy (init)" >&2; exit 1; }
+  local had=0 totals=0
+  [ -f "$FILE" ] && had=1 && totals=$(awk '$1=="TOTAL_MB"{c++} END{print c+0}' "$FILE")
+  # ⚑ TWO TOTALS REFUSE BOTH `init` AND `init --reset` (agreed with mtools, R4): a plain init that
+  # said "changes nothing" and exited 0 would read a corrupt ledger as healthy.
+  if [ "$totals" -gt 1 ]; then unlock; echo "membudget: REFUSED init — ledger has $totals TOTAL_MB lines (corrupt or hand-edited; fix the file)" >&2; exit 4; fi
+  if [ -n "$reset" ]; then
+    ensure; _set_total "$n"
+  elif [ "$had" = 1 ] && [ "$totals" -ge 1 ]; then
+    echo "membudget: ledger exists with a total — init changes nothing (to resize, keeping live leases: membudget init --reset N)"
+  else
+    ensure; [ -n "$n" ] && _set_total "$n"
+    [ "$totals" = 0 ] && [ "$had" = 1 ] && [ -z "$n" ] && _set_total "$(default_total)"
+  fi
+  [ "$unit" != "-" ] && _set_unit "$unit"
+  unlock; cmd_status
+}
 
-cmd_init() { with_lock || { echo "membudget: lock busy (init)" >&2; exit 1; }; rm -f "$FILE"; ensure; [ -n "${1:-}" ] && sed -i "s/^TOTAL_MB .*/TOTAL_MB ${1}/" "$FILE"; unlock; cmd_status; }
-
+_amount() { # _amount <n> <unit> — "<n>MB" when unit is MB (byte-identical to the pre-unit form), else "<n> <unit>"
+  [ "$2" = MB ] && printf '%sMB' "$1" || printf '%s %s' "$1" "$2"
+}
 cmd_status() {
   with_lock || { echo "membudget: lock busy (status)" >&2; exit 1; }
   ensure; gc                                     # ensure UNDER the lock (serialised create — no init race)
-  local t c; t=$(read_total); c=$(claimed_under "-"); unlock
-  printf 'membudget: TOTAL=%sMB top-level-leased=%sMB global-free=%sMB\n' "$t" "$c" "$((t-c))"
-  awk '$1=="LEASE"{p=($6=="-")?"top":("under "$6); printf "  [%s] %sMB pid=%s (%s) %s\n",$2,$3,$4,p,$7}' "$FILE" \
-    | grep . || echo "  (no active leases)"
+  local t c u; t=$(read_total); c=$(claimed_under "-"); u=$(read_unit) || { unlock; exit 4; }; unlock
+  printf 'membudget: TOTAL=%s top-level-leased=%s global-free=%s\n' \
+    "$(_amount "$t" "$u")" "$(_amount "$c" "$u")" "$(_amount "$((t-c))" "$u")"
+  awk -v u="$u" '
+    function amt(n) { return (u=="MB") ? n "MB" : n " " u }
+    $1=="LEASE"{p=($6=="-")?"top":("under "$6); printf "  [%s] %s pid=%s (%s) %s\n",$2,amt($3),$4,p,$7}
+  ' "$FILE" | grep . || echo "  (no active leases)"
 }
 
 _wait_change() { # block up to $1 seconds for a ledger change (a release), then return to re-check. With
@@ -150,22 +355,129 @@ _auto_mb() { # Ⓡ.autobudget: a right-sized lease (MB) for the module in "$@", 
   # The power-of-2 step IS the safety margin — it sits 2^n ± 2^(n-1) around the need, so peak ∈
   # (2^(n-1), 2^n] leases 2^n with up to a 2^(n-1) headroom band; no extra fudge, no over-rounding
   # (300→384, not 512). A lease is a hard kill cap, so rounding UP keeps cap ≥ peak.
-  # CEILING 384MiB (⟡cap-384): the full build runs every module at `+RTS -M256m` and passes, so worst-case
-  # maxRSS ≈ 256MB heap + ~0.1GB RTS ≈ 356MB < 384. The strict heap gate is the FORCING FUNCTION — a module
+  # CEILING 384MiB (⟡cap-384): the ceiling has HEADROOM over the heap gate the build actually enforces —
+  # `MEM_CAP ?= 128m` (gen_build_makefiles.py, emitted as `+RTS -M$(MEM_CAP)` into every Flat.mk recipe),
+  # so maxRSS ≈ 128MB heap + RTS + everything else sits well under 384.
+  # ⚑ THIS COMMENT DERIVED 384 FROM `+RTS -M256m` — a value the generator no longer emits, so the
+  # ceiling's stated justification cited a heap cap that was not the live one. Read MEM_CAP from
+  # gen_build_makefiles.py; never quote it here. The strict heap gate is the FORCING FUNCTION — a module
   # that would exceed it must seal its heavy neutrals opaque (a heavy type-level redex → a non-reducing
-  # handle) or import a cheaper proof, not grow the cap. A peak that would round to 512 is clamped to 384,
-  # still ≥ the real peak. Default (192) if no history — measured maxRSS tops ~120MB so 192 covers a typical
-  # cold module, and the retry ladder 192→384 lands on the ceiling (384 = 192·2), self-heals via retry-on-OOM.
+  # handle) or import a cheaper proof, not grow the cap.
+  #
+  # ⚑⚑ AND THE CEILING'S JUSTIFICATION HAS NOW BEEN DERIVED FROM A STALE PREMISE TWICE, so it is NOT
+  # restated a third time. The note directly above records the first. The second stood right here:
+  # "the retry ladder 192→384 lands on the ceiling (384 = 192·2), self-heals via retry-on-OOM" —
+  # true only for a corpus that never exceeds 384, which is substrate's and not its consumers'.
+  # MEASURED (mat260, 2026-08-14): two modules peak ~600MB, so NO climb could ever reach them, and
+  # the sentence read as a guarantee while describing a wall.
+  #
+  # What is actually claimed, and nothing more: 192 is a DEFAULT sized to substrate's own measured
+  # corpus (maxRSS tops ~120MB), and 384 is a DEFAULT CEILING on the autobudget's extrapolation from
+  # recorded history. Both are substrate-tuned; neither bounds what a caller may ask for.
+  # ⚑ Whether 384 is still the right default ceiling is UNRESOLVED — it wants deriving from the live
+  # MEM_CAP in gen_build_makefiles.py, not asserting. Until someone does that it is a number that
+  # works for this repo, not a number with a reason.
   local a mod="" def="${AGDA_MB_DEFAULT:-192}" cap="${AGDA_MB_MAX:-384}"
-  for a in "$@"; do case "$a" in *.agda) mod="$a" ;; esac; done
-  [ -n "$mod" ] || { echo "$def"; return; }
+  # ⚑⚑ THE CEILING RAISES TO AN EXPLICIT AGDA_MB_DEFAULT AND WARNS WHEN IT CLAMPS — because it
+  # silently locked out a downstream consumer for weeks and nobody could see it happen.
+  #
+  # MEASURED (mat260, 2026-08-14, filed on summit as friction-membudget-no-history-floor):
+  # two of its modules peak at ~600MB.  cap=384 < 600, so the retry ladder could never reach them
+  # — not "does not climb on this kill mode" as they diagnosed, but *cannot arrive* at any point.
+  # They worked around it with AGDA_MB_DEFAULT=1024 and it LOOKED like it worked, because `def` is
+  # returned by the early exits below (no .agda arg / no ledger / no history) BEFORE this clamp is
+  # ever reached.  The moment history existed, 1024 was silently clamped back to 384 and the module
+  # OOM-killed again.  A workaround that works only until it matters is worse than none.
+  #
+  # ⚑ So: an operator who names a size gets it.  The cap is a DEFAULT ceiling for the autobudget's
+  # own extrapolation from history, not a bound on what a caller may ask for.  Substrate's corpus
+  # tops ~120MB; 384 is tuned to substrate and has no business overriding a heavier consumer.
+  [ "$def" -gt "$cap" ] 2>/dev/null && cap="$def"
+  # ⚑⚑⚑ `.agdai` COUNTS AS A MODULE IDENTITY, NOT JUST `.agda` (2026-08-27). THE LEASE IS
+  # DECIDED PER-CORE, WHICH IS WHY THIS KEYS ON A MODULE AT ALL — and the pg-touching recipes
+  # (`--ingest-source`, `--ingest-core`, `--promote-core`, `--drain-core`) name the CORE, not
+  # the source. Without this arm they matched nothing, fell to `def`, and every core in the
+  # tree leased the same number.
+  #
+  # ⚑⚑ WHICH IS THE DEFECT, AND IT IS NOT "the guess was wrong". A hardcoded 256 collapsed
+  # 3,598 distinct workloads onto one figure. MEASURED: `core_decoded.dec` ranges from a
+  # 129-node core to **67,355,023 bytes** — a 35× spread between avg and max document size.
+  # **A fleet-wide lease is over-sized for the median and under-sized for the tail
+  # simultaneously**, which is exactly what per-module history exists to avoid.
+  # ⚑ The label ledger (`_record_time`'s non-agda arm) cannot fix this: it keys on the
+  # CALLER'S LABEL, so all 3,598 ingests share one row. `membudget peaks` read
+  # `ingest-source n=2 max=72 → 128MB` from two SMALL cores — a suggestion sampled entirely
+  # off the wrong end of the distribution. Per-label is the right key for a gate that runs
+  # once; per-module is the right key for work that runs per core.
+  #
+  # ⚑ THE `.agda-times.tsv` LOCATION FOLLOWS THE ARGUMENT, so a `.agdai` under `_build/`
+  # reads a ledger beside itself there rather than beside the source. That keeps the two
+  # populations separate ON PURPOSE: a compile's maxRSS and a decode's maxRSS are different
+  # workloads over the same module name, and averaging them would size both wrong.
+  for a in "$@"; do case "$a" in *.agda|*.agdai) mod="$a" ;; esac; done
+  # ⚑⚑⚑ NO MODULE ARGUMENT FALLS BACK TO THE LABEL LEDGER, WHICH IS THE OTHER HALF OF THE
+  # PER-LABEL/PER-MODULE SPLIT THIS FUNCTION ALREADY ARGUES FOR (⟡membudget-wire). The note
+  # above states it exactly: *"per-label is the right key for a gate that runs once; per-module
+  # is the right key for work that runs per core."* A selftest suite is the FIRST kind — one
+  # label, one workload — and until now it got neither key: `python3 -m substrate.suite_run
+  # <path>` carries no `.agda`/`.agdai` argument, so `mod` stayed empty and every suite took
+  # `def`.
+  #
+  # ⚑⚑ AND THE COST WAS MEASURED, NOT SUPPOSED. All 234 `auto` requests in `Selftest.mk` fell
+  # through to 192. The label ledger meanwhile held **166 runs of `selftest:worklist_gate.py`
+  # at max 188MB** and `membudget peaks` printed `suggested 256MB` — four megabytes of headroom
+  # on every run, and two suites OOM-killed (exit 143) in a roster run that then reported 140
+  # unrun. **The instrument was measuring correctly and nothing consumed the measurement.**
+  #
+  # ⚑ THE DEFERRAL HAD A STATED TRIGGER AND IT HAS FIRED. This file's own note read: *"NOT WIRED
+  # TO AUTOBUDGET… Choosing a cap from one observation is the guess this exists to replace. Let
+  # the history accumulate, then decide."* Right when written against an empty ledger; the
+  # labels this sizes now carry hundreds of runs each.
+  #
+  # ⚑ THE ARITHMETIC IS NOT RESTATED HERE. `substrate/label_lease.py` owns it — max-not-median
+  # (a lease is a hard kill cap, so the median is fatal for half the runs), pow2 round-up, the
+  # same floor and ceiling, and the same loud clamp naming AGDA_MB_MAX. A second copy of that
+  # rule in awk is the two-derivations-of-one-number shape this repo keeps paying for.
+  if [ -z "$mod" ]; then
+    local lled="${MEMBUDGET_LABEL_LEDGER:-$(dirname "$FILE")/labels.tsv}"
+    # ⚑ DEFAULTED, because `set -u` is on and the agda-arg selftests call `_auto_mb` directly
+    # with no label. An unset label has no history, so `label_lease` hands back `def` — the
+    # same answer this arm gave before it existed, which is what makes the fallback safe.
+    # ⚑⚑ SWAPPED TO mtools' PORT (2026-10-02, the standing defer-to-mtools pipeline, W25).
+    # `mikemol.fence.label_lease` is substrate's own label_lease.py, ADOPTED and fixed: its
+    # docstring records that substrate's three TSV scanners read a fence-written FRACTIONAL
+    # peak as no history at all (an `.isdigit()` check that a float like "188.5" fails) — a
+    # real defect in the file this replaces, caught only because the two tools now share one
+    # ledger. Differential-verified against substrate's own label_lease.py on two real labels
+    # from the live ledger (selftest:worklist_gate.py -> 64, sandbox-ingest -> 256, both agree)
+    # before this swap. CEILING is now an explicit 4th argument (mtools has no module default).
+    "$PYVENV" -m mikemol.fence.label_lease lease "$lled" "${AUTO_LABEL:-}" "$def" "$cap" \
+      2>/dev/null || echo "$def"
+    return
+  fi
   local led; led="$(dirname "$mod")/.agda-times.tsv"
   [ -f "$led" ] || { echo "$def"; return; }
   awk -F'\t' -v m="$(basename "$mod")" -v def="$def" -v cap="$cap" '
     $1==m && $3 ~ /^[0-9]+$/ { if ($3+0>pk) pk=$3+0 }
     END { if (pk<=0) { print def; exit }
           v = 64; while (v < pk) v = v*2          # smallest power of two >= peak (floor 64)
-          if (v > cap) v = cap; print v }' "$led" 2>/dev/null || echo "$def"
+          # ⚑ CLAMPING IS NOW LOUD.  A recorded peak above the ceiling means the lease is knowingly
+          # smaller than the measured need, i.e. this module is expected to OOM-kill and retry into
+          # a wall.  That is exactly the state mat260 sat in, invisibly.  Warn on stderr (never
+          # stdout — the caller reads the number from stdout) and name the override.
+          if (v > cap) {
+            printf "membudget: %s peaked at %dMB but the ceiling is %dMB — leasing %d, which is " \
+                   "BELOW the measured need; raise AGDA_MB_MAX or AGDA_MB_DEFAULT.\n",
+                   m, pk, cap, cap > "/dev/stderr"
+            v = cap
+          }
+          print v }' "$led" || echo "$def"
+  # ⚑ THE `2>/dev/null` THAT USED TO BE HERE IS GONE, AND ITS REMOVAL IS THE POINT.  It was there to
+  # hide awk's own errors on a malformed ledger — and it swallowed the clamp warning above the
+  # instant that warning was added, so the first run of `verify-ceiling` reported FAIL(2) with an
+  # EMPTY stderr.  A blanket stderr redirect cannot distinguish a diagnostic this tool means to emit
+  # from noise it means to suppress; suppressing the channel suppresses both.  If awk noise on a
+  # broken ledger becomes a problem, silence THAT case specifically — never the channel.
 }
 
 # --- scope backend (D2-prime) -------------------------------------------------
@@ -175,9 +487,17 @@ _auto_mb() { # Ⓡ.autobudget: a right-sized lease (MB) for the module in "$@", 
 #
 # systemd-run is only a CLIENT of the kernel memory controller. Where that
 # controller is directly usable, the same cap is one mkdir and two writes, so we
-# create the scope ourselves via scripts/cgroup-scope. Probed on this host:
-#   cgroup2 /sys/fs/cgroup/unified -> controllers "cpuset hugetlb" (NO memory)
-#   cgroup v1 /sys/fs/cgroup/memory (rw) -> usable; 64MiB cap SIGKILLs a 256MiB hog
+# create the scope ourselves via scripts/cgroup-scope.
+#
+# ⚑ DO NOT RESTATE cgroup-scope's PROBE RESULT HERE. Two lines of a dated probe
+#   used to live at this spot ("cgroup2 /sys/fs/cgroup/unified -> cpuset hugetlb;
+#   cgroup v1 /sys/fs/cgroup/memory -> usable") and BOTH HALVES went false while
+#   this file kept asserting them — the same drift the build-cap comments suffered.
+#   The parent cgroup is chosen by PROBING at each launch; ask the tool, which
+#   re-derives it: `scripts/cgroup-scope probe` prints the chosen parent and why,
+#   and `scripts/cgroup-scope selftest` constructs the 137 rather than reading a
+#   number. The arm was DEAD unprivileged until 2026-08-24 (it created its cgroup
+#   at the root-owned v2 root); see swarm-F8/F9/F10/F11 and cgroup-scope's header.
 #
 # _scope_backend picks: systemd (unchanged when a bus exists) | cgroup | none.
 # `none` REFUSES rather than running uncapped -- an uncapped agda is the OOM this
@@ -185,7 +505,13 @@ _auto_mb() { # Ⓡ.autobudget: a right-sized lease (MB) for the module in "$@", 
 _scope_backend() {
   if [ -n "${MEMBUDGET_BACKEND:-}" ]; then printf '%s' "$MEMBUDGET_BACKEND"; return; fi
   if systemd-run --user --scope --quiet /bin/true >/dev/null 2>&1; then printf 'systemd'; return; fi
-  if [ -x "$SELFDIR/cgroup-scope" ] && "$SELFDIR/cgroup-scope" 64 -- /bin/true >/dev/null 2>&1; then
+  # ⚑ PROBE BY `probe`, NOT BY EXECUTION. This used to run `cgroup-scope 64 -- /bin/true`
+  #   and read the exit code, which conflates "no delegating parent" with "the payload
+  #   failed" and discards the REASON — swarm-F8 recorded that this silent fall-through
+  #   to 'none' is what hid a dead arm for an unknown period. `probe` has no side
+  #   effects, exits 3 with a diagnosis, and does not create-and-immediately-reap a
+  #   cgroup on every backend query.
+  if [ -x "$SELFDIR/cgroup-scope" ] && "$SELFDIR/cgroup-scope" probe >/dev/null 2>&1; then
     printf 'cgroup'; return
   fi
   printf 'none'
@@ -193,8 +519,10 @@ _scope_backend() {
 
 # _launch_scope <mb> <id> -- <cmd...>
 # Runs <cmd> under MemoryMax=<mb>M with swap off, exporting MEMBUDGET_PARENT=<id>,
-# and propagates the child's exit code VERBATIM (cgroup-kill 137 included -- the
-# retry-on-OOM contract keys on 137).
+# and propagates the child's exit code VERBATIM (cgroup-kill included -- the
+# retry-on-OOM contract keys on 137 OR 143; see the guard at cmd_run, which tests
+# both. This line said "keys on 137" alone while the executing conditional accepted
+# two, so a reader chasing a 143 would have concluded the retry could not fire).
 _launch_scope() {
   local mb="$1" id="$2"; shift 2; [ "${1:-}" = "--" ] && shift
   case "$(_scope_backend)" in
@@ -226,27 +554,166 @@ _sched_prefix() {
 
 cmd_run() {
   local mb="$1" label="$2"; shift 2; [ "${1:-}" = "--" ] && shift
-  [ "$mb" = auto ] && mb=$(_auto_mb "$@")          # Ⓡ.autobudget: lease from peak-mem history
+  # ⚑⚑ A LEDGER COUNTING SOMETHING OTHER THAN MB IS REFUSED BEFORE ANY LEASE (⟡membudget-unit,
+  # ported from mtools' mikemol-membudget, 2026-10-02). `run` caps HOST memory at its lease in MB
+  # via `_launch_scope`'s `MemoryMax=${mb}M` -- a lease of N on a ledger counting something else
+  # (CUDA contexts, a device count) would set MemoryMax=NM and kill the very command it admitted.
+  # Checked once, up front: a corrupt/hand-edited ledger with two UNIT lines also refuses here
+  # (read_unit exits 4 itself), rather than silently picking one.
+  local _unit; _unit=$(read_unit) || exit 4
+  if [ "$_unit" != MB ]; then
+    echo "membudget: REFUSED [$label] — this ledger counts $_unit, and run caps HOST memory in MB; a lease of N $_unit would kill its own command." >&2
+    exit 4
+  fi
+  # Ⓡ.autobudget: lease from peak-mem history. ⚑ THE LABEL RIDES IN THE ENVIRONMENT, NOT AS AN
+  # ARGUMENT: `_auto_mb` scans "$@" for a module path, so a label prepended there would be one
+  # more token to exclude — and the exclusion would be by SHAPE, which is what made the suite
+  # case invisible in the first place.
+  [ "$mb" = auto ] && mb=$(AUTO_LABEL="$label" _auto_mb "$@")
   local parent="${MEMBUDGET_PARENT:--}"
   local id; id=$(printf '%04x%04x' "$RANDOM" "$RANDOM")
   local where; [ "$parent" = "-" ] && where="global" || where="parent $parent"
-  trap "release $id" EXIT                       # prompt cleanup; if it can't take the lock the lease is still
+  # ⚑⚑ WAIT-LINE FIFO (⟡membudget-wait, W77): a request is QUEUED only if it is top-level (not
+  # nested under a parent) and needs real budget — ported verbatim from mtools' `admit.queued()`.
+  # A nested request's parent already holds budget a head waiter may be waiting for exactly;
+  # ordering the child behind the head would make each wait on the other. A zero-MB request takes
+  # nothing any waiter needs. `ticket` is empty until this request actually blocks once.
+  local queued=0; [ "$parent" = "-" ] && [ "$mb" -gt 0 ] && queued=1
+  local ticket="" head="" myturn=1
+  trap '_dequeue_wait "$ticket" 2>/dev/null; release $id' EXIT
+                                                # prompt cleanup; if it can't take the lock the lease is still
                                                 # reaped by gc (dead owner) — and on hard kill the KERNEL frees
                                                 # the lock anyway, so cleanup is guaranteed regardless of the trap.
   # BLOCKING acquire (WaitForSingleObject-style): block while transiently short, wake on a
   # release, re-attempt; REFUSE only the impossible (mb > the level's TOTAL — would block forever).
   with_lock && { ensure; unlock; }              # serialized create, once before the loop (no init race)
   local start announced=0 lastgc=0 backoff; start=$(date +%s); backoff="${MEMBUDGET_POLL:-0.5}"
+  local loadannounced=0
   while true; do
+    # ⚑⚑⚑ THE LOAD GATE — the SECOND predicate, and it is checked BEFORE the RAM probe because a
+    # lease that fits the budget can still be the wrong thing to start on a swamped box. `make`
+    # has no `--load-average` (Gentoo's `emerge` does; operator: *"I wish I had a tool like
+    # membudget which would sleep until load average dropped below a target"*). membudget is
+    # where it belongs: it is already the universal capture point every compile routes through,
+    # and it already OWNS the block-and-retry loop — this adds a predicate, not a mechanism.
+    #
+    # ⚑ IT BLOCKS, IT NEVER REFUSES, AND THE ASYMMETRY IS THE WHOLE DESIGN. A RAM request larger
+    # than TOTAL is IMPOSSIBLE and is refused, because waiting could not help. Load is never
+    # impossible — it can always come down — so there is nothing to refuse and the honest
+    # behaviour is to wait. `MEMBUDGET_NOBLOCK` and `MEMBUDGET_TIMEOUT` are the escapes, shared
+    # with the RAM path so a caller has ONE contract rather than two.
+    #
+    # ⚑⚑ TWO WINDOWS MUST BOTH BE UNDER THE CEILING, AND THAT IS NOT BELT-AND-BRACES (operator:
+    # *"match 1m and at least one of 5m and 10m"*). The 1-minute average alone is noisy: it dips
+    # between two waves of a build and admits a job into a box that is about to be busy again.
+    # A longer window alone is stale: it keeps a job waiting long after a spike has cleared. The
+    # CONJUNCTION says *the box is quiet AND has been quiet* — 1m gates the transient, and
+    # min(5m, 10m) gates the trend, so the more-favourable of the two long windows is the one
+    # that must also agree. Taking the MINIMUM is deliberate: it lets a genuinely-recovering box
+    # start work while still refusing one that merely blinked.
+    #
+    # ⚑ THE CEILING IS A MULTIPLE OF nproc, NOT AN ABSOLUTE. Load 10 means something different on
+    # 4 cores than on 64. Default 10× — measured, not guessed: this box stays responsive at 16×
+    # (operator), so 10× is a tolerable upper bound with headroom rather than a threshold at the
+    # edge of usability. Set `MEMBUDGET_MAXLOAD=<multiple>` to change it, `=0` to disable.
+    #
+    # ⚑ AND THE FIGURE IT READS IS IMPERFECT IN A KNOWN DIRECTION: Linux load counts D-state
+    # (uninterruptible I/O) processes, so an I/O-bound build inflates it without competing for
+    # CPU. That makes this gate CONSERVATIVE — it may wait when it need not, never the reverse.
+    # A PSI-based predicate would be sharper; it is not what `emerge` does and not what was
+    # asked for, and a conservative wait costs time while an optimistic one costs the box.
+    local _maxload="${MEMBUDGET_MAXLOAD:-10}"
+    if [ "$_maxload" != "0" ]; then
+      while true; do
+        local _l1 _l5 _l15 _ncpu _ceil _slow
+        read -r _l1 _l5 _l15 _ < /proc/loadavg
+        _ncpu=$(nproc 2>/dev/null || echo 1)
+        _ceil=$(awk "BEGIN{print $_ncpu * $_maxload}")
+        # the more favourable of the two long windows — see the ⚑⚑ above
+        _slow=$(awk "BEGIN{print ($_l5 < $_l15) ? $_l5 : $_l15}")
+        awk "BEGIN{exit !($_l1 <= $_ceil && $_slow <= $_ceil)}" && break
+        if [ -n "${MEMBUDGET_NOBLOCK:-}" ]; then
+          echo "membudget: REFUSED [$label] (noblock) — load ${_l1}/${_l5}/${_l15} over ${_ceil} (${_maxload}× ${_ncpu} CPUs)." >&2; exit 3
+        fi
+        if [ -n "${MEMBUDGET_TIMEOUT:-}" ] && [ $(( $(date +%s) - start )) -ge "$MEMBUDGET_TIMEOUT" ]; then
+          echo "membudget: GAVE UP [$label] after ${MEMBUDGET_TIMEOUT}s — load ${_l1}/${_l5}/${_l15} still over ${_ceil}." >&2; exit 3
+        fi
+        [ "$loadannounced" = 0 ] && { echo "membudget: LOAD-WAIT [$label] — load ${_l1}/${_l5}/${_l15} over ${_ceil} (${_maxload}× ${_ncpu} CPUs); waiting for the box to quieten…" >&2; loadannounced=1; }
+        sleep "${MEMBUDGET_LOAD_POLL:-5}"
+      done
+    fi
+    # ⚑⚑⚑ THE CLAIM GATE — the THIRD waiting predicate, and it is NOMINAL where the other two
+    # are quantitative and box-wide. A label of the form `claim:<artefact>` is an EXCLUSIVE
+    # claim on that artefact: at most one live lease may carry it. Any other label is
+    # unaffected, so this is inert for every compile in the tree.
+    #
+    # ⚑ WHY IT IS HERE AND NOT IN A NEW TOOL. `MEMBUDGET_MAXLOAD` is the precedent: a
+    # predicate that is neither a lease nor a label, evaluated in this same loop, which
+    # inherits the wait, block-vs-refuse, MEMBUDGET_TIMEOUT, the announce-once line and the
+    # `=0` disable FOR FREE rather than growing a second, subtly-different version of each.
+    # An exclusion built beside this loop would have reimplemented all five.
+    #
+    # ⚑⚑ IT WAITS, IT DOES NOT REFUSE, AND THE TWO EXISTING PRECEDENTS DISAGREE FOR GOOD
+    # REASONS. `_parent_alive` REFUSES (exit 4) because a vanished parent cannot be fixed by
+    # waiting, exactly like `mb > budget`. Load WAITS because a busy box can always quieten.
+    # A contended artefact is the load case: the holder will release it. So waiting is the
+    # honest behaviour, and MEMBUDGET_NOBLOCK / MEMBUDGET_TIMEOUT remain the escapes — one
+    # contract shared with the other two predicates rather than a third.
+    #
+    # ⚑ THE `claim:` PREFIX IS NOT A NAMING CONVENTION, IT IS WHAT THIS PREDICATE MATCHES ON.
+    # gate-F5: a convention is not a name that recurs, it is a name something INVOKES. This
+    # block is the invoker, which is why no separate ledger column is needed — the label
+    # field already carries it, and `cmd_run`'s callers cannot put whitespace in a label
+    # without corrupting the ledger regardless.
+    #
+    # ⚑ LIVENESS IS THE EXISTING ONE, UNCHANGED. A holder is a real process under a real
+    # scope, so a dead claimant is reaped by the same `gc` as any other lease (owner
+    # pid:starttime, PID-reuse-proof). There is no TTL, no heartbeat and no second registry:
+    # the claim's lifetime IS the holder process's lifetime — RAII, with the kernel running
+    # the destructor unconditionally. Set MEMBUDGET_NOCLAIM=1 to disable the gate.
+    case "$label" in
+      claim:*)
+        if [ -z "${MEMBUDGET_NOCLAIM:-}" ]; then
+          local claimannounced=0
+          while true; do
+            # lock-free read, same discipline as the budget probe below: a stale read can
+            # only ever over-report a holder (conservative — we wait when we might not need to).
+            local _held
+            _held=$(awk -v l="$label" '$1=="LEASE" && $7==l {print $4; exit}' "$FILE")
+            [ -z "$_held" ] && break
+            # a lease whose owner is dead is not a holder — reap before believing it, else a
+            # crashed claimant would block every successor forever (the stale-claim failure).
+            if ! _alive "$_held"; then
+              if with_lock; then gc; unlock; fi
+              continue
+            fi
+            if [ -n "${MEMBUDGET_NOBLOCK:-}" ]; then
+              echo "membudget: REFUSED [$label] (noblock) — claimed by a live holder ($_held)." >&2; exit 3
+            fi
+            if [ -n "${MEMBUDGET_TIMEOUT:-}" ] && [ $(( $(date +%s) - start )) -ge "$MEMBUDGET_TIMEOUT" ]; then
+              echo "membudget: GAVE UP [$label] after ${MEMBUDGET_TIMEOUT}s — still claimed by $_held." >&2; exit 3
+            fi
+            [ "$claimannounced" = 0 ] && { echo "membudget: CLAIM-WAIT [$label] — held by $_held; waiting for release…" >&2; claimannounced=1; }
+            _wait_change "${MEMBUDGET_CLAIM_POLL:-1}"
+          done
+        fi
+        ;;
+    esac
     # OPTIMISTIC, LOCK-FREE probe. A genuinely-blocked waiter must NOT touch the global lock every poll —
     # that is what starved other repos. Ledger writes are atomic (append a line; gc/release rename-in-
     # place), so a lock-free read sees a consistent-enough snapshot; a stale read only ever UNDER-counts
     # free budget (conservative). The lock is taken ONLY to actually CLAIM (with an authoritative re-check)
     # or for a rate-limited gc — never just to look.
-    local budget used free; read budget used < <(_snapshot "$parent")
-    if [ -z "$budget" ]; then echo "membudget: REFUSED [$label] — parent lease $parent is gone" >&2; exit 4; fi
+    local budget used free; read -r budget used < <(_snapshot "$parent")
+    # Parent liveness is now its OWN check: under disjoint allocation the parent's mb is not this
+    # lease's budget, so an empty budget no longer implies a vanished parent. Both are still refusals,
+    # and they are still DIFFERENT refusals — collapsing them would report a missing ledger as a dead
+    # parent. Still exit 4, so callers keyed on that code are unaffected.
+    if ! _parent_alive "$parent"; then echo "membudget: REFUSED [$label] — parent lease $parent is gone" >&2; exit 4; fi
+    if [ "$budget" = DUP ]; then echo "membudget: REFUSED [$label] — ledger has MORE THAN ONE TOTAL_MB (corrupt or hand-edited; fix the file, do not guess)" >&2; exit 4; fi
+    if [ -z "$budget" ]; then echo "membudget: REFUSED [$label] — ledger has no TOTAL_MB (run: membudget init)" >&2; exit 4; fi
     if [ "$mb" -gt "$budget" ]; then            # impossible at this level → refuse, never block
-      echo "membudget: REFUSED [$label] — IMPOSSIBLE: need ${mb}MB > ${budget}MB ($where total). Raise the $([ "$parent" = "-" ] && echo 'global budget (membudget init)' || echo 'parent reservation')." >&2
+      echo "membudget: REFUSED [$label] — IMPOSSIBLE: need ${mb}MB > ${budget}MB (global total). Raise the global budget (membudget init --reset N)." >&2
       exit 3
     fi
     free=$((budget-used))
@@ -256,27 +723,74 @@ cmd_run() {
         lastgc=$now
         if _any_dead && with_lock; then          # liveness scan is LOCK-FREE; take the lock ONLY to reap
           gc; unlock
-          read budget used < <(_snapshot "$parent"); free=$((budget-used))
-          [ -z "$budget" ] && { echo "membudget: REFUSED [$label] — parent lease $parent is gone" >&2; exit 4; }
+          read -r budget used < <(_snapshot "$parent"); free=$((budget-used))
+          _parent_alive "$parent" || { echo "membudget: REFUSED [$label] — parent lease $parent is gone" >&2; exit 4; }
         fi
       fi
     fi
-    if [ "$mb" -le "$free" ] && with_lock; then  # looks like it fits → LOCK, re-check authoritatively, then claim
-      read budget used < <(_snapshot "$parent"); free=$((budget-used))
+    # ⚑⚑⚑ HEAD-OF-LINE, LOCK-FREE (⟡membudget-wait, W77 — mirrors mtools' `_my_turn`). A QUEUED
+    # request may claim only when nobody waits, or it IS the oldest waiter — never ahead of an
+    # earlier request merely because it happens to fit first. A stale lock-free read can only ever
+    # see a HELD head that has since left, which under-admits (safe); it can never admit early.
+    myturn=1
+    if [ "$queued" = 1 ]; then
+      head=$(_wait_head)
+      [ -n "$head" ] && [ "$head" != "$ticket" ] && myturn=0
+    fi
+    if [ "$mb" -le "$free" ] && [ "$myturn" = 1 ] && with_lock; then  # looks like it fits AND it's our turn → LOCK, re-check authoritatively, then claim
+      read -r budget used < <(_snapshot "$parent"); free=$((budget-used))
+      # ⚑ THE CLAIM RE-CHECK IS AUTHORITATIVE AND MUST BE UNDER THIS LOCK. The gate above is
+      # lock-free (deliberately — a blocked waiter must not touch the global lock every poll),
+      # so two claimants can both observe "unheld" and both arrive here. Re-testing inside the
+      # critical section, in the same breath as the append, is what makes exclusion a MUTEX
+      # rather than a check-then-act — the same defect sql-F11 records in require_indexes,
+      # where two make -j workers both read had==False and both entered apply().
+      local _dup=""
+      case "$label" in
+        claim:*) [ -z "${MEMBUDGET_NOCLAIM:-}" ] && \
+          _dup=$(awk -v l="$label" '$1=="LEASE" && $7==l {print $4; exit}' "$FILE") ;;
+      esac
+      if [ -n "$_dup" ] && _alive "$_dup"; then
+        unlock; continue                      # lost the race — go back and wait on the holder
+      fi
+      # ⚑ HEAD-OF-LINE, AUTHORITATIVE (under the SAME lock as the budget re-check): the lock-free
+      # read above can be stale in the admitting direction too (a new, older waiter enqueued since),
+      # so re-reading the head here is what makes FIFO a guarantee rather than a best effort.
+      if [ "$queued" = 1 ]; then
+        head=$(_wait_head)
+        if [ -n "$head" ] && [ "$head" != "$ticket" ]; then unlock; continue; fi
+      fi
       if [ -n "$budget" ] && [ "$mb" -le "$free" ]; then
         printf 'LEASE %s %s %s %s %s %s\n' "$id" "$mb" "$(_self_owner)" "$(date +%s)" "$parent" "$label" >> "$FILE"
+        # The WAIT line leaves in the SAME critical section the LEASE is appended in, so no reader
+        # ever sees this request both queued and holding, or neither.
+        if [ -n "$ticket" ] && grep -v "^WAIT $ticket " "$FILE" > "$FILE.t" 2>/dev/null; then
+          mv "$FILE.t" "$FILE"
+        fi
+        ticket=""
         unlock; break
       fi
       unlock                                     # raced — another waiter took it; fall through to block
     fi
-                                                 # transiently short → block (or fail-fast / time out)
+                                                 # transiently short, or not our turn yet → block (or fail-fast / time out)
     if [ -n "${MEMBUDGET_NOBLOCK:-}" ]; then
       echo "membudget: REFUSED [$label] (noblock) — need ${mb}MB, free ${free}MB of ${budget}MB ($where)." >&2; exit 3
     fi
     if [ -n "${MEMBUDGET_TIMEOUT:-}" ] && [ $(( $(date +%s) - start )) -ge "$MEMBUDGET_TIMEOUT" ]; then
       echo "membudget: GAVE UP [$label] after ${MEMBUDGET_TIMEOUT}s — need ${mb}MB, free ${free}MB ($where)." >&2; exit 3
     fi
-    [ "$announced" = 0 ] && { echo "membudget: BLOCKED [$label] — need ${mb}MB, free ${free}MB of ${budget}MB ($where); waiting for a release…" >&2; announced=1; }
+    # ⚑ ENQUEUE ONLY ONCE, ONLY WHEN QUEUED, AND ONLY ON A REAL BLOCK (⟡membudget-wait, mirrors
+    # mtools' `queued(request) and (verdict is BLOCK or not turn)`). A request that would wait for
+    # the LOAD gate or a CLAIM alone never reaches here with budget to spare; this is the capacity
+    # wait specifically, which is the only kind a place in line is owed.
+    if [ "$queued" = 1 ] && [ -z "$ticket" ]; then
+      ticket=$(printf '%04x%04x' "$RANDOM" "$RANDOM")
+      with_lock && { printf 'WAIT %s %s %s %s %s %s\n' "$ticket" "$mb" "$(_self_owner)" "$(date +%s)" "$parent" "$label" >> "$FILE"; unlock; }
+    fi
+    # Blocking on the global pool is the SEMAPHORE, not a fault — it is how `make -j` self-throttles.
+    # Report it once with the numbers and wait; do not editorialise about deadlock (see the retired
+    # `_deadlock_risk` note above for why that warning was wrong).
+    [ "$announced" = 0 ] && { echo "membudget: BLOCKED [$label] — need ${mb}MB, free ${free}MB of ${budget}MB (global); waiting for a release…" >&2; announced=1; }
     _wait_change "$backoff"                       # exponential backoff (cap MEMBUDGET_POLL_MAX): a long-blocked
     backoff=$(awk "BEGIN{b=$backoff*1.6; c=${MEMBUDGET_POLL_MAX:-3}; print (b>c)?c:b}")  # herd polls progressively
   done                                            # less often → fewer racy reads/spurious lock-takes, less CPU
@@ -284,37 +798,57 @@ cmd_run() {
   # genlop-style timing: measure ONLY the post-lease run (not the semaphore wait above), record it to
   # the module's per-dir ledger, and PROPAGATE the real exit code (cgroup-kill 137 included). The
   # recording is best-effort and never alters rc.
-  local rc=0 rstart rend tf="" sb=""
+  local rc=0 rstart rend tf=""; local -a sb=()
   [ -x /usr/bin/time ] && tf=$(mktemp 2>/dev/null || echo "")   # capture peak-mem (maxRSS) if available
-  sb="$(_sched_prefix)"   # ⟡sched-batch: SCHED_BATCH+nice+long-slice wrapper (empty when unavailable → untuned)
+  mapfile -t sb < <(_sched_prefix)   # ⟡sched-batch: SCHED_BATCH+nice+long-slice wrapper (empty when unavailable → untuned)
   rstart=$(date +%s.%N)
+  # ⚑ EVERY LEASE GETS ITS OWN SCOPE — the containment half of disjoint allocation.
+  # This branch used to gate `_launch_scope` on `[ "$parent" = "-" ]`, so a nested lease ran with a
+  # budget of its own and NO cap of its own: it was killed at the ANCESTOR's MemoryMax, and (because
+  # the retry guard tested the same condition) could not grow out of a too-tight guess. A lease whose
+  # size is not enforced is a number, not a bound — that combination is what made `worklist_gate`'s
+  # suite read `unfit` instead of running.
+  # ⚑ MEASURED (`membudget verify`): the nested scope is a SIBLING under app.slice, not a child, so
+  # the ancestor's MemoryMax does NOT bound it. Each lease is capped at its OWN size and the LEDGER
+  # holds the tree to TOTAL_MB. That is what disjoint means; do not re-derive it from a comment.
   if [ "$parent" = "-" ]; then
     echo "membudget: TOP lease ${mb}MB [$label] (global free was ${free}MB) → MemoryMax=${mb}M scope" >&2
-    if [ -n "$tf" ]; then
-        _launch_scope "$mb" "$id" -- $sb /usr/bin/time -v -o "$tf" "$@" || rc=$?
-    else
-        _launch_scope "$mb" "$id" -- $sb "$@" || rc=$?
-    fi
   else
-    echo "membudget: SUB lease ${mb}MB [$label] under $parent (parent free was ${free}MB) → in-scope" >&2
-    if [ -n "$tf" ]; then $sb /usr/bin/time -v -o "$tf" "$@" || rc=$?; else $sb "$@" || rc=$?; fi
+    echo "membudget: SUB lease ${mb}MB [$label] under $parent (global free was ${free}MB) → own MemoryMax=${mb}M scope" >&2
+  fi
+  if [ -n "$tf" ]; then
+      _launch_scope "$mb" "$id" -- "${sb[@]}" /usr/bin/time -v -o "$tf" "$@" || rc=$?
+  else
+      _launch_scope "$mb" "$id" -- "${sb[@]}" "$@" || rc=$?
   fi
   rend=$(date +%s.%N)
-  if [ "$rc" = 0 ]; then _record_time "$rstart" "$rend" "$tf" "$@"; fi   # only learn from SUCCESSFUL runs
+  # only learn from SUCCESSFUL runs (a killed run's peak is the CAP, not the need)
+  if [ "$rc" = 0 ]; then _MB_LABEL="$label" _record_time "$rstart" "$rend" "$tf" "$@"; fi
   [ -n "$tf" ] && rm -f "$tf"
   # RETRY-ON-OOM: a cgroup MemoryMax breach terminates the scope by signal — SIGKILL (rc 137) from the
   # kernel cgroup OOM-killer, OR SIGTERM (rc 143) from systemd's scope-OOM handling; which one fires
   # depends on the systemd version (measured: 143 on systemd-run --user --scope here).  Both are the
-  # too-small-lease kill, so retry on either.  (Only TOP leases have their own hard cap.)  If the action
-  # is idempotent (MEMBUDGET_RETRY_OOM — the agda shim sets it; an agda compile re-runs cleanly) and
-  # there's room to grow, RELEASE the too-small lease and re-enter at the next power-of-2 bucket.
-  # Self-corrects a too-tight autobudget guess (then the success records the real peak → history fixes it).
-  if { [ "$rc" = 137 ] || [ "$rc" = 143 ]; } && [ "$parent" = "-" ] && [ -n "${MEMBUDGET_RETRY_OOM:-}" ] \
+  # too-small-lease kill, so retry on either.  If the action is idempotent (MEMBUDGET_RETRY_OOM — the
+  # agda shim sets it; an agda compile re-runs cleanly) and there's room to grow, RELEASE the too-small
+  # lease and re-enter at the next power-of-2 bucket.  Self-corrects a too-tight autobudget guess (then
+  # the success records the real peak → history fixes it).
+  #
+  # ⚑ NESTED LEASES RETRY TOO.  This guard used to conjoin `[ "$parent" = "-" ]`, on the premise that
+  # "only TOP leases have their own hard cap" — TRUE THEN, and false now that every lease gets its own
+  # scope.  Left in place it would have half-delivered disjointness: a child sized independently, capped
+  # independently, and then unable to correct its own too-tight guess — failing at exactly the moment
+  # the mechanism exists to recover.  The retry re-enters at the SAME level (parent preserved below), so
+  # a child grows within its own grade rather than escalating into its caller's.
+  if { [ "$rc" = 137 ] || [ "$rc" = 143 ]; } && [ -n "${MEMBUDGET_RETRY_OOM:-}" ] \
      && [ "$mb" -lt "${AGDA_MB_MAX:-384}" ]; then
     release "$id"
     local nb=$((mb*2)); [ "$nb" -gt "${AGDA_MB_MAX:-384}" ] && nb="${AGDA_MB_MAX:-384}"
     echo "membudget: OOM-killed at ${mb}MB [$label] — retrying at ${nb}MB (idempotent)…" >&2
-    export MEMBUDGET_PARENT="$parent"                   # re-enter at the original level (TOP), bigger bucket
+    export MEMBUDGET_PARENT="$parent"                   # re-enter at the ORIGINAL level, bigger bucket:
+                                                        # line 289 overwrote this with our own id, which
+                                                        # would re-parent the retry UNDER the lease we
+                                                        # just released — a child of a corpse, cascade-
+                                                        # gc'd out from under itself.
     exec "$0" run "$nb" "$label" -- "$@"
   fi
   exit "$rc"
@@ -323,13 +857,126 @@ cmd_run() {
 _record_time() { # genlop: append <module>\t<seconds>\t<peak_mb> to the module's per-dir .agda-times.tsv
   local rstart="$1" rend="$2" tf="$3"; shift 3
   local a mod=""
-  for a in "$@"; do case "$a" in *.agda) mod="$a" ;; esac; done   # the compiled module (last .agda arg)
-  [ -n "$mod" ] || return 0
+  # ⚑⚑ `.agdai` TOO — THE WRITE SIDE OF THE PER-CORE KEY. `_auto_mb` now sizes from a `.agdai`
+  # argument; if this arm did not also record one, the lease would read a ledger nothing wrote
+  # and silently return the default forever. **The reader and the writer must agree on the key
+  # or the autobudget degrades to a constant while still looking like it is learning.**
+  for a in "$@"; do case "$a" in *.agda|*.agdai) mod="$a" ;; esac; done   # the module (last .agda/.agdai arg)
   local dur; dur=$(awk "BEGIN{d=$rend-$rstart; printf \"%.2f\", (d<0?0:d)}" 2>/dev/null) || return 0
   local peak="" kb=""
   [ -n "$tf" ] && [ -f "$tf" ] && kb=$(awk '/Maximum resident set size/{print $NF}' "$tf" 2>/dev/null)
   case "$kb" in ''|*[!0-9]*) ;; *) peak=$(( kb / 1024 )) ;; esac      # KB → MB (the lease unit)
-  printf '%s\t%s\t%s\n' "$(basename "$mod")" "$dur" "$peak" >> "$(dirname "$mod")/.agda-times.tsv" 2>/dev/null || true
+  if [ -n "$mod" ]; then
+    printf '%s\t%s\t%s\n' "$(basename "$mod")" "$dur" "$peak" >> "$(dirname "$mod")/.agda-times.tsv" 2>/dev/null || true
+    return 0
+  fi
+  # ⚑ A NON-AGDA RUN WAS MEASURED AND THEN THROWN AWAY.  This returned early unless some
+  # argument ended in `.agda`, so `/usr/bin/time -v` ran, maxRSS was parsed, and the number
+  # was DISCARDED for every other leased command — the Python gates included.  Asked "what
+  # is the memory cap on the Python stages", the honest answer was "none, and nothing has
+  # ever measured them", while the capture point sat one `return 0` away from the answer.
+  #
+  # The fix is RECORDING what is already measured, not a second instrument.  Keyed by LABEL
+  # (the caller's own name for the work) rather than by a path, because a non-agda run has
+  # no module to key on; the ledger is global rather than per-dir for the same reason.
+  # Opt out with MEMBUDGET_NOLABELLEDGER=1.
+  #
+  # ⚑⚑⚑ WIRED TO AUTOBUDGET 2026-09-01 (⟡membudget-wire), AND THE DEFERRAL'S OWN CONDITION IS
+  # WHAT AUTHORISED IT. This note used to read: *"NOT WIRED. `_auto_mb` still keys on a `.agda`
+  # argument only, so this ledger MEASURES without yet SIZING anything — deliberately. Choosing
+  # a cap from one observation is the guess this exists to replace. Let the history accumulate,
+  # then decide."* That was correct against an empty ledger. The history has accumulated —
+  # hundreds of runs per label — so the condition fired and the decision is made. **A deferral
+  # naming its own trigger is a decision waiting, not a permanent state.**
+  #
+  # ⚑⚑ AND THE GAP IT LEFT WAS NOT COST-FREE WHILE IT STOOD. Every one of `Selftest.mk`'s 234
+  # `auto` requests fell through to the 192 default, in BOTH directions at once: this ledger
+  # held **166 runs of `selftest:worklist_gate.py` at max 188MB** (4MB of headroom — two suites
+  # OOM-killed at exit 143, and the roster run then reported 140 unrun), while the overwhelming
+  # majority of suites peak under 20MB and were leasing nearly ten times what they use. The
+  # fleet-wide lease was over-sized for the median and under-sized for the tail SIMULTANEOUSLY
+  # — which is the exact defect per-key history exists to remove, and it was fully visible in
+  # this file the whole time. **The instrument was measuring correctly and nothing consumed the
+  # measurement.**
+  #
+  # ⚑ THE SIZING LIVES IN `substrate/label_lease.py`, NOT IN A SECOND awk. `_auto_mb`'s no-module
+  # arm shells to it, so the pow2 rule, the floor, the ceiling and the loud clamp have ONE home
+  # shared with the `.agda` arm's suggestion — two derivations of one number is the shape this
+  # repo keeps paying for, and it is what `cmd_peaks`' `suggested` column would otherwise be.
+  # ⚑ WALL, USER AND SYS — because WALL ALONE CANNOT SAY WHY SOMETHING IS SLOW
+  # (user, 2026-08-05: *"is that wall time or cpu time?"*).  `$dur` is wall
+  # (`date +%s.%N` either side of the run, started AFTER the lease is acquired, so
+  # the semaphore wait is excluded).  `/usr/bin/time -v` was already reporting User
+  # and System time into "$tf" and this function parsed ONLY maxRSS from it — the
+  # same discard defect as the non-agda peak, one field over.
+  #
+  # The ratio is what makes a slow stage actionable: cpu/wall ≈ 1 is COMPUTE (fix
+  # the algorithm), cpu/wall « 1 is WAITING on I/O, a subprocess or the network (fix
+  # caching or parallelism).  `conduit_resolve` at 36MB/69.7s and `figures` at
+  # 67MB/106.0s are indistinguishable on wall alone and want opposite remedies.
+  [ -n "${MEMBUDGET_NOLABELLEDGER:-}" ] && return 0
+  local usr="" sys=""
+  if [ -n "$tf" ] && [ -f "$tf" ]; then
+    usr=$(awk -F': ' '/User time \(seconds\)/{print $2}' "$tf" 2>/dev/null)
+    sys=$(awk -F': ' '/System time \(seconds\)/{print $2}' "$tf" 2>/dev/null)
+  fi
+  local led="${MEMBUDGET_LABEL_LEDGER:-$(dirname "$FILE")/labels.tsv}"
+  printf '%s\t%s\t%s\t%s\t%s\t%s\n' "${_MB_LABEL:-?}" "$dur" "$peak" \
+         "$(date +%s)" "${usr:-}" "${sys:-}" >> "$led" 2>/dev/null || true
+}
+
+cmd_peaks() { # `membudget peaks [label]` — measured maxRSS per label, from the runs that happened.
+              # ⚑ EXISTS BECAUSE THE ANSWER TO "what is the cap on the Python stages" WAS
+              # UNASKABLE. There was no cap and no measurement, and the peak was being computed
+              # and discarded (see `_record_time`). Reading it back had no command, so the next
+              # step would have been an `awk` over a TSV — reasoning in the turn, not in a program.
+              #
+              # Reports n / max / median / p90, because a SINGLE observation cannot size a cap:
+              # max alone is one bad run away from over-sizing, median alone under-sizes the tail.
+              # It prints the POWER-OF-TWO bucket that would cover the max as a SUGGESTION.
+              # ⚑⚑ AND SINCE ⟡membudget-wire (2026-09-01) THE SUGGESTION IS NO LONGER ADVISORY:
+              # `_auto_mb`'s no-module arm sizes an unlabelled-by-path run from this same ledger
+              # through `substrate/label_lease.py`, so what this column PRINTS is what `auto`
+              # TAKES. That is the point of routing both through one module — a `suggested`
+              # column that could disagree with the lease was two derivations of one number.
+              # (This line previously said the sizing was *"deliberately not applied — agda-only
+              # until there is enough history"*; the history arrived, so the deferral closed.)
+  local led="${MEMBUDGET_LABEL_LEDGER:-$(dirname "$FILE")/labels.tsv}"
+  if [ ! -f "$led" ]; then
+    echo "membudget: no label ledger yet ($led)" >&2
+    echo "  it fills as non-agda commands run under \`membudget run\`; nothing has yet." >&2
+    return 1
+  fi
+  # ⚑ cpu% IS THE COLUMN THAT MAKES A SLOW STAGE ACTIONABLE.  (user+sys)/wall near
+  # 100 is COMPUTE-bound; far below is WAITING (I/O, a subprocess, the network).
+  # Rows written before those fields existed carry no user/sys — they print `-`
+  # rather than a fabricated 0, because an unmeasured ratio is not a measured zero.
+  # ⚑ THE ARGUMENT IS A PREFIX, NOT AN EXACT LABEL. Exact-match only meant "show me
+  # the gates" had no answer here, and the reflex was `peaks | grep '^gate:'` —
+  # filtering a tool's output at the shell, which is the judgement-in-the-turn shape.
+  # Labels are already namespaced (`gate:`, `selftest:`, `item:`), so a prefix IS the
+  # natural selector for a class of work.
+  awk -F'\t' -v want="${1:-}" '
+    $1 != "" && (want == "" || index($1, want) == 1) {
+      n[$1]++; s[$1]=s[$1]" "$3
+      if ($3+0>mx[$1]) mx[$1]=$3+0
+      if ($2+0>mt[$1]) mt[$1]=$2+0
+      if ($5 != "" || $6 != "") { cpu[$1] += $5+$6; wall[$1] += $2+0; hav[$1]++ }
+    }
+    END {
+      if (!length(n)) { print "membudget: no rows" (want==""?"":" for label " want) > "/dev/stderr"; exit 1 }
+      printf "%-30s %5s %8s %8s %8s %9s %6s   %s\n", "label", "runs", "max_mb", "median", "p90", "max_sec", "cpu%", "suggested"
+      for (l in n) {
+        c = split(s[l], v, " "); delete a; m = 0
+        for (i = 1; i <= c; i++) if (v[i] != "") a[++m] = v[i] + 0
+        for (i = 2; i <= m; i++) { x = a[i]; j = i - 1; while (j > 0 && a[j] > x) { a[j+1] = a[j]; j-- } a[j+1] = x }
+        med = (m ? (m % 2 ? a[(m+1)/2] : int((a[m/2] + a[m/2+1]) / 2)) : 0)
+        p90 = (m ? a[(int(0.9 * m) < 1 ? 1 : int(0.9 * m))] : 0)
+        b = 64; while (b < mx[l]) b = b * 2          # same pow2 rule _auto_mb uses, floor 64
+        pc = (hav[l] && wall[l] > 0) ? sprintf("%.0f", 100 * cpu[l] / wall[l]) : "-"
+        printf "%-30s %5d %8d %8d %8d %9.1f %6s   %dMB\n", l, n[l], mx[l], med, p90, mt[l], pc, b
+      }
+    }' "$led"
 }
 
 cmd_shell() { # open an interactive shell INSIDE a top-level scope (cgroup auto-contains the
@@ -337,16 +984,30 @@ cmd_shell() { # open an interactive shell INSIDE a top-level scope (cgroup auto-
   local total; with_lock && { ensure; total=$(read_total); unlock; }   # ensure UNDER the lock
   local mb="${1:-$total}"; shift 2>/dev/null || true; [ "${1:-}" = "--" ] && shift
   local rc; rc="$(mktemp "${TMPDIR:-/tmp}/membudget-rc.XXXXXX")"
+  # ⚑⚑ THE CLEANUP IS A TRAP BECAUSE THE `rm` AFTER THE CALL NEVER RAN — AND SHELLCHECK
+  # FOUND THAT, as SC2317 "command appears to be unreachable". It is correct: `cmd_run`
+  # exits on every path (it is the CLI's terminal verb), so control never returns here
+  # and every `membudget shell` leaked one rc file into TMPDIR. A trailing `rm` reads as
+  # cleanup and performs none — the shape where a REVIEWER sees the intent and the
+  # machine sees the truth, which is the asymmetry the linter is for.
+  #
+  # ⚑ SINGLE-QUOTED so `$rc` expands when the trap FIRES, not when it is installed —
+  # the same correction the lease trap in `cmd_run` needed.
+  trap 'rm -f "$rc"' EXIT
   { echo '[ -f ~/.bashrc ] && source ~/.bashrc'; printf "source %q\n" "$SELFDIR/membudget-shrc"; } > "$rc"
   if [ "$#" -gt 0 ]; then cmd_run "$mb" "shell" -- bash --rcfile "$rc" -ic "$*"
   else                    cmd_run "$mb" "shell" -- bash --rcfile "$rc" -i; fi
-  rm -f "$rc"
 }
 
 case "${1:-}" in
-  init)   shift; cmd_init "${1:-}";;
+  init)   shift; cmd_init "$@";;
   status) cmd_status;;
   run)    shift; cmd_run "$@";;
   shell)  shift; cmd_shell "$@";;
-  *) echo "usage: membudget {init [MB]|status|run <MB> <label> -- <cmd...>|shell [MB] [-- cmd]}" >&2; exit 2;;
+  verify) shift; cmd_verify "${1:-}";;   # assert the disjoint-child contract by running it
+  verify-ceiling) cmd_verify_ceiling;;    # assert the CEILING contract: an explicit request above
+                                          # AGDA_MB_MAX is honoured, and clamping is never silent
+  probe)  _probe;;                        # leaf of verify: this process's lease context
+  peaks)  shift; cmd_peaks "${1:-}";;     # MEASURED maxRSS per label — size a cap from history
+  *) echo "usage: membudget {init [MB]|status|run <MB> <label> -- <cmd...>|shell [MB] [-- cmd]|verify [MB]|verify-ceiling|probe|peaks [label]}" >&2; exit 2;;
 esac

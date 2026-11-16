@@ -15,7 +15,18 @@ for _d in "${_ds[@]}"; do
 done
 [ -n "$_real" ] || { echo "agda-shim: real agda not found on PATH (excluding $_dir)" >&2; exit 127; }
 # AGDA_MB=auto (default): membudget sizes the lease from this module's peak-mem history
-# (Ⓡ.autobudget), falling back to AGDA_MB_DEFAULT (2048) with no history. Set AGDA_MB=<N> to pin.
+# (Ⓡ.autobudget), falling back to AGDA_MB_DEFAULT with no history. Set AGDA_MB=<N> to pin.
+# ⚑ DO NOT RESTATE THE NUMBER HERE. This line once said 2048 while `_auto_mb` executed
+# `def="${AGDA_MB_DEFAULT:-192}"` — 10.7x off, and ABOVE the ceiling, so the stated fallback was
+# not even reachable. A default copied into a second file is a derived view that ages silently.
+# The authority is membudget's `_auto_mb`, at its `AGDA_MB_DEFAULT`/`AGDA_MB_MAX` assignment.
+#
+# ⚑⚑ AND THIS COMMENT ITSELF DRIFTED, WHICH IS THE SHARPER LESSON. It cited "membudget:159"
+# twice; the assignment has since moved to a different line, so the pointer written to PREVENT
+# drift became an instance of it. The value was never wrong — the CITATION was. A line number is
+# itself a restatement of something mutable, so "cite, don't restate" is necessary and not
+# sufficient: cite a SYMBOL that moves with the code. (scripts/build_census.py keys on the
+# assignment TEXT for exactly this reason, and REFUSES rather than defaulting if it is respelled.)
 # MEMBUDGET_RETRY_OOM=1: an agda compile is idempotent, so if a too-tight auto-bucket OOM-kills it
 # (exit 137), membudget retries at the next power-of-2 bucket up (self-correcting).
 # Ⓟ.proof-cost-ledger: ALWAYS-ON proof-resolution profiling (opt-OUT, not opt-in — dense samples beat
@@ -23,15 +34,38 @@ done
 # report) to a temp, append the SLIs to the per-dir `.agda-profile.tsv` via proofcost.py, and re-emit
 # agda's real stdout MINUS the profile block so build output stays clean. Best-effort: never alters the
 # exit code. Disable with MEMBUDGET_NOPROFILE=1.
+#
+# ⚑ `+RTS -s -RTS` IS WHY alloc_mb/gc_pct EXIST AT ALL, and it was ABSENT here for the whole life of
+# the ledger: `--profile=all` reports AGDA's phases (Total, CheckRHS, compare-by-reduction), while
+# `bytes allocated in the heap` / `GC time` come from GHC's RUNTIME and need `-s`. MEASURED before the
+# fix: alloc_mb and gc_pct were 0.0 across ALL 1659 modules — `parse_file`'s own docstring stated the
+# cause verbatim ("alloc/peak are 0 unless the caller also passed `+RTS -s`") and nothing acted on it,
+# so `proofcost.py --top` printed an all-zero `alloc_MB` column and the reduction-churn SLI the oracle
+# is built on was never captured.
+#
+# ⚑ AND peak_mb IS DELIBERATELY NOT RECOVERED HERE — `membudget` ALREADY OWNS IT.  maxRSS per compile
+# is recorded in `.agda-times.tsv` (verified live: `membudget_peak_mb{module="AES.agda"}` exists for a
+# module whose profile row reads peak_mb=0.0).  Adding `-s` makes GHC report its own residency, which
+# is a DIFFERENT quantity under the `-M128m` heap cap — so the row will now carry a non-zero peak that
+# is NOT the cgroup figure the cap is enforced against.  Two producers for one name is how a series
+# gets read as the wrong thing; `proofcost --emit` therefore does NOT export peak_mb, and membudget
+# remains its single authority.
 if [ -z "${MEMBUDGET_NOPROFILE:-}" ]; then
   _pf="$(mktemp 2>/dev/null || true)"
   if [ -n "$_pf" ]; then
     _rc=0
-    env MEMBUDGET_RETRY_OOM=1 "$_dir/../membudget" run "${AGDA_MB:-auto}" agda -- "$_real" --profile=all "$@" >"$_pf" || _rc=$?
+    env MEMBUDGET_RETRY_OOM=1 "${MEMBUDGET:-$_dir/../membudget}" run "${AGDA_MB:-auto}" agda -- "$_real" --profile=all "$@" +RTS -s -RTS >"$_pf" 2>&1 || _rc=$?
     "$_dir/../proofcost.py" --parse "$_pf" "$@" >/dev/null 2>&1 || true
-    sed '/^Statistics for /,$d' "$_pf" 2>/dev/null || cat "$_pf" 2>/dev/null || true
+    # ⚑ TWO REPORTS, TWO SHAPES — and stripping only the first leaks ~20 lines PER MODULE.
+    # Agda's profile block starts at `Statistics for `; GHC's `-s` report has NO header line,
+    # it opens directly with `<n> bytes allocated in the heap`. MEASURED when `-s` was added:
+    # the whole RTS block flowed into build output while this filter reported success, because
+    # `sed` deleting nothing is still exit 0. The shim's contract is "build output stays clean",
+    # so both blocks are cut — the second from its first line to EOF.
+    sed -e '/^Statistics for /,$d' -e '/bytes allocated in the heap$/,$d' "$_pf" 2>/dev/null \
+      || cat "$_pf" 2>/dev/null || true
     rm -f "$_pf"
     exit "$_rc"
   fi
 fi
-exec env MEMBUDGET_RETRY_OOM=1 "$_dir/../membudget" run "${AGDA_MB:-auto}" agda -- "$_real" "$@"
+exec env MEMBUDGET_RETRY_OOM=1 "${MEMBUDGET:-$_dir/../membudget}" run "${AGDA_MB:-auto}" agda -- "$_real" "$@"

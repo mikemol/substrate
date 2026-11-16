@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """numpy_law_bridge.py — the horizontal-push glue (Ⓐ auto-pushout of the reach).
 
 A numpy-discovered/verified law  →  an interner-unit written in the SHARED COMBINATOR
@@ -29,13 +31,16 @@ kind='Call'/'BinOp'/'Name' and can NEVER head-match the cores' kind='AgdaCore' n
 The vocabulary translation IS NAME_MAP + emitting AgdaCore-kind nodes — that is the
 minimal missing glue that makes the pushout node appear.
 """
+
 from __future__ import annotations
 import sys, os, argparse, itertools
+
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from jea_pyalg import IR, Intern
 
 try:
     import numpy as np
+
     HAVE_NUMPY = True
 except Exception:
     HAVE_NUMPY = False
@@ -93,12 +98,14 @@ def otimes_via_recursion(sigma: tuple, tau: tuple) -> tuple:
     if m == 1:
         # degree-1 σ = (0,): σ ⊗ τ = τ  (the unit block, values 0·n+τ[j] = τ[j])
         return tuple(tau)
-    p = sigma.index(m - 1)                       # the ◂ insertion row: where the fresh max sits
-    sigma_rest = tuple(v for k, v in enumerate(sigma) if k != p)   # peel the max off → degree m-1
-    base = otimes_via_recursion(sigma_rest, tau)                    # (m-1)·n entries
-    block = tuple(combine(n, m - 1, j) for j in range(n))          # row p's block: (m-1)·n + τ[j] permuted by τ
-    block = tuple((m - 1) * n + tau[j] for j in range(n))          # == m·n-block offset + τ
-    out = base[: p * n] + block + base[p * n:]
+    p = sigma.index(m - 1)  # the ◂ insertion row: where the fresh max sits
+    sigma_rest = tuple(v for k, v in enumerate(sigma) if k != p)  # peel the max off → degree m-1
+    base = otimes_via_recursion(sigma_rest, tau)  # (m-1)·n entries
+    block = tuple(
+        combine(n, m - 1, j) for j in range(n)
+    )  # row p's block: (m-1)·n + τ[j] permuted by τ
+    block = tuple((m - 1) * n + tau[j] for j in range(n))  # == m·n-block offset + τ
+    out = base[: p * n] + block + base[p * n :]
     return out
 
 
@@ -106,6 +113,7 @@ def verify_law(maxdeg: int = 4) -> dict:
     """Exhaustively check, for all perms of degree ≤ maxdeg, that the ◂-recursion agrees with
     direct ⊗, and that ⊕/⊗ land in the right degree and stay permutations.  m,n ≤ maxdeg."""
     from itertools import permutations
+
     checks = fails = 0
     for m in range(1, maxdeg + 1):
         for n in range(1, maxdeg + 1):
@@ -125,8 +133,13 @@ def verify_law(maxdeg: int = 4) -> dict:
                     s = oplus(sigma, tau)
                     if sorted(s) != list(range(m + n)):
                         oplus_ok = False
-    return {"checks": checks, "fails": fails, "oplus_ok": oplus_ok,
-            "verdict": "VERIFIED" if fails == 0 and oplus_ok else "FALSIFIED", "maxdeg": maxdeg}
+    return {
+        "checks": checks,
+        "fails": fails,
+        "oplus_ok": oplus_ok,
+        "verdict": "VERIFIED" if fails == 0 and oplus_ok else "FALSIFIED",
+        "maxdeg": maxdeg,
+    }
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -137,7 +150,7 @@ def emit_py_source() -> str:
     """The ⊗-over-◂ law + ⊕/⊗ as a .py unit written in the shared combinator vocabulary.
     Structure, not runtime lists: the def bodies are combinator EXPRESSIONS (combine, remQuot,
     lookup, tabulate, mul) so the AST spine mirrors the Agda cores' application spine."""
-    return '''# emitted by numpy_law_bridge — the ⊗-over-◂ law in the combinator vocabulary.
+    return """# emitted by numpy_law_bridge — the ⊗-over-◂ law in the combinator vocabulary.
 def otimes_law(sigma, tau, m, n):
     # lookup (sigma ⊗ tau) (combine i j)  ≡  combine (lookup sigma i) (lookup tau j)
     return tabulate(lambda k: combine(lookup(sigma, remQuot(n, k)[0]),
@@ -149,7 +162,7 @@ def otimes_def(sigma, tau, m, n):
 
 def oplus_def(sigma, tau, m, n):
     return tabulate(lambda k: lookup(sigma, k) if k < m else mul(1, m) + lookup(tau, k))
-'''
+"""
 
 
 def emit_py_unit(path: str) -> str:
@@ -164,12 +177,12 @@ def emit_py_unit(path: str) -> str:
 # ─────────────────────────────────────────────────────────────────────────────
 # python combinator token  →  Agda qualified name (as it appears in the .agdai cores).
 NAME_MAP = {
-    "combine":  "Substrate.Foundation.Fin.Combine.combine",
-    "remQuot":  "Substrate.Foundation.Fin.RemQuot.remQuot",
-    "lookup":   "Substrate.Foundation.Vec.lookup",
+    "combine": "Substrate.Foundation.Fin.Combine.combine",
+    "remQuot": "Substrate.Foundation.Fin.RemQuot.remQuot",
+    "lookup": "Substrate.Foundation.Vec.lookup",
     "tabulate": "Substrate.Foundation.Vec.tabulate",
-    "mul":      "Substrate.Foundation.Nat._*_",
-    "otimes":   "Substrate.WitnessTower.Wedge.OrientationProduct._⊗_",
+    "mul": "Substrate.Foundation.Nat._*_",
+    "otimes": "Substrate.WitnessTower.Wedge.OrientationProduct._⊗_",
 }
 
 
@@ -177,14 +190,16 @@ class AgdaCoreBuilder:
     """Emit AgdaCore IR nodes (kind='AgdaCore', op=<qname>, role=<de-Bruijn/''>) into an
     Intern, exactly as jea_agdai does for real cores — so structurally-coincident subterms
     HASH-CONS to the same interned id as the cores' nodes (the literal pushout node)."""
+
     def __init__(self, intern: Intern):
         self.I = intern
 
     def app(self, pyname: str, *kids: int) -> int:
         """An application headed by a mapped global qname."""
         qn = NAME_MAP.get(pyname, pyname)
-        return self.I.intern(IR(kind="AgdaCore", role="", op=qn, lit="",
-                                children=tuple(kids), payload=(qn,)))
+        return self.I.intern(
+            IR(kind="AgdaCore", role="", op=qn, lit="", children=tuple(kids), payload=(qn,))
+        )
 
     def var(self, dbindex: int) -> int:
         """A bound variable (de-Bruijn) — role-quotiented, exactly as jea_agdai's BOUND path."""
@@ -194,16 +209,19 @@ class AgdaCoreBuilder:
         """lookup (σ ⊗ τ) (combine i j)  ≡  combine (lookup σ i) (lookup τ j)
         as an AgdaCore application tree in the cores' own vocabulary."""
         sig, tau, i, j = self.var(0), self.var(1), self.var(2), self.var(3)
-        lhs = self.app("lookup",
-                       self.app("otimes", sig, tau),
-                       self.app("combine", i, j))
-        rhs = self.app("combine",
-                       self.app("lookup", sig, i),
-                       self.app("lookup", tau, j))
+        lhs = self.app("lookup", self.app("otimes", sig, tau), self.app("combine", i, j))
+        rhs = self.app("combine", self.app("lookup", sig, i), self.app("lookup", tau, j))
         # the equation as a 2-arg node (mirrors _≡_ shell; op left generic so it doesn't
         # falsely claim to share the cores' _≡_ node — the LAW's content is lhs/rhs).
-        return self.I.intern(IR(kind="AgdaCore", role="", op="Substrate.Foundation.Eq._≡_",
-                                lit="", children=(lhs, rhs)))
+        return self.I.intern(
+            IR(
+                kind="AgdaCore",
+                role="",
+                op="Substrate.Foundation.Eq._≡_",
+                lit="",
+                children=(lhs, rhs),
+            )
+        )
 
 
 def register_unit(pysim_corpus, name: str, root: int):
@@ -211,8 +229,15 @@ def register_unit(pysim_corpus, name: str, root: int):
     unit bookkeeping) so the shape scan sees it alongside the core units."""
     sup = pysim_corpus._support(root)
     from jea_pysim import Unit
-    u = Unit(name=name, path="<numpy-law>", lineno=-1, root=root,
-             support=sup, depth=pysim_corpus._depth_map(root))
+
+    u = Unit(
+        name=name,
+        path="<numpy-law>",
+        lineno=-1,
+        root=root,
+        support=sup,
+        depth=pysim_corpus._depth_map(root),
+    )
     uidx = len(pysim_corpus.units)
     pysim_corpus.units.append(u)
     for nid in sup:
@@ -224,21 +249,26 @@ def register_unit(pysim_corpus, name: str, root: int):
 # 3.  DEMO
 # ─────────────────────────────────────────────────────────────────────────────
 CORES = ["OrientationProduct.agdai", "OrientationProductLaws.agdai", "OrientationProductComm.agdai"]
-CORE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                        "../../agda/_build/2.8.0/agda/Substrate/WitnessTower/Wedge")
+CORE_DIR = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)),
+    "../../agda/_build/2.8.0/agda/Substrate/WitnessTower/Wedge",
+)
 
 
 def demo():
     import jea_pysim
+
     print("=" * 78)
     print("Ⓐ auto-pushout demo — numpy law ⊗ typeholer")
     print("=" * 78)
 
     # (1) numpy ground truth
     v = verify_law(4)
-    print(f"\n[1] numpy law (rig_cata2 reconstruction): {v['verdict']} "
-          f"({v['checks']} ⊗-recursion checks, {v['fails']} fails; ⊕ ok={v['oplus_ok']}) "
-          f"m,n ≤ {v['maxdeg']}  [numpy={'yes' if HAVE_NUMPY else 'no, pure-py'}]")
+    print(
+        f"\n[1] numpy law (rig_cata2 reconstruction): {v['verdict']} "
+        f"({v['checks']} ⊗-recursion checks, {v['fails']} fails; ⊕ ok={v['oplus_ok']}) "
+        f"m,n ≤ {v['maxdeg']}  [numpy={'yes' if HAVE_NUMPY else 'no, pure-py'}]"
+    )
 
     # (2) VOCAB-MAPPED: build cores + law in ONE interner, look for the pushout node.
     print("\n[2] vocab-mapped emit (AgdaCore kind + NAME_MAP qnames), interned WITH the cores:")
@@ -254,9 +284,11 @@ def demo():
 
     # literal pushout nodes = interned ids in BOTH the law's support and some core unit's support.
     core_support = set().union(*(C.units[k].support for k in range(n_core_units)))
-    shared_ids = (law_support & core_support)
-    print(f"    cores: {n_core_units} units, {core_nodes_before} nodes; law adds "
-          f"{C.I.size() - core_nodes_before} NEW nodes, {len(law_support)} in its support.")
+    shared_ids = law_support & core_support
+    print(
+        f"    cores: {n_core_units} units, {core_nodes_before} nodes; law adds "
+        f"{C.I.size() - core_nodes_before} NEW nodes, {len(law_support)} in its support."
+    )
     print(f"    LITERAL pushout nodes (interned id in BOTH law and a core) : {len(shared_ids)}")
     for nid in sorted(shared_ids):
         nn = C.I.nodes[nid]
@@ -271,24 +303,35 @@ def demo():
         if len(cu.support) < 6:
             continue
         sv = C.shape_verdict(lawu, cu)
-        tag = "SHELL+HOLES" if (sv["shared_frac"] >= 0.55 and any(d > 0 for d in sv["hole_depths"])) else "—"
+        tag = (
+            "SHELL+HOLES"
+            if (sv["shared_frac"] >= 0.55 and any(d > 0 for d in sv["hole_depths"]))
+            else "—"
+        )
         if tag != "—":
             any_shell = True
-        print(f"        {cu.name:<28} frac={sv['shared_frac']:.2f} "
-              f"holes@{sv['hole_depths']} label={sv['label']}  {tag}")
+        print(
+            f"        {cu.name:<28} frac={sv['shared_frac']:.2f} "
+            f"holes@{sv['hole_depths']} label={sv['label']}  {tag}"
+        )
 
-    print(f"\n    VERDICT (vocab-mapped): pushout node "
-          f"{'FOUND' if shared_ids or any_shell else 'NOT found'} "
-          f"({len(shared_ids)} literal shared ids, shell-share={'yes' if any_shell else 'no'})")
+    print(
+        f"\n    VERDICT (vocab-mapped): pushout node "
+        f"{'FOUND' if shared_ids or any_shell else 'NOT found'} "
+        f"({len(shared_ids)} literal shared ids, shell-share={'yes' if any_shell else 'no'})"
+    )
     return C
 
 
 def main(argv=None):
-    ap = argparse.ArgumentParser(description=__doc__,
-                                 formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
     ap.add_argument("--verify", action="store_true", help="run the numpy law verification (m,n≤4)")
     ap.add_argument("--emit-py", metavar="PATH", help="write the naive .py law unit to PATH")
-    ap.add_argument("--demo", action="store_true", help="full pushout demo (cores + law, both modes)")
+    ap.add_argument(
+        "--demo", action="store_true", help="full pushout demo (cores + law, both modes)"
+    )
     args = ap.parse_args(argv)
     if args.verify:
         print(verify_law(4))

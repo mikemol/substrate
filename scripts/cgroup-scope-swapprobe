@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# cgroup-scope-swapprobe — THE DECISIVE PAIR: is memory.max a KILL BOUNDARY or a
+# RECLAIM THRESHOLD? Same cgroup shape, same cap, same touched allocation, ONE
+# variable: memory.swap.max.
+#
+# ⚑ WHY THIS IS ITS OWN TOOL. A single-arm 137 is consistent with a working cap
+#   AND with a cap that only bites because swap happened to be off — it cannot say
+#   which of the two writes did the work. Only the PAIR is decisive, and a pair is
+#   a measurement, so it belongs in a program.
+#
+# usage: cgroup-scope-swapprobe <parent-cgroup-dir>
+set -uo pipefail
+PARENT="${1:?usage: cgroup-scope-swapprobe <parent-cgroup-dir>}"
+HERE="${BASH_SOURCE[0]%/*}"
+CAP=$(( 8 * 1024 * 1024 ))
+
+arm() { # arm <swapmax-literal> -> prints "rc=<n> max=<n> oom_kill=<n>"
+  local swapmax="$1" cg rc ev_max ev_oom
+  cg="$PARENT/mb-swapprobe-$$-$RANDOM.scope"
+  mkdir "$cg" 2>/dev/null || { echo "rc=- max=- oom_kill=- (mkdir failed)"; return; }
+  echo "$CAP" > "$cg/memory.max"
+  echo "$swapmax" > "$cg/memory.swap.max" 2>/dev/null
+  rc=0
+  ( echo "$BASHPID" > "$cg/cgroup.procs"; exec "$HERE/cgroup-scope-touch" 64 ) >/dev/null 2>&1 || rc=$?
+  ev_max=$(awk '$1=="max"{print $2}'      "$cg/memory.events" 2>/dev/null)
+  ev_oom=$(awk '$1=="oom_kill"{print $2}' "$cg/memory.events" 2>/dev/null)
+  rmdir "$cg" 2>/dev/null
+  echo "rc=$rc max=${ev_max:-?} oom_kill=${ev_oom:-?}"
+}
+
+echo "  swap=max (default) : $(arm max)"
+echo "  swap=0             : $(arm 0)"

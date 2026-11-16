@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """jea_rigcat.py — the rig category as Python, and ORBIT canonicalization for SPPF interning.
 
 Faithful port of `agda/Substrate/WitnessTower/Wedge/OrientationRigCat.GradedRigCat`: grade-indexed objects,
@@ -24,13 +26,19 @@ Scope (confirmed): the rig category's own ⊕/⊗ instances only. Distribution (
 behind `distribute=True` — a LABELLED construction, NOT a claimed theorem (the full free-symmetric-rig /
 SOP normal form is flagged unbuilt in `OrientationRigInitial.agda`).
 """
+
 import os
 import sys
 from dataclasses import dataclass
 from typing import Callable, Optional
 
 # reuse the proven Fin-permutation coherence oracle
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "scripts"))
+sys.path.insert(
+    0,
+    os.path.join(
+        os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "scripts"
+    ),
+)
 # rig_coherence pulls numpy (~0.1s). RIG_OPS (the op-set) never needs it — only the coherence-CHECK methods
 # (braid_*/delta/check_laws/check_grade_transport) do. Import it LAZILY at those sites so `from jea_rigcat
 # import RIG_OPS` stays cheap. (⟡infra: fix the eager numpy pull.)
@@ -45,7 +53,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(
 class RigLaw:
     commutative: bool
     associative: bool
-    unit: Optional[str] = None          # op-qname of the unit child to drop, if any
+    unit: Optional[str] = None  # op-qname of the unit child to drop, if any
     # GRADE re-indexing: a graded op's operands carry grades and the result grade is `grade_op`-folded over
     # them. `grade_transport` names the PROVEN coherence witnessing commutativity IS well-defined up to the
     # grade permutation ('add' → blockSwap/+-comm, 'mul' → factorSwap/*-comm, None → ungraded/abstract).
@@ -53,30 +61,33 @@ class RigLaw:
     # transport must be certified against rig_coherence (see GradedRigCat.check_grade_transport) — NOT a
     # hand-set boolean. Because the grade fold is commutative+associative, the sorted-children rep has a
     # well-defined result grade, so the transport is the RESIDUE, not a change to the sort.
-    grade_op: Optional[str] = None      # 'add' | 'mul' | None  (the grade monoid operation)
-    grade_transport: Optional[str] = None   # 'add' | 'mul' | None  (the proven coherence certifying comm)
+    grade_op: Optional[str] = None  # 'add' | 'mul' | None  (the grade monoid operation)
+    grade_transport: Optional[str] = (
+        None  # 'add' | 'mul' | None  (the proven coherence certifying comm)
+    )
+
 
 RIG_OPS = {
-    "Substrate.WitnessTower.Wedge.OrientationSum._⊕_":
-        RigLaw(commutative=True, associative=True, unit=None,
-               grade_op="add", grade_transport="add"),          # ⊕ over (+,0); unit = grade-0 `start`
-    "Substrate.WitnessTower.Wedge.OrientationProduct._⊗_":
-        RigLaw(commutative=True, associative=True, unit=None,
-               grade_op="mul", grade_transport="mul"),          # ⊗ over (*,1); unit = `1#`
-    "Substrate.WitnessTower.Wedge.OrientationProductStructural._⊗ˢ_":
-        RigLaw(commutative=True, associative=True, unit=None,
-               grade_op="mul", grade_transport="mul"),          # the LehmerRig structural ⊗
+    "Substrate.WitnessTower.Wedge.OrientationSum._⊕_": RigLaw(
+        commutative=True, associative=True, unit=None, grade_op="add", grade_transport="add"
+    ),  # ⊕ over (+,0); unit = grade-0 `start`
+    "Substrate.WitnessTower.Wedge.OrientationProduct._⊗_": RigLaw(
+        commutative=True, associative=True, unit=None, grade_op="mul", grade_transport="mul"
+    ),  # ⊗ over (*,1); unit = `1#`
+    "Substrate.WitnessTower.Wedge.OrientationProductStructural._⊗ˢ_": RigLaw(
+        commutative=True, associative=True, unit=None, grade_op="mul", grade_transport="mul"
+    ),  # the LehmerRig structural ⊗
     # ⟡combined-orbit — polynomial multiplication `_*P_ : Poly n → Poly m → Poly (n + m)`. GRADE monoid is
     # (ℕ,+,0) — the SAME as ⊕ — so its commutativity/associativity are proven UP TO `+-comm`/`+-assoc`
     # (RingLaws.Comm.*P-comm : p *P q ≡ subst Poly (+-comm m n) (q *P p); RingLaws.Assoc.*P-assoc). The
     # transport 'add' is the proven blockSwap/+-comm coherence (certified in check_grade_transport). Both the
     # F2 concrete op and the generic graded op appear as heads in the corpus.
-    "Substrate.Algebra.F2.Polynomial._*P_":
-        RigLaw(commutative=True, associative=True, unit=None,
-               grade_op="add", grade_transport="add"),
-    "Substrate.Algebra.Polynomial.Graded.Over._*P_":
-        RigLaw(commutative=True, associative=True, unit=None,
-               grade_op="add", grade_transport="add"),
+    "Substrate.Algebra.F2.Polynomial._*P_": RigLaw(
+        commutative=True, associative=True, unit=None, grade_op="add", grade_transport="add"
+    ),
+    "Substrate.Algebra.Polynomial.Graded.Over._*P_": RigLaw(
+        commutative=True, associative=True, unit=None, grade_op="add", grade_transport="add"
+    ),
 }
 
 
@@ -103,7 +114,7 @@ def canonical(op: str, children, resolve: Optional[Callable] = None, distribute:
         for k in kids:
             r = resolve(k)
             if r is not None and r[0] == op:
-                flat.extend(r[1])            # r[1] is already this op's canonical (flat, sorted) children
+                flat.extend(r[1])  # r[1] is already this op's canonical (flat, sorted) children
             else:
                 flat.append(k)
         kids = flat
@@ -113,7 +124,11 @@ def canonical(op: str, children, resolve: Optional[Callable] = None, distribute:
         kids = [k for k in kids if (resolve(k) or (None,))[0] != law.unit]
 
     # distributor (labelled construction, unproven): ⊗ over a ⊕ child → sum-of-products. Off by default.
-    if distribute and op == "Substrate.WitnessTower.Wedge.OrientationProduct._⊗_" and resolve is not None:
+    if (
+        distribute
+        and op == "Substrate.WitnessTower.Wedge.OrientationProduct._⊗_"
+        and resolve is not None
+    ):
         kids = _distribute(op, kids, resolve)
 
     # commutativity: SORT — the canonical Sₙ-orbit representative (justified by LehmerPath encode/decode)
@@ -130,8 +145,9 @@ def _distribute(mul_op, factors, resolve):
     sums = [(resolve(k)[1] if (resolve(k) or (None,))[0] == add_op else [k]) for k in factors]
     # cartesian product of the sum-terms → each product is a sorted ⊗ of one pick per factor
     from itertools import product as _prod
+
     terms = [tuple(sorted(pick)) for pick in _prod(*sums)]
-    return sorted(set(terms))               # the ⊕ of the products (caller re-keys); representative only
+    return sorted(set(terms))  # the ⊕ of the products (caller re-keys); representative only
 
 
 # ─────────────────────────── GradedProductOver — mirror the Agda record {u ; _∧_} ───────────────────────────
@@ -139,8 +155,9 @@ def _distribute(mul_op, factors, resolve):
 class GradedProductOver:
     """`GradedProductOver op ε C` = {u : C ε ; _∧_ : C i → C j → C (op i j)} (OrientationBimonoidal.agda).
     Here objects are grades (ℕ), so `u = ε` and `combine i j = op(i, j)` decategorify onto (ℕ, op, ε)."""
-    op: Callable       # ℕ→ℕ→ℕ  (add for ⊕, mul for ⊗)
-    e: int             # the unit grade (0 for ⊕, 1 for ⊗)
+
+    op: Callable  # ℕ→ℕ→ℕ  (add for ⊕, mul for ⊗)
+    e: int  # the unit grade (0 for ⊕, 1 for ⊗)
 
     @property
     def u(self):
@@ -158,27 +175,34 @@ class GradedRigCat:
     IS rig_coherence's proven `Fin`-permutation battery — `check_laws()` runs it."""
 
     def __init__(self):
-        self.oplus = GradedProductOver(op=lambda i, j: i + j, e=0)     # ⊕ over (+, 0)
-        self.otimes = GradedProductOver(op=lambda i, j: i * j, e=1)    # ⊗ over (*, 1)
+        self.oplus = GradedProductOver(op=lambda i, j: i + j, e=0)  # ⊕ over (+, 0)
+        self.otimes = GradedProductOver(op=lambda i, j: i * j, e=1)  # ⊗ over (*, 1)
 
     # the category (skeletal / thin groupoid on grades)
     def id_hom(self, a: int) -> bool:
-        return True                                    # Hom a a inhabited by refl
+        return True  # Hom a a inhabited by refl
+
     def hom(self, a: int, b: int) -> bool:
         return a == b
+
     def compose(self, g: bool, f: bool) -> bool:
-        return g and f                                 # trans
+        return g and f  # trans
 
     # braidings AS the coherence permutations (from the proven oracle)
     def braid_oplus(self, m: int, n: int):
-        import rig_coherence as rc                      # ⟡infra: lazy (rig_coherence → numpy)
-        return rc.blockSwap(m, n)                       # ⊕-symmetry  Fin(m+n)→Fin(n+m)
+        import rig_coherence as rc  # ⟡infra: lazy (rig_coherence → numpy)
+
+        return rc.blockSwap(m, n)  # ⊕-symmetry  Fin(m+n)→Fin(n+m)
+
     def braid_otimes(self, m: int, n: int):
         import rig_coherence as rc
-        return rc.factorSwap(m, n)                      # ⊗-symmetry  Fin(m·n)→Fin(n·m)
+
+        return rc.factorSwap(m, n)  # ⊗-symmetry  Fin(m·n)→Fin(n·m)
+
     def delta(self, m: int, n: int, p: int):
         import rig_coherence as rc
-        return rc.delta(m, n, p)                        # distributor Fin(m·(n+p))→Fin(m·n+m·p)
+
+        return rc.delta(m, n, p)  # distributor Fin(m·(n+p))→Fin(m·n+m·p)
 
     # law-checks — the Python analogue of the Agda proof fields, verified against the proven oracle
     def check_laws(self):
@@ -186,18 +210,31 @@ class GradedRigCat:
         coherences) — the Python group's coherence IS the already-proven Fin-permutation coherence.
         Also CERTIFIES each graded RIG_OPS entry's commutativity transport against the oracle (so `*P` is a
         proven member, not a hand-set boolean). Raises AssertionError on any failure; returns a summary."""
-        import rig_coherence as rc                      # ⟡infra: lazy (rig_coherence → numpy)
+        import rig_coherence as rc  # ⟡infra: lazy (rig_coherence → numpy)
+
         sanity = rc.check_sanity()
         coh = rc.check_coherences()
         bad = [r for r in sanity + coh if r[2] is False]
         assert not bad, f"rig coherence FAILED: {bad[:5]}"
         # object-monoid decategorification: ⊕ = (+,0), ⊗ = (*,1) associative + unital + commutative
         for i, j, k in [(a, b, c) for a in range(4) for b in range(4) for c in range(4)]:
-            assert self.oplus.combine(self.oplus.combine(i, j), k) == self.oplus.combine(i, self.oplus.combine(j, k))
-            assert self.otimes.combine(self.otimes.combine(i, j), k) == self.otimes.combine(i, self.otimes.combine(j, k))
-            assert self.oplus.combine(i, self.oplus.u) == i and self.otimes.combine(i, self.otimes.u) == i
+            assert self.oplus.combine(self.oplus.combine(i, j), k) == self.oplus.combine(
+                i, self.oplus.combine(j, k)
+            )
+            assert self.otimes.combine(self.otimes.combine(i, j), k) == self.otimes.combine(
+                i, self.otimes.combine(j, k)
+            )
+            assert (
+                self.oplus.combine(i, self.oplus.u) == i
+                and self.otimes.combine(i, self.otimes.u) == i
+            )
         certified = self.check_grade_transport()
-        return {"sanity": len(sanity), "coherences": len(coh), "failures": 0, "grade_transport": certified}
+        return {
+            "sanity": len(sanity),
+            "coherences": len(coh),
+            "failures": 0,
+            "grade_transport": certified,
+        }
 
     def check_grade_transport(self, top: int = 4):
         """CERTIFY every graded RIG_OPS op's commutativity/associativity transport against the proven
@@ -208,7 +245,8 @@ class GradedRigCat:
             factorSwap. This is EXACTLY the `subst Poly (+-comm m n)` transport `*P-comm` proves, read back
             as the Fin-permutation coherence. Returns the list of certified op-qnames.
         Raises AssertionError if any declared transport is NOT the proven coherence."""
-        import rig_coherence as rc                      # ⟡infra: lazy (rig_coherence → numpy)
+        import rig_coherence as rc  # ⟡infra: lazy (rig_coherence → numpy)
+
         gfold = {"add": lambda a, b: a + b, "mul": lambda a, b: a * b}
         witness = {"add": rc.blockSwap, "mul": rc.factorSwap}
         certified = []
@@ -221,11 +259,14 @@ class GradedRigCat:
             for m in range(top):
                 for n in range(top):
                     # grade fold commutes on ℕ (the object-level +-comm / *-comm)
-                    assert fold(m, n) == fold(n, m), f"{qname}: grade fold {t} not commutative at ({m},{n})"
+                    assert fold(m, n) == fold(n, m), (
+                        f"{qname}: grade fold {t} not commutative at ({m},{n})"
+                    )
                     # the transport is a proven involution: swap(n,m) ∘ swap(m,n) == identity
                     P, Q = witness[t](m, n), witness[t](n, m)
-                    assert rc.perm_eq(rc.compose(Q, P), rc.ident(fold(m, n))), \
+                    assert rc.perm_eq(rc.compose(Q, P), rc.ident(fold(m, n))), (
                         f"{qname}: transport {t} not a proven involution at ({m},{n})"
+                    )
             certified.append(qname)
         return certified
 
@@ -235,18 +276,28 @@ class RigFunctor:
     """A functor between GradedRigCats (mirrors OrientationRigCatUP.RigFunctor: F-obj, F-hom + preservation
     of id/∘/⊕/⊗/braid). Provided as a construction; `check_preservation` verifies the preservation laws on
     a sample grid."""
-    def __init__(self, source: GradedRigCat, target: GradedRigCat,
-                 f_obj: Callable = lambda n: n, f_hom: Callable = lambda h: h):
+
+    def __init__(
+        self,
+        source: GradedRigCat,
+        target: GradedRigCat,
+        f_obj: Callable = lambda n: n,
+        f_hom: Callable = lambda h: h,
+    ):
         self.S, self.T, self.f_obj, self.f_hom = source, target, f_obj, f_hom
 
     def check_preservation(self, top: int = 4):
         for i in range(top):
-            assert self.f_hom(self.S.id_hom(i)) == self.T.id_hom(self.f_obj(i))     # F preserves id
+            assert self.f_hom(self.S.id_hom(i)) == self.T.id_hom(self.f_obj(i))  # F preserves id
         for i in range(top):
             for j in range(top):
                 # F preserves the ⊕/⊗ object products (decategorified: F-obj a monoid hom)
-                assert self.f_obj(self.S.oplus.combine(i, j)) == self.T.oplus.combine(self.f_obj(i), self.f_obj(j))
-                assert self.f_obj(self.S.otimes.combine(i, j)) == self.T.otimes.combine(self.f_obj(i), self.f_obj(j))
+                assert self.f_obj(self.S.oplus.combine(i, j)) == self.T.oplus.combine(
+                    self.f_obj(i), self.f_obj(j)
+                )
+                assert self.f_obj(self.S.otimes.combine(i, j)) == self.T.otimes.combine(
+                    self.f_obj(i), self.f_obj(j)
+                )
         return True
 
 
@@ -254,27 +305,37 @@ class RigFunctor:
 def selfcheck():
     R = GradedRigCat()
     summary = R.check_laws()
-    RigFunctor(R, R).check_preservation()             # identity functor preserves structure
+    RigFunctor(R, R).check_preservation()  # identity functor preserves structure
     # canonical() orbit demo: x ⊕ y and y ⊕ x intern to ONE key (the sorted rep)
     add = "Substrate.WitnessTower.Wedge.OrientationSum._⊕_"
-    assert canonical(add, ("x", "y")) == canonical(add, ("y", "x")) == ("x", "y"), "commutative orbit"
+    assert canonical(add, ("x", "y")) == canonical(add, ("y", "x")) == ("x", "y"), (
+        "commutative orbit"
+    )
     # associativity: (a⊕b)⊕c flattens+sorts to the same multiset as a⊕(b⊕c)
     store = {"ab": (add, ("a", "b")), "bc": (add, ("b", "c"))}
     resolve = lambda k: store.get(k)
-    left = canonical(add, ("ab", "c"), resolve)       # (a⊕b)⊕c
-    right = canonical(add, ("a", "bc"), resolve)      # a⊕(b⊕c)
+    left = canonical(add, ("ab", "c"), resolve)  # (a⊕b)⊕c
+    right = canonical(add, ("a", "bc"), resolve)  # a⊕(b⊕c)
     assert left == right == ("a", "b", "c"), f"associative orbit: {left} vs {right}"
     # a non-rig op is untouched (positional)
     assert canonical("SomeUser.f", ("y", "x")) == ("y", "x"), "non-rig op stays positional"
     # ⟡combined-orbit: `*P` is a PROVEN graded op — its transport is certified, and p*Pq / q*Pp intern to ONE
     # key (commutative up to the +-comm grade transport; result grade = sum, order-invariant).
     mulP = "Substrate.Algebra.F2.Polynomial._*P_"
-    assert mulP in summary["grade_transport"], "*P must be CERTIFIED against the proven +-comm coherence"
-    assert canonical(mulP, ("q", "p")) == canonical(mulP, ("p", "q")) == ("p", "q"), "*P commutative orbit"
-    print(f"PASS — rig coherence: {summary['sanity']} sanity + {summary['coherences']} Laplaza checks; "
-          f"orbit canonical() (comm+assoc) verified; non-rig ops positional.")
-    print(f"  grade-transport CERTIFIED (proven +-comm/*-comm involution) for {len(summary['grade_transport'])} "
-          f"graded ops incl. *P ⇒ p*Pq ≡ q*Pp up to +-comm intern to one orbit key.")
+    assert mulP in summary["grade_transport"], (
+        "*P must be CERTIFIED against the proven +-comm coherence"
+    )
+    assert canonical(mulP, ("q", "p")) == canonical(mulP, ("p", "q")) == ("p", "q"), (
+        "*P commutative orbit"
+    )
+    print(
+        f"PASS — rig coherence: {summary['sanity']} sanity + {summary['coherences']} Laplaza checks; "
+        f"orbit canonical() (comm+assoc) verified; non-rig ops positional."
+    )
+    print(
+        f"  grade-transport CERTIFIED (proven +-comm/*-comm involution) for {len(summary['grade_transport'])} "
+        f"graded ops incl. *P ⇒ p*Pq ≡ q*Pp up to +-comm intern to one orbit key."
+    )
     return True
 
 

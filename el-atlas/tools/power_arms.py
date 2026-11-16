@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 power_arms.py — the power-config space as EXPERIMENT ARMS. Sweep the user-accessible
 power-profiles-daemon arms, measure per arm, and test the model's prediction: absolute throughput

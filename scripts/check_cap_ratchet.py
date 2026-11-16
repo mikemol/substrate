@@ -1,12 +1,18 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """check_cap_ratchet.py — per-module elaboration PEAK is DEBT; ratchet it toward the 128MiB cap.
 
 The 4th sibling of the set-ratchet family (carrier-locality / sumtype / Set₁). Those govern
 structural debt; this one governs MEMORY debt — the per-module Agda elaboration peak that the
 `+RTS -M<MEM_CAP>` forcing function bounds.
 
-WHY A RATCHET (not a scalar). `MEM_CAP = "256m"` is a HARDCODED SCALAR in
-scripts/gen_build_makefiles.py — the anti-pattern this repo has already killed three times: a
+WHY A RATCHET (not a scalar). `MEM_CAP` is a HARDCODED SCALAR in
+scripts/gen_build_makefiles.py — read the value THERE; it is the single authority and this file
+does not restate it. (⚑ This sentence used to quote `"256m"` while the line above correctly said
+"the 128MiB cap" — the same constant, wrong by a factor of two, contradicting itself two lines
+apart inside the gate that ENFORCES it. A restated constant is this surface's characteristic
+rot.) The anti-pattern this repo has already killed three times: a
 decision's cost is never a frozen number (feedback_cost_is_structural_times_live), and a gate over
 accumulating debt is a paydown-only ratchet over a MATERIALIZED census
 (feedback_policy_is_a_ratchet_over_census). Because the offender list lived only in prose it went
@@ -44,15 +50,15 @@ forbids GROWTH and rewards paydown.
 Blocking gate. Exit 0 = clean, 1 = a new module crossed the cap (or the census is unmeasurable).
 Usage: check_cap_ratchet.py [--quiet] [--target N]
 """
+
 import os
 import sys
 
 import buildtime
 import ratchet
 
-TARGET = 128                                      # MiB — the cap we are ratcheting toward
-BASELINE = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                        "cap_ratchet_baseline.txt")
+TARGET = 128  # MiB — the cap we are ratcheting toward
+BASELINE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "cap_ratchet_baseline.txt")
 
 
 def census(target=TARGET):
@@ -72,9 +78,26 @@ def census(target=TARGET):
 
 
 def main():
+    # ⚑ ROUTED THROUGH THE AUTHORITY (T17/T11).  `--dry-run` already worked —
+    # `set_ratchet` reads it from argv — but a TYPO did not fail: `--queit` was
+    # accepted and the gate ran verbose-but-passing (§7e).  `--dry-run` is NOT
+    # listed: `ratchet.UNIVERSAL_FLAGS` declares it for every caller.
+    #
+    # ⚑ `--target N` IS VALUE-BEARING, so the flag AND its argument are split off
+    # before the membership test — `check_argv` compares bare flags and would
+    # reject the integer as an unknown one.  Same shape as `-jN` in
+    # run_selftests and `--out=` in worklist_gate.
+    argv = list(sys.argv)
+    if "--target" in argv:
+        i = argv.index("--target")
+        del argv[i : i + 2]
+    if (
+        rc := ratchet.check_argv(argv, {"--quiet", "--list", "--target"}, "check_cap_ratchet.py")
+    ) is not None:
+        return rc
     quiet = "--quiet" in sys.argv
     target = TARGET
-    if "--target" in sys.argv:                    # test hook for the refusal path
+    if "--target" in sys.argv:  # test hook for the refusal path
         target = int(sys.argv[sys.argv.index("--target") + 1])
 
     # COMPLETENESS GUARD (mirrors set1_ratchet_cores': an incomplete census is not a low count).
@@ -86,11 +109,16 @@ def main():
         return 1
 
     return ratchet.set_ratchet(
-        census(target), BASELINE, "cap-ratchet", quiet,
+        census(target),
+        BASELINE,
+        "cap-ratchet",
+        quiet,
+        list_keys="--list" in sys.argv,
         noun=f"module(s) over {target}MB",
         refuse_hint="A module crossed the cap. SHARD it (split the elaboration unit at an "
-                    "associative boundary and seal the parts — cf. KAT.Full's fold-++ shards), "
-                    "split def/proof, or seal the heavy neutral `opaque`. Do NOT raise the cap.")
+        "associative boundary and seal the parts — cf. KAT.Full's fold-++ shards), "
+        "split def/proof, or seal the heavy neutral `opaque`. Do NOT raise the cap.",
+    )
 
 
 if __name__ == "__main__":

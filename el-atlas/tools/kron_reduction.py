@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 kron_reduction.py — EVERY conductance graph reduces. Node elimination (Kron reduction = Schur
 complement of the Laplacian) is the universal reduction; series / parallel / Y-Delta are its

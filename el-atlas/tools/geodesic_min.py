@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 geodesic_min.py — min() is not an operator; it EMERGES from the circuit settling (candidate GEO).
 

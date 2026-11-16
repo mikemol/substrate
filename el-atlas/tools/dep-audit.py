@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 dep-audit.py — R-V35 G8 handoff discharge: record the ACTUAL knob reads of
 every claim test and compare against the DECLARED support in _CLAIM_DEPS.

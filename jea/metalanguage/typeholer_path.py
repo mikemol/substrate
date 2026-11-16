@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """typeholer_path.py -- the recursive-typeholer PATH driver (⟡typeholer-path, design
 `scratch/auto_pushout_typeholer_path_design.md` §Ⓑ).
 
@@ -28,6 +30,7 @@ and writing the instance proofs is the LLM synthesis step, NOT something this dr
 The driver produces the STRUCTURAL SKELETON of the tower -- which nodes cluster at which
 rung + the per-node instantiation obligations -- and hands each rung to a human/LLM to name.
 """
+
 import sys, os, json, argparse, glob as glob_mod
 from collections import defaultdict
 
@@ -58,11 +61,11 @@ class Cand:
 
     def __init__(self, nid, units, size, head, unit_ids, support):
         self.nid = nid
-        self.units = units            # cross-unit membership count (refactor relevance)
-        self.size = size              # subtree node count
-        self.head = head              # (kind, op, lit)
-        self.unit_ids = unit_ids      # frozenset of original unit indices containing this subtree
-        self.support = support        # frozenset of interned node ids in this subtree
+        self.units = units  # cross-unit membership count (refactor relevance)
+        self.size = size  # subtree node count
+        self.head = head  # (kind, op, lit)
+        self.unit_ids = unit_ids  # frozenset of original unit indices containing this subtree
+        self.support = support  # frozenset of interned node ids in this subtree
 
 
 def extract_cands(C, min_fanin=3, min_size=5, cross_unit=True):
@@ -80,8 +83,16 @@ def extract_cands(C, min_fanin=3, min_size=5, cross_unit=True):
         if len(sup) < min_size:
             continue
         nn = C.I.nodes[nid]
-        out.append(Cand(nid, len(unit_ids), len(sup), (nn.kind, nn.op, nn.lit),
-                        frozenset(unit_ids), frozenset(sup)))
+        out.append(
+            Cand(
+                nid,
+                len(unit_ids),
+                len(sup),
+                (nn.kind, nn.op, nn.lit),
+                frozenset(unit_ids),
+                frozenset(sup),
+            )
+        )
     out.sort(key=lambda c: (-c.units, -c.size))
     return out
 
@@ -156,7 +167,7 @@ def fixpoint_iterate(C, min_fanin=3, min_size=5, max_depth=8):
         cands.sort(key=lambda t: (-t[1], -t[2]))
         sig = frozenset(c[0] for c in cands)
         if not cands or sig == seen:
-            break                                  # fixpoint / empty
+            break  # fixpoint / empty
         seen = sig
         levels.append({"depth": depth + 1, "n_carriers": len(carriers), "candidates": cands})
         # promote: the new carriers are the candidate subtrees
@@ -181,9 +192,11 @@ def build_path(C, min_fanin=3, min_size=5, cross_unit=True, max_depth=8):
     unit_names = [f"{u.path.split('/')[-1]}::{u.name}" for u in C.units]
 
     result = {
-        "corpus": {"units": len(C.units), "nodes": C.I.size(),
-                   "params": {"min_fanin": min_fanin, "min_size": min_size,
-                              "cross_unit": cross_unit}},
+        "corpus": {
+            "units": len(C.units),
+            "nodes": C.I.size(),
+            "params": {"min_fanin": min_fanin, "min_size": min_size, "cross_unit": cross_unit},
+        },
         "n_candidates": len(cands),
         "max_rung": max_rung,
         "containment_tower": [],
@@ -193,15 +206,19 @@ def build_path(C, min_fanin=3, min_size=5, cross_unit=True, max_depth=8):
     for r in range(max_rung + 1):
         entries = []
         for c in rungs.get(r, []):
-            entries.append({
-                "node": c.nid,
-                "head": _head_str(c.head),
-                "units": c.units,                    # how many concrete units contain it
-                "size": c.size,
-                "contains": [by_nid[b].nid for b in direct[c.nid]],           # direct lower rungs
-                "contains_heads": sorted({_head_str(by_nid[b].head) for b in direct[c.nid]}),
-                "obligations": sorted(unit_names[i] for i in c.unit_ids),      # units the generic subsumes
-            })
+            entries.append(
+                {
+                    "node": c.nid,
+                    "head": _head_str(c.head),
+                    "units": c.units,  # how many concrete units contain it
+                    "size": c.size,
+                    "contains": [by_nid[b].nid for b in direct[c.nid]],  # direct lower rungs
+                    "contains_heads": sorted({_head_str(by_nid[b].head) for b in direct[c.nid]}),
+                    "obligations": sorted(
+                        unit_names[i] for i in c.unit_ids
+                    ),  # units the generic subsumes
+                }
+            )
         result["containment_tower"].append({"rung": r, "n": len(entries), "candidates": entries})
     return result, unit_names
 
@@ -215,9 +232,14 @@ def _dedupe_by_head(entries):
         key = (e["head"], e["size"])
         g = groups.get(key)
         if g is None:
-            groups[key] = {"head": e["head"], "size": e["size"], "mult": 1,
-                           "units": e["units"], "contains_heads": set(e["contains_heads"]),
-                           "obligations": set(e["obligations"])}
+            groups[key] = {
+                "head": e["head"],
+                "size": e["size"],
+                "mult": 1,
+                "units": e["units"],
+                "contains_heads": set(e["contains_heads"]),
+                "obligations": set(e["obligations"]),
+            }
         else:
             g["mult"] += 1
             g["units"] = max(g["units"], e["units"])
@@ -231,14 +253,20 @@ def _dedupe_by_head(entries):
 def render_human(result):
     L = []
     c = result["corpus"]
-    L.append(f"corpus: {c['units']} units, {c['nodes']} interned nodes "
-             f"(min_fanin={c['params']['min_fanin']}, min_size={c['params']['min_size']}, "
-             f"cross_unit={c['params']['cross_unit']})")
-    L.append(f"{result['n_candidates']} shared-subtree candidates; "
-             f"containment tower height = {result['max_rung']}")
+    L.append(
+        f"corpus: {c['units']} units, {c['nodes']} interned nodes "
+        f"(min_fanin={c['params']['min_fanin']}, min_size={c['params']['min_size']}, "
+        f"cross_unit={c['params']['cross_unit']})"
+    )
+    L.append(
+        f"{result['n_candidates']} shared-subtree candidates; "
+        f"containment tower height = {result['max_rung']}"
+    )
     L.append("")
     L.append("=== CONTAINMENT TOWER (the refactor plan: rung 0 primitives -> apex composites) ===")
-    L.append("    each row = a shared subtree the driver surfaces; a human/LLM names it into a record.")
+    L.append(
+        "    each row = a shared subtree the driver surfaces; a human/LLM names it into a record."
+    )
     for band in result["containment_tower"]:
         r = band["rung"]
         rows = _dedupe_by_head(band["candidates"])
@@ -251,10 +279,12 @@ def render_human(result):
             L.append(f"      {g['head']:<42}{mult:<5} in {g['units']} units, size {g['size']}{low}")
             if g["obligations"]:
                 obs = ", ".join(sorted(g["obligations"])[:6])
-                more = "" if len(g["obligations"]) <= 6 else f" (+{len(g['obligations'])-6})"
+                more = "" if len(g["obligations"]) <= 6 else f" (+{len(g['obligations']) - 6})"
                 L.append(f"          obligations: {obs}{more}")
     L.append("")
-    L.append("=== FIXPOINT ITERATE (extract -> re-intern -> extract; dual: toward the primitive basis) ===")
+    L.append(
+        "=== FIXPOINT ITERATE (extract -> re-intern -> extract; dual: toward the primitive basis) ==="
+    )
     if not result["fixpoint_iterate"]:
         L.append("  (empty)")
     for lvl in result["fixpoint_iterate"]:
@@ -262,10 +292,14 @@ def render_human(result):
         for nid, ct, sz, head in lvl["candidates"]:
             heads[_head_str(head)] += 1
         top = sorted(heads.items(), key=lambda kv: -kv[1])[:8]
-        L.append(f"  level {lvl['depth']}: {lvl['n_carriers']} carriers -> "
-                 f"{len(lvl['candidates'])} shared subtrees; top heads: "
-                 + ", ".join(f"{h}({n})" for h, n in top))
-    L.append(f"  -> converged after {len(result['fixpoint_iterate'])} level(s) (SPPF is bottom-up complete).")
+        L.append(
+            f"  level {lvl['depth']}: {lvl['n_carriers']} carriers -> "
+            f"{len(lvl['candidates'])} shared subtrees; top heads: "
+            + ", ".join(f"{h}({n})" for h, n in top)
+        )
+    L.append(
+        f"  -> converged after {len(result['fixpoint_iterate'])} level(s) (SPPF is bottom-up complete)."
+    )
     return "\n".join(L)
 
 
@@ -281,25 +315,42 @@ def expand(paths):
 
 
 def main(argv=None):
-    ap = argparse.ArgumentParser(description=__doc__.split("\n")[0],
-                                 formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap = argparse.ArgumentParser(
+        description=__doc__.split("\n")[0], formatter_class=argparse.RawDescriptionHelpFormatter
+    )
     ap.add_argument("files", nargs="+", help="Python files/globs and/or Agda .agdai cores")
-    ap.add_argument("--min-fanin", type=int, default=3,
-                    help="min UNITS sharing a subtree for it to be a candidate (default 3)")
-    ap.add_argument("--min-size", type=int, default=5,
-                    help="min subtree node count (trivial-node gate, default 5)")
-    ap.add_argument("--raw-fanin", action="store_true",
-                    help="rank by raw reference fan-in (incl. intra-unit repeats) instead of cross-unit membership")
-    ap.add_argument("--max-depth", type=int, default=8, help="fixpoint-iterate depth guard (default 8)")
-    ap.add_argument("--json", action="store_true", help="emit the rung-DAG as JSON (the LLM accelerator)")
+    ap.add_argument(
+        "--min-fanin",
+        type=int,
+        default=3,
+        help="min UNITS sharing a subtree for it to be a candidate (default 3)",
+    )
+    ap.add_argument(
+        "--min-size",
+        type=int,
+        default=5,
+        help="min subtree node count (trivial-node gate, default 5)",
+    )
+    ap.add_argument(
+        "--raw-fanin",
+        action="store_true",
+        help="rank by raw reference fan-in (incl. intra-unit repeats) instead of cross-unit membership",
+    )
+    ap.add_argument(
+        "--max-depth", type=int, default=8, help="fixpoint-iterate depth guard (default 8)"
+    )
+    ap.add_argument(
+        "--json", action="store_true", help="emit the rung-DAG as JSON (the LLM accelerator)"
+    )
     args = ap.parse_args(argv)
 
     files = expand(args.files)
     if not files:
         ap.error("no input files")
     C = build_corpus(files)
-    result, _ = build_path(C, args.min_fanin, args.min_size,
-                           cross_unit=not args.raw_fanin, max_depth=args.max_depth)
+    result, _ = build_path(
+        C, args.min_fanin, args.min_size, cross_unit=not args.raw_fanin, max_depth=args.max_depth
+    )
     if args.json:
         print(json.dumps(result, indent=2))
     else:

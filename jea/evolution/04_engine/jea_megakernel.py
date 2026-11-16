@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """jea_megakernel.py — Δ-J1-rest: the persistent megakernel does REAL eval-work, branched on the live operating point.
 
 Δ-J1 proved the device CONSUMES the resident telemetry package (read + record). Δ-J1-rest closes the genuine
@@ -25,17 +27,22 @@ Witnesses (each [W]):
 3. LOOP CLOSED FROM LIVE EVIDENCE: each published g came from a live poll()-derived operating point (the host
    controller), not a hardcoded schedule -- jea_navigator.navigate plugs in as the operating-point policy.
 """
+
 import os, sys, time
+
 os.environ.setdefault("CUDA_PATH", "/usr")
 import numpy as np, cupy as cp
 
-_TOOLS = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", "el-atlas", "tools"))
+_TOOLS = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "..", "..", "..", "el-atlas", "tools")
+)
 sys.path.insert(0, _TOOLS)
 from live_dispatcher import poll
 
-FIELDS = 4        # [g (work-granularity operating point), fstar%, bneck, epoch]
+FIELDS = 4  # [g (work-granularity operating point), fstar%, bneck, epoch]
 
-_eval = cp.RawKernel(r'''
+_eval = cp.RawKernel(
+    r"""
 extern "C" __global__ void eval_reduce(
     volatile int* pkg, volatile int* active, volatile int* stop,
     const int* data, int N, long long* out_sum, int* out_steps,
@@ -56,38 +63,63 @@ extern "C" __global__ void eval_reduce(
   }
   out_sum[0] = acc; out_steps[0] = steps;
 }
-''', "eval_reduce")
+""",
+    "eval_reduce",
+)
 
 
 def live_operating_point(tel, base=64):
     """The host controller's operating-point POLICY: derive the work-granularity from LIVE evidence (here a
     simple monotone map off the live link/thermal signal). jea_navigator.navigate is the full policy; this is
     the pluggable seam -- the point is g comes from live evidence, not a hardcoded schedule."""
-    g = int(base * max(tel["link_state"], 0.1))           # live: granularity tracks the live link state
+    g = int(base * max(tel["link_state"], 0.1))  # live: granularity tracks the live link state
     return max(g, 1)
 
 
 if __name__ == "__main__":
-    print("Δ-J1-rest: persistent megakernel does REAL combine work, schedule set LIVE by the resident operating point\n")
+    print(
+        "Δ-J1-rest: persistent megakernel does REAL combine work, schedule set LIVE by the resident operating point\n"
+    )
     N = 1 << 14
-    data = (cp.arange(N, dtype=cp.int32) % 7)
+    data = cp.arange(N, dtype=cp.int32) % 7
     expected = int(data.sum().get())
 
-    pkg = cp.zeros(2 * FIELDS, cp.int32); active = cp.zeros(1, cp.int32); stop = cp.zeros(1, cp.int32)
-    out_sum = cp.zeros(1, cp.int64); out_steps = cp.zeros(1, cp.int32)
-    GCAP = 4096; gtrace = cp.zeros(GCAP, cp.int32)
+    pkg = cp.zeros(2 * FIELDS, cp.int32)
+    active = cp.zeros(1, cp.int32)
+    stop = cp.zeros(1, cp.int32)
+    out_sum = cp.zeros(1, cp.int64)
+    out_steps = cp.zeros(1, cp.int32)
+    GCAP = 4096
+    gtrace = cp.zeros(GCAP, cp.int32)
     cur_slot = [0]
 
     def publish(g, epoch):
         inactive = 1 - cur_slot[0]
-        pkg[inactive * FIELDS:inactive * FIELDS + FIELDS] = cp.asarray([g, 0, 0, epoch], cp.int32)
-        active[:] = inactive; cur_slot[0] = inactive
+        pkg[inactive * FIELDS : inactive * FIELDS + FIELDS] = cp.asarray([g, 0, 0, epoch], cp.int32)
+        active[:] = inactive
+        cur_slot[0] = inactive
 
-    publish(live_operating_point(poll()), 0)              # initial operating point from live evidence
+    publish(live_operating_point(poll()), 0)  # initial operating point from live evidence
     strm = cp.cuda.Stream(non_blocking=True)
     with strm:
-        _eval((1,), (1,), (pkg, active, stop, data, np.int32(N), out_sum, out_steps,
-                           gtrace, np.int32(GCAP), np.int32(FIELDS), np.int64(10_000_000), np.int32(2_000_000)))
+        _eval(
+            (1,),
+            (1,),
+            (
+                pkg,
+                active,
+                stop,
+                data,
+                np.int32(N),
+                out_sum,
+                out_steps,
+                gtrace,
+                np.int32(GCAP),
+                np.int32(FIELDS),
+                np.int64(10_000_000),
+                np.int32(2_000_000),
+            ),
+        )
     # host controller loop: re-derive the operating point from live evidence and re-publish WHILE the device runs.
     # synthetic state sweep stands in for changing conditions (the link ramping) so g visibly reconfigures.
     # The kernel is throttled (clock64) to span this window; we DO NOT stop it -- it finishes the reduction
@@ -96,25 +128,44 @@ if __name__ == "__main__":
         tel = dict(poll(), link_state=link)
         publish(live_operating_point(tel), epoch)
         time.sleep(0.1)
-    strm.synchronize()                                    # wait for NATURAL completion (no stop -> full sum)
+    strm.synchronize()  # wait for NATURAL completion (no stop -> full sum)
 
-    got = int(out_sum.get()[0]); steps = int(out_steps.get()[0])
-    gs = [int(x) for x in gtrace.get()[:min(steps, GCAP)]]
+    got = int(out_sum.get()[0])
+    steps = int(out_steps.get()[0])
+    gs = [int(x) for x in gtrace.get()[: min(steps, GCAP)]]
     distinct_g = sorted(set(gs))
     print(f"  data: {N} elements; true sum = {expected}")
     print(f"  device reduction = {got}  ({'CORRECT' if got == expected else 'WRONG'})")
     print(f"  steps = {steps}; distinct live g-values used during the ONE reduction = {distinct_g}")
 
-    w1 = (got == expected)                                # correct regardless of the g-sequence (the invariant)
-    w2 = len(distinct_g) >= 2                             # device was live-reconfigured mid-reduction
-    w3 = True                                             # each g came from live_operating_point(poll()) (loop closed)
-    print(f"\nW1 REAL WORK CORRECT under live reconfig (device sum == true sum, ANY g-sequence -- combine ⊥ schedule): {w1}")
-    print(f"W2 LIVE-RECONFIGURED MID-RUN (one kernel used {len(distinct_g)} distinct g, no relaunch): {w2}")
-    print(f"W3 LOOP CLOSED FROM LIVE EVIDENCE (g = live_operating_point(poll()); navigate() is the full policy): {w3}")
+    w1 = got == expected  # correct regardless of the g-sequence (the invariant)
+    w2 = len(distinct_g) >= 2  # device was live-reconfigured mid-reduction
+    w3 = True  # each g came from live_operating_point(poll()) (loop closed)
+    print(
+        f"\nW1 REAL WORK CORRECT under live reconfig (device sum == true sum, ANY g-sequence -- combine ⊥ schedule): {w1}"
+    )
+    print(
+        f"W2 LIVE-RECONFIGURED MID-RUN (one kernel used {len(distinct_g)} distinct g, no relaunch): {w2}"
+    )
+    print(
+        f"W3 LOOP CLOSED FROM LIVE EVIDENCE (g = live_operating_point(poll()); navigate() is the full policy): {w3}"
+    )
     ok = w1 and w2 and w3
-    print(f"\n  {'PASS' if ok else 'FAIL'} — the persistent megakernel does REAL eval-work (associative combine)")
-    print(f"  whose schedule (granularity g) is set LIVE by the resident operating point, and the RESULT is")
-    print(f"  invariant to live reconfiguration -- actuation changes performance, never correctness (combine ⊥")
-    print(f"  schedule, on-device). The host<->device loop is closed: poll evidence -> operating point -> publish")
-    print(f"  -> device combines live. Generalizes from the array-reduce to the DAG evaluator (same read + switch,")
-    print(f"  dependencies via the work-queue). Wire live_operating_point -> jea_navigator.navigate for the full policy.")
+    print(
+        f"\n  {'PASS' if ok else 'FAIL'} — the persistent megakernel does REAL eval-work (associative combine)"
+    )
+    print(
+        f"  whose schedule (granularity g) is set LIVE by the resident operating point, and the RESULT is"
+    )
+    print(
+        f"  invariant to live reconfiguration -- actuation changes performance, never correctness (combine ⊥"
+    )
+    print(
+        f"  schedule, on-device). The host<->device loop is closed: poll evidence -> operating point -> publish"
+    )
+    print(
+        f"  -> device combines live. Generalizes from the array-reduce to the DAG evaluator (same read + switch,"
+    )
+    print(
+        f"  dependencies via the work-queue). Wire live_operating_point -> jea_navigator.navigate for the full policy."
+    )

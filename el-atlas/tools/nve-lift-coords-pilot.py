@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 nve-lift-coords-pilot.py — the last residue inside the vE answer: the
 exact statement in LIFT COORDINATES (formal-quotient pairs).

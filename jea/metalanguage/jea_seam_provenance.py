@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Ξ7 — cross-tool provenance: mechanically verify the Agda `compose`
 (Substrate.WitnessTower.M40Closure) faithfully transcribes the Python
 `a4z2_compose` (jea/metalanguage/spectral_view.py — promoted out of scratch so this
@@ -15,7 +17,9 @@ The check: same 3-ary output, head operators correspond per component, and the
 cycle action nests in component 2 on both sides. NOT eyeballed — read off the
 interned forest + the Python AST.
 """
+
 import sys, os, ast
+
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from jea_pyalg import Intern
 import jea_agdai
@@ -66,8 +70,9 @@ def py_compose_ops(path):
     """From a4z2_compose's `return (..., ..., ...)`: the 3 components' head ops
     + the cycle op nested in component 2."""
     tree = ast.parse(open(path).read())
-    fn = next(n for n in ast.walk(tree)
-              if isinstance(n, ast.FunctionDef) and n.name == "a4z2_compose")
+    fn = next(
+        n for n in ast.walk(tree) if isinstance(n, ast.FunctionDef) and n.name == "a4z2_compose"
+    )
     ret = next(n for n in fn.body if isinstance(n, ast.Return))
     tup = ret.value
     assert isinstance(tup, ast.Tuple) and len(tup.elts) == 3, "a4z2_compose return is not a 3-tuple"
@@ -89,7 +94,9 @@ def py_compose_ops(path):
 def main():
     print("=== Ξ7: Agda compose ↔ Python a4z2_compose provenance ===")
     if not os.path.exists(AGDAI):
-        print(f"  SKIP: {AGDAI} not built (run: agda --safe Substrate/WitnessTower/M40Closure.agda)")
+        print(
+            f"  SKIP: {AGDAI} not built (run: agda --safe Substrate/WitnessTower/M40Closure.agda)"
+        )
         return 0
     I = Intern()
     rep = jea_agdai.core_intern_agdai(AGDAI, I)
@@ -108,7 +115,9 @@ def main():
         want = CORRESPOND.get(ao)
         match = want == po
         ok = ok and match
-        print(f"    component {i}: {ao} ↔ {po}  {'MATCH' if match else 'DIVERGE (want '+str(want)+')'}")
+        print(
+            f"    component {i}: {ao} ↔ {po}  {'MATCH' if match else 'DIVERGE (want ' + str(want) + ')'}"
+        )
     cyc_ok = CORRESPOND.get(a_cycle) == p_cycle
     ok = ok and cyc_ok
     print(f"    cycle action: {a_cycle} ↔ {p_cycle}  {'MATCH' if cyc_ok else 'DIVERGE'}")
@@ -116,7 +125,9 @@ def main():
     print("\n=== VERDICT ===")
     if ok:
         print("  FAITHFUL: the Agda `compose` transcribes a4z2_compose operator-for-operator")
-        print("  (3-component output; sign/mask/cycle ops correspond; cycle action nests in comp2).")
+        print(
+            "  (3-component output; sign/mask/cycle ops correspond; cycle action nests in comp2)."
+        )
         print("  The M2 proof's transcription link is now MECHANICALLY checked, not eyeballed.")
         return 0
     print("  DIVERGENCE: the transcription does NOT match — the M2 proof rests on a wrong law.")

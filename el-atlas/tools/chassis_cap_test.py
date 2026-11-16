@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 AI-12: chassis-cap binding test (RUN AS ROOT, venv python). Resolves AI-4's over-claimed "chassis
 BINDS", which compared combined draw to the NAMEPLATE cap sum (75W) -- but neither side hit its own

@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 igpu_contention.py — AI-7b: the iGPU as a contention edge on TWO shared nodes.
 

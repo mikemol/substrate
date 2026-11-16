@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 second-order-zd-pilot.py — S22: the certificate is carried, not computed;
 zero divisors are compiled, not searched; the sedenion exhibit is an

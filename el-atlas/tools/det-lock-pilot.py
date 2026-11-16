@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 det-lock-pilot.py — S25 prelude: the radial lock schedule. One certificate,
 det L_x, carried through the tower; at d <= 8 it is LOCKED to the norm

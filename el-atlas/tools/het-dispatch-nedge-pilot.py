@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 het-dispatch-nedge-pilot.py — T-series pilot: heterogeneous CPU+GPU dispatch as a nedge
 parallel-conductance balance (candidate claim HET).

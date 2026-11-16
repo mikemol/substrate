@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 branch-independence-nedge-pilot.py — T-series pilot: WHEN does G_OR (parallel sum) hold, and when
 does a shared resource break it? (candidate claim BRI).

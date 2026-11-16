@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """W3: the split-test. A pair (a,b) is 'split by knob k' iff it has
 truth-separators in the full space S but NONE in the restriction
 S|k=base — i.e., every separating probe requires k off its base value:

@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# cgroup-scope-hog — allocate ~256 MiB and touch it. The probe payload for the
+# cap-enforcement test, in a FILE so the judgement lives in a program rather than
+# in an inline -c that dies with the turn.
+s=""
+while [ ${#s} -lt 268435456 ]; do s="$s$s$(printf '%01048576d' 0)"; done
+echo "${#s}"

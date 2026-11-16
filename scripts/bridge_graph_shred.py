@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """bridge_graph_shred.py — the VALUE-layer companion to rank4_shred.
 
 rank4_shred reads the TYPE-dependency skeleton (data/record refs) — the rigid
@@ -26,19 +28,31 @@ the bridge graph reproduces the shred graph: identity achieved down there.
 Heuristic, like the other shred tools (regex over stripped source); rank is a
 lower bound. Run from anywhere.
 """
+
 import os, re, collections
-from _agdatext import split_arrows, strip
-sa = split_arrows
+import _agdatext
+
+sa = _agdatext.split_arrows
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "agda", "Substrate"))
 
 
-
 # ---- 1. the top-down shred graph (reuse rank4_shred's ranking) -------------
 from _shred_graph import ShredGraph
-_G = ShredGraph(ROOT)                       # rung-1: the shared Agda decl graph + reach/rank/refs/toks
+
+_G = ShredGraph(ROOT)  # rung-1: the shared Agda decl graph + reach/rank/refs/toks
 text, kind, home, modof, fileof, body, known, produced, consumed, importers = (
-    _G.text, _G.kind, _G.home, _G.modof, _G.fileof, _G.body, _G.known, _G.produced, _G.consumed, _G.importers)
+    _G.text,
+    _G.kind,
+    _G.home,
+    _G.modof,
+    _G.fileof,
+    _G.body,
+    _G.known,
+    _G.produced,
+    _G.consumed,
+    _G.importers,
+)
 toks, reach, rank, refs = _G.toks, _G.reach, _G.rank, _G.refs
 ranks = {T: rank(T) for T in known}
 peak = [T for T in known if ranks[T] == 4]
@@ -53,7 +67,7 @@ for T in peak:
 
 # ---- 2. the value layer: founded roots + bridge/iso edges ------------------
 # roots: `<name> [params] = record { C = <CarrierHead> ; ...`
-root_carrier = {}      # root-name -> carrier head type
+root_carrier = {}  # root-name -> carrier head type
 rootdef = re.compile(r"^([^\s=]+)(?:\s+[^\s=]+)*\s*=\s*record\s*\{\s*C\s*=\s*([^\s;]+)")
 for t in text.values():
     for line in t.splitlines():
@@ -79,15 +93,16 @@ for t in text.values():
 # combinators have other shapes after the colon, so are excluded).
 atom_re = re.compile(
     r"^([^\s:]+)\s*:\s*(FixedPointFree|InvolutiveResidue|CommutingInvolutions|TorsorAtom)\b\s*(.*)$",
-    re.M)
+    re.M,
+)
 atom_instances = []
 for p, t in text.items():
     for am in atom_re.finditer(t):
         atom_instances.append((am.group(1), am.group(2), am.group(3).strip(), modof.get(p, "")))
 
 # bridge/iso edges: `<name> : Bridge X Y` or `: WedgeIso X Y` with X,Y roots.
-base_edges = []        # (kind, carrierX, carrierY, defname)
-structural_iso = 0     # tensor-level structure maps (skipped as base edges)
+base_edges = []  # (kind, carrierX, carrierY, defname)
+structural_iso = 0  # tensor-level structure maps (skipped as base edges)
 # match the codomain Bridge/WedgeIso anywhere in a type signature line (so a
 # parametric `name : (n) → Bridge ℕ-div (Cyc-div n)` is caught, not just direct).
 edgere = re.compile(r"\b(Bridge|WedgeIso)\s+(.+)$")
@@ -102,7 +117,14 @@ for t in text.values():
         # `Bridge ℕ-div (Cyc-div n)`); a base edge needs ≥2 distinct roots.
         rtoks = [t for t in re.split(r"[\s()]+", m.group(2)) if t in root_carrier]
         if len(rtoks) >= 2:
-            base_edges.append((m.group(1), root_carrier[rtoks[0]], root_carrier[rtoks[1]], line.split(":")[0].strip()))
+            base_edges.append(
+                (
+                    m.group(1),
+                    root_carrier[rtoks[0]],
+                    root_carrier[rtoks[1]],
+                    line.split(":")[0].strip(),
+                )
+            )
         else:
             structural_iso += 1
 
@@ -119,7 +141,11 @@ for r, c in sorted(root_carrier.items()):
 print("\n== bridge edges (value layer) ==")
 for k, a, b, nm in sorted(base_edges, key=lambda x: x[3]):
     structural = frozenset((a, b)) in shred_edges
-    tag = "matches a structural edge" if structural else "EXTRA (no structural edge — pure new fluidity)"
+    tag = (
+        "matches a structural edge"
+        if structural
+        else "EXTRA (no structural edge — pure new fluidity)"
+    )
     print(f"   {nm:18s} {a} —{k}→ {b}   [{tag}]")
 
 # founded-founded structural edges: realized vs rigid
@@ -144,11 +170,19 @@ for e in shred_edges:
             cand[x] += 1
 print("\n== UNFOUNDED shred-types adjacent to founded roots (next roots to found) ==")
 for T, n in cand.most_common():
-    nbrs = sorted({(set(e) - {T}).pop() for e in shred_edges if T in e and (set(e) - {T}) and list(set(e) - {T})[0] in founded})
+    nbrs = sorted(
+        {
+            (set(e) - {T}).pop()
+            for e in shred_edges
+            if T in e and (set(e) - {T}) and list(set(e) - {T})[0] in founded
+        }
+    )
     print(f"   {T:18s} would connect to {n} founded root(s): {', '.join(nbrs)}")
 
-print(f"\n(structure-map isos skipped as base edges: {structural_iso}; "
-      f"identity achieved when RIGID and UNFOUNDED are both empty.)")
+print(
+    f"\n(structure-map isos skipped as base edges: {structural_iso}; "
+    f"identity achieved when RIGID and UNFOUNDED are both empty.)"
+)
 
 # ---- 4. the GRADED roots (index = grade) — invisible to the plain shred ------
 if graded_carrier:

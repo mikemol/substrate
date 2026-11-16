@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """jea_agda_dag.py — U8: a real shared SPPF defined in Agda, evaluated on the GPU engine (sharing exploited).
 
 jea_agda_bridge closed the Agda-on-GPU path for a TREE term (Emit.agda; every occurrence its own node).
@@ -20,7 +22,9 @@ Witnesses (each [W]):
    already maximally shared (distinct == N). The device-parallel dedup that would collapse a tree is
    jea_intern; here it confirms canonicality of the real SPPF.
 """
+
 import os
+
 os.environ.setdefault("CUDA_PATH", "/usr")
 from fractions import Fraction
 import jea_agda_voucher as _V
@@ -28,8 +32,12 @@ import jea_agda_voucher as _V
 
 # ---- typecheck + read the Agda-vouched literals (shared protocol; this bridge's default = EmitDAG.agda) ----
 # Body lives in jea_agda_voucher; here we only bind the filename. Default preserves the no-arg callers.
-def typecheck(name="EmitDAG.agda"):    return _V.typecheck(name)
-def read_vouched(name="EmitDAG.agda"): return _V.read_vouched(name)
+def typecheck(name="EmitDAG.agda"):
+    return _V.typecheck(name)
+
+
+def read_vouched(name="EmitDAG.agda"):
+    return _V.read_vouched(name)
 
 
 def parse_dag(s):
@@ -37,19 +45,28 @@ def parse_dag(s):
     indices, possibly REUSED = sharing). Returns the run_g dict."""
     toks = [t.strip().split() for t in s.split("|")]
     N = len(toks)
-    vN = [0] * N; vD = [0] * N; lch = [-1] * N; rch = [-1] * N; op = [-1] * N
+    vN = [0] * N
+    vD = [0] * N
+    lch = [-1] * N
+    rch = [-1] * N
+    op = [-1] * N
     L = 0
     for i, t in enumerate(toks):
         if t[0] == "lf":
-            vN[i] = int(t[1]); vD[i] = int(t[2]); L += 1
+            vN[i] = int(t[1])
+            vD[i] = int(t[2])
+            L += 1
         else:
-            lch[i] = int(t[1]); rch[i] = int(t[2]); op[i] = 1 if t[0] == "mul" else 0
+            lch[i] = int(t[1])
+            rch[i] = int(t[2])
+            op[i] = 1 if t[0] == "mul" else 0
     # run_g wants leaves [0,L); our emission already has leaves first (L leading lf nodes)
     return dict(vN=vN, vD=vD, lch=lch, rch=rch, op=op, L=L, N=N, root=N - 1), toks
 
 
 def tree_size(g, i):
-    if g["op"][i] == -1: return 1
+    if g["op"][i] == -1:
+        return 1
     return 1 + tree_size(g, g["lch"][i]) + tree_size(g, g["rch"][i])
 
 
@@ -64,7 +81,9 @@ if __name__ == "__main__":
     # sharing: how many parents reference each node, and DAG vs tree-expansion size
     refs = [0] * g["N"]
     for i in range(g["N"]):
-        if g["op"][i] != -1: refs[g["lch"][i]] += 1; refs[g["rch"][i]] += 1
+        if g["op"][i] != -1:
+            refs[g["lch"][i]] += 1
+            refs[g["rch"][i]] += 1
     shared = [i for i in range(g["N"]) if refs[i] > 1]
     tsize = tree_size(g, g["root"])
 
@@ -72,18 +91,28 @@ if __name__ == "__main__":
     gpu = Fraction(r["rn"], r["rd"])
 
     # U7 confirmation: structural hash-cons keys all distinct -> already maximally shared
-    keys = [("lf", g["vN"][i], g["vD"][i]) if g["op"][i] == -1 else (g["op"][i], g["lch"][i], g["rch"][i])
-            for i in range(g["N"])]
+    keys = [
+        ("lf", g["vN"][i], g["vD"][i])
+        if g["op"][i] == -1
+        else (g["op"][i], g["lch"][i], g["rch"][i])
+        for i in range(g["N"])
+    ]
     canonical = len(set(keys)) == g["N"]
 
     print("Agda shared SPPF -> GPU cooperative generators (U8)\n")
     print(f"  1. agda --safe EmitDAG.agda : {line}  (refl vouchers hold)")
     print(f"  2. Agda SPPF   : {termStr}")
     print(f"  3. Agda value  : {agda_val}  (refl-vouched)")
-    print(f"  4. GPU DAG     : {g['L']} leaves, {g['N']-g['L']} combines, {r['launched']} blocks; "
-          f"shared nodes (refs>1): {shared}")
-    print(f"  5. sharing     : {g['N']} DAG nodes vs {tsize} tree-expansion nodes = {tsize/g['N']:.1f}x")
-    print(f"  6. GPU value   : {gpu}  (exact reduced root, err={r['err']}, pending={r['pending']})\n")
+    print(
+        f"  4. GPU DAG     : {g['L']} leaves, {g['N'] - g['L']} combines, {r['launched']} blocks; "
+        f"shared nodes (refs>1): {shared}"
+    )
+    print(
+        f"  5. sharing     : {g['N']} DAG nodes vs {tsize} tree-expansion nodes = {tsize / g['N']:.1f}x"
+    )
+    print(
+        f"  6. GPU value   : {gpu}  (exact reduced root, err={r['err']}, pending={r['pending']})\n"
+    )
 
     w1 = line != ""
     w2 = len(shared) > 0 and tsize > g["N"]
@@ -94,7 +123,15 @@ if __name__ == "__main__":
     print(f"3. EXACT ON GPU (shared DAG -> == Agda vouched value): {w3}")
     print(f"4. CANONICAL / U7 (all hash-cons keys distinct -> maximally shared): {w4}")
     ok = w1 and w2 and w3 and w4
-    print(f"\n  {'PASS' if ok else 'FAIL'} — U8: a SHARED SPPF defined in Agda (refl-vouched), parsed preserving")
-    print(f"  sharing, evaluated EXACT on the cooperative generators (each shared node computed once, not")
-    print(f"  per-occurrence), == Agda's value. APEX-1 closed: spawn (U6) + intern (U7) + real Agda SPPF.")
-    print(f"  The Agda-on-GPU path now carries the substrate's actual DAG-with-sharing, not just a tree.")
+    print(
+        f"\n  {'PASS' if ok else 'FAIL'} — U8: a SHARED SPPF defined in Agda (refl-vouched), parsed preserving"
+    )
+    print(
+        f"  sharing, evaluated EXACT on the cooperative generators (each shared node computed once, not"
+    )
+    print(
+        f"  per-occurrence), == Agda's value. APEX-1 closed: spawn (U6) + intern (U7) + real Agda SPPF."
+    )
+    print(
+        f"  The Agda-on-GPU path now carries the substrate's actual DAG-with-sharing, not just a tree."
+    )

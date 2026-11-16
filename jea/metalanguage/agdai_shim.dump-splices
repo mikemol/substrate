@@ -1,0 +1,1422 @@
+/home/mikemol/github/substrate/jea/metalanguage/agdai_shim.hs:81:2-22: Splicing declarations
+    genWalkers ''Clause
+  ======>
+    walk_Agda_Syntax_Abstract_Name_ModuleName ::
+      forall m. Monad m =>
+                (String -> [Int] -> m Int)
+                -> Agda.Syntax.Abstract.Name.ModuleName -> m Int
+    walk_Agda_Syntax_Abstract_Name_ModuleName
+      emitFn_anmF
+      (Agda.Syntax.Abstract.Name.MName f_anmG)
+      = do k_anmJ <- do ks_anmI <- mapM
+                                     (\ x_anmH
+                                        -> walk_Agda_Syntax_Abstract_Name_Name emitFn_anmF x_anmH)
+                                     f_anmG
+                        emitFn_anmF "[]" ks_anmI
+           emitFn_anmF "MName" [k_anmJ]
+    walk_Agda_Syntax_Abstract_Name_Name ::
+      forall m. Monad m =>
+                (String -> [Int] -> m Int)
+                -> Agda.Syntax.Abstract.Name.Name -> m Int
+    walk_Agda_Syntax_Abstract_Name_Name
+      emitFn_anmK
+      (Agda.Syntax.Abstract.Name.Name f_anmL f_anmM f_anmN f_anmO f_anmP
+                                      f_anmQ)
+      = do k_anGY <- walk_Agda_Syntax_Common_NameId emitFn_anmK f_anmL
+           k_anGZ <- walk_Agda_Syntax_Concrete_Name_Name emitFn_anmK f_anmM
+           k_anH0 <- walk_Agda_Syntax_Concrete_Name_Name emitFn_anmK f_anmN
+           k_anH1 <- emitFn_anmK "⟨Range'⟩" []
+           k_anH2 <- walk_Agda_Syntax_Common_Fixity_ emitFn_anmK f_anmP
+           k_anH3 <- emitFn_anmK ("#Bool:" ++ show f_anmQ) []
+           emitFn_anmK "Name" [k_anGY, k_anGZ, k_anH0, k_anH1, k_anH2, k_anH3]
+    walk_Agda_Syntax_Abstract_Name_QName ::
+      forall m. Monad m => (String -> [Int] -> m Int) -> QName -> m Int
+    walk_Agda_Syntax_Abstract_Name_QName
+      emitFn_anH4
+      (Agda.Syntax.Abstract.Name.QName f_anH5 f_anH6)
+      = do k_anH7 <- walk_Agda_Syntax_Abstract_Name_ModuleName
+                       emitFn_anH4 f_anH5
+           k_anH8 <- walk_Agda_Syntax_Abstract_Name_Name emitFn_anH4 f_anH6
+           emitFn_anH4 "QName" [k_anH7, k_anH8]
+    walk_Agda_Syntax_Common_Annotation ::
+      forall m. Monad m =>
+                (String -> [Int] -> m Int)
+                -> Agda.Syntax.Common.Annotation -> m Int
+    walk_Agda_Syntax_Common_Annotation
+      emitFn_anH9
+      (Agda.Syntax.Common.Annotation f_anHa)
+      = do k_anHb <- walk_Agda_Syntax_Common_Lock emitFn_anH9 f_anHa
+           emitFn_anH9 "Annotation" [k_anHb]
+    walk_Agda_Syntax_Common_Arg ::
+      forall m e_aeS0. Monad m =>
+                       (String -> [Int] -> m Int)
+                       -> (e_aeS0 -> m Int) -> Agda.Syntax.Common.Arg e_aeS0 -> m Int
+    walk_Agda_Syntax_Common_Arg
+      emitFn_anHd
+      sub_anHe
+      (Agda.Syntax.Common.Arg f_anHf f_anHg)
+      = do k_anHh <- walk_Agda_Syntax_Common_ArgInfo emitFn_anHd f_anHf
+           k_anHi <- sub_anHe f_anHg
+           emitFn_anHd "Arg" [k_anHh, k_anHi]
+    walk_Agda_Syntax_Common_ArgInfo ::
+      forall m. Monad m =>
+                (String -> [Int] -> m Int) -> Agda.Syntax.Common.ArgInfo -> m Int
+    walk_Agda_Syntax_Common_ArgInfo
+      emitFn_anHj
+      (Agda.Syntax.Common.ArgInfo f_anHk f_anHl f_anHm f_anHn f_anHo)
+      = do k_anHp <- walk_Agda_Syntax_Common_Hiding emitFn_anHj f_anHk
+           k_anHq <- walk_Agda_Syntax_Common_Modality emitFn_anHj f_anHl
+           k_anHr <- walk_Agda_Syntax_Common_Origin emitFn_anHj f_anHm
+           k_anHs <- walk_Agda_Syntax_Common_FreeVariables emitFn_anHj f_anHn
+           k_anHt <- walk_Agda_Syntax_Common_Annotation emitFn_anHj f_anHo
+           emitFn_anHj "ArgInfo" [k_anHp, k_anHq, k_anHr, k_anHs, k_anHt]
+    walk_Agda_Syntax_Common_Associativity ::
+      forall m. Monad m =>
+                (String -> [Int] -> m Int)
+                -> Agda.Syntax.Common.Associativity -> m Int
+    walk_Agda_Syntax_Common_Associativity
+      emitFn_anHu
+      Agda.Syntax.Common.NonAssoc
+      = do emitFn_anHu "NonAssoc" []
+    walk_Agda_Syntax_Common_Associativity
+      emitFn_anHu
+      Agda.Syntax.Common.LeftAssoc
+      = do emitFn_anHu "LeftAssoc" []
+    walk_Agda_Syntax_Common_Associativity
+      emitFn_anHu
+      Agda.Syntax.Common.RightAssoc
+      = do emitFn_anHu "RightAssoc" []
+    walk_Agda_Syntax_Common_BoundVariablePosition ::
+      forall m. Monad m =>
+                (String -> [Int] -> m Int)
+                -> Agda.Syntax.Common.BoundVariablePosition -> m Int
+    walk_Agda_Syntax_Common_BoundVariablePosition
+      emitFn_anHv
+      (Agda.Syntax.Common.BoundVariablePosition f_anHw f_anHx)
+      = do k_anHy <- emitFn_anHv ("#Int:" ++ show f_anHw) []
+           k_anHz <- emitFn_anHv ("#Int:" ++ show f_anHx) []
+           emitFn_anHv "BoundVariablePosition" [k_anHy, k_anHz]
+    walk_Agda_Syntax_Common_Catchall ::
+      forall m. Monad m =>
+                (String -> [Int] -> m Int) -> Agda.Syntax.Common.Catchall -> m Int
+    walk_Agda_Syntax_Common_Catchall
+      emitFn_anHA
+      (Agda.Syntax.Common.YesCatchall f_anHB)
+      = do k_anHG <- emitFn_anHA "⟨Range'⟩" []
+           emitFn_anHA "YesCatchall" [k_anHG]
+    walk_Agda_Syntax_Common_Catchall
+      emitFn_anHA
+      Agda.Syntax.Common.NoCatchall
+      = do emitFn_anHA "NoCatchall" []
+    walk_Agda_Syntax_Common_Cohesion ::
+      forall m. Monad m =>
+                (String -> [Int] -> m Int) -> Agda.Syntax.Common.Cohesion -> m Int
+    walk_Agda_Syntax_Common_Cohesion
+      emitFn_anHH
+      Agda.Syntax.Common.Flat
+      = do emitFn_anHH "Flat" []
+    walk_Agda_Syntax_Common_Cohesion
+      emitFn_anHH
+      Agda.Syntax.Common.Continuous
+      = do emitFn_anHH "Continuous" []
+    walk_Agda_Syntax_Common_Cohesion
+      emitFn_anHH
+      Agda.Syntax.Common.Squash
+      = do emitFn_anHH "Squash" []
+    walk_Agda_Syntax_Common_ConOrigin ::
+      forall m. Monad m =>
+                (String -> [Int] -> m Int) -> Agda.Syntax.Common.ConOrigin -> m Int
+    walk_Agda_Syntax_Common_ConOrigin
+      emitFn_anHI
+      Agda.Syntax.Common.ConOSystem
+      = do emitFn_anHI "ConOSystem" []
+    walk_Agda_Syntax_Common_ConOrigin
+      emitFn_anHI
+      Agda.Syntax.Common.ConOCon
+      = do emitFn_anHI "ConOCon" []
+    walk_Agda_Syntax_Common_ConOrigin
+      emitFn_anHI
+      Agda.Syntax.Common.ConORec
+      = do emitFn_anHI "ConORec" []
+    walk_Agda_Syntax_Common_ConOrigin
+      emitFn_anHI
+      Agda.Syntax.Common.ConOSplit
+      = do emitFn_anHI "ConOSplit" []
+    walk_Agda_Syntax_Common_ExpandedEllipsis ::
+      forall m. Monad m =>
+                (String -> [Int] -> m Int)
+                -> Agda.Syntax.Common.ExpandedEllipsis -> m Int
+    walk_Agda_Syntax_Common_ExpandedEllipsis
+      emitFn_anHJ
+      (Agda.Syntax.Common.ExpandedEllipsis f_anHK f_anHL)
+      = do k_anHQ <- emitFn_anHJ "⟨Range'⟩" []
+           k_anHR <- emitFn_anHJ ("#Int:" ++ show f_anHL) []
+           emitFn_anHJ "ExpandedEllipsis" [k_anHQ, k_anHR]
+    walk_Agda_Syntax_Common_ExpandedEllipsis
+      emitFn_anHJ
+      Agda.Syntax.Common.NoEllipsis
+      = do emitFn_anHJ "NoEllipsis" []
+    walk_Agda_Syntax_Common_Fixity ::
+      forall m. Monad m =>
+                (String -> [Int] -> m Int) -> Agda.Syntax.Common.Fixity -> m Int
+    walk_Agda_Syntax_Common_Fixity
+      emitFn_anHS
+      (Agda.Syntax.Common.Fixity f_anHT f_anHU f_anHV)
+      = do k_anI0 <- emitFn_anHS "⟨Range'⟩" []
+           k_anI1 <- walk_Agda_Syntax_Common_FixityLevel emitFn_anHS f_anHU
+           k_anI2 <- walk_Agda_Syntax_Common_Associativity emitFn_anHS f_anHV
+           emitFn_anHS "Fixity" [k_anI0, k_anI1, k_anI2]
+    walk_Agda_Syntax_Common_Fixity_ ::
+      forall m. Monad m =>
+                (String -> [Int] -> m Int) -> Agda.Syntax.Common.Fixity' -> m Int
+    walk_Agda_Syntax_Common_Fixity_
+      emitFn_anI3
+      (Agda.Syntax.Common.Fixity' f_anI4 f_anI5 f_anI6)
+      = do k_anId <- walk_Agda_Syntax_Common_Fixity emitFn_anI3 f_anI4
+           k_anIe <- do ks_anI8 <- mapM
+                                     (\ x_anI7
+                                        -> walk_Agda_Syntax_Common_NotationPart emitFn_anI3 x_anI7)
+                                     f_anI5
+                        emitFn_anI3 "[]" ks_anI8
+           k_anIf <- emitFn_anI3 "⟨Range'⟩" []
+           emitFn_anI3 "Fixity'" [k_anId, k_anIe, k_anIf]
+    walk_Agda_Syntax_Common_FixityLevel ::
+      forall m. Monad m =>
+                (String -> [Int] -> m Int)
+                -> Agda.Syntax.Common.FixityLevel -> m Int
+    walk_Agda_Syntax_Common_FixityLevel
+      emitFn_anIg
+      Agda.Syntax.Common.Unrelated
+      = do emitFn_anIg "Unrelated" []
+    walk_Agda_Syntax_Common_FixityLevel
+      emitFn_anIg
+      (Agda.Syntax.Common.Related f_anIh)
+      = do k_anIi <- emitFn_anIg ("#Double:" ++ show f_anIh) []
+           emitFn_anIg "Related" [k_anIi]
+    walk_Agda_Syntax_Common_FreeVariables ::
+      forall m. Monad m =>
+                (String -> [Int] -> m Int)
+                -> Agda.Syntax.Common.FreeVariables -> m Int
+    walk_Agda_Syntax_Common_FreeVariables
+      emitFn_anIj
+      Agda.Syntax.Common.UnknownFVs
+      = do emitFn_anIj "UnknownFVs" []
+    walk_Agda_Syntax_Common_FreeVariables
+      emitFn_anIj
+      (Agda.Syntax.Common.KnownFVs f_anIk)
+      = do k_anIl <- emitFn_anIj ("#IntSet:" ++ show f_anIk) []
+           emitFn_anIj "KnownFVs" [k_anIl]
+    walk_Agda_Syntax_Common_Hiding ::
+      forall m. Monad m =>
+                (String -> [Int] -> m Int) -> Agda.Syntax.Common.Hiding -> m Int
+    walk_Agda_Syntax_Common_Hiding
+      emitFn_anIm
+      Agda.Syntax.Common.Hidden
+      = do emitFn_anIm "Hidden" []
+    walk_Agda_Syntax_Common_Hiding
+      emitFn_anIm
+      (Agda.Syntax.Common.Instance f_anIn)
+      = do k_anIo <- walk_Agda_Syntax_Common_Overlappable
+                       emitFn_anIm f_anIn
+           emitFn_anIm "Instance" [k_anIo]
+    walk_Agda_Syntax_Common_Hiding
+      emitFn_anIm
+      Agda.Syntax.Common.NotHidden
+      = do emitFn_anIm "NotHidden" []
+    walk_Agda_Syntax_Common_Lock ::
+      forall m. Monad m =>
+                (String -> [Int] -> m Int) -> Agda.Syntax.Common.Lock -> m Int
+    walk_Agda_Syntax_Common_Lock
+      emitFn_anIp
+      Agda.Syntax.Common.IsNotLock
+      = do emitFn_anIp "IsNotLock" []
+    walk_Agda_Syntax_Common_Lock
+      emitFn_anIp
+      (Agda.Syntax.Common.IsLock f_anIq)
+      = do k_anIr <- walk_Agda_Syntax_Common_LockOrigin
+                       emitFn_anIp f_anIq
+           emitFn_anIp "IsLock" [k_anIr]
+    walk_Agda_Syntax_Common_LockOrigin ::
+      forall m. Monad m =>
+                (String -> [Int] -> m Int)
+                -> Agda.Syntax.Common.LockOrigin -> m Int
+    walk_Agda_Syntax_Common_LockOrigin
+      emitFn_anIs
+      Agda.Syntax.Common.LockOLock
+      = do emitFn_anIs "LockOLock" []
+    walk_Agda_Syntax_Common_LockOrigin
+      emitFn_anIs
+      Agda.Syntax.Common.LockOTick
+      = do emitFn_anIs "LockOTick" []
+    walk_Agda_Syntax_Common_MetaId ::
+      forall m. Monad m =>
+                (String -> [Int] -> m Int) -> Agda.Syntax.Common.MetaId -> m Int
+    walk_Agda_Syntax_Common_MetaId
+      emitFn_anIt
+      (Agda.Syntax.Common.MetaId f_anIu f_anIv)
+      = do k_anIw <- emitFn_anIt ("#Word64:" ++ show f_anIu) []
+           k_anIx <- walk_Agda_Syntax_TopLevelModuleName_Boot_ModuleNameHash
+                       emitFn_anIt f_anIv
+           emitFn_anIt "MetaId" [k_anIw, k_anIx]
+    walk_Agda_Syntax_Common_ModalPolarity ::
+      forall m. Monad m =>
+                (String -> [Int] -> m Int)
+                -> Agda.Syntax.Common.ModalPolarity -> m Int
+    walk_Agda_Syntax_Common_ModalPolarity
+      emitFn_anIy
+      Agda.Syntax.Common.UnusedPolarity
+      = do emitFn_anIy "UnusedPolarity" []
+    walk_Agda_Syntax_Common_ModalPolarity
+      emitFn_anIy
+      Agda.Syntax.Common.StrictlyPositive
+      = do emitFn_anIy "StrictlyPositive" []
+    walk_Agda_Syntax_Common_ModalPolarity
+      emitFn_anIy
+      Agda.Syntax.Common.Positive
+      = do emitFn_anIy "Positive" []
+    walk_Agda_Syntax_Common_ModalPolarity
+      emitFn_anIy
+      Agda.Syntax.Common.Negative
+      = do emitFn_anIy "Negative" []
+    walk_Agda_Syntax_Common_ModalPolarity
+      emitFn_anIy
+      Agda.Syntax.Common.MixedPolarity
+      = do emitFn_anIy "MixedPolarity" []
+    walk_Agda_Syntax_Common_Modality ::
+      forall m. Monad m =>
+                (String -> [Int] -> m Int) -> Agda.Syntax.Common.Modality -> m Int
+    walk_Agda_Syntax_Common_Modality
+      emitFn_anIz
+      (Agda.Syntax.Common.Modality f_anIA f_anIB f_anIC f_anID)
+      = do k_anIE <- walk_Agda_Syntax_Common_Relevance emitFn_anIz f_anIA
+           k_anIF <- walk_Agda_Syntax_Common_Quantity emitFn_anIz f_anIB
+           k_anIG <- walk_Agda_Syntax_Common_Cohesion emitFn_anIz f_anIC
+           k_anIH <- walk_Agda_Syntax_Common_PolarityModality
+                       emitFn_anIz f_anID
+           emitFn_anIz "Modality" [k_anIE, k_anIF, k_anIG, k_anIH]
+    walk_Agda_Syntax_Common_NameId ::
+      forall m. Monad m =>
+                (String -> [Int] -> m Int) -> Agda.Syntax.Common.NameId -> m Int
+    walk_Agda_Syntax_Common_NameId
+      emitFn_anII
+      (Agda.Syntax.Common.NameId f_anIJ f_anIK)
+      = do k_anIL <- emitFn_anII ("#Word64:" ++ show f_anIJ) []
+           k_anIM <- walk_Agda_Syntax_TopLevelModuleName_Boot_ModuleNameHash
+                       emitFn_anII f_anIK
+           emitFn_anII "NameId" [k_anIL, k_anIM]
+    walk_Agda_Syntax_Common_Named ::
+      forall m name_amYd a_amYe. Monad m =>
+                                 (String -> [Int] -> m Int)
+                                 -> (name_amYd -> m Int)
+                                    -> (a_amYe -> m Int)
+                                       -> Agda.Syntax.Common.Named name_amYd a_amYe -> m Int
+    walk_Agda_Syntax_Common_Named
+      emitFn_anIP
+      sub_anIQ
+      sub_anIR
+      (Agda.Syntax.Common.Named f_anIS f_anIT)
+      = do k_anJ0 <- do ks_anIZ <- mapM
+                                     (\ x_anIY -> sub_anIQ x_anIY) f_anIS
+                        emitFn_anIP "?" (AgdaiReflect.maybe'toList ks_anIZ)
+           k_anJ1 <- sub_anIR f_anIT
+           emitFn_anIP "Named" [k_anJ0, k_anJ1]
+    walk_Agda_Syntax_Common_NotationPart ::
+      forall m. Monad m =>
+                (String -> [Int] -> m Int)
+                -> Agda.Syntax.Common.NotationPart -> m Int
+    walk_Agda_Syntax_Common_NotationPart
+      emitFn_anJ2
+      (Agda.Syntax.Common.IdPart f_anJ3)
+      = do k_anJ8 <- walk_Agda_Syntax_Common_Ranged
+                       emitFn_anJ2
+                       (\ y_anJ7 -> emitFn_anJ2 ("#String:" ++ show y_anJ7) []) f_anJ3
+           emitFn_anJ2 "IdPart" [k_anJ8]
+    walk_Agda_Syntax_Common_NotationPart
+      emitFn_anJ2
+      (Agda.Syntax.Common.HolePart f_anJ9 f_anJa)
+      = do k_anJC <- emitFn_anJ2 "⟨Range'⟩" []
+           k_anJD <- walk_Agda_Syntax_Common_Arg
+                       emitFn_anJ2
+                       (\ y_anJk
+                          -> walk_Agda_Syntax_Common_Named
+                               emitFn_anJ2
+                               (\ y_anJs
+                                  -> walk_Agda_Syntax_Common_WithOrigin
+                                       emitFn_anJ2
+                                       (\ y_anJx
+                                          -> walk_Agda_Syntax_Common_Ranged
+                                               emitFn_anJ2
+                                               (\ y_anJB
+                                                  -> emitFn_anJ2 ("#String:" ++ show y_anJB) [])
+                                               y_anJx)
+                                       y_anJs)
+                               (\ _ -> emitFn_anJ2 "#unused" []) y_anJk)
+                       f_anJa
+           emitFn_anJ2 "HolePart" [k_anJC, k_anJD]
+    walk_Agda_Syntax_Common_NotationPart
+      emitFn_anJ2
+      (Agda.Syntax.Common.VarPart f_anJE f_anJF)
+      = do k_anJO <- emitFn_anJ2 "⟨Range'⟩" []
+           k_anJP <- walk_Agda_Syntax_Common_Ranged
+                       emitFn_anJ2
+                       (\ y_anJN
+                          -> walk_Agda_Syntax_Common_BoundVariablePosition
+                               emitFn_anJ2 y_anJN)
+                       f_anJF
+           emitFn_anJ2 "VarPart" [k_anJO, k_anJP]
+    walk_Agda_Syntax_Common_NotationPart
+      emitFn_anJ2
+      (Agda.Syntax.Common.WildPart f_anJQ)
+      = do k_anJV <- walk_Agda_Syntax_Common_Ranged
+                       emitFn_anJ2
+                       (\ y_anJU
+                          -> walk_Agda_Syntax_Common_BoundVariablePosition
+                               emitFn_anJ2 y_anJU)
+                       f_anJQ
+           emitFn_anJ2 "WildPart" [k_anJV]
+    walk_Agda_Syntax_Common_Origin ::
+      forall m. Monad m =>
+                (String -> [Int] -> m Int) -> Agda.Syntax.Common.Origin -> m Int
+    walk_Agda_Syntax_Common_Origin
+      emitFn_anJW
+      Agda.Syntax.Common.UserWritten
+      = do emitFn_anJW "UserWritten" []
+    walk_Agda_Syntax_Common_Origin
+      emitFn_anJW
+      Agda.Syntax.Common.Inserted
+      = do emitFn_anJW "Inserted" []
+    walk_Agda_Syntax_Common_Origin
+      emitFn_anJW
+      Agda.Syntax.Common.Reflected
+      = do emitFn_anJW "Reflected" []
+    walk_Agda_Syntax_Common_Origin
+      emitFn_anJW
+      Agda.Syntax.Common.CaseSplit
+      = do emitFn_anJW "CaseSplit" []
+    walk_Agda_Syntax_Common_Origin
+      emitFn_anJW
+      Agda.Syntax.Common.Substitution
+      = do emitFn_anJW "Substitution" []
+    walk_Agda_Syntax_Common_Origin
+      emitFn_anJW
+      Agda.Syntax.Common.ExpandedPun
+      = do emitFn_anJW "ExpandedPun" []
+    walk_Agda_Syntax_Common_Origin
+      emitFn_anJW
+      Agda.Syntax.Common.Generalization
+      = do emitFn_anJW "Generalization" []
+    walk_Agda_Syntax_Common_OriginIrrelevant ::
+      forall m. Monad m =>
+                (String -> [Int] -> m Int)
+                -> Agda.Syntax.Common.OriginIrrelevant -> m Int
+    walk_Agda_Syntax_Common_OriginIrrelevant
+      emitFn_anJX
+      Agda.Syntax.Common.OIrrInferred
+      = do emitFn_anJX "OIrrInferred" []
+    walk_Agda_Syntax_Common_OriginIrrelevant
+      emitFn_anJX
+      (Agda.Syntax.Common.OIrrDot f_anJY)
+      = do k_anK3 <- emitFn_anJX "⟨Range'⟩" []
+           emitFn_anJX "OIrrDot" [k_anK3]
+    walk_Agda_Syntax_Common_OriginIrrelevant
+      emitFn_anJX
+      (Agda.Syntax.Common.OIrrIrr f_anK4)
+      = do k_anK9 <- emitFn_anJX "⟨Range'⟩" []
+           emitFn_anJX "OIrrIrr" [k_anK9]
+    walk_Agda_Syntax_Common_OriginIrrelevant
+      emitFn_anJX
+      (Agda.Syntax.Common.OIrrIrrelevant f_anKa)
+      = do k_anKf <- emitFn_anJX "⟨Range'⟩" []
+           emitFn_anJX "OIrrIrrelevant" [k_anKf]
+    walk_Agda_Syntax_Common_OriginRelevant ::
+      forall m. Monad m =>
+                (String -> [Int] -> m Int)
+                -> Agda.Syntax.Common.OriginRelevant -> m Int
+    walk_Agda_Syntax_Common_OriginRelevant
+      emitFn_anKg
+      Agda.Syntax.Common.ORelInferred
+      = do emitFn_anKg "ORelInferred" []
+    walk_Agda_Syntax_Common_OriginRelevant
+      emitFn_anKg
+      (Agda.Syntax.Common.ORelRelevant f_anKh)
+      = do k_anKm <- emitFn_anKg "⟨Range'⟩" []
+           emitFn_anKg "ORelRelevant" [k_anKm]
+    walk_Agda_Syntax_Common_OriginShapeIrrelevant ::
+      forall m. Monad m =>
+                (String -> [Int] -> m Int)
+                -> Agda.Syntax.Common.OriginShapeIrrelevant -> m Int
+    walk_Agda_Syntax_Common_OriginShapeIrrelevant
+      emitFn_anKn
+      Agda.Syntax.Common.OShIrrInferred
+      = do emitFn_anKn "OShIrrInferred" []
+    walk_Agda_Syntax_Common_OriginShapeIrrelevant
+      emitFn_anKn
+      (Agda.Syntax.Common.OShIrrDotDot f_anKo)
+      = do k_anKt <- emitFn_anKn "⟨Range'⟩" []
+           emitFn_anKn "OShIrrDotDot" [k_anKt]
+    walk_Agda_Syntax_Common_OriginShapeIrrelevant
+      emitFn_anKn
+      (Agda.Syntax.Common.OShIrrShIrr f_anKu)
+      = do k_anKz <- emitFn_anKn "⟨Range'⟩" []
+           emitFn_anKn "OShIrrShIrr" [k_anKz]
+    walk_Agda_Syntax_Common_OriginShapeIrrelevant
+      emitFn_anKn
+      (Agda.Syntax.Common.OShIrrShapeIrrelevant f_anKA)
+      = do k_anKF <- emitFn_anKn "⟨Range'⟩" []
+           emitFn_anKn "OShIrrShapeIrrelevant" [k_anKF]
+    walk_Agda_Syntax_Common_Overlappable ::
+      forall m. Monad m =>
+                (String -> [Int] -> m Int)
+                -> Agda.Syntax.Common.Overlappable -> m Int
+    walk_Agda_Syntax_Common_Overlappable
+      emitFn_anKG
+      Agda.Syntax.Common.YesOverlap
+      = do emitFn_anKG "YesOverlap" []
+    walk_Agda_Syntax_Common_Overlappable
+      emitFn_anKG
+      Agda.Syntax.Common.NoOverlap
+      = do emitFn_anKG "NoOverlap" []
+    walk_Agda_Syntax_Common_PatternOrCopattern ::
+      forall m. Monad m =>
+                (String -> [Int] -> m Int)
+                -> Agda.Syntax.Common.PatternOrCopattern -> m Int
+    walk_Agda_Syntax_Common_PatternOrCopattern
+      emitFn_anKH
+      Agda.Syntax.Common.PatternMatching
+      = do emitFn_anKH "PatternMatching" []
+    walk_Agda_Syntax_Common_PatternOrCopattern
+      emitFn_anKH
+      Agda.Syntax.Common.CopatternMatching
+      = do emitFn_anKH "CopatternMatching" []
+    walk_Agda_Syntax_Common_PolarityModality ::
+      forall m. Monad m =>
+                (String -> [Int] -> m Int)
+                -> Agda.Syntax.Common.PolarityModality -> m Int
+    walk_Agda_Syntax_Common_PolarityModality
+      emitFn_anKI
+      (Agda.Syntax.Common.PolarityModality f_anKJ f_anKK f_anKL)
+      = do k_anKM <- walk_Agda_Syntax_Common_ModalPolarity
+                       emitFn_anKI f_anKJ
+           k_anKN <- walk_Agda_Syntax_Common_ModalPolarity emitFn_anKI f_anKK
+           k_anKO <- walk_Agda_Syntax_Common_ModalPolarity emitFn_anKI f_anKL
+           emitFn_anKI "PolarityModality" [k_anKM, k_anKN, k_anKO]
+    walk_Agda_Syntax_Common_ProjOrigin ::
+      forall m. Monad m =>
+                (String -> [Int] -> m Int)
+                -> Agda.Syntax.Common.ProjOrigin -> m Int
+    walk_Agda_Syntax_Common_ProjOrigin
+      emitFn_anKP
+      Agda.Syntax.Common.ProjPrefix
+      = do emitFn_anKP "ProjPrefix" []
+    walk_Agda_Syntax_Common_ProjOrigin
+      emitFn_anKP
+      Agda.Syntax.Common.ProjPostfix
+      = do emitFn_anKP "ProjPostfix" []
+    walk_Agda_Syntax_Common_ProjOrigin
+      emitFn_anKP
+      Agda.Syntax.Common.ProjSystem
+      = do emitFn_anKP "ProjSystem" []
+    walk_Agda_Syntax_Common_Q0Origin ::
+      forall m. Monad m =>
+                (String -> [Int] -> m Int) -> Agda.Syntax.Common.Q0Origin -> m Int
+    walk_Agda_Syntax_Common_Q0Origin
+      emitFn_anKQ
+      Agda.Syntax.Common.Q0Inferred
+      = do emitFn_anKQ "Q0Inferred" []
+    walk_Agda_Syntax_Common_Q0Origin
+      emitFn_anKQ
+      (Agda.Syntax.Common.Q0 f_anKR)
+      = do k_anKW <- emitFn_anKQ "⟨Range'⟩" []
+           emitFn_anKQ "Q0" [k_anKW]
+    walk_Agda_Syntax_Common_Q0Origin
+      emitFn_anKQ
+      (Agda.Syntax.Common.Q0Erased f_anKX)
+      = do k_anL2 <- emitFn_anKQ "⟨Range'⟩" []
+           emitFn_anKQ "Q0Erased" [k_anL2]
+    walk_Agda_Syntax_Common_Q1Origin ::
+      forall m. Monad m =>
+                (String -> [Int] -> m Int) -> Agda.Syntax.Common.Q1Origin -> m Int
+    walk_Agda_Syntax_Common_Q1Origin
+      emitFn_anL3
+      Agda.Syntax.Common.Q1Inferred
+      = do emitFn_anL3 "Q1Inferred" []
+    walk_Agda_Syntax_Common_Q1Origin
+      emitFn_anL3
+      (Agda.Syntax.Common.Q1 f_anL4)
+      = do k_anL9 <- emitFn_anL3 "⟨Range'⟩" []
+           emitFn_anL3 "Q1" [k_anL9]
+    walk_Agda_Syntax_Common_Q1Origin
+      emitFn_anL3
+      (Agda.Syntax.Common.Q1Linear f_anLa)
+      = do k_anLf <- emitFn_anL3 "⟨Range'⟩" []
+           emitFn_anL3 "Q1Linear" [k_anLf]
+    walk_Agda_Syntax_Common_Quantity ::
+      forall m. Monad m =>
+                (String -> [Int] -> m Int) -> Agda.Syntax.Common.Quantity -> m Int
+    walk_Agda_Syntax_Common_Quantity
+      emitFn_anLg
+      (Agda.Syntax.Common.Quantity0 f_anLh)
+      = do k_anLi <- walk_Agda_Syntax_Common_Q0Origin emitFn_anLg f_anLh
+           emitFn_anLg "Quantity0" [k_anLi]
+    walk_Agda_Syntax_Common_Quantity
+      emitFn_anLg
+      (Agda.Syntax.Common.Quantity1 f_anLj)
+      = do k_anLk <- walk_Agda_Syntax_Common_Q1Origin emitFn_anLg f_anLj
+           emitFn_anLg "Quantity1" [k_anLk]
+    walk_Agda_Syntax_Common_Quantity
+      emitFn_anLg
+      (Agda.Syntax.Common.Quantityω f_anLl)
+      = do k_anLm <- walk_Agda_Syntax_Common_QωOrigin emitFn_anLg f_anLl
+           emitFn_anLg "Quantityω" [k_anLm]
+    walk_Agda_Syntax_Common_QωOrigin ::
+      forall m. Monad m =>
+                (String -> [Int] -> m Int) -> Agda.Syntax.Common.QωOrigin -> m Int
+    walk_Agda_Syntax_Common_QωOrigin
+      emitFn_anLn
+      Agda.Syntax.Common.QωInferred
+      = do emitFn_anLn "QωInferred" []
+    walk_Agda_Syntax_Common_QωOrigin
+      emitFn_anLn
+      (Agda.Syntax.Common.Qω f_anLo)
+      = do k_anLt <- emitFn_anLn "⟨Range'⟩" []
+           emitFn_anLn "Qω" [k_anLt]
+    walk_Agda_Syntax_Common_QωOrigin
+      emitFn_anLn
+      (Agda.Syntax.Common.QωPlenty f_anLu)
+      = do k_anLz <- emitFn_anLn "⟨Range'⟩" []
+           emitFn_anLn "QωPlenty" [k_anLz]
+    walk_Agda_Syntax_Common_Ranged ::
+      forall m a_andp. Monad m =>
+                       (String -> [Int] -> m Int)
+                       -> (a_andp -> m Int) -> Agda.Syntax.Common.Ranged a_andp -> m Int
+    walk_Agda_Syntax_Common_Ranged
+      emitFn_anLB
+      sub_anLC
+      (Agda.Syntax.Common.Ranged f_anLD f_anLE)
+      = do k_anLJ <- emitFn_anLB "⟨Range'⟩" []
+           k_anLK <- sub_anLC f_anLE
+           emitFn_anLB "Ranged" [k_anLJ, k_anLK]
+    walk_Agda_Syntax_Common_Relevance ::
+      forall m. Monad m =>
+                (String -> [Int] -> m Int) -> Agda.Syntax.Common.Relevance -> m Int
+    walk_Agda_Syntax_Common_Relevance
+      emitFn_anLL
+      (Agda.Syntax.Common.Relevant f_anLM)
+      = do k_anLN <- walk_Agda_Syntax_Common_OriginRelevant
+                       emitFn_anLL f_anLM
+           emitFn_anLL "Relevant" [k_anLN]
+    walk_Agda_Syntax_Common_Relevance
+      emitFn_anLL
+      (Agda.Syntax.Common.ShapeIrrelevant f_anLO)
+      = do k_anLP <- walk_Agda_Syntax_Common_OriginShapeIrrelevant
+                       emitFn_anLL f_anLO
+           emitFn_anLL "ShapeIrrelevant" [k_anLP]
+    walk_Agda_Syntax_Common_Relevance
+      emitFn_anLL
+      (Agda.Syntax.Common.Irrelevant f_anLQ)
+      = do k_anLR <- walk_Agda_Syntax_Common_OriginIrrelevant
+                       emitFn_anLL f_anLQ
+           emitFn_anLL "Irrelevant" [k_anLR]
+    walk_Agda_Syntax_Common_WithOrigin ::
+      forall m a_ando. Monad m =>
+                       (String -> [Int] -> m Int)
+                       -> (a_ando -> m Int)
+                          -> Agda.Syntax.Common.WithOrigin a_ando -> m Int
+    walk_Agda_Syntax_Common_WithOrigin
+      emitFn_anLT
+      sub_anLU
+      (Agda.Syntax.Common.WithOrigin f_anLV f_anLW)
+      = do k_anLX <- walk_Agda_Syntax_Common_Origin emitFn_anLT f_anLV
+           k_anLY <- sub_anLU f_anLW
+           emitFn_anLT "WithOrigin" [k_anLX, k_anLY]
+    walk_Agda_Syntax_Common_Aspect_Induction ::
+      forall m. Monad m =>
+                (String -> [Int] -> m Int)
+                -> Agda.Syntax.Common.Aspect.Induction -> m Int
+    walk_Agda_Syntax_Common_Aspect_Induction
+      emitFn_anLZ
+      Agda.Syntax.Common.Aspect.Inductive
+      = do emitFn_anLZ "Inductive" []
+    walk_Agda_Syntax_Common_Aspect_Induction
+      emitFn_anLZ
+      Agda.Syntax.Common.Aspect.CoInductive
+      = do emitFn_anLZ "CoInductive" []
+    walk_Agda_Syntax_Concrete_Name_Name ::
+      forall m. Monad m =>
+                (String -> [Int] -> m Int)
+                -> Agda.Syntax.Concrete.Name.Name -> m Int
+    walk_Agda_Syntax_Concrete_Name_Name
+      emitFn_anM0
+      (Agda.Syntax.Concrete.Name.Name f_anM1 f_anM2 f_anM3)
+      = do k_anMa <- emitFn_anM0 "⟨Range'⟩" []
+           k_anMb <- walk_Agda_Syntax_Concrete_Name_NameInScope
+                       emitFn_anM0 f_anM2
+           k_anMc <- emitFn_anM0 ("#NonEmpty:" ++ show f_anM3) []
+           emitFn_anM0 "Name" [k_anMa, k_anMb, k_anMc]
+    walk_Agda_Syntax_Concrete_Name_Name
+      emitFn_anM0
+      (Agda.Syntax.Concrete.Name.NoName f_anMd f_anMe)
+      = do k_anMj <- emitFn_anM0 "⟨Range'⟩" []
+           k_anMk <- walk_Agda_Syntax_Common_NameId emitFn_anM0 f_anMe
+           emitFn_anM0 "NoName" [k_anMj, k_anMk]
+    walk_Agda_Syntax_Concrete_Name_NameInScope ::
+      forall m. Monad m =>
+                (String -> [Int] -> m Int)
+                -> Agda.Syntax.Concrete.Name.NameInScope -> m Int
+    walk_Agda_Syntax_Concrete_Name_NameInScope
+      emitFn_anMl
+      Agda.Syntax.Concrete.Name.InScope
+      = do emitFn_anMl "InScope" []
+    walk_Agda_Syntax_Concrete_Name_NameInScope
+      emitFn_anMl
+      Agda.Syntax.Concrete.Name.NotInScope
+      = do emitFn_anMl "NotInScope" []
+    walk_Agda_Syntax_Concrete_Name_NamePart ::
+      forall m. Monad m =>
+                (String -> [Int] -> m Int)
+                -> Agda.Syntax.Concrete.Name.NamePart -> m Int
+    walk_Agda_Syntax_Concrete_Name_NamePart
+      emitFn_anMm
+      Agda.Syntax.Concrete.Name.Hole
+      = do emitFn_anMm "Hole" []
+    walk_Agda_Syntax_Concrete_Name_NamePart
+      emitFn_anMm
+      (Agda.Syntax.Concrete.Name.Id f_anMn)
+      = do k_anMo <- emitFn_anMm ("#String:" ++ show f_anMn) []
+           emitFn_anMm "Id" [k_anMo]
+    walk_Agda_Syntax_Internal_Abs ::
+      forall m a_aeS3. Monad m =>
+                       (String -> [Int] -> m Int)
+                       -> (a_aeS3 -> m Int) -> Abs a_aeS3 -> m Int
+    walk_Agda_Syntax_Internal_Abs
+      emitFn_anMr
+      sub_anMs
+      (Agda.Syntax.Internal.Abs f_anMt f_anMu)
+      = do k_anMv <- emitFn_anMr ("#String:" ++ show f_anMt) []
+           k_anMw <- sub_anMs f_anMu
+           emitFn_anMr "Abs" [k_anMv, k_anMw]
+    walk_Agda_Syntax_Internal_Abs
+      emitFn_anMr
+      sub_anMs
+      (Agda.Syntax.Internal.NoAbs f_anMx f_anMy)
+      = do k_anMz <- emitFn_anMr ("#String:" ++ show f_anMx) []
+           k_anMA <- sub_anMs f_anMy
+           emitFn_anMr "NoAbs" [k_anMz, k_anMA]
+    walk_Agda_Syntax_Internal_Clause ::
+      forall m. Monad m => (String -> [Int] -> m Int) -> Clause -> m Int
+    walk_Agda_Syntax_Internal_Clause
+      emitFn_anMB
+      (Agda.Syntax.Internal.Clause f_anMC f_anMD f_anME f_anMF f_anMG
+                                   f_anMH f_anMI f_anMJ f_anMK f_anML f_anMM)
+      = do k_anOi <- emitFn_anMB "⟨Range'⟩" []
+           k_anOj <- emitFn_anMB "⟨Range'⟩" []
+           k_anOk <- walk_Agda_Syntax_Internal_Tele
+                       emitFn_anMB
+                       (\ y_anN3
+                          -> walk_Agda_Syntax_Internal_Dom_
+                               emitFn_anMB
+                               (\ y_anNa -> walk_Agda_Syntax_Internal_Term emitFn_anMB y_anNa)
+                               (\ _ -> emitFn_anMB "#unused" []) y_anN3)
+                       f_anME
+           k_anOl <- do ks_anNc <- mapM
+                                     (\ x_anNb
+                                        -> walk_Agda_Syntax_Common_Arg
+                                             emitFn_anMB
+                                             (\ y_anNi
+                                                -> walk_Agda_Syntax_Common_Named
+                                                     emitFn_anMB
+                                                     (\ y_anNq
+                                                        -> walk_Agda_Syntax_Common_WithOrigin
+                                                             emitFn_anMB
+                                                             (\ y_anNv
+                                                                -> walk_Agda_Syntax_Common_Ranged
+                                                                     emitFn_anMB
+                                                                     (\ y_anNz
+                                                                        -> emitFn_anMB
+                                                                             ("#String:"
+                                                                                ++ show y_anNz)
+                                                                             [])
+                                                                     y_anNv)
+                                                             y_anNq)
+                                                     (\ _ -> emitFn_anMB "#unused" []) y_anNi)
+                                             x_anNb)
+                                     f_anMF
+                        emitFn_anMB "[]" ks_anNc
+           k_anOm <- do ks_anNF <- mapM
+                                     (\ x_anNE -> walk_Agda_Syntax_Internal_Term emitFn_anMB x_anNE)
+                                     f_anMG
+                        emitFn_anMB "?" (AgdaiReflect.maybe'toList ks_anNF)
+           k_anOn <- do ks_anNL <- mapM
+                                     (\ x_anNK
+                                        -> walk_Agda_Syntax_Common_Arg
+                                             emitFn_anMB
+                                             (\ y_anNR
+                                                -> walk_Agda_Syntax_Internal_Type__
+                                                     emitFn_anMB
+                                                     (\ y_anNY
+                                                        -> walk_Agda_Syntax_Internal_Term
+                                                             emitFn_anMB y_anNY)
+                                                     (\ y_anNZ -> emitFn_anMB "#param:a" []) y_anNR)
+                                             x_anNK)
+                                     f_anMH
+                        emitFn_anMB "?" (AgdaiReflect.maybe'toList ks_anNL)
+           k_anOo <- walk_Agda_Syntax_Common_Catchall emitFn_anMB f_anMI
+           k_anOp <- do ks_anO5 <- mapM
+                                     (\ x_anO4 -> emitFn_anMB ("#Bool:" ++ show x_anO4) []) f_anMJ
+                        emitFn_anMB "?" (AgdaiReflect.maybe'toList ks_anO5)
+           k_anOq <- do ks_anOb <- mapM
+                                     (\ x_anOa -> emitFn_anMB ("#Bool:" ++ show x_anOa) []) f_anMK
+                        emitFn_anMB "?" (AgdaiReflect.maybe'toList ks_anOb)
+           k_anOr <- walk_Agda_Syntax_Common_ExpandedEllipsis
+                       emitFn_anMB f_anML
+           k_anOs <- do ks_anOh <- mapM
+                                     (\ x_anOg
+                                        -> walk_Agda_Syntax_Abstract_Name_ModuleName
+                                             emitFn_anMB x_anOg)
+                                     f_anMM
+                        emitFn_anMB "?" (AgdaiReflect.maybe'toList ks_anOh)
+           emitFn_anMB
+             "Clause"
+             [k_anOi, k_anOj, k_anOk, k_anOl, k_anOm, k_anOn, k_anOo, k_anOp,
+              k_anOq, k_anOr, k_anOs]
+    walk_Agda_Syntax_Internal_ConHead ::
+      forall m. Monad m => (String -> [Int] -> m Int) -> ConHead -> m Int
+    walk_Agda_Syntax_Internal_ConHead
+      emitFn_anOt
+      (ConHead f_anOu f_anOv f_anOw f_anOx)
+      = do k_anOL <- walk_Agda_Syntax_Abstract_Name_QName
+                       emitFn_anOt f_anOu
+           k_anOM <- walk_Agda_Syntax_Internal_DataOrRecord_
+                       emitFn_anOt
+                       (\ y_anOE
+                          -> walk_Agda_Syntax_Common_PatternOrCopattern emitFn_anOt y_anOE)
+                       f_anOv
+           k_anON <- walk_Agda_Syntax_Common_Aspect_Induction
+                       emitFn_anOt f_anOw
+           k_anOO <- do ks_anOG <- mapM
+                                     (\ x_anOF
+                                        -> walk_Agda_Syntax_Common_Arg
+                                             emitFn_anOt
+                                             (\ y_anOK
+                                                -> walk_Agda_Syntax_Abstract_Name_QName
+                                                     emitFn_anOt y_anOK)
+                                             x_anOF)
+                                     f_anOx
+                        emitFn_anOt "[]" ks_anOG
+           emitFn_anOt "ConHead" [k_anOL, k_anOM, k_anON, k_anOO]
+    walk_Agda_Syntax_Internal_ConPatternInfo ::
+      forall m. Monad m =>
+                (String -> [Int] -> m Int)
+                -> Agda.Syntax.Internal.ConPatternInfo -> m Int
+    walk_Agda_Syntax_Internal_ConPatternInfo
+      emitFn_anOP
+      (Agda.Syntax.Internal.ConPatternInfo f_anOQ f_anOR f_anOS f_anOT
+                                           f_anOU)
+      = do k_anPf <- walk_Agda_Syntax_Internal_PatternInfo
+                       emitFn_anOP f_anOQ
+           k_anPg <- emitFn_anOP ("#Bool:" ++ show f_anOR) []
+           k_anPh <- emitFn_anOP ("#Bool:" ++ show f_anOS) []
+           k_anPi <- do ks_anP0 <- mapM
+                                     (\ x_anOZ
+                                        -> walk_Agda_Syntax_Common_Arg
+                                             emitFn_anOP
+                                             (\ y_anP6
+                                                -> walk_Agda_Syntax_Internal_Type__
+                                                     emitFn_anOP
+                                                     (\ y_anPd
+                                                        -> walk_Agda_Syntax_Internal_Term
+                                                             emitFn_anOP y_anPd)
+                                                     (\ y_anPe -> emitFn_anOP "#param:a" []) y_anP6)
+                                             x_anOZ)
+                                     f_anOT
+                        emitFn_anOP "?" (AgdaiReflect.maybe'toList ks_anP0)
+           k_anPj <- emitFn_anOP ("#Bool:" ++ show f_anOU) []
+           emitFn_anOP
+             "ConPatternInfo" [k_anPf, k_anPg, k_anPh, k_anPi, k_anPj]
+    walk_Agda_Syntax_Internal_DBPatVar ::
+      forall m. Monad m =>
+                (String -> [Int] -> m Int)
+                -> Agda.Syntax.Internal.DBPatVar -> m Int
+    walk_Agda_Syntax_Internal_DBPatVar
+      emitFn_anPk
+      (Agda.Syntax.Internal.DBPatVar f_anPl f_anPm)
+      = do k_anPn <- emitFn_anPk ("#String:" ++ show f_anPl) []
+           k_anPo <- emitFn_anPk ("#Int:" ++ show f_anPm) []
+           emitFn_anPk "DBPatVar" [k_anPn, k_anPo]
+    walk_Agda_Syntax_Internal_DataOrRecord_ ::
+      forall m p_an7q. Monad m =>
+                       (String -> [Int] -> m Int)
+                       -> (p_an7q -> m Int)
+                          -> Agda.Syntax.Internal.DataOrRecord' p_an7q -> m Int
+    walk_Agda_Syntax_Internal_DataOrRecord_
+      emitFn_anPr
+      sub_anPs
+      Agda.Syntax.Internal.IsData
+      = do emitFn_anPr "IsData" []
+    walk_Agda_Syntax_Internal_DataOrRecord_
+      emitFn_anPr
+      sub_anPs
+      (Agda.Syntax.Internal.IsRecord f_anPt)
+      = do k_anPu <- sub_anPs f_anPt
+           emitFn_anPr "IsRecord" [k_anPu]
+    walk_Agda_Syntax_Internal_Dom_ ::
+      forall m t_aeSd e_aeSe. Monad m =>
+                              (String -> [Int] -> m Int)
+                              -> (t_aeSd -> m Int)
+                                 -> (e_aeSe -> m Int)
+                                    -> Agda.Syntax.Internal.Dom' t_aeSd e_aeSe -> m Int
+    walk_Agda_Syntax_Internal_Dom_
+      emitFn_anPx
+      sub_anPy
+      sub_anPz
+      (Agda.Syntax.Internal.Dom f_anPA f_anPB f_anPC f_anPD f_anPE)
+      = do k_anQ0 <- walk_Agda_Syntax_Common_ArgInfo emitFn_anPx f_anPA
+           k_anQ1 <- do ks_anPK <- mapM
+                                     (\ x_anPJ
+                                        -> walk_Agda_Syntax_Common_WithOrigin
+                                             emitFn_anPx
+                                             (\ y_anPP
+                                                -> walk_Agda_Syntax_Common_Ranged
+                                                     emitFn_anPx
+                                                     (\ y_anPT
+                                                        -> emitFn_anPx
+                                                             ("#String:" ++ show y_anPT) [])
+                                                     y_anPP)
+                                             x_anPJ)
+                                     f_anPB
+                        emitFn_anPx "?" (AgdaiReflect.maybe'toList ks_anPK)
+           k_anQ2 <- emitFn_anPx ("#Bool:" ++ show f_anPC) []
+           k_anQ3 <- do ks_anPZ <- mapM (\ x_anPY -> sub_anPy x_anPY) f_anPD
+                        emitFn_anPx "?" (AgdaiReflect.maybe'toList ks_anPZ)
+           k_anQ4 <- sub_anPz f_anPE
+           emitFn_anPx "Dom" [k_anQ0, k_anQ1, k_anQ2, k_anQ3, k_anQ4]
+    walk_Agda_Syntax_Internal_Level_ ::
+      forall m t_amY9. Monad m =>
+                       (String -> [Int] -> m Int)
+                       -> (t_amY9 -> m Int) -> Level' t_amY9 -> m Int
+    walk_Agda_Syntax_Internal_Level_
+      emitFn_anQ6
+      sub_anQ7
+      (Max f_anQ8 f_anQ9)
+      = do k_anQg <- emitFn_anQ6 ("#Integer:" ++ show f_anQ8) []
+           k_anQh <- do ks_anQb <- mapM
+                                     (\ x_anQa
+                                        -> walk_Agda_Syntax_Internal_PlusLevel_
+                                             emitFn_anQ6 (\ y_anQf -> sub_anQ7 y_anQf) x_anQa)
+                                     f_anQ9
+                        emitFn_anQ6 "[]" ks_anQb
+           emitFn_anQ6 "Max" [k_anQg, k_anQh]
+    walk_Agda_Syntax_Internal_PatOrigin ::
+      forall m. Monad m =>
+                (String -> [Int] -> m Int)
+                -> Agda.Syntax.Internal.PatOrigin -> m Int
+    walk_Agda_Syntax_Internal_PatOrigin
+      emitFn_anQi
+      Agda.Syntax.Internal.PatOSystem
+      = do emitFn_anQi "PatOSystem" []
+    walk_Agda_Syntax_Internal_PatOrigin
+      emitFn_anQi
+      Agda.Syntax.Internal.PatOSplit
+      = do emitFn_anQi "PatOSplit" []
+    walk_Agda_Syntax_Internal_PatOrigin
+      emitFn_anQi
+      (Agda.Syntax.Internal.PatOSplitArg f_anQj)
+      = do k_anQk <- emitFn_anQi ("#String:" ++ show f_anQj) []
+           emitFn_anQi "PatOSplitArg" [k_anQk]
+    walk_Agda_Syntax_Internal_PatOrigin
+      emitFn_anQi
+      (Agda.Syntax.Internal.PatOVar f_anQl)
+      = do k_anQm <- walk_Agda_Syntax_Abstract_Name_Name
+                       emitFn_anQi f_anQl
+           emitFn_anQi "PatOVar" [k_anQm]
+    walk_Agda_Syntax_Internal_PatOrigin
+      emitFn_anQi
+      Agda.Syntax.Internal.PatODot
+      = do emitFn_anQi "PatODot" []
+    walk_Agda_Syntax_Internal_PatOrigin
+      emitFn_anQi
+      Agda.Syntax.Internal.PatOWild
+      = do emitFn_anQi "PatOWild" []
+    walk_Agda_Syntax_Internal_PatOrigin
+      emitFn_anQi
+      Agda.Syntax.Internal.PatOCon
+      = do emitFn_anQi "PatOCon" []
+    walk_Agda_Syntax_Internal_PatOrigin
+      emitFn_anQi
+      Agda.Syntax.Internal.PatORec
+      = do emitFn_anQi "PatORec" []
+    walk_Agda_Syntax_Internal_PatOrigin
+      emitFn_anQi
+      Agda.Syntax.Internal.PatOLit
+      = do emitFn_anQi "PatOLit" []
+    walk_Agda_Syntax_Internal_PatOrigin
+      emitFn_anQi
+      Agda.Syntax.Internal.PatOAbsurd
+      = do emitFn_anQi "PatOAbsurd" []
+    walk_Agda_Syntax_Internal_Pattern_ ::
+      forall m x_amW6. Monad m =>
+                       (String -> [Int] -> m Int)
+                       -> (x_amW6 -> m Int) -> Pattern' x_amW6 -> m Int
+    walk_Agda_Syntax_Internal_Pattern_
+      emitFn_anQu
+      sub_anQv
+      (VarP f_anQw f_anQx)
+      = do k_anQy <- walk_Agda_Syntax_Internal_PatternInfo
+                       emitFn_anQu f_anQw
+           k_anQz <- sub_anQv f_anQx
+           emitFn_anQu "VarP" [k_anQy, k_anQz]
+    walk_Agda_Syntax_Internal_Pattern_
+      emitFn_anQu
+      sub_anQv
+      (DotP f_anQA f_anQB)
+      = do k_anQC <- walk_Agda_Syntax_Internal_PatternInfo
+                       emitFn_anQu f_anQA
+           k_anQD <- walk_Agda_Syntax_Internal_Term emitFn_anQu f_anQB
+           emitFn_anQu "DotP" [k_anQC, k_anQD]
+    walk_Agda_Syntax_Internal_Pattern_
+      emitFn_anQu
+      sub_anQv
+      (ConP f_anQE f_anQF f_anQG)
+      = do k_anR6 <- walk_Agda_Syntax_Internal_ConHead emitFn_anQu f_anQE
+           k_anR7 <- walk_Agda_Syntax_Internal_ConPatternInfo
+                       emitFn_anQu f_anQF
+           k_anR8 <- do ks_anQI <- mapM
+                                     (\ x_anQH
+                                        -> walk_Agda_Syntax_Common_Arg
+                                             emitFn_anQu
+                                             (\ y_anQO
+                                                -> walk_Agda_Syntax_Common_Named
+                                                     emitFn_anQu
+                                                     (\ y_anQW
+                                                        -> walk_Agda_Syntax_Common_WithOrigin
+                                                             emitFn_anQu
+                                                             (\ y_anR1
+                                                                -> walk_Agda_Syntax_Common_Ranged
+                                                                     emitFn_anQu
+                                                                     (\ y_anR5
+                                                                        -> emitFn_anQu
+                                                                             ("#String:"
+                                                                                ++ show y_anR5)
+                                                                             [])
+                                                                     y_anR1)
+                                                             y_anQW)
+                                                     (\ _ -> emitFn_anQu "#unused" []) y_anQO)
+                                             x_anQH)
+                                     f_anQG
+                        emitFn_anQu "[]" ks_anQI
+           emitFn_anQu "ConP" [k_anR6, k_anR7, k_anR8]
+    walk_Agda_Syntax_Internal_Pattern_
+      emitFn_anQu
+      sub_anQv
+      (LitP f_anR9 f_anRa)
+      = do k_anRb <- walk_Agda_Syntax_Internal_PatternInfo
+                       emitFn_anQu f_anR9
+           k_anRc <- walk_Agda_Syntax_Literal_Literal emitFn_anQu f_anRa
+           emitFn_anQu "LitP" [k_anRb, k_anRc]
+    walk_Agda_Syntax_Internal_Pattern_
+      emitFn_anQu
+      sub_anQv
+      (ProjP f_anRd f_anRe)
+      = do k_anRf <- walk_Agda_Syntax_Common_ProjOrigin
+                       emitFn_anQu f_anRd
+           k_anRg <- walk_Agda_Syntax_Abstract_Name_QName emitFn_anQu f_anRe
+           emitFn_anQu "ProjP" [k_anRf, k_anRg]
+    walk_Agda_Syntax_Internal_Pattern_
+      emitFn_anQu
+      sub_anQv
+      (IApplyP f_anRh f_anRi f_anRj f_anRk)
+      = do k_anRl <- walk_Agda_Syntax_Internal_PatternInfo
+                       emitFn_anQu f_anRh
+           k_anRm <- walk_Agda_Syntax_Internal_Term emitFn_anQu f_anRi
+           k_anRn <- walk_Agda_Syntax_Internal_Term emitFn_anQu f_anRj
+           k_anRo <- sub_anQv f_anRk
+           emitFn_anQu "IApplyP" [k_anRl, k_anRm, k_anRn, k_anRo]
+    walk_Agda_Syntax_Internal_Pattern_
+      emitFn_anQu
+      sub_anQv
+      (DefP f_anRp f_anRq f_anRr)
+      = do k_anRR <- walk_Agda_Syntax_Internal_PatternInfo
+                       emitFn_anQu f_anRp
+           k_anRS <- walk_Agda_Syntax_Abstract_Name_QName emitFn_anQu f_anRq
+           k_anRT <- do ks_anRt <- mapM
+                                     (\ x_anRs
+                                        -> walk_Agda_Syntax_Common_Arg
+                                             emitFn_anQu
+                                             (\ y_anRz
+                                                -> walk_Agda_Syntax_Common_Named
+                                                     emitFn_anQu
+                                                     (\ y_anRH
+                                                        -> walk_Agda_Syntax_Common_WithOrigin
+                                                             emitFn_anQu
+                                                             (\ y_anRM
+                                                                -> walk_Agda_Syntax_Common_Ranged
+                                                                     emitFn_anQu
+                                                                     (\ y_anRQ
+                                                                        -> emitFn_anQu
+                                                                             ("#String:"
+                                                                                ++ show y_anRQ)
+                                                                             [])
+                                                                     y_anRM)
+                                                             y_anRH)
+                                                     (\ _ -> emitFn_anQu "#unused" []) y_anRz)
+                                             x_anRs)
+                                     f_anRr
+                        emitFn_anQu "[]" ks_anRt
+           emitFn_anQu "DefP" [k_anRR, k_anRS, k_anRT]
+    walk_Agda_Syntax_Internal_PatternInfo ::
+      forall m. Monad m =>
+                (String -> [Int] -> m Int)
+                -> Agda.Syntax.Internal.PatternInfo -> m Int
+    walk_Agda_Syntax_Internal_PatternInfo
+      emitFn_anRU
+      (Agda.Syntax.Internal.PatternInfo f_anRV f_anRW)
+      = do k_anRZ <- walk_Agda_Syntax_Internal_PatOrigin
+                       emitFn_anRU f_anRV
+           k_anS0 <- do ks_anRY <- mapM
+                                     (\ x_anRX
+                                        -> walk_Agda_Syntax_Abstract_Name_Name emitFn_anRU x_anRX)
+                                     f_anRW
+                        emitFn_anRU "[]" ks_anRY
+           emitFn_anRU "PatternInfo" [k_anRZ, k_anS0]
+    walk_Agda_Syntax_Internal_PlusLevel_ ::
+      forall m t_anjK. Monad m =>
+                       (String -> [Int] -> m Int)
+                       -> (t_anjK -> m Int)
+                          -> Agda.Syntax.Internal.PlusLevel' t_anjK -> m Int
+    walk_Agda_Syntax_Internal_PlusLevel_
+      emitFn_anS2
+      sub_anS3
+      (Agda.Syntax.Internal.Plus f_anS4 f_anS5)
+      = do k_anS6 <- emitFn_anS2 ("#Integer:" ++ show f_anS4) []
+           k_anS7 <- sub_anS3 f_anS5
+           emitFn_anS2 "Plus" [k_anS6, k_anS7]
+    walk_Agda_Syntax_Internal_Sort_ ::
+      forall m t_amXY. Monad m =>
+                       (String -> [Int] -> m Int)
+                       -> (t_amXY -> m Int) -> Sort' t_amXY -> m Int
+    walk_Agda_Syntax_Internal_Sort_
+      emitFn_anSk
+      sub_anSl
+      (Univ f_anSm f_anSn)
+      = do k_anSs <- walk_Agda_Syntax_Internal_Univ_Univ
+                       emitFn_anSk f_anSm
+           k_anSt <- walk_Agda_Syntax_Internal_Level_
+                       emitFn_anSk (\ y_anSr -> sub_anSl y_anSr) f_anSn
+           emitFn_anSk "Univ" [k_anSs, k_anSt]
+    walk_Agda_Syntax_Internal_Sort_
+      emitFn_anSk
+      sub_anSl
+      (Inf f_anSu f_anSv)
+      = do k_anSw <- walk_Agda_Syntax_Internal_Univ_Univ
+                       emitFn_anSk f_anSu
+           k_anSx <- emitFn_anSk ("#Integer:" ++ show f_anSv) []
+           emitFn_anSk "Inf" [k_anSw, k_anSx]
+    walk_Agda_Syntax_Internal_Sort_ emitFn_anSk sub_anSl SizeUniv
+      = do emitFn_anSk "SizeUniv" []
+    walk_Agda_Syntax_Internal_Sort_ emitFn_anSk sub_anSl LockUniv
+      = do emitFn_anSk "LockUniv" []
+    walk_Agda_Syntax_Internal_Sort_ emitFn_anSk sub_anSl LevelUniv
+      = do emitFn_anSk "LevelUniv" []
+    walk_Agda_Syntax_Internal_Sort_ emitFn_anSk sub_anSl IntervalUniv
+      = do emitFn_anSk "IntervalUniv" []
+    walk_Agda_Syntax_Internal_Sort_
+      emitFn_anSk
+      sub_anSl
+      (PiSort f_anSy f_anSz f_anSA)
+      = do k_anUe <- walk_Agda_Syntax_Internal_Dom_
+                       emitFn_anSk (\ y_anSH -> sub_anSl y_anSH)
+                       (\ y_anSI -> sub_anSl y_anSI) f_anSy
+           k_anUf <- walk_Agda_Syntax_Internal_Sort_
+                       emitFn_anSk (\ y_anTj -> sub_anSl y_anTj) f_anSz
+           k_anUg <- walk_Agda_Syntax_Internal_Abs
+                       emitFn_anSk
+                       (\ y_anTC
+                          -> walk_Agda_Syntax_Internal_Sort_
+                               emitFn_anSk (\ y_anUd -> sub_anSl y_anUd) y_anTC)
+                       f_anSA
+           emitFn_anSk "PiSort" [k_anUe, k_anUf, k_anUg]
+    walk_Agda_Syntax_Internal_Sort_
+      emitFn_anSk
+      sub_anSl
+      (FunSort f_anUh f_anUi)
+      = do k_anVv <- walk_Agda_Syntax_Internal_Sort_
+                       emitFn_anSk (\ y_anUT -> sub_anSl y_anUT) f_anUh
+           k_anVw <- walk_Agda_Syntax_Internal_Sort_
+                       emitFn_anSk (\ y_anVu -> sub_anSl y_anVu) f_anUi
+           emitFn_anSk "FunSort" [k_anVv, k_anVw]
+    walk_Agda_Syntax_Internal_Sort_
+      emitFn_anSk
+      sub_anSl
+      (UnivSort f_anVx)
+      = do k_anW9 <- walk_Agda_Syntax_Internal_Sort_
+                       emitFn_anSk (\ y_anW8 -> sub_anSl y_anW8) f_anVx
+           emitFn_anSk "UnivSort" [k_anW9]
+    walk_Agda_Syntax_Internal_Sort_
+      emitFn_anSk
+      sub_anSl
+      (MetaS f_anWa f_anWb)
+      = do k_anWo <- walk_Agda_Syntax_Common_MetaId emitFn_anSk f_anWa
+           k_anWp <- do ks_anWd <- mapM
+                                     (\ x_anWc
+                                        -> walk_Agda_Syntax_Internal_Elim_Elim_
+                                             emitFn_anSk (\ y_anWn -> sub_anSl y_anWn) x_anWc)
+                                     f_anWb
+                        emitFn_anSk "[]" ks_anWd
+           emitFn_anSk "MetaS" [k_anWo, k_anWp]
+    walk_Agda_Syntax_Internal_Sort_
+      emitFn_anSk
+      sub_anSl
+      (DefS f_anWq f_anWr)
+      = do k_anWE <- walk_Agda_Syntax_Abstract_Name_QName
+                       emitFn_anSk f_anWq
+           k_anWF <- do ks_anWt <- mapM
+                                     (\ x_anWs
+                                        -> walk_Agda_Syntax_Internal_Elim_Elim_
+                                             emitFn_anSk (\ y_anWD -> sub_anSl y_anWD) x_anWs)
+                                     f_anWr
+                        emitFn_anSk "[]" ks_anWt
+           emitFn_anSk "DefS" [k_anWE, k_anWF]
+    walk_Agda_Syntax_Internal_Sort_
+      emitFn_anSk
+      sub_anSl
+      (DummyS f_anWG)
+      = do k_anWH <- emitFn_anSk ("#String:" ++ show f_anWG) []
+           emitFn_anSk "DummyS" [k_anWH]
+    walk_Agda_Syntax_Internal_Tele ::
+      forall m a_amW1. Monad m =>
+                       (String -> [Int] -> m Int)
+                       -> (a_amW1 -> m Int) -> Agda.Syntax.Internal.Tele a_amW1 -> m Int
+    walk_Agda_Syntax_Internal_Tele
+      emitFn_anWK
+      sub_anWL
+      Agda.Syntax.Internal.EmptyTel
+      = do emitFn_anWK "EmptyTel" []
+    walk_Agda_Syntax_Internal_Tele
+      emitFn_anWK
+      sub_anWL
+      (Agda.Syntax.Internal.ExtendTel f_anWM f_anWN)
+      = do k_anX4 <- sub_anWL f_anWM
+           k_anX5 <- walk_Agda_Syntax_Internal_Abs
+                       emitFn_anWK
+                       (\ y_anWW
+                          -> walk_Agda_Syntax_Internal_Tele
+                               emitFn_anWK (\ y_anX3 -> sub_anWL y_anX3) y_anWW)
+                       f_anWN
+           emitFn_anWK "ExtendTel" [k_anX4, k_anX5]
+    walk_Agda_Syntax_Internal_Term ::
+      forall m. Monad m => (String -> [Int] -> m Int) -> Term -> m Int
+    walk_Agda_Syntax_Internal_Term emitFn_anX6 (Var f_anX7 f_anX8)
+      = do k_anXl <- emitFn_anX6 ("#Int:" ++ show f_anX7) []
+           k_anXm <- do ks_anXa <- mapM
+                                     (\ x_anX9
+                                        -> walk_Agda_Syntax_Internal_Elim_Elim_
+                                             emitFn_anX6
+                                             (\ y_anXk
+                                                -> walk_Agda_Syntax_Internal_Term
+                                                     emitFn_anX6 y_anXk)
+                                             x_anX9)
+                                     f_anX8
+                        emitFn_anX6 "[]" ks_anXa
+           emitFn_anX6 "Var" [k_anXl, k_anXm]
+    walk_Agda_Syntax_Internal_Term emitFn_anX6 (Lam f_anXn f_anXo)
+      = do k_anXw <- walk_Agda_Syntax_Common_ArgInfo emitFn_anX6 f_anXn
+           k_anXx <- walk_Agda_Syntax_Internal_Abs
+                       emitFn_anX6
+                       (\ y_anXv -> walk_Agda_Syntax_Internal_Term emitFn_anX6 y_anXv)
+                       f_anXo
+           emitFn_anX6 "Lam" [k_anXw, k_anXx]
+    walk_Agda_Syntax_Internal_Term emitFn_anX6 (Lit f_anXy)
+      = do k_anXz <- walk_Agda_Syntax_Literal_Literal emitFn_anX6 f_anXy
+           emitFn_anX6 "Lit" [k_anXz]
+    walk_Agda_Syntax_Internal_Term emitFn_anX6 (Def f_anXA f_anXB)
+      = do k_anXO <- walk_Agda_Syntax_Abstract_Name_QName
+                       emitFn_anX6 f_anXA
+           k_anXP <- do ks_anXD <- mapM
+                                     (\ x_anXC
+                                        -> walk_Agda_Syntax_Internal_Elim_Elim_
+                                             emitFn_anX6
+                                             (\ y_anXN
+                                                -> walk_Agda_Syntax_Internal_Term
+                                                     emitFn_anX6 y_anXN)
+                                             x_anXC)
+                                     f_anXB
+                        emitFn_anX6 "[]" ks_anXD
+           emitFn_anX6 "Def" [k_anXO, k_anXP]
+    walk_Agda_Syntax_Internal_Term
+      emitFn_anX6
+      (Con f_anXQ f_anXR f_anXS)
+      = do k_anY5 <- walk_Agda_Syntax_Internal_ConHead emitFn_anX6 f_anXQ
+           k_anY6 <- walk_Agda_Syntax_Common_ConOrigin emitFn_anX6 f_anXR
+           k_anY7 <- do ks_anXU <- mapM
+                                     (\ x_anXT
+                                        -> walk_Agda_Syntax_Internal_Elim_Elim_
+                                             emitFn_anX6
+                                             (\ y_anY4
+                                                -> walk_Agda_Syntax_Internal_Term
+                                                     emitFn_anX6 y_anY4)
+                                             x_anXT)
+                                     f_anXS
+                        emitFn_anX6 "[]" ks_anXU
+           emitFn_anX6 "Con" [k_anY5, k_anY6, k_anY7]
+    walk_Agda_Syntax_Internal_Term emitFn_anX6 (Pi f_anY8 f_anY9)
+      = do k_anYy <- walk_Agda_Syntax_Internal_Dom_
+                       emitFn_anX6
+                       (\ y_anYg -> walk_Agda_Syntax_Internal_Term emitFn_anX6 y_anYg)
+                       (\ _ -> emitFn_anX6 "#unused" []) f_anY8
+           k_anYz <- walk_Agda_Syntax_Internal_Abs
+                       emitFn_anX6
+                       (\ y_anYp
+                          -> walk_Agda_Syntax_Internal_Type__
+                               emitFn_anX6
+                               (\ y_anYw -> walk_Agda_Syntax_Internal_Term emitFn_anX6 y_anYw)
+                               (\ y_anYx -> emitFn_anX6 "#param:a" []) y_anYp)
+                       f_anY9
+           emitFn_anX6 "Pi" [k_anYy, k_anYz]
+    walk_Agda_Syntax_Internal_Term emitFn_anX6 (Sort f_anYA)
+      = do k_anZc <- walk_Agda_Syntax_Internal_Sort_
+                       emitFn_anX6
+                       (\ y_anZb -> walk_Agda_Syntax_Internal_Term emitFn_anX6 y_anZb)
+                       f_anYA
+           emitFn_anX6 "Sort" [k_anZc]
+    walk_Agda_Syntax_Internal_Term emitFn_anX6 (Level f_anZd)
+      = do k_anZi <- walk_Agda_Syntax_Internal_Level_
+                       emitFn_anX6
+                       (\ y_anZh -> walk_Agda_Syntax_Internal_Term emitFn_anX6 y_anZh)
+                       f_anZd
+           emitFn_anX6 "Level" [k_anZi]
+    walk_Agda_Syntax_Internal_Term emitFn_anX6 (MetaV f_anZj f_anZk)
+      = do k_anZx <- walk_Agda_Syntax_Common_MetaId emitFn_anX6 f_anZj
+           k_anZy <- do ks_anZm <- mapM
+                                     (\ x_anZl
+                                        -> walk_Agda_Syntax_Internal_Elim_Elim_
+                                             emitFn_anX6
+                                             (\ y_anZw
+                                                -> walk_Agda_Syntax_Internal_Term
+                                                     emitFn_anX6 y_anZw)
+                                             x_anZl)
+                                     f_anZk
+                        emitFn_anX6 "[]" ks_anZm
+           emitFn_anX6 "MetaV" [k_anZx, k_anZy]
+    walk_Agda_Syntax_Internal_Term emitFn_anX6 (DontCare f_anZz)
+      = do k_anZA <- walk_Agda_Syntax_Internal_Term emitFn_anX6 f_anZz
+           emitFn_anX6 "DontCare" [k_anZA]
+    walk_Agda_Syntax_Internal_Term emitFn_anX6 (Dummy f_anZB f_anZC)
+      = do k_anZP <- emitFn_anX6 ("#String:" ++ show f_anZB) []
+           k_anZQ <- do ks_anZE <- mapM
+                                     (\ x_anZD
+                                        -> walk_Agda_Syntax_Internal_Elim_Elim_
+                                             emitFn_anX6
+                                             (\ y_anZO
+                                                -> walk_Agda_Syntax_Internal_Term
+                                                     emitFn_anX6 y_anZO)
+                                             x_anZD)
+                                     f_anZC
+                        emitFn_anX6 "[]" ks_anZE
+           emitFn_anX6 "Dummy" [k_anZP, k_anZQ]
+    walk_Agda_Syntax_Internal_Type__ ::
+      forall m t_aeS8 a_aeS9. Monad m =>
+                              (String -> [Int] -> m Int)
+                              -> (t_aeS8 -> m Int)
+                                 -> (a_aeS9 -> m Int)
+                                    -> Agda.Syntax.Internal.Type'' t_aeS8 a_aeS9 -> m Int
+    walk_Agda_Syntax_Internal_Type__
+      emitFn_anZT
+      sub_anZU
+      sub_anZV
+      (Agda.Syntax.Internal.El f_anZW f_anZX)
+      = do k_ao0z <- walk_Agda_Syntax_Internal_Sort_
+                       emitFn_anZT (\ y_ao0y -> sub_anZU y_ao0y) f_anZW
+           k_ao0A <- sub_anZV f_anZX
+           emitFn_anZT "El" [k_ao0z, k_ao0A]
+    walk_Agda_Syntax_Internal_Elim_Elim_ ::
+      forall m a_amZJ. Monad m =>
+                       (String -> [Int] -> m Int)
+                       -> (a_amZJ -> m Int) -> Elim' a_amZJ -> m Int
+    walk_Agda_Syntax_Internal_Elim_Elim_
+      emitFn_ao0E
+      sub_ao0F
+      (Apply f_ao0G)
+      = do k_ao0L <- walk_Agda_Syntax_Common_Arg
+                       emitFn_ao0E (\ y_ao0K -> sub_ao0F y_ao0K) f_ao0G
+           emitFn_ao0E "Apply" [k_ao0L]
+    walk_Agda_Syntax_Internal_Elim_Elim_
+      emitFn_ao0E
+      sub_ao0F
+      (Proj f_ao0M f_ao0N)
+      = do k_ao0O <- walk_Agda_Syntax_Common_ProjOrigin
+                       emitFn_ao0E f_ao0M
+           k_ao0P <- walk_Agda_Syntax_Abstract_Name_QName emitFn_ao0E f_ao0N
+           emitFn_ao0E "Proj" [k_ao0O, k_ao0P]
+    walk_Agda_Syntax_Internal_Elim_Elim_
+      emitFn_ao0E
+      sub_ao0F
+      (IApply f_ao0Q f_ao0R f_ao0S)
+      = do k_ao0T <- sub_ao0F f_ao0Q
+           k_ao0U <- sub_ao0F f_ao0R
+           k_ao0V <- sub_ao0F f_ao0S
+           emitFn_ao0E "IApply" [k_ao0T, k_ao0U, k_ao0V]
+    walk_Agda_Syntax_Internal_Univ_Univ ::
+      forall m. Monad m =>
+                (String -> [Int] -> m Int)
+                -> Agda.Syntax.Internal.Univ.Univ -> m Int
+    walk_Agda_Syntax_Internal_Univ_Univ
+      emitFn_ao0W
+      Agda.Syntax.Internal.Univ.UProp
+      = do emitFn_ao0W "UProp" []
+    walk_Agda_Syntax_Internal_Univ_Univ
+      emitFn_ao0W
+      Agda.Syntax.Internal.Univ.UType
+      = do emitFn_ao0W "UType" []
+    walk_Agda_Syntax_Internal_Univ_Univ
+      emitFn_ao0W
+      Agda.Syntax.Internal.Univ.USSet
+      = do emitFn_ao0W "USSet" []
+    walk_Agda_Syntax_Literal_Literal ::
+      forall m. Monad m =>
+                (String -> [Int] -> m Int) -> Agda.Syntax.Literal.Literal -> m Int
+    walk_Agda_Syntax_Literal_Literal
+      emitFn_ao0X
+      (Agda.Syntax.Literal.LitNat f_ao0Y)
+      = do k_ao0Z <- emitFn_ao0X ("#Integer:" ++ show f_ao0Y) []
+           emitFn_ao0X "LitNat" [k_ao0Z]
+    walk_Agda_Syntax_Literal_Literal
+      emitFn_ao0X
+      (Agda.Syntax.Literal.LitWord64 f_ao10)
+      = do k_ao11 <- emitFn_ao0X ("#Word64:" ++ show f_ao10) []
+           emitFn_ao0X "LitWord64" [k_ao11]
+    walk_Agda_Syntax_Literal_Literal
+      emitFn_ao0X
+      (Agda.Syntax.Literal.LitFloat f_ao12)
+      = do k_ao13 <- emitFn_ao0X ("#Double:" ++ show f_ao12) []
+           emitFn_ao0X "LitFloat" [k_ao13]
+    walk_Agda_Syntax_Literal_Literal
+      emitFn_ao0X
+      (Agda.Syntax.Literal.LitString f_ao14)
+      = do k_ao48 <- emitFn_ao0X ("#Text:" ++ show f_ao14) []
+           emitFn_ao0X "LitString" [k_ao48]
+    walk_Agda_Syntax_Literal_Literal
+      emitFn_ao0X
+      (Agda.Syntax.Literal.LitChar f_ao49)
+      = do k_ao4a <- emitFn_ao0X ("#String:" ++ show f_ao49) []
+           emitFn_ao0X "LitChar" [k_ao4a]
+    walk_Agda_Syntax_Literal_Literal
+      emitFn_ao0X
+      (Agda.Syntax.Literal.LitQName f_ao4b)
+      = do k_ao4c <- walk_Agda_Syntax_Abstract_Name_QName
+                       emitFn_ao0X f_ao4b
+           emitFn_ao0X "LitQName" [k_ao4c]
+    walk_Agda_Syntax_Literal_Literal
+      emitFn_ao0X
+      (Agda.Syntax.Literal.LitMeta f_ao4d f_ao4e)
+      = do k_ao4h <- emitFn_ao0X "⟨TopLevelModuleName'⟩" []
+           k_ao4i <- walk_Agda_Syntax_Common_MetaId emitFn_ao0X f_ao4e
+           emitFn_ao0X "LitMeta" [k_ao4h, k_ao4i]
+    walk_Agda_Syntax_TopLevelModuleName_Boot_ModuleNameHash ::
+      forall m. Monad m =>
+                (String -> [Int] -> m Int)
+                -> Agda.Syntax.TopLevelModuleName.Boot.ModuleNameHash -> m Int
+    walk_Agda_Syntax_TopLevelModuleName_Boot_ModuleNameHash
+      emitFn_ao4j
+      (Agda.Syntax.TopLevelModuleName.Boot.ModuleNameHash f_ao4k)
+      = do k_ao4l <- emitFn_ao4j ("#Word64:" ++ show f_ao4k) []
+           emitFn_ao4j "ModuleNameHash" [k_ao4l]

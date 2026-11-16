@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """OB-7 variational discharge (S46): mass and bias as MOMENT MAPS.
 Chart R^2 (log chart), symplectic form omega = da ^ db.
 Convention omega(X_H, .) = dH gives X_H = (dH/db, -dH/da).

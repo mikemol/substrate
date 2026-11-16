@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 brick-schedule.py — the Čech reading protocol (S29, author method).
 

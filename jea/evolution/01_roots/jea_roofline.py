@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """jea_roofline.py — counter-free bottleneck diagnosis for the jea_gpu ℚ kernels,
 by ABLATION. The durable lesson: you cannot predict a GPU kernel's bottleneck from a
 STATIC property. Measure it — strip each component, see what moves the time.
@@ -68,25 +70,35 @@ USAGE:
   python3 scripts/jea_roofline.py --bench    # cupyx GPU-only A/B (per-level vs tiled)
   python3 scripts/jea_roofline.py --sass     # SASS loop structure of combine_level_q
 """
+
 import os, re, subprocess, sys, tempfile
 import numpy as np
 
-os.environ.setdefault("CUDA_PATH", "/usr")          # cupy NVRTC + ncu header resolution
+os.environ.setdefault("CUDA_PATH", "/usr")  # cupy NVRTC + ncu header resolution
 ARCH = "sm_89"
 ADA = dict(REGS_SM=65536, THREADS_SM=1536, SMEM_SM=101376, WARP=32, PEAK_GBs=200)
 
-_QHEAD = r'''typedef unsigned long long u64; typedef unsigned __int128 u128; typedef __int128 i128;
+_QHEAD = r"""typedef unsigned long long u64; typedef unsigned __int128 u128; typedef __int128 i128;
 __device__ __forceinline__ u128 absu(i128 x){ return x<0?(u128)(-x):(u128)x; }
-__device__ __forceinline__ i128 ldn(const u64*lo,const u64*hi,int i){return (i128)(((u128)hi[i]<<64)|lo[i]);}'''
+__device__ __forceinline__ i128 ldn(const u64*lo,const u64*hi,int i){return (i128)(((u128)hi[i]<<64)|lo[i]);}"""
 
 
 # ---- ablation harness: one parametric ℚ combine, components toggled ----------
 def _combine(K, ovcheck):
     """Per-level ℚ combine RawKernel with K-step gcd window and optional ovf-check divides."""
     import cupy as cp
-    ov = (r'o|=(an!=0)&&(nm/an!=bn); o|=(ad!=0)&&(D/ad!=bd); o|=(bd!=0)&&(p1/bd!=an);'
-          r'o|=(ad!=0)&&(p2/ad!=bn); o|=((p1>0)==(p2>0))&&((na>0)!=(p1>0))&&(p1!=0);') if ovcheck else ''
-    src = _QHEAD + r'''
+
+    ov = (
+        (
+            r"o|=(an!=0)&&(nm/an!=bn); o|=(ad!=0)&&(D/ad!=bd); o|=(bd!=0)&&(p1/bd!=an);"
+            r"o|=(ad!=0)&&(p2/ad!=bn); o|=((p1>0)==(p2>0))&&((na>0)!=(p1>0))&&(p1!=0);"
+        )
+        if ovcheck
+        else ""
+    )
+    src = (
+        _QHEAD
+        + r"""
 extern "C" __global__ void cb(const u64* anl,const u64* anh,const u64* adl,const u64* adh,
   const signed char* tags,u64* nnl,u64* nnh,u64* ndl,u64* ndh,int* ovf,int* deep,int n){
   int i=blockDim.x*(long long)blockIdx.x+threadIdx.x; if(i>=n)return;
@@ -99,19 +111,28 @@ extern "C" __global__ void cb(const u64* anl,const u64* anh,const u64* adl,const
   int conv=(b==0); u128 g=conv?(a==0?(u128)1:a):(u128)1; N=N/(i128)g; D=D/(i128)g;
   nnl[i]=(u64)(u128)N;nnh[i]=(u64)((u128)N>>64);ndl[i]=(u64)(u128)D;ndh[i]=(u64)((u128)D>>64);
   if(o)ovf[0]=1; if(!conv)deep[0]=1;
-}'''.replace('OVCHECK', ov).replace('KK', str(K))
-    return cp.RawKernel(src, 'cb', options=('--device-int128',))
+}""".replace("OVCHECK", ov).replace("KK", str(K))
+    )
+    return cp.RawKernel(src, "cb", options=("--device-int128",))
 
 
 def _fold(nums, dens, tags, k):
     import cupy as cp
-    anl = cp.asarray(nums, cp.uint64); anh = cp.zeros(nums.size, cp.uint64)
-    adl = cp.asarray(dens, cp.uint64); adh = cp.zeros(dens.size, cp.uint64)
-    dt = [cp.asarray(t) for t in tags]; ovf = cp.zeros(1, cp.int32); deep = cp.zeros(1, cp.int32)
+
+    anl = cp.asarray(nums, cp.uint64)
+    anh = cp.zeros(nums.size, cp.uint64)
+    adl = cp.asarray(dens, cp.uint64)
+    adh = cp.zeros(dens.size, cp.uint64)
+    dt = [cp.asarray(t) for t in tags]
+    ovf = cp.zeros(1, cp.int32)
+    deep = cp.zeros(1, cp.int32)
     for tg in dt:
         m = int(tg.size)
-        a = cp.empty(m, cp.uint64); b = cp.empty(m, cp.uint64); c = cp.empty(m, cp.uint64); d = cp.empty(m, cp.uint64)
-        k(((m+255)//256,), (256,), (anl, anh, adl, adh, tg, a, b, c, d, ovf, deep, np.int32(m)))
+        a = cp.empty(m, cp.uint64)
+        b = cp.empty(m, cp.uint64)
+        c = cp.empty(m, cp.uint64)
+        d = cp.empty(m, cp.uint64)
+        k(((m + 255) // 256,), (256,), (anl, anh, adl, adh, tg, a, b, c, d, ovf, deep, np.int32(m)))
         anl, anh, adl, adh = a, b, c, d
     cp.cuda.Stream.null.synchronize()
     return (int(anl.get()[0]), int(adl.get()[0]), int(ovf.get()[0]), int(deep.get()[0]))
@@ -120,46 +141,75 @@ def _fold(nums, dens, tags, k):
 def cmd_ablate(h=22, seed=2):
     import cupy as cp, jea_gpu as J
     from cupyx.profiler import benchmark
+
     nums, dens, tags = J._build_q_add(h, seed)
+
     def t(k):
         _fold(nums, dens, tags, k)
-        return benchmark(lambda: _fold(nums, dens, tags, k), n_repeat=15, n_warmup=3).gpu_times.mean()*1e3
+        return (
+            benchmark(lambda: _fold(nums, dens, tags, k), n_repeat=15, n_warmup=3).gpu_times.mean()
+            * 1e3
+        )
+
     nodes = nums.size - 1
-    bytes_moved = nodes * 96            # per node ~64B read + 32B write (4 u64 lanes)
+    bytes_moved = nodes * 96  # per node ~64B read + 32B write (4 u64 lanes)
     print(f"ABLATION, 2^{h} ℚ tree ({nodes:,} fold nodes), GPU-only (15 reps):")
-    rows = [("256 gcd + ovf-div (CURRENT)", _combine(256, True)),
-            ("  4 gcd + ovf-div", _combine(4, True)),
-            ("  4 gcd, no ovf-div", _combine(4, False)),
-            ("  0 gcd, no ovf-div (mul+final-div floor)", _combine(0, False))]
+    rows = [
+        ("256 gcd + ovf-div (CURRENT)", _combine(256, True)),
+        ("  4 gcd + ovf-div", _combine(4, True)),
+        ("  4 gcd, no ovf-div", _combine(4, False)),
+        ("  0 gcd, no ovf-div (mul+final-div floor)", _combine(0, False)),
+    ]
     base = None
     for nm, k in rows:
-        ms = t(k); base = base or ms
+        ms = t(k)
+        base = base or ms
         print(f"  {nm:44s} {ms:6.2f} ms")
     floor = t(_combine(0, False))
-    print(f"\n  effective bandwidth at floor: {bytes_moved/1e6:.0f} MB / {floor:.1f} ms "
-          f"= {bytes_moved/1e6/floor:.0f} GB/s  (peak ~{ADA['PEAK_GBs']} GB/s "
-          f"⇒ {bytes_moved/1e6/floor/ADA['PEAK_GBs']*100:.0f}% of peak ⇒ latency axis ranks "
-          f"above bandwidth/compute AT THIS operating point)")
+    print(
+        f"\n  effective bandwidth at floor: {bytes_moved / 1e6:.0f} MB / {floor:.1f} ms "
+        f"= {bytes_moved / 1e6 / floor:.0f} GB/s  (peak ~{ADA['PEAK_GBs']} GB/s "
+        f"⇒ {bytes_moved / 1e6 / floor / ADA['PEAK_GBs'] * 100:.0f}% of peak ⇒ latency axis ranks "
+        f"above bandwidth/compute AT THIS operating point)"
+    )
     print("  reading (bounded to this workload/config): arithmetic adds little over the memory")
     print("  floor ⇒ memory-latency/launch is the binding axis here; the lever is more in-flight")
-    print("  requests (occupancy, fused launches), not less traffic. A different workload may rank differently.")
+    print(
+        "  requests (occupancy, fused launches), not less traffic. A different workload may rank differently."
+    )
 
 
 def cmd_bench(h=22, s=9, seed=2):
     import jea_gpu as J
     from cupyx.profiler import benchmark
+
     nums, dens, tags = J._build_q_add(h, seed)
-    gpl = benchmark(lambda: J.inside_perlevel_q(nums, dens, tags), n_repeat=20, n_warmup=3).gpu_times.mean()*1e3
-    gti = benchmark(lambda: J.inside_tiled_q(nums, dens, tags, s), n_repeat=20, n_warmup=3).gpu_times.mean()*1e3
+    gpl = (
+        benchmark(
+            lambda: J.inside_perlevel_q(nums, dens, tags), n_repeat=20, n_warmup=3
+        ).gpu_times.mean()
+        * 1e3
+    )
+    gti = (
+        benchmark(
+            lambda: J.inside_tiled_q(nums, dens, tags, s), n_repeat=20, n_warmup=3
+        ).gpu_times.mean()
+        * 1e3
+    )
     print(f"cupyx.benchmark 2^{h} ℚ leaves (GPU-only, 20 reps):")
-    print(f"  per-level {gpl:6.2f} ms | tiled {gti:6.2f} ms | ratio {gpl/gti:.2f}x "
-          f"({'tiling slower' if gpl < gti else 'tiling faster'})")
+    print(
+        f"  per-level {gpl:6.2f} ms | tiled {gti:6.2f} ms | ratio {gpl / gti:.2f}x "
+        f"({'tiling slower' if gpl < gti else 'tiling faster'})"
+    )
 
 
 def cmd_sass():
     with tempfile.TemporaryDirectory() as d:
-        cu = os.path.join(d, "k.cu"); cb = os.path.join(d, "k.cubin")
-        open(cu, "w").write(_QHEAD + r'''
+        cu = os.path.join(d, "k.cu")
+        cb = os.path.join(d, "k.cubin")
+        open(cu, "w").write(
+            _QHEAD
+            + r"""
 __device__ __forceinline__ u128 gcd_u(u128 a,u128 b){for(int k=0;k<256;k++){u128 r=(b!=0)?(a%b):(u128)0;
  a=(b!=0)?b:a; b=(b!=0)?r:b;} return a;}
 extern "C" __global__ void combine_level_q(const u64*anl,const u64*anh,const u64*adl,const u64*adh,
@@ -168,18 +218,26 @@ extern "C" __global__ void combine_level_q(const u64*anl,const u64*anh,const u64
  i128 an=ldn(anl,anh,2*i),ad=ldn(adl,adh,2*i),bn=ldn(anl,anh,2*i+1),bd=ldn(adl,adh,2*i+1);
  int isMul=(tags[i]==2); i128 p1=an*bd,p2=bn*ad,nm=an*bn,na=p1+p2,D=ad*bd; int o=0;
  o|=(an!=0)&&(nm/an!=bn); i128 N=isMul?nm:na; u128 g=gcd_u(absu(N),absu(D)); g=(g==0)?(u128)1:g;
- N=N/(i128)g; D=D/(i128)g; nnl[i]=(u64)(u128)N; ndl[i]=(u64)(u128)D; if(o)ovf[0]=1;}''')
-        info = subprocess.run(["nvcc", f"-arch={ARCH}", "-cubin", "-o", cb, cu, "--resource-usage"],
-                              capture_output=True, text=True)
+ N=N/(i128)g; D=D/(i128)g; nnl[i]=(u64)(u128)N; ndl[i]=(u64)(u128)D; if(o)ovf[0]=1;}"""
+        )
+        info = subprocess.run(
+            ["nvcc", f"-arch={ARCH}", "-cubin", "-o", cb, cu, "--resource-usage"],
+            capture_output=True,
+            text=True,
+        )
         regs = re.search(r"Used (\d+) registers", info.stderr)
         sass = subprocess.run(["cuobjdump", "-sass", cb], capture_output=True, text=True).stdout
         lines = sass.splitlines()
         instr = sum(1 for ln in lines if re.search(r"/\*[0-9a-f]+\*/", ln))
         has256 = any("0x100" in ln and "ISETP" in ln for ln in lines)
-        print(f"combine_level_q @ {ARCH}: {instr} static SASS instr, "
-              f"{regs.group(1) if regs else '?'} registers; 256-gcd counter present: {has256}")
+        print(
+            f"combine_level_q @ {ARCH}: {instr} static SASS instr, "
+            f"{regs.group(1) if regs else '?'} registers; 256-gcd counter present: {has256}"
+        )
         print("  (static SASS NAMES the compute axis; at this operating point the gcd hides under")
-        print("   memory latency. Static names axes; ablation ranks them — neither refutes the other.)")
+        print(
+            "   memory latency. Static names axes; ablation ranks them — neither refutes the other.)"
+        )
 
 
 if __name__ == "__main__":

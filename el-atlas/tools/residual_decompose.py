@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 residual_decompose.py — the "ephemeral" residual is not a black box either: decompose it into
 named, mostly-CONTROLLABLE terms (candidate claim RES).

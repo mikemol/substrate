@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """host_probe.py — fetch the HOST topology at RUNTIME (measured, not hardcoded), the CPU-side
 analogue of cudaDeviceProp. Shared by host-topology-nedge-pilot.py and het-dispatch-nedge-pilot.py.
 

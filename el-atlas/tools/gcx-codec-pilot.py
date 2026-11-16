@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 gcx-codec-pilot.py — S4 pilot for candidate GCX (the GALAXY codex):
 merged_ontology Theorem 9.1, W_{v,k} <-> log_alpha(F(s)^k), tested as stated.

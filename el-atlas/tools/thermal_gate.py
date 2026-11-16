@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 thermal_gate.py — AI-7c: thermal throttle as a GATE on the clock edges.
 

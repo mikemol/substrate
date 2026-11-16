@@ -10,11 +10,18 @@
 # file (~/.cache/membudget/budget.cotype), this also budgets agda calls across SEPARATE
 # shells (e.g. concurrent background compiles) against one shared budget.
 #
-# Knobs:  AGDA_MB (cap/lease for `agda`, default 4096; raise for heavy modules:
-#         `AGDA_MB=8000 agda ...`).  Bypass once with `command agda ...`.
+# Knobs:  AGDA_MB (lease for `agda`; default `auto` — membudget SIZES it from the module's
+#         recorded peak history). Pin with `AGDA_MB=<N> agda ...`. Bypass once with
+#         `command agda ...`.
+#         ⚑ THE DEFAULT IS NOT RESTATED HERE. These lines said 4096 and 2048 while the
+#         authority executed 192 — a derived view that aged silently, in the file whose
+#         whole job is to route through that authority. Read the value from membudget's
+#         `_auto_mb` (its AGDA_MB_DEFAULT/AGDA_MB_MAX assignment).
 #
-# NOTE: a compile needing more than its cap is OOM-killed by the scope (a signal to
-# raise AGDA_MB), and a call may be REFUSED if the budget is full (serialize / retry).
+# NOTE: a compile exceeding its LEASE is OOM-killed by the cgroup scope (137) and membudget
+# RETRIES it at the next power-of-two bucket — self-correcting, not a signal to raise AGDA_MB
+# by hand. (⚑ This note used to say the opposite.) A call may still be REFUSED if the request
+# exceeds the whole budget, and BLOCKS — rather than failing — while the budget is merely full.
 # The build gate is unaffected — it invokes agda via python (execvp), not this function.
 
 _membudget_dir="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" 2>/dev/null && pwd)"
@@ -23,7 +30,8 @@ case ":$PATH:" in *":${_membudget_dir}:"*) ;; *) export PATH="${_membudget_dir}:
 # agda SHIM ahead of the real agda — a PATH executable (NOT a shell function) so that
 # `make -j` recipes (which run in non-interactive /bin/sh and never see bash functions)
 # also route agda through membudget and thus self-throttle by RAM. Works for interactive
-# `agda` too (PATH resolution). Cap/lease per agda = AGDA_MB (default 2048).
+# `agda` too (PATH resolution). Lease per agda = AGDA_MB (see the note above; the value lives
+# in membudget, not here).
 case ":$PATH:" in *":${_membudget_dir}/agda-shim:"*) ;; *) export PATH="${_membudget_dir}/agda-shim:$PATH";; esac
 
 # wrap any other heavy command: mbwrap <MB> -- cmd args...

@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 nve-bridge-pilot.py — the author's answer to Nedge's open vE (proof by
 cases): single/double pin SPLIT/JOIN carrier expansion + the Wheatstone

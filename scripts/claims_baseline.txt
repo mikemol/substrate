@@ -1,0 +1,13 @@
+agda/Substrate/Algebra/F2/Linear/FromImages/Permutation.agda::shim::self
+agda/Substrate/Algebra/GL3F2/SingerOrder.agda::shim::self
+agda/Substrate/Category/PhaseLockedLoop.agda::shim::self
+agda/Substrate/Cocycles/V4Signature/Codeword/LiveS4Bijection.agda::shim::self
+agda/Substrate/Cocycles/V4Signature/S4Iso.agda::shim::self
+agda/Substrate/Foundation/Function/Iterate.agda::shim::self
+agda/Substrate/Groups/Actions/S3-on-V4.agda::shim::self
+agda/Substrate/Groups/Actions/S3-on-V4/HomRotations.agda::shim::self
+agda/Substrate/Groups/Actions/S3-on-V4/HomSwaps.agda::shim::self
+agda/Substrate/Groups/Coxeter/Cyclic.agda::shim::self
+agda/Substrate/Groups/S4-Iso.agda::shim::self
+agda/Substrate/Groups/SemidirectProduct.agda::shim::self
+agda/Substrate/Groups/V4.agda::shim::self

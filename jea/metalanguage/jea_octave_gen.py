@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """jea_octave_gen.py — Σ-OCTAVE: forest → sympy → Octave generation (one pipeline output).
 
 THIN by construction (pass-13 reframing): emission is NOT a hand-written emitter — it is the canonical
@@ -21,8 +23,10 @@ this runs standalone, the user wires their real translator in their pipeline.
 
 This is sympy-as-HUB realized: the SAME forest→sympy bridge feeds octave here, and latex/mathml/ccode
 elsewhere, each via sympy's own canonical printer. Build one bridge, inherit N targets."""
+
 from __future__ import annotations
 import sys, os
+
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "metalanguage"))
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from jea_sympy_bridge import project_sympy
@@ -35,12 +39,14 @@ def _passthrough(octave_src: str) -> str:
     return octave_src
 
 
-def emit_octave(name: str,
-                forest_root,
-                intern: Intern,
-                arg_order: tuple | None = None,
-                outputs: list[str] | None = None,
-                translator=_passthrough) -> dict:
+def emit_octave(
+    name: str,
+    forest_root,
+    intern: Intern,
+    arg_order: tuple | None = None,
+    outputs: list[str] | None = None,
+    translator=_passthrough,
+) -> dict:
     """Generate an Octave `.m` function from a forest node (a named formal object).
 
     name        : the .m function name (the formal object's name → a named function, not codegen's out1)
@@ -55,7 +61,7 @@ def emit_octave(name: str,
     # forest → sympy (Σ-BRIDGE)
     if isinstance(forest_root, (list, tuple)):
         exprs = [project_sympy(intern, r) for r in forest_root]
-        outs = outputs or [f"out{i+1}" for i in range(len(exprs))]
+        outs = outputs or [f"out{i + 1}" for i in range(len(exprs))]
         name_expr = (name, [sp.Eq(sp.Symbol(o), e) for o, e in zip(outs, exprs)])
         all_expr = exprs
     else:
@@ -82,25 +88,29 @@ def emit_octave_from_sympy(name: str, expr, **kw) -> dict:
     Routes through the SAME codegen path; the forest is the on-ramp, not mandatory for pure generation."""
     I = Intern()
     from jea_sympy_bridge import lower_sympy
-    root = lower_sympy(expr, I)             # round-trips through the bridge (proves the forest path)
+
+    root = lower_sympy(expr, I)  # round-trips through the bridge (proves the forest path)
     return emit_octave(name, root, I, **kw)
 
 
 if __name__ == "__main__":
     from jea_sympy_bridge import lower_sympy
+
     print("=== Σ-OCTAVE: forest → sympy → Octave (standing on sympy.codegen) ===\n")
     a, b, x = sp.symbols("a b x")
 
     # 1) a single named formal object: schur(a,b)
-    I = Intern(); r = lower_sympy((a*b)/(a+b), I)
+    I = Intern()
+    r = lower_sympy((a * b) / (a + b), I)
     out = emit_octave("schur", r, I, arg_order=(a, b))
     print("--- single function (forest → octave) ---")
-    print(out["octave"]); 
+    print(out["octave"])
     print(f"  args detected: {out['args']}")
 
     # 2) a multi-output bundle: stats(a,b) -> [m, v]
     I2 = Intern()
-    rm = lower_sympy((a+b)/2, I2); rv = lower_sympy((a-b)**2, I2)
+    rm = lower_sympy((a + b) / 2, I2)
+    rv = lower_sympy((a - b) ** 2, I2)
     out2 = emit_octave("stats", [rm, rv], I2, arg_order=(a, b), outputs=["m", "v"])
     print("--- multi-output bundle ---")
     print(out2["octave"])
@@ -108,6 +118,7 @@ if __name__ == "__main__":
     # 3) the translator seam (a stub octave→matlab: e.g. % comments -> %, or .^ untouched; here a marker)
     def demo_translator(s):  # stands in for the USER's real translator
         return "% (translated to MATLAB dialect by user's tool)\n" + s
+
     out3 = emit_octave("schur", r, I, arg_order=(a, b), translator=demo_translator)
     print("--- translator seam (user's octave→matlab tool plugs in here) ---")
     print(out3["matlab"])

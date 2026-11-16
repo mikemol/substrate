@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """jea_pysim.py — the similarity instrument (Python AST + Agda .agdai core).  The textual Agda
 similarity tool (scripts/agda_similarity, now RETIRED) operated on Agda files via multi-scale n-grams;
 this operates structurally via the term-algebra interner (jea_pyalg) over BOTH Python AST and Agda core
@@ -21,6 +23,7 @@ The machinery mirrors the Agda script's surfaces:
 NOT a similarity METRIC bolted on: similarity is a readout of the SPPF the interner builds.
 NO target script is hardcoded -- this is the instrument; point it at any .py via the CLI.
 """
+
 from __future__ import annotations
 import ast
 import sys
@@ -30,8 +33,17 @@ import argparse
 from dataclasses import dataclass
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from jea_pyalg import (Intern, IR, Lowerer, PyDivStr, CrossMix,
-                       full_skeleton, grade as trace_grade, _HAS_CST)
+from jea_pyalg import (
+    Intern,
+    IR,
+    Lowerer,
+    PyDivStr,
+    CrossMix,
+    full_skeleton,
+    grade as trace_grade,
+    _HAS_CST,
+)
+
 try:
     from jea_pyalg import CstLowerer
     import libcst as cst
@@ -51,13 +63,14 @@ PARTIAL_ORBIT = 0.50
 @dataclass
 class Unit:
     """One comparison unit (a def/class): its source location + its interned root id."""
+
     name: str
     path: str
     lineno: int
-    root: int                      # interned id of the unit's IR root
-    support: frozenset             # all interned ids reachable from root (its subterm support)
-    depth: dict = None             # node id -> min trace-depth from this unit's root (the SCALE axis)
-    copy: bool = False             # Agda defCopy: True ⟺ created by a MODULE INSTANTIATION (provenance)
+    root: int  # interned id of the unit's IR root
+    support: frozenset  # all interned ids reachable from root (its subterm support)
+    depth: dict = None  # node id -> min trace-depth from this unit's root (the SCALE axis)
+    copy: bool = False  # Agda defCopy: True ⟺ created by a MODULE INSTANTIATION (provenance)
 
 
 class Corpus:
@@ -71,6 +84,7 @@ class Corpus:
       * cosine->fan-in (Trace 3): fan-in carries MULTIPLICITY (the freq cosine weighed), not just presence
       * recursive-tmpl (Trace 4): INTERIOR-node fan-in = shared structure inside the residue (already there)
     """
+
     def __init__(self):
         self.I = Intern()
         self.units: list[Unit] = []
@@ -78,11 +92,14 @@ class Corpus:
         self.node_units: dict[int, set] = {}
 
     def _support(self, root: int) -> frozenset:
-        out = set(); stack = [root]
+        out = set()
+        stack = [root]
         while stack:
             j = stack.pop()
-            if j in out: continue
-            out.add(j); stack.extend(self.I.nodes[j].children)
+            if j in out:
+                continue
+            out.add(j)
+            stack.extend(self.I.nodes[j].children)
         return frozenset(out)
 
     def _depth_map(self, root: int) -> dict:
@@ -99,7 +116,8 @@ class Corpus:
                     if c not in depth:
                         depth[c] = d + 1
                         nxt.append(c)
-            frontier = nxt; d += 1
+            frontier = nxt
+            d += 1
         return depth
 
     def add_file(self, path: str):
@@ -119,53 +137,69 @@ class Corpus:
                 if root is None:
                     continue
                 sup = self._support(root)
-                u = Unit(name=getattr(node, "name", "?"), path=path,
-                         lineno=getattr(node, "lineno", -1), root=root,
-                         support=sup, depth=self._depth_map(root))
+                u = Unit(
+                    name=getattr(node, "name", "?"),
+                    path=path,
+                    lineno=getattr(node, "lineno", -1),
+                    root=root,
+                    support=sup,
+                    depth=self._depth_map(root),
+                )
                 uidx = len(self.units)
                 self.units.append(u)
-                for nid in sup:                       # record unit-membership (multiplicity fan-in)
+                for nid in sup:  # record unit-membership (multiplicity fan-in)
                     self.node_units.setdefault(nid, set()).add(uidx)
 
-    def carrier_qnames_of(self, paths, shim_bin: str = None) -> set:
-        """⟡dedup-unhold-normalizer pre-pass: the set of Record/Datatype qnames across `paths`
-        — the structured CARRIERS the un-hold normalization abstracts to ⟨CARRIER⟩. Cheap: one
-        decode per core (a throwaway interner), keep only the `kinds` map."""
-        import jea_agdai
-        carriers = set()
-        for p in paths:
-            if not p.endswith(".agdai"):
-                continue
-            try:
-                rep = jea_agdai.core_intern_agdai(p, Intern(), shim_bin=shim_bin)
-            except (FileNotFoundError, RuntimeError):
-                continue
-            for name, k in rep.get("kinds", {}).items():
-                if k in ("Record", "Datatype"):
-                    carriers.add(name)
-        return carriers
+    # ── `carrier_qnames_of` — DELETED 2026-08-22 (⟡unhold-is-fingerprint). It was
+    # `--unhold`'s recognizer and `--unhold` is retired; see the ⚑ block at the dispatch.
+    #
+    # ⚑ THE DEFECT WAS THAT IT RECOGNISED AT ALL. Its body was
+    # `if k in ("Record","Datatype")` over a per-core `kinds` map, guarded by
+    # `if not p.endswith(".agdai"): continue` — so it answered "which of MY known carriers
+    # appear here", and both halves failed closed: an unmodelled carrier kind was invisible,
+    # and a non-Agda path was skipped without a word. On this repo's Python it returned the
+    # empty set and the caller printed `abstracting 0 carrier qname(s)` — a fact about the
+    # RECOGNIZER reported as a fact about the corpus, which is the method-vs-substrate
+    # collapse this toolkit files against.
+    #
+    # ⚑ AND THE SILENT `.agdai` SKIP IS THE SAME LINE AS `main`'s persist filter
+    # (`cores = [f for f in files if f.endswith(".agdai")]`) — ONE defect, two sites in one
+    # file, both turning "I cannot read this" into "there is nothing here".
+    #
+    # ⚑ THE REPLACEMENT RECOGNISES NOTHING: `pycodemod --fingerprint` primes each DISTINCT
+    # REFERENT, so shared structure is `gcd`, containment is `%`, and what is not modelled
+    # comes back as an exact integer remainder rather than as an absence.
 
-    def add_agdai(self, path: str, shim_bin: str = None, carrier_qnames=None):
+    def add_agdai(self, path: str, shim_bin: str = None):
         """Φ4b: ingest an Agda .agdai interface as units = its DEFINITIONS' elaborated core terms.
         Drives jea_agdai.core_intern_agdai (agdai_shim -> the full child-edge core DAG) into THIS same
         interner, then makes one Unit per definition. The readouts below are front-end-agnostic -- they
         read (kind, role, op, lit) + children, and Agda core nodes carry kind='AgdaCore', op=constructor
         /qname, role=de-Bruijn -- so the typeholer/S(g)/clusters run on Agda exactly as on Python. This
         is what lets jea_pysim+jea_agdai SUBSUME the textual agda_similarity (structural, cross-file).
-        `carrier_qnames` (⟡dedup-unhold-normalizer): if given, carrier references are abstracted to
-        ⟨CARRIER⟩ so redundancy-under-inversion (grade-collapse vs grade-index) clusters."""
+
+        ⚑ `carrier_qnames` REMOVED with `--unhold` (⟡unhold-is-fingerprint). It was this
+        method's ONLY non-agnostic parameter — the one place an Agda-specific recognizer
+        reached into a front-end-agnostic path, which the paragraph above claims it is not."""
         import jea_agdai
+
         try:
-            rep = jea_agdai.core_intern_agdai(path, self.I, shim_bin=shim_bin,
-                                              carrier_qnames=carrier_qnames)
+            rep = jea_agdai.core_intern_agdai(path, self.I, shim_bin=shim_bin)
         except (FileNotFoundError, RuntimeError) as e:
             print(f"  [agda-skip] {path}: {e}", file=sys.stderr)
             return
         copies = rep.get("copies", {})
         for name, root in rep.get("units", []):
             sup = self._support(root)
-            u = Unit(name=name, path=path, lineno=-1, root=root,
-                     support=sup, depth=self._depth_map(root), copy=copies.get(name, False))
+            u = Unit(
+                name=name,
+                path=path,
+                lineno=-1,
+                root=root,
+                support=sup,
+                depth=self._depth_map(root),
+                copy=copies.get(name, False),
+            )
             uidx = len(self.units)
             self.units.append(u)
             for nid in sup:
@@ -191,7 +225,8 @@ class Corpus:
         'shared vocabulary, distinct content' = healthy-abstraction diagnostic."""
         su = {n for n in u.support if u.depth.get(n, 1 << 30) <= k}
         sv = {n for n in v.support if v.depth.get(n, 1 << 30) <= k}
-        inter = len(su & sv); union = len(su | sv)
+        inter = len(su & sv)
+        union = len(su | sv)
         return inter / union if union else 1.0
 
     def scale_spread(self, u: Unit, v: Unit, kmax: int = 6) -> list:
@@ -226,13 +261,15 @@ class Corpus:
         forget_carrier = drop `lit` (the carrier value); keep (kind, role, op) = the SHAPE.
         Pre-order with depth cut -- the n-truncation of the term's skeleton path."""
         out = []
+
         def walk(i, d):
             if d > g:
                 return
             n = self.I.nodes[i]
-            out.append((n.kind, n.role, n.op))      # forget_carrier: NO lit
+            out.append((n.kind, n.role, n.op))  # forget_carrier: NO lit
             for c in n.children:
                 walk(c, d + 1)
+
         walk(root, 0)
         return tuple(out)
 
@@ -285,7 +322,8 @@ class Corpus:
         gmax = max(total) if total else 0
         prof, cs, ct = [], 0, 0
         for g in range(gmax + 1):
-            cs += shared.get(g, 0); ct += total.get(g, 0)
+            cs += shared.get(g, 0)
+            ct += total.get(g, 0)
             prof.append((g, round(cs / ct, 2) if ct else 1.0))
         holes = sorted(hd.get("depth", 0) for hd in self._collect_holes(th))
         return {"profile": prof, "hole_depths": holes}
@@ -307,7 +345,7 @@ class Corpus:
                 if a != b:
                     break
                 lcp += 1
-            out.append((g, lcp, min(len(su), len(sv))))   # (grade, lcp depth, shorter length)
+            out.append((g, lcp, min(len(su), len(sv))))  # (grade, lcp depth, shorter length)
         return out
 
     @staticmethod
@@ -323,10 +361,12 @@ class Corpus:
         vals = [s for _, s in prof]
         g0 = vals[0]
         drops = [(prof[i][0], vals[i] - vals[i + 1]) for i in range(len(vals) - 1)]
-        cliff_g, cliff_drop = (max(drops, key=lambda t: t[1]) if drops else (None, 0.0))
+        cliff_g, cliff_drop = max(drops, key=lambda t: t[1]) if drops else (None, 0.0)
         hi = 0.85
         lo = 0.30
-        mn = min(vals); mx = max(vals); last = vals[-1]
+        mn = min(vals)
+        mx = max(vals)
+        last = vals[-1]
         # a real PLATEAU requires the high region to extend PAST g=0: there must be a grade g>=1
         # that is still high, with the cliff AFTER it. A cliff at g=0 (immediate decay) is NOT a
         # plateau -- it is unrelated/baseline. The plateau length is how far high persists.
@@ -337,19 +377,28 @@ class Corpus:
             else:
                 break
         if mn >= hi:
-            cls = "DUPLICATE"; cliff_g = None                  # flat high: inf-connected
+            cls = "DUPLICATE"
+            cliff_g = None  # flat high: inf-connected
         elif plateau_len >= 2 and cliff_drop >= 0.25 and (cliff_g or 0) >= 1:
-            cls = "SAME-ALGORITHM-DIFFERENT-CARRIER"           # high persists past g0, THEN a cliff
+            cls = "SAME-ALGORITHM-DIFFERENT-CARRIER"  # high persists past g0, THEN a cliff
         elif mx < hi and last > g0 + 0.05:
-            cls = "SHARED-IDIOMS-DIFFERENT-ALGORITHM"; cliff_g = None   # low coarse, rises fine
+            cls = "SHARED-IDIOMS-DIFFERENT-ALGORITHM"
+            cliff_g = None  # low coarse, rises fine
         elif g0 >= hi and last <= lo:
-            cls = "UNRELATED"; cliff_g = 0                      # high only at g0, decays (no plateau)
+            cls = "UNRELATED"
+            cliff_g = 0  # high only at g0, decays (no plateau)
         else:
-            cls = "PARTIAL"                                    # mixed; cliff_g still reported
-        return {"class": cls, "cliff": cliff_g, "cliff_drop": round(cliff_drop, 2),
-                "plateau_len": plateau_len,
-                "S0": round(g0, 2), "Smin": round(mn, 2), "Smax": round(mx, 2),
-                "profile": [(g, round(s, 2)) for g, s in prof]}
+            cls = "PARTIAL"  # mixed; cliff_g still reported
+        return {
+            "class": cls,
+            "cliff": cliff_g,
+            "cliff_drop": round(cliff_drop, 2),
+            "plateau_len": plateau_len,
+            "S0": round(g0, 2),
+            "Smin": round(mn, 2),
+            "Smax": round(mx, 2),
+            "profile": [(g, round(s, 2)) for g, s in prof],
+        }
 
     def shape_verdict(self, u: Unit, v: Unit) -> dict:
         """The verdict IS the typehole tree's structure -- NOT a label. (The recursive law, applied
@@ -372,19 +421,26 @@ class Corpus:
         shared_frac = s / (s + h) if (s + h) else 1.0
         # a label ONLY for degenerate trees; otherwise None -- the hole_depths ARE the answer.
         if h == 0:
-            label = "DUPLICATE"                       # zero holes: the trivial tree
+            label = "DUPLICATE"  # zero holes: the trivial tree
         elif h == 1 and hole_depths == [0]:
-            label = "ROOT-DIVERGENT"                  # one hole at the root: differ only at top
+            label = "ROOT-DIVERGENT"  # one hole at the root: differ only at top
         else:
-            label = None                              # structured tree: read hole_depths, do not collapse
-        return {"label": label, "holes": h, "shared_nodes": s, "shared_frac": round(shared_frac, 2),
-                "hole_depths": hole_depths,           # THE VERDICT: where the divergences are (multi-cliff)
-                "profile": [(g, round(sg, 2)) for g, sg in prof],
-                # a human summary that PRESERVES the structure rather than collapsing it:
-                "summary": (f"{s} shared nodes, {h} hole(s)"
-                            + (f" at depths {hole_depths}" if hole_depths else "")
-                            + f"; shared_frac {shared_frac:.2f}"
-                            + (f" [{label}]" if label else ""))}
+            label = None  # structured tree: read hole_depths, do not collapse
+        return {
+            "label": label,
+            "holes": h,
+            "shared_nodes": s,
+            "shared_frac": round(shared_frac, 2),
+            "hole_depths": hole_depths,  # THE VERDICT: where the divergences are (multi-cliff)
+            "profile": [(g, round(sg, 2)) for g, sg in prof],
+            # a human summary that PRESERVES the structure rather than collapsing it:
+            "summary": (
+                f"{s} shared nodes, {h} hole(s)"
+                + (f" at depths {hole_depths}" if hole_depths else "")
+                + f"; shared_frac {shared_frac:.2f}"
+                + (f" [{label}]" if label else "")
+            ),
+        }
 
     def genericization(self) -> dict:
         """Per 'scale', the shared/total ratio across ALL units -- the Agda score.genericization_score
@@ -406,10 +462,16 @@ class Corpus:
         total_coarse = len(head_units)
         shared_coarse = sum(1 for us in head_units.values() if len(us) >= 2)
         return {
-            "coarse(head-shape)": (shared_coarse, total_coarse,
-                                   shared_coarse / total_coarse if total_coarse else 0.0),
-            "fine(canonical-node)": (shared_fine, total_fine,
-                                     shared_fine / total_fine if total_fine else 0.0),
+            "coarse(head-shape)": (
+                shared_coarse,
+                total_coarse,
+                shared_coarse / total_coarse if total_coarse else 0.0,
+            ),
+            "fine(canonical-node)": (
+                shared_fine,
+                total_fine,
+                shared_fine / total_fine if total_fine else 0.0,
+            ),
         }
 
     # =====================================================================
@@ -447,17 +509,20 @@ class Corpus:
         we measure observed-minus-predicted in log space: bits = log2(U(n) / max(pred, 1e-9)).
         cocycle_bits: surprisal threshold (default 1.0 = recurs >=2x more than parts predict)."""
         import math
+
         N = max(1, len(self.units))
         U = {nid: len(us) for nid, us in self.node_units.items() if len(us) >= min_units}
+
         def size(nid):
             return len(self._support(nid))
+
         generators, cocycles, coboundary = [], [], []
         for nid, u in U.items():
             nn = self.I.nodes[nid]
             head = (nn.kind, nn.role, nn.op, nn.lit)
             kids = list(nn.children)
             if not kids:
-                generators.append((nid, u, 1, head, 0.0))      # atom shared across units = a word
+                generators.append((nid, u, 1, head, 0.0))  # atom shared across units = a word
                 continue
             # independent-assembly prediction: N * prod over the INDEPENDENT children of (U(c)/N).
             # Δ-Π-surprisal-truearity: a child REUSED within this node is a diamond (a repeated
@@ -466,7 +531,9 @@ class Corpus:
             # spuriously inflating surprise (the old 43%-cocycle generosity). Use DISTINCT child ids
             # = the free positions = the per-node true arity. Read from the SPPF (distinct interned
             # ids), not recomputed -- the diamond is already collapsed in the structure.
-            free_kids = list(dict.fromkeys(kids))      # distinct ids = independent draws (diamonds once)
+            free_kids = list(
+                dict.fromkeys(kids)
+            )  # distinct ids = independent draws (diamonds once)
             log_pred = math.log2(N)
             for c in free_kids:
                 uc = U.get(c) or len(self.node_units.get(c, {0}))
@@ -478,17 +545,20 @@ class Corpus:
             else:
                 coboundary.append((nid, u, size(nid), head, round(bits, 1)))
         generators.sort(key=lambda t: -t[1])
-        cocycles.sort(key=lambda t: -(t[4] * t[2]))     # surprisal * size = the substantial idioms
+        cocycles.sort(key=lambda t: -(t[4] * t[2]))  # surprisal * size = the substantial idioms
         coboundary.sort(key=lambda t: -t[1])
         return {
-            "generators": generators, "cocycles": cocycles, "coboundary": coboundary,
+            "generators": generators,
+            "cocycles": cocycles,
+            "coboundary": coboundary,
             "summary": {
                 "alphabet_size": len(generators),
                 "idiom_count": len(cocycles),
                 "coboundary_count": len(coboundary),
                 "metalanguage_size": len(generators) + len(cocycles),
                 "total_shared": len(U),
-            }}
+            },
+        }
 
     def recursive_shared(self, min_units: int = 2, min_depth: int = 1):
         """Trace-4 backward-image: the Agda script's RECURSIVE template (shared structure found
@@ -518,18 +588,21 @@ class Corpus:
         if not (0 <= node_id < self.I.size()):
             return {}
         nn = self.I.nodes[node_id]
-        return {"head": (nn.kind, nn.role, nn.op, nn.lit), "payload(residue)": nn.payload,
-                "units": sorted(self.node_units.get(node_id, set()))}
+        return {
+            "head": (nn.kind, nn.role, nn.op, nn.lit),
+            "payload(residue)": nn.payload,
+            "units": sorted(self.node_units.get(node_id, set())),
+        }
 
     def verdict(self, scores: dict) -> str:
         if not scores:
             return "NO DATA"
         mx = max(r for _, _, r in scores.values())
         if mx >= STRONG_ORBIT:
-            return f"STRONG orbit candidate ({mx*100:.1f}% max shared) -- ready to consolidate"
+            return f"STRONG orbit candidate ({mx * 100:.1f}% max shared) -- ready to consolidate"
         if mx >= PARTIAL_ORBIT:
-            return f"PARTIAL orbit ({mx*100:.1f}% max shared)"
-        return f"WEAK orbit ({mx*100:.1f}% max shared) -- structurally divergent"
+            return f"PARTIAL orbit ({mx * 100:.1f}% max shared)"
+        return f"WEAK orbit ({mx * 100:.1f}% max shared) -- structurally divergent"
 
     # =====================================================================
     # THE TYPEHOLER -- the one operation the whole tool is readouts of.
@@ -552,9 +625,14 @@ class Corpus:
         node_ids = list(node_ids)
         # base: all identical -> fully shared, no hole (the common structure IS this node)
         if len(set(node_ids)) == 1:
-            nid = node_ids[0]; nn = self.I.nodes[nid]
-            return {"kind": "shared", "head": (nn.kind, nn.role, nn.op, nn.lit),
-                    "node": nid, "children": []}
+            nid = node_ids[0]
+            nn = self.I.nodes[nid]
+            return {
+                "kind": "shared",
+                "head": (nn.kind, nn.role, nn.op, nn.lit),
+                "node": nid,
+                "children": [],
+            }
         heads = [(self.I.nodes[i].kind, self.I.nodes[i].op, self.I.nodes[i].lit) for i in node_ids]
         # if heads DIVERGE, or we hit the depth cap -> a TYPED HOLE. Its type is the common
         # structure of the fillers: shared head if they share one, else the set of head-kinds.
@@ -571,18 +649,29 @@ class Corpus:
                 arities = set(len(c) for c in childsets)
                 if len(arities) == 1 and arities != {0}:
                     nchild = arities.pop()
-                    sub = [self.typehole([cs[pos] for cs in childsets], depth + 1, max_depth)
-                           for pos in range(nchild)]
+                    sub = [
+                        self.typehole([cs[pos] for cs in childsets], depth + 1, max_depth)
+                        for pos in range(nchild)
+                    ]
                     # only treat as a recursable region if SOME child position is shared (a sub-skeleton
                     # or a re-shared hole) -- i.e. the recursion found structure the flat hole hid.
                     if any(s["kind"] in ("shared", "skeleton") for s in sub):
-                        return {"kind": "skeleton", "head": ("|".join(kinds), "", ""),
-                                "diverged": True, "children": sub}
+                        return {
+                            "kind": "skeleton",
+                            "head": ("|".join(kinds), "", ""),
+                            "diverged": True,
+                            "children": sub,
+                        }
             # terminal typed hole: the fillers share no sub-structure.
             hole_type = kinds[0] if len(kinds) == 1 else "?"
             fillers = [self._filler_repr(i) for i in node_ids]
-            return {"kind": "hole", "type": hole_type, "head_kinds": kinds,
-                    "fillers": fillers, "depth": depth}
+            return {
+                "kind": "hole",
+                "type": hole_type,
+                "head_kinds": kinds,
+                "fillers": fillers,
+                "depth": depth,
+            }
         # heads AGREE -> shared skeleton at this node; RECURSE positionally into children.
         # (arity can differ even with same head -- e.g. Call with different #args -> that's a hole.)
         childsets = [self.I.nodes[i].children for i in node_ids]
@@ -590,9 +679,18 @@ class Corpus:
         h0 = heads[0]
         if len(arities) > 1:
             # same head, different arity: the children-region is a typed hole (variadic distinction)
-            return {"kind": "skeleton", "head": (h0[0], h0[1], h0[2]),
-                    "children": [{"kind": "hole", "type": h0[0] + ":variadic",
-                                  "fillers": [self._filler_repr(i) for i in node_ids], "depth": depth}]}
+            return {
+                "kind": "skeleton",
+                "head": (h0[0], h0[1], h0[2]),
+                "children": [
+                    {
+                        "kind": "hole",
+                        "type": h0[0] + ":variadic",
+                        "fillers": [self._filler_repr(i) for i in node_ids],
+                        "depth": depth,
+                    }
+                ],
+            }
         nchild = arities.pop()
         kids = []
         for pos in range(nchild):
@@ -660,24 +758,39 @@ class Corpus:
                 # EQ: the diamond -- fillers are the SAME interned node in every unit (identity =
                 # the interner's recorded equality). This is fan-in linking the two hole-positions.
                 if nodevec[j] == nodevec[i]:
-                    deps.append((j, i, "EQ")); free[j] = False; break
+                    deps.append((j, i, "EQ"))
+                    free[j] = False
+                    break
                 # partial diamond: supports share an interned node (reuse in SOME units) -> EQ-ish
                 if supports[j] & supports[i]:
-                    deps.append((j, i, "EQ")); free[j] = False; break
+                    deps.append((j, i, "EQ"))
+                    free[j] = False
+                    break
                 # TYPE: same head-kind per unit and the kind varies (a type-family dependency)
                 if kinds[j] == kinds[i] and len(set(kinds[j])) > 1:
-                    deps.append((j, i, "TYPE")); free[j] = False; break
-        return {"n_holes": n, "true_arity": sum(1 for f in free if f),
-                "deps": deps, "free": [k for k in range(n) if free[k]]}
+                    deps.append((j, i, "TYPE"))
+                    free[j] = False
+                    break
+        return {
+            "n_holes": n,
+            "true_arity": sum(1 for f in free if f),
+            "deps": deps,
+            "free": [k for k in range(n) if free[k]],
+        }
 
     @staticmethod
     def _th_stats(th: dict) -> tuple:
         """(shared_count, hole_count) over a typehole tree -- the skeleton/hole ratio = the verdict."""
         if th["kind"] == "hole":
             return (0, 1)
-        s, h = (1 if th["kind"] == "shared" else 1), 0   # skeleton/shared nodes count toward 'shared'
+        s, h = (
+            (1 if th["kind"] == "shared" else 1),
+            0,
+        )  # skeleton/shared nodes count toward 'shared'
         for c in th.get("children", []):
-            cs, ch = Corpus._th_stats(c); s += cs; h += ch
+            cs, ch = Corpus._th_stats(c)
+            s += cs
+            h += ch
         return (s, h)
 
     def cluster_surprisal(self, comp: list, th: dict = None) -> dict:
@@ -712,11 +825,16 @@ class Corpus:
         true_dof = 1
         for v in free_variants:
             true_dof *= max(1, v)
-        return {"units": U, "apparent_holes": h, "true_arity": tel["true_arity"],
-                "apparent_dof": apparent_dof, "true_dof": true_dof,
-                "deps": [d[2] for d in tel["deps"]],
-                # collapse factor: how much the dependencies shrink the parameter space
-                "collapse": (apparent_dof / true_dof) if true_dof else 1.0}
+        return {
+            "units": U,
+            "apparent_holes": h,
+            "true_arity": tel["true_arity"],
+            "apparent_dof": apparent_dof,
+            "true_dof": true_dof,
+            "deps": [d[2] for d in tel["deps"]],
+            # collapse factor: how much the dependencies shrink the parameter space
+            "collapse": (apparent_dof / true_dof) if true_dof else 1.0,
+        }
 
     def typehole_verdict(self, th: dict) -> str:
         s, h = self._th_stats(th)
@@ -725,17 +843,18 @@ class Corpus:
         if h == 0:
             return f"IDENTICAL ({s} shared nodes, 0 holes) -- one concept, no parameters"
         tel = self.dependency_telescope(th)
-        ta = tel["true_arity"]; nd = len(tel["deps"])
+        ta = tel["true_arity"]
+        nd = len(tel["deps"])
         # the arity clause: apparent holes vs the INDEPENDENT (free) ones the dependencies collapse to
         if nd:
             arity = f"{h} holes -> {ta} independent params ({nd} dependency: {[d[2] for d in tel['deps']][:4]})"
         else:
             arity = f"{h} independent hole(s)"
         if ratio >= STRONG_ORBIT:
-            return f"STRONG orbit ({ratio*100:.0f}% shared, {arity}) -- one parametric concept"
+            return f"STRONG orbit ({ratio * 100:.0f}% shared, {arity}) -- one parametric concept"
         if ratio >= PARTIAL_ORBIT:
-            return f"PARTIAL orbit ({ratio*100:.0f}% shared, {arity}) -- partly common, partly distinct"
-        return f"WEAK ({ratio*100:.0f}% shared, {arity}) -- distinct concepts; reason about them separately"
+            return f"PARTIAL orbit ({ratio * 100:.0f}% shared, {arity}) -- partly common, partly distinct"
+        return f"WEAK ({ratio * 100:.0f}% shared, {arity}) -- distinct concepts; reason about them separately"
 
     @staticmethod
     def render_typehole(th: dict, indent: int = 0) -> str:
@@ -753,7 +872,11 @@ class Corpus:
             distinct = sorted(set(str(v) for v in vals))
             return f"{pad}<HOLE:{th['type']}> varies: {{{', '.join(distinct[:6])}}}"
         head = th["head"]
-        label = head[0] + (f"[{head[2]}]" if len(head) > 2 and head[2] else "") + (f"({head[1]})" if head[1] else "")
+        label = (
+            head[0]
+            + (f"[{head[2]}]" if len(head) > 2 and head[2] else "")
+            + (f"({head[1]})" if head[1] else "")
+        )
         if th["kind"] == "shared" and not th.get("children"):
             return f"{pad}{label}"
         out = [f"{pad}{label}"]
@@ -761,8 +884,9 @@ class Corpus:
             out.append(Corpus.render_typehole(c, indent + 1))
         return "\n".join(out)
 
-    def clusters(self, min_shared: float = 0.5, min_size: int = 6,
-                 min_cohesion: float = 0.0) -> list[list[int]]:
+    def clusters(
+        self, min_shared: float = 0.5, min_size: int = 6, min_cohesion: float = 0.0
+    ) -> list[list[int]]:
         """Units grouped by mutual high shared-fraction (mutual-NN analogue). Cheap: the sharing
         is already interned, so this is a threshold over precomputed support-overlaps.
 
@@ -774,13 +898,18 @@ class Corpus:
           clique). The Agda cluster.py cohesion floor, ported."""
         idx = [i for i, u in enumerate(self.units) if len(u.support) >= min_size]
         parent = {i: i for i in idx}
+
         def find(x):
             while parent[x] != x:
-                parent[x] = parent[parent[x]]; x = parent[x]
+                parent[x] = parent[parent[x]]
+                x = parent[x]
             return x
+
         def union(a, b):
             ra, rb = find(a), find(b)
-            if ra != rb: parent[ra] = rb
+            if ra != rb:
+                parent[ra] = rb
+
         for ii in range(len(idx)):
             for jj in range(ii + 1, len(idx)):
                 i, j = idx[ii], idx[jj]
@@ -794,9 +923,12 @@ class Corpus:
             if len(c) <= 1:
                 continue
             if min_cohesion > 0.0:
-                pairs = [self.shared_fraction(self.units[a], self.units[b])
-                         for x, a in enumerate(c) for b in c[x+1:]]
-                med = sorted(pairs)[len(pairs)//2] if pairs else 0.0
+                pairs = [
+                    self.shared_fraction(self.units[a], self.units[b])
+                    for x, a in enumerate(c)
+                    for b in c[x + 1 :]
+                ]
+                med = sorted(pairs)[len(pairs) // 2] if pairs else 0.0
                 if med < min_cohesion:
                     continue
             out.append(c)
@@ -829,41 +961,91 @@ def expand(paths_or_globs: list[str]) -> list[str]:
 def main(argv=None):
     ap = argparse.ArgumentParser(
         description="Multi-scale structural similarity over Python via the term-algebra interner "
-                    "(the Agda similarity script, for Python). Units = def/class; sharing = SPPF fan-in.")
-    ap.add_argument("files", nargs="*", help="Python files/globs, AND/OR Agda .agdai interfaces "
-                    "(Φ4b: .agdai routed through agdai_shim -> Agda core-term units; mixable with .py)")
-    ap.add_argument("--min-shared", type=float, default=0.6,
-                    help="cluster threshold: min shared-support fraction (default 0.6)")
-    ap.add_argument("--min-size", type=int, default=6,
-                    help="ignore units with support smaller than this (trivial-accessor gate, default 6)")
-    ap.add_argument("--min-cohesion", type=float, default=0.5,
-                    help="drop clusters whose median intra-pair share is below this (weak-chain floor, default 0.5)")
-    ap.add_argument("--min-fanin", type=int, default=3,
-                    help="extract-candidate threshold: min units sharing a subtree (default 3)")
+        "(the Agda similarity script, for Python). Units = def/class; sharing = SPPF fan-in."
+    )
+    ap.add_argument(
+        "files",
+        nargs="*",
+        help="Python files/globs, AND/OR Agda .agdai interfaces "
+        "(Φ4b: .agdai routed through agdai_shim -> Agda core-term units; mixable with .py)",
+    )
+    ap.add_argument(
+        "--min-shared",
+        type=float,
+        default=0.6,
+        help="cluster threshold: min shared-support fraction (default 0.6)",
+    )
+    ap.add_argument(
+        "--min-size",
+        type=int,
+        default=6,
+        help="ignore units with support smaller than this (trivial-accessor gate, default 6)",
+    )
+    ap.add_argument(
+        "--min-cohesion",
+        type=float,
+        default=0.5,
+        help="drop clusters whose median intra-pair share is below this (weak-chain floor, default 0.5)",
+    )
+    ap.add_argument(
+        "--min-fanin",
+        type=int,
+        default=3,
+        help="extract-candidate threshold: min units sharing a subtree (default 3)",
+    )
     ap.add_argument("--clusters", action="store_true", help="report unit clusters")
-    ap.add_argument("--extract", action="store_true", help="report extract (parametric-helper) candidates")
-    ap.add_argument("--recursive", action="store_true",
-                    help="report shared structure INSIDE residue (interior-node fan-in = recursive template)")
-    ap.add_argument("--skeleton", action="store_true",
-                    help="typehole each cluster: shared skeleton + typed holes (the common semantics + the distinctions)")
-    ap.add_argument("--metalanguage", action="store_true",
-                    help="compute the corpus's implicit metalanguage: generators (alphabet) + cocycles (idioms) vs coboundary (derivable redundancy)")
-    ap.add_argument("--shape", action="store_true",
-                    help="shape consolidation scan: cross-unit S(g) pairs that are shared-shell + carrier-holes "
-                         "(the cross-carrier map canonical clustering misses -- since the free/bound fix made "
-                         "carrier ops distinct, these no longer share canonical support but DO share skeleton)")
-    ap.add_argument("--json", action="store_true",
-                    help="machine-readable output (the LLM accelerator: run once, parse, don't re-derive)")
-    ap.add_argument("--unhold", action="store_true",
-                    help="⟡dedup-unhold-normalizer: abstract carrier references (Records/Datatypes/Sorts) "
-                         "to ⟨CARRIER⟩ BEFORE clustering, so redundancy-under-INVERSION (a record that HOLDS "
-                         "a carrier as a field vs one that INDEXES it as a grade-parameter) clusters. Catches "
-                         "the UPArrow²↔rig-cat class of duplicate that raw structural matching is blind to.")
-    ap.add_argument("--persist", metavar="DB",
-                    help="⟡jea-pysim-thin: intern the inputs and PERSIST the SPPF into a sqlite db (the "
-                         "sppf_db schema — node/node_child/unit/unit_node, heads interned to terms). "
-                         "jea_pysim is then the BUILDER; the readouts (support/extract/clusters) are SQL via "
-                         "scripts/sppf_query.py — 'query, don't code'.")
+    ap.add_argument(
+        "--extract", action="store_true", help="report extract (parametric-helper) candidates"
+    )
+    ap.add_argument(
+        "--recursive",
+        action="store_true",
+        help="report shared structure INSIDE residue (interior-node fan-in = recursive template)",
+    )
+    ap.add_argument(
+        "--skeleton",
+        action="store_true",
+        help="typehole each cluster: shared skeleton + typed holes (the common semantics + the distinctions)",
+    )
+    ap.add_argument(
+        "--metalanguage",
+        action="store_true",
+        help="compute the corpus's implicit metalanguage: generators (alphabet) + cocycles (idioms) vs coboundary (derivable redundancy)",
+    )
+    ap.add_argument(
+        "--shape",
+        action="store_true",
+        help="shape consolidation scan: cross-unit S(g) pairs that are shared-shell + carrier-holes "
+        "(the cross-carrier map canonical clustering misses -- since the free/bound fix made "
+        "carrier ops distinct, these no longer share canonical support but DO share skeleton)",
+    )
+    ap.add_argument(
+        "--json",
+        action="store_true",
+        help="machine-readable output (the LLM accelerator: run once, parse, don't re-derive)",
+    )
+    # ⚑ KEPT AS A FLAG THAT REFUSES, NOT DELETED FROM THE PARSER — an unknown flag would make
+    # argparse say "unrecognized argument", which reads as a typo and sends the caller hunting
+    # for the right spelling. A flag that names its successor is the difference between a dead
+    # end and a redirect (`--finalize`'s retirement did the same, and its stale USAGE LINE
+    # advertising a refused mode is the mistake not to repeat — see below).
+    ap.add_argument(
+        "--unhold",
+        action="store_true",
+        help="RETIRED (⟡unhold-is-fingerprint) — it CLASSIFIED against a hardcoded "
+        "Record/Datatype/Sort set, so an unrecognised carrier was invisible and "
+        "a non-Agda corpus silently got 0. Use `pycodemod --fingerprint`, which "
+        "primes every DISTINCT referent and therefore recognises nothing: gcd is "
+        "shared structure, and the unmodelled part is an exact remainder.",
+    )
+    ap.add_argument(
+        "--persist",
+        metavar="DB",
+        help="⟡jea-pysim-thin: intern the inputs and PERSIST the SPPF into a sqlite db (the "
+        "sppf_db schema — node/node_child/unit/unit_node, heads interned to terms). "
+        "jea_pysim is then the BUILDER; the readouts (support/extract/clusters) are SQL via "
+        "scripts/sppf_query.py — 'query, don't code'.",
+    )
     args = ap.parse_args(argv)
 
     files = expand(args.files)
@@ -871,26 +1053,77 @@ def main(argv=None):
         ap.error("no input files")
 
     C = Corpus()
-    carriers = C.carrier_qnames_of(files) if args.unhold else None
+    # ⚑⚑⚑ `--unhold` IS RETIRED (⟡unhold-is-fingerprint, operator 2026-08-22: *"unhold is
+    # primitive, and not in a good way… that screams 'we should retire --unhold just like we
+    # retired --finalize'"*). It REFUSES rather than silently doing nothing, because a mode
+    # that quietly no-ops is how `--finalize`'s body survived as a defaulted keyword.
+    #
+    # ⚑ WHAT WAS WRONG: it CLASSIFIED. `carrier_qnames_of` asked *"is this one of the carriers
+    # I know?"* against a hardcoded `("Record","Datatype")` plus `Sort` — so an unrecognised
+    # carrier was INVISIBLE, and on a non-Agda corpus it printed `abstracting 0 carrier
+    # qname(s)` as though that were a measurement rather than a skipped `.endswith(".agdai")`.
+    # Measured on this repo's own Python: 0 carriers, 0 effect, and the run reported normally.
+    #
+    # ⚑⚑ THE GENERAL FORM ALREADY EXISTS AND INVERTS THE DEFECT: `pycodemod --fingerprint`
+    # gives A PRIME PER DISTINCT REFERENT, *"asserting only that it is DISTINCT AND COUNTABLE,
+    # never what it IS"*. So `gcd` is shared structure, `%` is containment, and an UNMODELLED
+    # carrier is an exact integer REMAINDER instead of an absence — with `Σ Ω(remainder)` a
+    # monotone progress metric. That is construct-don't-classify applied to exactly the
+    # question `--unhold` was built for, and it works on any corpus because it recognises
+    # nothing.
+    #
+    # ⚑ THE RESIDUE ARGUMENT DID NOT SAVE IT, AND I CHECKED BEFORE REMOVING. The interner kept
+    # `unhold_path[nid]` so convergence was a wedge (`⟨CARRIER⟩ = recon q b r`) rather than a
+    # lossy erase — a genuinely good property. But `--calls unhold_path` → 0 defs, 0 calls,
+    # 3 refs, ALL inside the producer: it is written into the returned dict and read by
+    # nothing. A correct mechanism with no consumer is not a reason to keep the mode.
+    #
+    # ⚑ AND THE PARAMETER IS DEAD WEIGHT AT TEN OF ELEVEN SITES: `--forwards
+    # core_intern_agdai carrier_qnames` → 1 of 11 call sites forward it. One narrow path
+    # threading a parameter through a widely-shared interner — the `finalize=` shape exactly.
     if args.unhold:
-        print(f"[unhold] abstracting {len(carriers)} carrier qname(s) (Records/Datatypes + Sorts) → ⟨CARRIER⟩")
+        print(
+            "jea_pysim --unhold: RETIRED (⟡unhold-is-fingerprint).\n"
+            "  It CLASSIFIED against a hardcoded ('Record','Datatype')+Sort set, so an\n"
+            "  unrecognised carrier was invisible and a non-Agda corpus silently got 0.\n"
+            "  The general form recognises nothing and therefore works everywhere:\n"
+            "      python3 scratch/pycodemod.py --fingerprint <paths>\n"
+            "  gcd = shared structure · % = containment · remainder = the unmodelled part\n"
+            "  (Σ Ω(remainder) is monotone — it falls as referents get modelled).",
+            file=sys.stderr,
+        )
+        return 2
+    carriers = None
     for f in files:
-        if f.endswith(".agdai"):                  # Φ4b: Agda interface -> per-definition core-term units
-            C.add_agdai(f, carrier_qnames=carriers)
+        if f.endswith(".agdai"):  # Φ4b: Agda interface -> per-definition core-term units
+            C.add_agdai(f)
         else:
             C.add_file(f)
 
-    if args.persist:                              # ⟡jea-pysim-thin: BUILD → persist; analysis is SQL.
+    if args.persist:  # ⟡jea-pysim-thin: BUILD → persist; analysis is SQL.
         import os as _os
-        sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.dirname(_os.path.dirname(
-            _os.path.abspath(__file__)))), "scripts"))
+
+        sys.path.insert(
+            0,
+            _os.path.join(
+                _os.path.dirname(_os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))),
+                "scripts",
+            ),
+        )
         import sppf_db
-        cores = [f for f in files if f.endswith(".agdai")]   # sppf_db STREAMS the cores (one interner)
+
+        cores = [
+            f for f in files if f.endswith(".agdai")
+        ]  # sppf_db STREAMS the cores (one interner)
         n, u, sh, mx = sppf_db.build(cores, args.persist)
-        print(f"persisted SPPF -> {args.persist}: {n} packing nodes, {u} units, {sh} shared subtrees "
-              f"(base64 content-addressed; max node_id {mx})")
-        print(f"  analyse (query, don't code): python3 scripts/sppf_query.py "
-              f"<support|fanin|extract|clusters|sql> …")
+        print(
+            f"persisted SPPF -> {args.persist}: {n} packing nodes, {u} units, {sh} shared subtrees "
+            f"(base64 content-addressed; max node_id {mx})"
+        )
+        print(
+            f"  analyse (query, don't code): python3 scripts/sppf_query.py "
+            f"<support|fanin|extract|clusters|sql> …"
+        )
         return 0
 
     cls = C.clusters(args.min_shared, args.min_size, args.min_cohesion)
@@ -898,23 +1131,37 @@ def main(argv=None):
 
     if args.json:
         import json
-        out = {"corpus": {"units": len(C.units), "files": len(files), "nodes": C.I.size()},
-               "genericization": {k: {"shared": s, "total": t, "ratio": r} for k, (s, t, r) in scores.items()},
-               "verdict": C.verdict(scores), "clusters": []}
+
+        out = {
+            "corpus": {"units": len(C.units), "files": len(files), "nodes": C.I.size()},
+            "genericization": {
+                k: {"shared": s, "total": t, "ratio": r} for k, (s, t, r) in scores.items()
+            },
+            "verdict": C.verdict(scores),
+            "clusters": [],
+        }
         for comp in cls:
             roots = [C.units[ui].root for ui in comp]
             th = C.typehole(roots)
-            out["clusters"].append({
-                "units": [f"{C.units[ui].path}::{C.units[ui].name}:{C.units[ui].lineno}" for ui in comp],
-                "verdict": C.typehole_verdict(th),
-                "skeleton": th})                                   # the full typehole tree, machine-readable
+            out["clusters"].append(
+                {
+                    "units": [
+                        f"{C.units[ui].path}::{C.units[ui].name}:{C.units[ui].lineno}"
+                        for ui in comp
+                    ],
+                    "verdict": C.typehole_verdict(th),
+                    "skeleton": th,
+                }
+            )  # the full typehole tree, machine-readable
         print(json.dumps(out, indent=2))
         return 0
 
-    print(f"corpus: {len(C.units)} units across {len(files)} file(s); forest {C.I.size()} interned nodes")
+    print(
+        f"corpus: {len(C.units)} units across {len(files)} file(s); forest {C.I.size()} interned nodes"
+    )
     print("\ngenericization (shared / total per scale):")
     for scale, (sh, tot, r) in scores.items():
-        print(f"  {scale:<22} {sh:>6} / {tot:<6}  {r*100:5.1f}% shared")
+        print(f"  {scale:<22} {sh:>6} / {tot:<6}  {r * 100:5.1f}% shared")
     print(f"verdict: {C.verdict(scores)}")
 
     # the PRIMARY readout: typehole each cluster -> shared skeleton + typed holes + verdict.
@@ -922,15 +1169,19 @@ def main(argv=None):
     if args.clusters or args.skeleton or not (args.extract or args.recursive or args.metalanguage):
         print(f"\nclusters (units sharing >= {args.min_shared:.0%} support) -- typeholed:")
         if not cls:
-            print("  (none -- no units share enough structure; healthy if these are distinct routines)")
+            print(
+                "  (none -- no units share enough structure; healthy if these are distinct routines)"
+            )
         for ci, comp in enumerate(cls):
             roots = [C.units[ui].root for ui in comp]
             th = C.typehole(roots)
             # durable handles: path::name:line, stable across runs
             print(f"\n  cluster {ci} ({len(comp)} units) -- {C.typehole_verdict(th)}")
             sh = C.shape_of_th(th)
-            print(f"    SHAPE S(g)={sh['profile']}  carrier-holes @depths {sh['hole_depths'] or '[]'} "
-                  f"(the curve, not a scalar; a cliff at depth d = a typed hole there)")
+            print(
+                f"    SHAPE S(g)={sh['profile']}  carrier-holes @depths {sh['hole_depths'] or '[]'} "
+                f"(the curve, not a scalar; a cliff at depth d = a typed hole there)"
+            )
             for ui in comp:
                 u = C.units[ui]
                 print(f"    {u.path}::{u.name}:{u.lineno}")
@@ -940,6 +1191,7 @@ def main(argv=None):
 
     if args.shape:
         import itertools
+
         big = [u for u in C.units if len(u.support) >= args.min_size]
         cands = []
         for u, v in itertools.combinations(big, 2):
@@ -947,16 +1199,24 @@ def main(argv=None):
             # a consolidation candidate: a STRUCTURED tree (no degenerate label), real shared shell,
             # holes at INTERIOR depths (a carrier hole, not a root divergence) -- the same-algorithm-
             # different-carrier shape. (frac >= 0.55 keeps it above the FunctionDef-head floor of 0.5.)
-            if sv["label"] is None and sv["shared_frac"] >= 0.55 and any(d > 0 for d in sv["hole_depths"]):
+            if (
+                sv["label"] is None
+                and sv["shared_frac"] >= 0.55
+                and any(d > 0 for d in sv["hole_depths"])
+            ):
                 cands.append((sv["shared_frac"], tuple(sv["hole_depths"]), u, v))
         cands.sort(key=lambda c: -c[0])
-        print("\nshape consolidation candidates (shared shell + carrier holes; the cross-carrier map "
-              "canonical clustering misses):")
+        print(
+            "\nshape consolidation candidates (shared shell + carrier holes; the cross-carrier map "
+            "canonical clustering misses):"
+        )
         if not cands:
             print("  (none -- no pair shares a skeleton shell with interior carrier holes)")
         for fr, hd, u, v in cands[:15]:
-            print(f"  frac={fr} holes@depths {list(hd)}  {u.path}::{u.name}:{u.lineno}  X  "
-                  f"{v.path}::{v.name}:{v.lineno}")
+            print(
+                f"  frac={fr} holes@depths {list(hd)}  {u.path}::{u.name}:{u.lineno}  X  "
+                f"{v.path}::{v.name}:{v.lineno}"
+            )
 
     if args.extract:
         cand = C.extract_candidates(args.min_fanin)
@@ -968,7 +1228,9 @@ def main(argv=None):
 
     if args.recursive:
         rec = C.recursive_shared(min_units=2, min_depth=1)
-        print(f"\nrecursive shared structure (interior nodes shared across units = the recursive template):")
+        print(
+            f"\nrecursive shared structure (interior nodes shared across units = the recursive template):"
+        )
         if not rec:
             print("  (none -- no shared structure hides inside unit residue)")
         for nid, nu, md, head in rec[:20]:
@@ -977,22 +1239,34 @@ def main(argv=None):
     if args.metalanguage:
         ch = C.cohomology(min_units=2)
         s = ch["summary"]
+
         def hdr(h):
             return h[0] + (f"[{h[3]}]" if h[3] else "") + (f"({h[2]})" if h[2] else "")
+
         print(f"\n=== the corpus's implicit METALANGUAGE (computed cohomology) ===")
-        print(f"  alphabet (generators): {s['alphabet_size']}   idioms (cocycles): {s['idiom_count']}"
-              f"   derivable (coboundary): {s['coboundary_count']}")
-        print(f"  metalanguage size = {s['metalanguage_size']} of {s['total_shared']} shared "
-              f"({100*s['metalanguage_size']/max(1,s['total_shared']):.0f}%); "
-              f"the rest is coboundary redundancy (cleanup removes it)")
+        print(
+            f"  alphabet (generators): {s['alphabet_size']}   idioms (cocycles): {s['idiom_count']}"
+            f"   derivable (coboundary): {s['coboundary_count']}"
+        )
+        print(
+            f"  metalanguage size = {s['metalanguage_size']} of {s['total_shared']} shared "
+            f"({100 * s['metalanguage_size'] / max(1, s['total_shared']):.0f}%); "
+            f"the rest is coboundary redundancy (cleanup removes it)"
+        )
         print(f"\n  ALPHABET -- the words the corpus is written in (top generators by use):")
         for nid, u, sz, head, ex in ch["generators"][:15]:
             print(f"    {hdr(head):<28} used by {u:>4} units")
-        print(f"\n  IDIOMS -- cocycles: compositions shared MORE than their parts explain (the real abstractions):")
+        print(
+            f"\n  IDIOMS -- cocycles: compositions shared MORE than their parts explain (the real abstractions):"
+        )
         for nid, u, sz, head, ex in ch["cocycles"][:20]:
-            print(f"    {hdr(head):<28} in {u:>3} units, size {sz:<3}, excess {ex:>3}  (node {nid})")
+            print(
+                f"    {hdr(head):<28} in {u:>3} units, size {sz:<3}, excess {ex:>3}  (node {nid})"
+            )
         if not ch["cocycles"]:
-            print("    (none -- all shared composites are coboundary; the corpus speaks only in generators)")
+            print(
+                "    (none -- all shared composites are coboundary; the corpus speaks only in generators)"
+            )
 
     return 0
 

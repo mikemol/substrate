@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 pit-zipper-pilot.py — S13: the "product" pun is precise (Pi/Sigma layer
 under inside-outside).

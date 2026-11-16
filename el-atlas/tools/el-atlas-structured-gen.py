@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 el-atlas-structured-gen.py — generates el-atlas-structured.md from the v3.1 harness.
 

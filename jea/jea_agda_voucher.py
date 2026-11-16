@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """jea_agda_voucher.py — the Agda voucher protocol, shared by the Agda-on-GPU bridges.
 
 jea_agda_bridge (a TREE term, Emit.agda) and jea_agda_dag (a SHARED SPPF, EmitDAG.agda) both open
@@ -12,6 +14,7 @@ Pure stdlib (no cupy, no GPU): this is the agda-subprocess + literal-read surfac
 coupling-surface note "agda_bridge/agda_dag do the subprocess agda + the EMIT_DIR open" now points
 here — same surface, one home; no scratch reference, so Λ8/Λ8b stay green.)
 """
+
 import os, re, subprocess, sys
 from fractions import Fraction
 

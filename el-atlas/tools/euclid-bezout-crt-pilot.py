@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 euclid-bezout-crt-pilot.py — S20: one machine, three theorems. Exact
 integers throughout.

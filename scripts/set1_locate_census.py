@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """set1_locate_census.py — ⟡defect-locate-census.
 
 Run the §4 `Defect.locate` predicates (structural only — NO repair, NO numpy) over
@@ -39,27 +41,51 @@ locate predicates (structural, over the interned core term):
   · constructor       — a Set₁ data constructor; attributed to its parent datatype.
   · UNMATCHED         — no locate fired: the honest residue (do NOT force a class).
 """
+
 import sys, os, glob, collections
+
 _ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, _ROOT)
 from jea.metalanguage.jea_agdai import core_intern_agdai, Intern, substrate_core_root
 
 AGDA_ROOT = os.environ.get("AGDA_ROOT") or os.path.join(_ROOT, "agda")
 
-def cores():   # ⟡lift-shared-core-machinery: core-root path logic lifted to jea_agdai
-    return sorted(glob.glob(os.path.join(substrate_core_root(AGDA_ROOT), "**", "*.agdai"), recursive=True))
+
+def cores():  # ⟡lift-shared-core-machinery: core-root path logic lifted to jea_agdai
+    return sorted(
+        glob.glob(os.path.join(substrate_core_root(AGDA_ROOT), "**", "*.agdai"), recursive=True)
+    )
+
 
 SIGMA = ("Σ", "Sigma")
-def _is_sigma(q):  return isinstance(q, str) and any(s in q for s in SIGMA)
-def _is_qname(op): return isinstance(op, str) and "." in op
+
+
+def _is_sigma(q):
+    return isinstance(q, str) and any(s in q for s in SIGMA)
+
+
+def _is_qname(op):
+    return isinstance(op, str) and "." in op
+
 
 # Foundation type-formers whose Set₁-ness is irreducible (a type-equality / a builtin
 # family), not a held carrier — the honest FLOOR the recursion bottoms at.
-FOUNDATION_FLOOR = ("Foundation.Eq._≡_", "Foundation.List.List", "Foundation.Sigma",
-                    "Foundation.Product", "Foundation.Sum", "Foundation.Vec.Vec",
-                    "Foundation.Maybe", "Foundation.Bool", "Foundation.Fin")
+FOUNDATION_FLOOR = (
+    "Foundation.Eq._≡_",
+    "Foundation.List.List",
+    "Foundation.Sigma",
+    "Foundation.Product",
+    "Foundation.Sum",
+    "Foundation.Vec.Vec",
+    "Foundation.Maybe",
+    "Foundation.Bool",
+    "Foundation.Fin",
+)
+
+
 def _is_foundation(q):
     return isinstance(q, str) and (".Foundation." in q or any(f in q for f in FOUNDATION_FLOOR))
+
 
 def final_head(I, root):
     """Unwrap the `Defn` wrapper (child[0]=defType), then peel the Π-telescope;
@@ -73,6 +99,7 @@ def final_head(I, root):
         seen += 1
     return n
 
+
 def field_heads(I, name, root_of, members):
     """The codomain head-op of each of a record/datatype's field projections /
     constructor fields — the record's structural locate signature."""
@@ -83,20 +110,22 @@ def field_heads(I, name, root_of, members):
             heads.append(final_head(I, mr).op)
     return heads
 
+
 def main():
     cs = cores()
     print(f"  cores: {len(cs)}   (walking each Set₁ unit's interned root)")
     # one pass: classify Set₁ units flatly; gather every record/datatype's field-head signature.
-    rec_sig = {}                       # qname -> [field codomain head-ops]  (all records, any level)
-    rec_kind = {}                      # qname -> kind
-    flat = []                          # (name, kind, bucket, target_qname_or_None)
+    rec_sig = {}  # qname -> [field codomain head-ops]  (all records, any level)
+    rec_kind = {}  # qname -> kind
+    flat = []  # (name, kind, bucket, target_qname_or_None)
     undec = 0
     for c in cs:
         I = Intern()
         try:
             rep = core_intern_agdai(c, I)
         except Exception:
-            undec += 1; continue
+            undec += 1
+            continue
         levels, kinds, members = rep["levels"], rep["kinds"], rep["members"]
         root_of = dict(rep["units"])
         for name, root in rep["units"]:
@@ -108,9 +137,11 @@ def main():
             if not (isinstance(lv, int) and lv >= 1):
                 continue
             if k == "Constructor":
-                flat.append((name, k, "constructor", None)); continue
+                flat.append((name, k, "constructor", None))
+                continue
             if k in ("Record", "Datatype"):
-                flat.append((name, k, "__record__", name)); continue    # classify below vs its own sig
+                flat.append((name, k, "__record__", name))
+                continue  # classify below vs its own sig
             # Function:
             fh = final_head(I, root)
             if fh.op == "Sort":
@@ -118,17 +149,21 @@ def main():
             elif _is_sigma(fh.op):
                 flat.append((name, k, "exists-collapse", None))
             elif _is_qname(fh.op):
-                flat.append((name, k, "instance", fh.op))               # inherits target
+                flat.append((name, k, "instance", fh.op))  # inherits target
             else:
                 flat.append((name, k, "function-other", None))
 
     def classify_record(q):
         """Locate a record/datatype target by its field-head signature."""
-        if _is_foundation(q):                      return "foundation-floor"
+        if _is_foundation(q):
+            return "foundation-floor"
         sig = rec_sig.get(q)
-        if sig is None:                            return "record-unknown"   # not decoded as a record
-        if any(h == "Sort" for h in sig):          return "set1-carrier"
-        if any(_is_sigma(h) for h in sig):         return "exists-collapse"
+        if sig is None:
+            return "record-unknown"  # not decoded as a record
+        if any(h == "Sort" for h in sig):
+            return "set1-carrier"
+        if any(_is_sigma(h) for h in sig):
+            return "exists-collapse"
         if any(_is_qname(h) and not _is_foundation(h) for h in sig):
             return "holds-set1-field"
         return "record-other"
@@ -150,8 +185,14 @@ def main():
         by_kind[bucket][kind] += 1
 
     total = len(flat)
-    REDUCIBLE = {"set1-carrier", "holds-set1-field", "exists-collapse",
-                 "inst→set1-carrier", "inst→holds-set1-field", "inst→exists-collapse"}
+    REDUCIBLE = {
+        "set1-carrier",
+        "holds-set1-field",
+        "exists-collapse",
+        "inst→set1-carrier",
+        "inst→holds-set1-field",
+        "inst→exists-collapse",
+    }
     FLOOR = {"typeformer-floor", "constructor", "foundation-floor", "inst→foundation-floor"}
     print(f"  undecodable cores: {undec}")
     print(f"  Set₁-inhabiting units: {total}\n")
@@ -164,19 +205,27 @@ def main():
     unm = total - red - flo
     print(f"\n  DEGREE (units):  reducible={red}  floor={flo}  residue={unm}   of {total}")
 
-    print(f"\n  === the DEFECT SURFACE: {len(target_fanin)} distinct targets carry the "
-          f"{sum(target_fanin.values())} instances ===")
+    print(
+        f"\n  === the DEFECT SURFACE: {len(target_fanin)} distinct targets carry the "
+        f"{sum(target_fanin.values())} instances ==="
+    )
     print(f"  (fix a target ⇒ all its instances pay down transitively)")
     for q, n in target_fanin.most_common(20):
         tb = target_bucket[q]
-        tag = "REDUCIBLE" if tb in REDUCIBLE or tb in ("set1-carrier","holds-set1-field","exists-collapse") \
-              else ("FLOOR" if tb in FLOOR or tb=="foundation-floor" else "RESIDUE")
+        tag = (
+            "REDUCIBLE"
+            if tb in REDUCIBLE or tb in ("set1-carrier", "holds-set1-field", "exists-collapse")
+            else ("FLOOR" if tb in FLOOR or tb == "foundation-floor" else "RESIDUE")
+        )
         print(f"    {n:4d} inst  [{tb:16s} {tag:9s}] {q}")
 
     print(f"\n  === target buckets (the ~{len(target_fanin)} roots, by locate) ===")
     tb_count = collections.Counter(target_bucket[q] for q in target_fanin)
     for b, n in tb_count.most_common():
-        print(f"    {b:20s} {n:3d} targets  ({sum(target_fanin[q] for q in target_fanin if target_bucket[q]==b)} inst)")
+        print(
+            f"    {b:20s} {n:3d} targets  ({sum(target_fanin[q] for q in target_fanin if target_bucket[q] == b)} inst)"
+        )
+
 
 if __name__ == "__main__":
     main()

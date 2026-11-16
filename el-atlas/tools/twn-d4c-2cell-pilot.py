@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """W11: the {TWN,D4C} 2-cell. Exhaustive over H2(V4,Z2).
 V4 = Z2 x Z2. Normalized 2-cochains omega: V4xV4 -> Z2 (omega(e,.)=omega(.,e)=0).
 Z2 = cocycles (64-triple condition); B2 = coboundaries of normalized 1-cochains;

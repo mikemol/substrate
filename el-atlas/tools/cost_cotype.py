@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 cost_cotype.py — encode the cost REASONING into structure, so the model proves it and reveals
 broken assumptions (candidate claim CCT). The "structural cotype" of the kernel-cost model.

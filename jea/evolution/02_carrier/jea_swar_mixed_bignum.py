@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """jea_swar_mixed_bignum.py — MIXED-width bignum multiply: carriers of DIFFERENT precision, each a
 multi-limb bignum, multiplied concurrently in one register, with PER-LANE carry-chaining.
 
@@ -23,7 +25,9 @@ W >= 2L + 1 + ceil(log2 K) (col[k] + carry < 2^W) -- asserted, not assumed (the 
 So BOTH the multiply convolution and the carry-propagate cost #distinct-widths "divergent" passes --
 the same warp-divergence-as-Pareto-knob as the single-limb mixed multiply.
 """
+
 import os
+
 os.environ.setdefault("CUDA_PATH", "/usr")
 import numpy as np, cupy as cp
 from collections import defaultdict
@@ -33,7 +37,7 @@ FULL = np.uint64((1 << 64) - 1)
 
 
 def min_room(L, K):
-    need = 2 * L + 1 + (ceil(log2(K)) if K > 1 else 0)   # W s.t. col[k]+carry < 2^W (no bleed)
+    need = 2 * L + 1 + (ceil(log2(K)) if K > 1 else 0)  # W s.t. col[k]+carry < 2^W (no bleed)
     W = 1
     while W < need:
         W <<= 1
@@ -52,29 +56,34 @@ def build_masks(layout):
         groups[(L, W)].append(off)
     grp = []
     for (L, W), offs in groups.items():
-        GRPVAL = sum(((1 << W) - 1) << o for o in offs)                 # full rooms of this group
-        GRP_LO = sum(1 << o for o in offs)                             # low bit of each group lane
-        GRP_HI = sum((((1 << W) - 1) ^ ((1 << L) - 1)) << o for o in offs)  # bits [L,W) per group lane
+        GRPVAL = sum(((1 << W) - 1) << o for o in offs)  # full rooms of this group
+        GRP_LO = sum(1 << o for o in offs)  # low bit of each group lane
+        GRP_HI = sum(
+            (((1 << W) - 1) ^ ((1 << L) - 1)) << o for o in offs
+        )  # bits [L,W) per group lane
         grp.append((L, W, np.uint64(GRPVAL), np.uint64(GRP_LO), np.uint64(GRP_HI)))
     return np.uint64(VAL), grp
 
 
-def _broadcast(bk, W):                                  # fill each W-window from its low bit (W pow2)
-    f = bk; s = 1
+def _broadcast(bk, W):  # fill each W-window from its low bit (W pow2)
+    f = bk
+    s = 1
     while s < W:
-        f = (f | (f << np.uint64(s))) & FULL; s <<= 1
+        f = (f | (f << np.uint64(s))) & FULL
+        s <<= 1
     return f
 
 
 def mul_accum(col, Ai, Bj, grp):
     """col += Ai * Bj, lane-wise, per width-group (the mixed single-limb multiply). Plain add: each
     product < 2^W, columns accumulate within the room."""
-    for (L, W, GRPVAL, GRP_LO, GRP_HI) in grp:
-        ag = Ai & GRPVAL; bg = Bj & GRPVAL                              # isolate this group
+    for L, W, GRPVAL, GRP_LO, GRP_HI in grp:
+        ag = Ai & GRPVAL
+        bg = Bj & GRPVAL  # isolate this group
         for k in range(L):
-            bk = (bg >> np.uint64(k)) & GRP_LO                          # bit k of each lane's b
-            f = _broadcast(bk, W)                                       # broadcast to full W-window
-            addend = ((ag << np.uint64(k)) & f) & FULL                  # a<<k where b bit k set, in-lane
+            bk = (bg >> np.uint64(k)) & GRP_LO  # bit k of each lane's b
+            f = _broadcast(bk, W)  # broadcast to full W-window
+            addend = ((ag << np.uint64(k)) & f) & FULL  # a<<k where b bit k set, in-lane
             col = (col + addend) & FULL
     return col
 
@@ -82,17 +91,18 @@ def mul_accum(col, Ai, Bj, grp):
 def carry_propagate(cols, VAL, grp):
     """Down the convolution columns: c = col[k] + carry; emit low-L limb (c & VAL); carry = high part
     shifted down by L PER GROUP, OR'd. Tail loop flushes the final carry into further limbs."""
-    out = []; carry = cp.zeros_like(cols[0])
+    out = []
+    carry = cp.zeros_like(cols[0])
     for k in range(len(cols)):
         c = (cols[k] + carry) & FULL
         out.append(c & VAL)
         carry = cp.zeros_like(c)
-        for (L, W, GRPVAL, GRP_LO, GRP_HI) in grp:
-            carry = (carry | ((c & GRP_HI) >> np.uint64(L))) & FULL     # per-group shift, OR disjoint
-    while int(carry.max()) > 0:                                         # flush tail carry
+        for L, W, GRPVAL, GRP_LO, GRP_HI in grp:
+            carry = (carry | ((c & GRP_HI) >> np.uint64(L))) & FULL  # per-group shift, OR disjoint
+    while int(carry.max()) > 0:  # flush tail carry
         out.append(carry & VAL)
         nxt = cp.zeros_like(carry)
-        for (L, W, GRPVAL, GRP_LO, GRP_HI) in grp:
+        for L, W, GRPVAL, GRP_LO, GRP_HI in grp:
             nxt = (nxt | ((carry & GRP_HI) >> np.uint64(L))) & FULL
         carry = nxt
     return out
@@ -101,9 +111,10 @@ def carry_propagate(cols, VAL, grp):
 def swar_mixed_bignum_mul(A, B, layout, K):
     """A,B: K register words (word p = limb p, base 2^L per lane). Returns product limb words."""
     VAL, grp = build_masks(layout)
-    for off, L, W in layout:                                           # the no-bleed constraint
-        assert W >= 2 * L + 1 + (ceil(log2(K)) if K > 1 else 0), \
+    for off, L, W in layout:  # the no-bleed constraint
+        assert W >= 2 * L + 1 + (ceil(log2(K)) if K > 1 else 0), (
             f"lane @{off}: room W={W} < 2L+1+ceil(log2 K) for L={L},K={K} -> carry would bleed"
+        )
     nout = 2 * K - 1
     cols = [cp.zeros_like(A[0]) for _ in range(nout)]
     for i in range(K):
@@ -114,7 +125,8 @@ def swar_mixed_bignum_mul(A, B, layout, K):
 
 def pack(vals, layout, K):
     """vals: list (batch) of {off: int lane-bignum value}. Returns K register words."""
-    B = len(vals); words = []
+    B = len(vals)
+    words = []
     for p in range(K):
         word = np.zeros(B, np.uint64)
         for b in range(B):
@@ -128,7 +140,8 @@ def pack(vals, layout, K):
 
 def unpack(out, layout):
     """out: product limb words. Returns list (batch) of {off: int product value}."""
-    host = [o.get() for o in out]; B = out[0].size
+    host = [o.get() for o in out]
+    B = out[0].size
     res = [dict() for _ in range(B)]
     for b in range(B):
         for off, L, W in layout:
@@ -143,19 +156,32 @@ if __name__ == "__main__":
     # three distinct widths -> 3 divergent passes for BOTH multiply and carry. Rooms obey
     # W >= 2L+1+ceil(log2 K); L in {4,2,1} each carry-chained (L=1 here is binary integer, not GF(2)).
     K = 3
-    layout = [(0, 4, 16), (16, 2, 8), (24, 2, 8), (32, 1, 8),
-              (40, 1, 8), (48, 1, 8), (56, 2, 8)]              # 16+8+8+8+8+8+8 = 64
+    layout = [
+        (0, 4, 16),
+        (16, 2, 8),
+        (24, 2, 8),
+        (32, 1, 8),
+        (40, 1, 8),
+        (48, 1, 8),
+        (56, 2, 8),
+    ]  # 16+8+8+8+8+8+8 = 64
     assert sum(W for _, _, W in layout) == 64
     print("mixed-width SWAR bignum multiply: lanes of different precision, each a K-limb bignum,")
-    print(f"  carry-chained PER LANE (per-distinct-width carry shift). K={K} limbs, layout {layout}\n")
+    print(
+        f"  carry-chained PER LANE (per-distinct-width carry shift). K={K} limbs, layout {layout}\n"
+    )
 
-    rng = np.random.default_rng(0); B = 20000
-    vA = [{} for _ in range(B)]; vB = [{} for _ in range(B)]
+    rng = np.random.default_rng(0)
+    B = 20000
+    vA = [{} for _ in range(B)]
+    vB = [{} for _ in range(B)]
     for off, L, W in layout:
-        hi = 1 << (L * K)                                      # lane bignum value < 2^(L*K)
+        hi = 1 << (L * K)  # lane bignum value < 2^(L*K)
         for b in range(B):
-            vA[b][off] = int(rng.integers(0, hi)); vB[b][off] = int(rng.integers(0, hi))
-    A = pack(vA, layout, K); B_ = pack(vB, layout, K)
+            vA[b][off] = int(rng.integers(0, hi))
+            vB[b][off] = int(rng.integers(0, hi))
+    A = pack(vA, layout, K)
+    B_ = pack(vB, layout, K)
     out = swar_mixed_bignum_mul(A, B_, layout, K)
     got = unpack(out, layout)
 
@@ -166,10 +192,22 @@ if __name__ == "__main__":
         allok &= ok
         tag = "" if (L, W) in seen else f"  (group L={L}/W={W}: a distinct carry-shift pass)"
         seen.add((L, W))
-        print(f"  lane @{off:<2} L={L} room {W:>2}: bignum product == a*b across {B} words : {ok}{tag}")
+        print(
+            f"  lane @{off:<2} L={L} room {W:>2}: bignum product == a*b across {B} words : {ok}{tag}"
+        )
 
-    print(f"\n  {'PASS' if allok else 'FAIL'} — mixed-width bignum multiply with per-lane carry-chaining.")
-    print(f"  Each lane runs its own K-limb schoolbook convolution + base-2^L carry; the carry SHIFT is")
-    print(f"  per-distinct-width (group by (L,W), shift down by that L, OR disjoint). {len(set((L,W) for _,L,W in layout))} distinct widths")
-    print(f"  => {len(set((L,W) for _,L,W in layout))} divergent passes for BOTH the convolution and the carry -- the same #distinct-widths")
-    print(f"  Pareto knob as the single-limb mixed multiply. Carrier is now SWAR end-to-end at mixed precision.")
+    print(
+        f"\n  {'PASS' if allok else 'FAIL'} — mixed-width bignum multiply with per-lane carry-chaining."
+    )
+    print(
+        f"  Each lane runs its own K-limb schoolbook convolution + base-2^L carry; the carry SHIFT is"
+    )
+    print(
+        f"  per-distinct-width (group by (L,W), shift down by that L, OR disjoint). {len(set((L, W) for _, L, W in layout))} distinct widths"
+    )
+    print(
+        f"  => {len(set((L, W) for _, L, W in layout))} divergent passes for BOTH the convolution and the carry -- the same #distinct-widths"
+    )
+    print(
+        f"  Pareto knob as the single-limb mixed multiply. Carrier is now SWAR end-to-end at mixed precision."
+    )

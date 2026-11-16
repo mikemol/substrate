@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 witness-stratum-pilot.py — S27: the witness-valued-verdicts program's first
 deliverable. The five-claim cluster {GCX, RAD, RDW, ZDG, ZDW} shares ONE

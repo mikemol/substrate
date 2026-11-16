@@ -1,0 +1,221 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2026 Mike Mol
+#
+# membudget-ledger — the lease ledger: lock, liveness, gc, read, release.
+#
+# ⚑⚑⚑ EXTRACTED BECAUSE THE GATE'S UNIT IS THE FILE, WHICH IS WHY WE N-SPLIT. `scripts/membudget`
+# carried 11 shellcheck findings across 858 lines. Every individual fix passed and every refusal
+# reverted the whole file, so partial progress could not accumulate: the only landing move was one
+# write carrying all 11, which meant reconstructing 858 lines of the build's memory governor to
+# change eleven of them. **That is the per-file gate saying the file does too much**, and the
+# answer is the same one `items.py` got — split until the unit of repair is the unit of concern.
+#
+# ⚑⚑ THIS HALF IS THE LEDGER AND NOTHING ELSE: what a lease IS, how the file is locked, how a dead
+# owner is reaped, how a lease is released. It knows nothing about scopes, cgroups, autobudget or
+# timing. Six of the nine real findings lived here, and they are fixed here.
+#
+# ⚑ THE LEDGER FORMAT IS THE CONTRACT BETWEEN THE HALVES, and it is stated once:
+#     LEASE <id> <mb> <pid:starttime> <epoch> <parent|-> <label>
+#     TOTAL_MB <n>
+# The driver sources this file; nothing here execs, so sourcing is inert.
+#
+# ⚑⚑⚑ THE LOCK STATE IS DECLARED HERE, WITH ITS ONLY CONSUMERS — and the first cut of this split
+# left it behind in the driver, which produced TWO NEW FINDINGS rather than removing any.
+# `LOCK` and `LOCK_TIMEOUT` were read at exactly two lines, both inside `with_lock`; once that
+# function moved out, shellcheck correctly reported them UNUSED where they still sat. **Extraction
+# that leaves state behind moves the coupling instead of cutting it.**
+#
+# ⚑⚑ AND THE HONEST FORM HERE IS A DERIVATION, NOT A PARAMETER. Threading a lock path and a
+# timeout through every call site would state a dependency that is really a FUNCTION of the ledger
+# path — the lock IS `$FILE.lock`, always. What the driver owes this file is `$FILE`; everything
+# else about locking is this file's to decide, which is what makes it a seam rather than a split.
+: "${FILE:?membudget-ledger: the sourcing script must set FILE (the ledger path)}"
+LOCK="$FILE.lock"
+LOCK_TIMEOUT="${MEMBUDGET_LOCK_TIMEOUT:-10}"
+#
+# ⚑ LOCK PROTOCOL, unchanged from the origin and restated because it is load-bearing:
+#  1. The lock is held on an fd; a dead holder's fd closes and auto-releases (a killed holder's
+#     lock once stayed held by a child's copy → cross-repo deadlock).
+#  2. ACQUIRE IS BOUNDED. `flock -w` never blocks forever. Because (1) makes a dead holder
+#     auto-release, a timeout can only mean a LIVE, wedged holder — the caller retries or aborts;
+#     it never hangs the machine.
+# Critical sections must stay pure file-IO (never fork/sleep/wait while holding the lock) so the
+# hold is microseconds and (2) effectively never fires in normal operation.
+
+with_lock() {  # → 0 holding the lock (fd in $LKFD); → 1 on timeout, with no fd left open
+  exec {LKFD}>"$LOCK"
+  flock -w "$LOCK_TIMEOUT" "$LKFD" && return 0
+  exec {LKFD}>&-; return 1
+}
+# ⚑ THE `exec` IS BRACE-GROUPED. A bare `exec {LKFD}>&- 2>/dev/null` makes the redirect PERMANENT
+# (exec with no command), silently swallowing the whole script's stderr — own messages, child
+# stderr, tracebacks — for the rest of the run. The group scopes it to the fd-close.
+unlock() { flock -u "$LKFD" 2>/dev/null; { exec {LKFD}>&-; } 2>/dev/null; return 0; }
+
+# Liveness, PID-REUSE-PROOF: a lease owner is "pid:starttime" (field 22 of /proc/pid/stat). A
+# recycled PID has a different starttime, so a dead owner's lease can never be kept alive by an
+# unrelated process.
+# ⚑ COUNTED FROM THE LAST `)`, NOT BY A PLAIN SPLIT (mtools cross-client audit, 2026-09-22). Field 2
+#   is `(comm)`, and a comm containing a space shifts every field after it, so `$22` read a LIVE
+#   owner's starttime wrong and gc dropped its lease. After the last `)` the remainder starts at
+#   field 3, so starttime (field 22) is the remainder's 20th — independent of what comm contains.
+_starttime() { awk '{s=$0; sub(/.*\) /, "", s); split(s, f, " "); print f[20]}' "/proc/$1/stat" 2>/dev/null; }
+_alive() { local pid=${1%%:*} st=${1#*:}; kill -0 "$pid" 2>/dev/null && [ "$(_starttime "$pid")" = "$st" ]; }
+_self_owner() { printf '%s:%s' "$$" "$(_starttime "$$")"; }
+
+# Target top-level budget: 8 GiB, but never exceed 70% of RAM (safe on smaller boxes).
+default_total() { awk '/MemTotal/{p=int($2*7/10/1024); print (p<8192)?p:8192}' /proc/meminfo; }
+
+# ensure(): create the ledger if absent. MUST run UNDER the lock (every caller acquires it first)
+# — the create is then serialised, so a cold `make -j` first wave cannot race concurrent `cat >`
+# into a truncated ledger (a half-written TOTAL_MB read as an empty budget).
+ensure() { [ -f "$FILE" ] || cat > "$FILE" <<EOF
+# membudget cotype — recursion-aware concurrent memory-budget semaphore (scripts/membudget).
+# Global free = TOTAL_MB - Σ EVERY live LEASE mb. Child allocation is DISJOINT from parent
+# allocation: a nested lease draws from the GLOBAL budget, not its parent's mb — parentage
+# governs cascade-GC, never the pool.
+# LEASE <id> <mb> <pid:starttime> <epoch> <parent|-> <label>
+TOTAL_MB $(default_total)
+EOF
+}
+
+# _lease_fields(): split one ledger line into named locals in the caller's scope.
+#
+# ⚑⚑ THE ORIGIN USED `set -- $line` AND ADDRESSED FIELDS POSITIONALLY ($2, $4, $6). The split was
+# deliberate — a ledger line IS whitespace-separated — but an unquoted expansion also GLOBS, so a
+# label containing `*` would expand against the working directory and silently corrupt the parse.
+# Reading into named variables splits without globbing AND says what each field is, which the
+# positional form left to a comment.
+_lease_fields() {
+  IFS=' ' read -r _kw _id _mb _owner _at _parent _label <<EOF
+$1
+EOF
+}
+
+gc() { # drop leases whose owner pid died, then cascade-drop leases whose parent vanished
+  local tmp chg=1 line snap _kw _id _mb _owner _at _parent _label
+  while [ "$chg" = 1 ]; do
+    # SAME dir as $FILE → mv is an atomic rename, never a cross-fs copy that can partially fail
+    # under /tmp pressure and strand gc.
+    chg=0; tmp=$(mktemp "$FILE.gc.XXXXXX")
+    # ⚑⚑ THE LEDGER IS SNAPSHOT BEFORE THE PASS, not re-read inside it. The origin `grep`ed
+    # "$FILE" for the cascade test while this same loop was reading it and appending to "$tmp" —
+    # so the answer depended on a file the pass was consuming, and reflected whatever the OS
+    # buffer held rather than the state the pass began from. One snapshot makes "the parent
+    # vanished" refer to ONE ledger state, which is what it always meant.
+    snap=$(cat "$FILE")
+    while IFS= read -r line; do
+      case "$line" in
+        LEASE\ *)
+          _lease_fields "$line"
+          if ! _alive "$_owner"; then chg=1; continue; fi        # dead owner (or reused PID)
+          case "$_parent" in
+            -) ;;
+            *) case $snap in
+                 *"LEASE $_parent "*) ;;
+                 *) chg=1; continue ;;                           # cascade: parent vanished
+               esac ;;
+          esac
+          printf '%s\n' "$line" >> "$tmp" ;;
+        # ⚑ WAIT LINES REAP ON LIVENESS ONLY, NO CASCADE (⟡membudget-unit's sibling, ⟡membudget-wait,
+        # W77, 2026-10-02 — ported from mtools' mikemol.fence.admit.gc). A waiter has no children, so
+        # there is nothing to cascade; a dead-owned WAIT line is simply dropped, which is also what
+        # frees the head position for the next-oldest waiter.
+        WAIT\ *)
+          _lease_fields "$line"
+          if ! _alive "$_owner"; then chg=1; continue; fi
+          printf '%s\n' "$line" >> "$tmp" ;;
+        *) printf '%s\n' "$line" >> "$tmp" ;;
+      esac
+    done < "$FILE"
+    # Rewrite ONLY when this pass actually dropped a lease. Rewriting unconditionally turned every
+    # gc into a ledger-change event → woke every blocked waiter → each ran gc → rewrote again: a
+    # self-feeding churn storm that saturated the GLOBAL lock and starved other repos.
+    if [ "$chg" = 1 ]; then mv "$tmp" "$FILE"; else rm -f "$tmp"; fi
+  done
+}
+
+# ⚑ TWO TOTAL_MB LINES ARE REFUSED, NOT RESOLVED (agreed with mtools' fence.admit, 2026-09-22). This
+#   reader took the FIRST and admit took the LAST, so one corrupt file sized the pool two ways. Either
+#   choice decides the budget by line order — a guess dressed as an answer. `init` never rewrites the
+#   total, so two can only come from a bug or a hand edit: empty output + exit 4 + a stderr line naming
+#   the conflict, which every caller already treats as "no usable total" and refuses.
+read_total()    { awk '$1=="TOTAL_MB"{n++; t=$2} END{if(n>1){print "membudget: ledger has " n " TOTAL_MB lines - refusing to choose one (corrupt or hand-edited)" > "/dev/stderr"; exit 4} if(n==1) print t}' "$FILE"; }
+
+# ⚑⚑ THE LEDGER'S UNIT (⟡membudget-unit, W42, 2026-10-02 — ported from mtools' mikemol-membudget,
+# which built this first: `init --unit contexts` / `status` / `run`'s refusal). A ledger with no
+# UNIT line counts MB, exactly as before; a declared one is a single word on its own line (`UNIT
+# <word>`), which `gc`'s catch-all arm, `release`'s `grep -v "^LEASE "`, and `_set_total`'s awk
+# `{print}` pass-through ALL ALREADY preserve verbatim (checked against this file before adding
+# anything, not assumed) — so this is additive, and a no-UNIT ledger is byte-for-byte unchanged.
+#
+# ⚑ TWO UNIT LINES ARE REFUSED, NEVER CHOSEN BETWEEN — same discipline as `read_total`'s two
+# TOTAL_MB lines: a corrupt or hand-edited ledger must say so rather than pick a reading by line
+# order. Empty output + exit 4 + a stderr line naming the conflict.
+read_unit()     { awk '$1=="UNIT"{n++; u=$2} END{if(n>1){print "membudget: ledger has " n " UNIT lines - refusing to choose one (corrupt or hand-edited)" > "/dev/stderr"; exit 4} print (n==1)?u:"MB"}' "$FILE"; }
+
+# ⚑ AN `if`, NOT `A && B || C` — and the two genuinely differ. If `read_total` exits non-zero (an
+# unreadable ledger, or one with no TOTAL_MB), the `||` arm ALSO runs and the caller receives a
+# per-lease lookup it never asked for. The branches are exclusive by intent, so they are written
+# as exclusive.
+budget_of() {
+  if [ "$1" = "-" ]; then read_total
+  else awk -v i="$1" '$1=="LEASE"&&$2==i{print $3; exit}' "$FILE"; fi
+}
+
+claimed_under() { awk -v p="$1" '$1=="LEASE"&&$6==p{s+=$3} END{print s+0}' "$FILE"; }
+
+# _any_dead(): lock-free liveness probe — succeed (0) if ANY lease's owner pid is dead.
+#
+# ⚑ THE EXPENSIVE kill-0 SCAN MUST STAY OFF THE GLOBAL LOCK. A blocked waiter takes the lock for
+# gc only when there is actually something to reap; otherwise the herd's scans re-saturate it.
+#
+# ⚑⚑ READ AS LINES, NOT AS WORDS. The origin was `for o in $(awk …)`, which word-splits AND globs
+# — an owner field is `pid:starttime` and contains no metacharacter today, so the glob was latent
+# rather than live. A `while read` loop is bounded by the record the awk emits rather than by
+# whatever IFS and pathname expansion make of it.
+_any_dead() {
+  local o
+  while IFS= read -r o; do
+    [ -n "$o" ] || continue
+    _alive "$o" || return 0
+  done < <(awk '$1=="LEASE"{print $4}' "$FILE" 2>/dev/null)
+  return 1
+}
+
+# release(): drop one lease. Best-effort — if the lock is wedged we return, and the lease is
+# reaped later by gc (dead owner), so a failed release never leaks budget permanently. NEVER
+# blocks unboundedly.
+#
+# ⚑ THE FILTERED WRITE GOES TO A SIBLING THEN RENAMES, which is the atomic-replace the origin
+# already used; what changed is that the read and the write are no longer the same name in one
+# pipeline.
+release() {
+  with_lock || return 0
+  if grep -v "^LEASE $1 " "$FILE" > "$FILE.t" 2>/dev/null; then mv "$FILE.t" "$FILE"; fi
+  unlock
+}
+
+# ⚑⚑⚑ WAIT-LINE FIFO (⟡membudget-wait, W77/mtools-W48/amr-skills-W51, 2026-10-02 — ported from
+# mtools' mikemol.fence.admit, which built this first for its Python client). A WAIT line reserves
+# NO budget; it only holds a queued request's place in arrival order, so a later, smaller request
+# cannot jump an earlier, larger one merely because it happens to fit first — the defect this
+# toolkit's own letter measured against mtools' Python client before WAIT lines existed there.
+#
+#     WAIT <ticket> <mb> <owner> <epoch> <parent> <label>
+#
+# Same 7-field shape as LEASE (ticket in the id's place), so `_lease_fields` parses either; `gc`'s
+# WAIT arm above reaps a dead-owned one by liveness alone, with no cascade (a waiter has no
+# children). `read_unit`/`read_total`/`claimed_under` all key on their own `$1`, so a WAIT line is
+# invisible to budget accounting — exactly the property that makes it safe to add.
+_wait_head() {  # the OLDEST live waiter's ticket (ledger order == arrival order, since each is
+                # appended), or empty when nobody waits.
+  awk '$1=="WAIT"{print $2; exit}' "$FILE"
+}
+_dequeue_wait() {  # drop one ticket's WAIT line; best-effort, same shape as release().
+  [ -n "${1:-}" ] || return 0
+  with_lock || return 0
+  if grep -v "^WAIT $1 " "$FILE" > "$FILE.t" 2>/dev/null; then mv "$FILE.t" "$FILE"; fi
+  unlock
+}

@@ -1,355 +1,171 @@
 #!/usr/bin/env python3
-"""gen_build_makefiles.py — emit a SINGLE flat import-DAG Makefile (agda/Flat.mk)
-plus a thin root agda/Makefile, for a memory-confined, per-file Agda build.
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2026 Mike Mol
+"""gen_build_makefiles.py — the SHIM over the drained makefile generator (⟡promote-path A).
 
-WHY THIS SHAPE (read before changing):
+⚑⚑⚑ THE 900-LINE ORIGIN IS DRAINED. It carried 292 findings and the per-file gate refused every
+edit, so each concern moved into a clean `substrate/` module, each held byte-for-byte (or value-
+for-value) against this file before the swap:
 
-  * The All.agda OOM is LOAD-bound: one process that imports the whole
-    repo deserializes ~1200 interfaces at ~40x inflation
-    (memory: project_oom_load_bound_finding_2026_06). The fix is to never
-    co-resident the closure. This build runs ONE `agda` process PER FILE,
-    so peak RSS is bounded by the single heaviest file's closure
-    (~304 MB for PrimitiveInstances), not the sum.
+    settings, jobs, build_ver, shim block     substrate/build_settings     17/17 vs origin
+    import graph, parse_tree, kahn_*, IMPRE    substrate/agda_dag, build_compat   4/4, 8/8
+    agda/Flat.mk                              substrate/flat_emit          10/10 byte-for-byte
+    agda/Makefile                             substrate/root_emit          8/8 byte-for-byte
+    the CLI                                   substrate/build_gen_cli      8/8
 
-  * ⟡make-import-dag — ONE flat makefile, per-module `m/<Module>` phony
-    target carrying its DIRECT-import prerequisites, so `make -j` builds in
-    true IMPORT-DAG topological order (a module's imports land as fresh
-    .agdai FIRST, independents run concurrently). This replaced the 280
-    per-DIRECTORY recursive makefiles, whose ordering encoded only the
-    directory tree — 99.6% of the real import edges were UNORDERED, so a
-    cold `make -j` built imports on-the-fly IN-PROCESS (inflated heap, an
-    OOM storm, and mis-attributed offenders under interleaved -j logs).
+This file keeps the NAME and the CLI every consumer uses — pre-commit (`--check`, `--check-census`,
+`--jobs`), `agda/Makefile`'s check-makefiles, `scripts/build_census` and three scratch tools (bare
+import), `scratch/paydown` (loaded by path) — and re-exports the names `stubs/
+gen_build_makefiles.pyi` declares. New work goes in the modules, never here.
 
-  * EDGES ARE SOURCE-PARSED, not catalog.db. catalog.db's `module_edges`
-    is SEMANTIC (elaborated-core name-references) and DROPS build-required
-    edges (e.g. V4-as-PFG imports Foundation.Nat in source but the ℕ refs
-    normalize away in the core). Source-parsing `open import`/`import` is
-    the SOUND super-set of direct build deps, always fresh (no catalog.db
-    dependency, no bootstrap cycle), and needs no special-casing for the
-    ~111 def-less `open import … public` re-export aggregators (their
-    children ARE in their source).
+⚑⚑ IT RUNS ON THE PROJECT VENV, AND DOES NOT TOUCH `sys.path` (operator, 2026-09-23). The system
+python3 cannot import `substrate` from a script path; its callers were moved to `.venv/bin/python`
+instead of this file editing the interpreter's search state.
 
-  * REAL-FILE targets, make DOES track staleness — because the DAG is now
-    explicit. Each target is the actual `_build/<ver>/agda/<Mod>.agdai`,
-    depending on its own `.agda` source AND the `.agdai` of every module it
-    imports. The recursive per-dir makefiles went .PHONY (always-run, let
-    agda decide) precisely because they could NOT see import edges, so make's
-    mtime model missed TRANSITIVE staleness (X.agdai newer than X.agda yet
-    stale because an import changed). The flat import-DAG makes those edges
-    EXPLICIT, so make's mtime model becomes sound: a warm build is a near-
-    instant mtime check (not 2003 agda no-ops), and a change rebuilds only
-    the affected subtree. `&& touch $@` closes the one gap — agda 2.8
-    validates interfaces by CONTENT HASH not mtime, so a content-neutral
-    upstream change would leave a downstream .agdai's mtime old (make would
-    re-invoke agda, which no-ops); touching it on success keeps make aligned.
-    Sound only in the safe direction: over-invoke = a wasted no-op, never
-    under-invoke (source-parse gives the complete direct-edge set). Phony
-    `m/<Mod>` aliases remain for `make -f Flat.mk m/…` convenience.
-
-  * ANTI-DRIFT: MODULES is listed EXPLICITLY (no globs). The whole-tree
-    check-sync recipe blows up loudly if the on-disk .agda set differs from
-    the generated MODULES, and `--check` (wired into pre-commit) fails if
-    Flat.mk / the root Makefile are stale. Sync is never silent.
-
-USAGE:
-  scripts/gen_build_makefiles.py            # (re)generate agda/Flat.mk + agda/Makefile
-  scripts/gen_build_makefiles.py --check    # exit 1 if either is missing or stale (CI/hook)
-
-Then build (from agda/):
-  make            # whole tree, per-file, RAM-capped, import-DAG-ordered (add -jN)
-  make -f Flat.mk m/Substrate.Foundation.Fin   # one module (+ its import closure)
+⚑ THREE `scripts/`/`scratch/` MODULES ARE LOADED BY PATH, READ THROUGH A PROTOCOL: `_agdatext` (the
+comment stripper), `build_census` (the census modes) and `edit_snapshot` (armed before a write).
+They are bare-name modules; importing them by name would need the `sys.path` edit ruled out above.
 """
-import os
-import re
+
+from __future__ import annotations
+
+import importlib.util
 import sys
+from typing import TYPE_CHECKING, Protocol, cast
 
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from _agdatext import strip   # noqa: E402  (single-source Agda comment stripper)
+from substrate import agda_dag, build_compat, build_gen_cli, build_settings, flat_emit, root_emit
 
-ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-AGDA_DIR = os.path.join(ROOT, "agda")
-SRC = os.path.join(AGDA_DIR, "Substrate")
-MEM_CAP = "128m"            # ⟡cap-128-forcing: per-file RTS heap cap. make (shim→membudget) is the
-                            # SINGLE build path: membudget cgroup caps maxRSS (owns retry), this
-                            # +RTS -M caps GHC heap.  The cap is enforced HERE, at the agda param,
-                            # not as a post-hoc census: the `.agda-times.tsv` ledger is BIMODAL (a
-                            # cached-`.agdai` LOAD row ~79MB vs a real ELABORATION row ~300MB) and
-                            # check_cap_ratchet reads the LAST row, so a census can read "under cap"
-                            # purely because the module was not re-elaborated.  A build-time -M makes
-                            # over-cap a BUILD FAILURE — unfakeable, and the forcing function that
-                            # makes a module SHARD (split horizontally into sibling files in one
-                            # directory), split def/proof, or seal its heavy neutrals `opaque`.
-                            # Never raise the cap.
-MARKER = "# GENERATED by scripts/gen_build_makefiles.py — do not edit by hand."
-SHIM_DIR = os.path.join(ROOT, "scripts", "agda-shim")   # the membudget agda wrapper
+if TYPE_CHECKING:
+    from pathlib import Path
+    from types import ModuleType
 
-# source-parse: an `open import`/`import` line's first token is the imported module path.
-IMPRE = re.compile(r"^\s*(?:open\s+import|import)\s+([A-Za-z0-9_.'-]+)", re.M)
+ROOT = str(build_settings.ROOT)
+AGDA_DIR = str(build_settings.AGDA_DIR)
+SRC = str(build_settings.SRC)
+MARKER = build_settings.MARKER
+SHIM_DIR = str(build_settings.SHIM_DIR)
+MEM_CAP = build_settings.MEM_CAP
+AGDA_JOBS = build_settings.AGDA_JOBS
+IMPRE = build_compat.IMPRE
+
+# ⚑ `scratch/agda_defs.cmdline_flags` READS THIS FILE'S SOURCE for a string constant starting with
+# the flag assignment below; without one it silently returns []. Kept so that reader stays
+# correct; its authority is the literal `flat_emit` emits into Flat.mk.
+_AGDA_FLAGS_LINE = "AGDA_FLAGS ?= --safe --without-K"
+
+_SCRIPTS = build_settings.ROOT / "scripts"
+_SCRATCH = build_settings.ROOT / "scratch"
 
 
-def build_ver():
-    """The agda _build interface version (the `<ver>` in `agda/_build/<ver>/agda/…/X.agdai`) — the real-file
-    target paths key on it. Detect from the on-disk _build; fall back to `agda --numeric-version`; else 2.8.0."""
-    import glob as _glob
-    import subprocess
-    dirs = _glob.glob(os.path.join(AGDA_DIR, "_build", "*", "agda"))
-    if dirs:
-        return os.path.basename(os.path.dirname(sorted(dirs)[-1]))
+class _AgdaText(Protocol):
+    def strip(self, text: str, /) -> str: ...
+
+
+class _Census(Protocol):
+    BlockError: type[Exception]
+
+    def cmd_sync(self) -> int: ...
+
+    def cmd_check(self) -> int: ...
+
+
+class _Snapshot(Protocol):
+    def guard(self, name: str, paths: list[str], *, intent: str) -> object: ...
+
+
+def _load(name: str, path: Path) -> ModuleType:
+    """Load a bare-name module by path, restoring `sys.path` whatever its import does."""
+    saved = list(sys.path)
     try:
-        return subprocess.check_output(["agda", "--numeric-version"], text=True).strip()
-    except Exception:
-        return "2.8.0"
+        spec = importlib.util.spec_from_file_location(name, path)
+        if spec is None or spec.loader is None:
+            msg = f"cannot load {path}"
+            raise ImportError(msg)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        return module
+    finally:
+        sys.path[:] = saved
 
 
-def _shim_block():
-    """Makefile lines that put the membudget agda-shim on PATH (idempotent) so `make` ALWAYS routes agda
-    through the controlled+instrumented wrapper — RAM-budget semaphore (make -j self-throttles, no manual
-    `source membudget-shrc`) + always-on proof-cost profiling. Exported → recipes AND sub-makes inherit it;
-    the findstring guard keeps it from re-prepending across the recursion. membudget auto-inits its budget
-    on first use, so an un-`init`'d make still works. Disable profiling: MEMBUDGET_NOPROFILE=1. Pin a
-    specific agda: `make AGDA=/path/to/agda` (?= preserved)."""
-    return [
-        "# membudget agda-shim → make is the controlled+instrumented build path (RAM-budgeted + proof-cost",
-        "# profiled). Idempotent (findstring); exported to recipes + sub-makes. MEMBUDGET_NOPROFILE=1 to skip",
-        "# profiling; `make AGDA=…` to pin a different agda.",
-        f"SHIM_DIR := {SHIM_DIR}",
-        "ifeq (,$(findstring $(SHIM_DIR),$(PATH)))",
-        "export PATH := $(SHIM_DIR):$(PATH)",
-        "endif",
-        "",
-    ]
+def _strip() -> agda_dag.Stripper:
+    """Return the one Agda comment stripper (`scripts/_agdatext.strip`)."""
+    return cast("_AgdaText", _load("_agdatext", _SCRIPTS / "_agdatext.py")).strip
 
 
-def parse_tree():
-    """Walk Substrate/**.agda → ({module_name: src_relpath}, {module: set(direct in-tree import modules)}).
-
-    Module name = the PATH-derived name (Agda requires the declared name match the path under the include
-    root, so this == the `module X where` name == every `open import X` string). Imports are source-parsed
-    (SOUND super-set of build deps); restricted to modules present on disk. Src relpath is `Substrate/…/X.agda`
-    relative to agda/ (the -i root the build runs from)."""
-    disk = {}
-    for dp, _, fns in os.walk(SRC):
-        if "_build" in dp.split(os.sep):
-            continue
-        for fn in fns:
-            if not fn.endswith(".agda"):
-                continue
-            rel = os.path.relpath(os.path.join(dp, fn), AGDA_DIR)   # Substrate/…/X.agda
-            disk[rel[:-5].replace(os.sep, ".")] = rel               # only '.'→module-sep; '-' stays
-    deps = {m: set() for m in disk}
-    for m, rel in disk.items():
-        t = strip(open(os.path.join(AGDA_DIR, rel), encoding="utf-8").read())
-        for im in IMPRE.finditer(t):
-            d = im.group(1)
-            if d in disk and d != m:
-                deps[m].add(d)
-    return disk, deps
+def build_ver() -> str:
+    """Return the agda interface version (`build_settings.build_ver`)."""
+    return build_settings.build_ver()
 
 
-def kahn_check(disk, deps):
-    """Agda modules are acyclic; a cycle would hang `make`. Kahn topo-sort as the gen-time gate (exit 2)."""
-    from collections import deque
-    radj = {m: set() for m in disk}          # dep -> {modules that depend on it}
-    for m in disk:
-        for d in deps[m]:
-            radj[d].add(m)
-    indeg = {m: len(deps[m]) for m in disk}
-    q = deque(m for m in disk if indeg[m] == 0)
-    seen = 0
-    while q:
-        x = q.popleft()
-        seen += 1
-        for m in radj[x]:
-            indeg[m] -= 1
-            if indeg[m] == 0:
-                q.append(m)
-    if seen != len(disk):
-        cyc = [m for m in disk if indeg[m] > 0]
-        print(f"gen_build_makefiles: ⚠ import CYCLE among {len(cyc)} modules "
-              f"(make would hang): {cyc[:8]}", file=sys.stderr)
-        sys.exit(2)
+def parse_tree() -> tuple[dict[str, str], dict[str, set[str]]]:
+    """Return `(disk, deps)` in the origin's shape, from the model."""
+    return build_compat.parse_tree(_strip())
 
 
-def flat_text(disk, deps):
-    kahn_check(disk, deps)
-    mods = sorted(disk)
-    ver = build_ver()
-
-    def ai(m):   # the real .agdai output path for module m (disk[m] = Substrate/…/X.agda), relative to agda/
-        return "$(BUILD)/" + disk[m][:-5] + ".agdai"
-
-    L = []
-    L.append(MARKER)
-    L.append("# ⟡make-import-dag: SINGLE flat makefile. REAL-FILE target — each _build/<ver>/agda/<Mod>.agdai")
-    L.append("# depends on its own .agda source AND the .agdai of every module it imports (SOURCE-PARSED from")
-    L.append("# `open import`/`import`, NOT catalog.db). make tracks staleness by mtime over the EXPLICIT import")
-    L.append("# DAG: a warm build is a near-instant mtime check; a change rebuilds only the affected subtree;")
-    L.append("# `make -j` runs the frontier concurrently. `&& touch $@` aligns make's mtime with agda's")
-    L.append("# content-hash interface validity. Invoked from agda/. Regenerate: scripts/gen_build_makefiles.py.")
-    L.append("")
-    L.extend(_shim_block())
-    L.append("AGDA ?= agda")
-    L.append("AGDA_FLAGS ?= --safe --without-K")
-    L.append(f"MEM_CAP ?= {MEM_CAP}")
-    L.append("AGDA_ROOT := .")
-    L.append(f"BUILD := _build/{ver}/agda")   # the .agdai interface tree (override for a different agda version)
-    L.append("SCRIPTS := ../scripts")         # ⟡gqs-make-targets: sppf_db.py (the per-core ingest) home
-    L.append("")
-    L.append("MODULES := " + " ".join(mods))
-    # the .agdai list, derived from MODULES: dots→slashes, prefix $(BUILD)/, suffix .agdai (hyphens untouched).
-    L.append("AGDAI := $(patsubst %,$(BUILD)/%.agdai,$(subst .,/,$(MODULES)))")
-    L.append("ITARGETS := $(MODULES:%=i/%)")
-    L.append("")
-    L.append(".PHONY: all check-sync ingest clean $(MODULES:%=m/%) $(ITARGETS)")
-    L.append("")
-    L.append("all: check-sync $(AGDAI)")
-    L.append("")
-    # ⟡mid-check-sync: whole-tree drift gate (the 280 per-dir check-sync recipes collapse into ONE).
-    L.append("# Blow up if the on-disk .agda set differs from the generated MODULES (new/removed file →")
-    L.append("# regenerate). Both sides normalised through newline-list + drop-empties + sort.")
-    L.append("check-sync:")
-    L.append("\t@disk=`find Substrate -name '*.agda' | sed 's#/#.#g; s#\\.agda$$##' | sort`; \\")
-    L.append("\t listed=`printf '%s\\n' $(MODULES) | tr ' ' '\\n' | sed '/^$$/d' | sort`; \\")
-    L.append("\t if [ \"$$disk\" != \"$$listed\" ]; then \\")
-    L.append("\t   echo 'ERROR: on-disk .agda set differs from Flat.mk MODULES.'; \\")
-    L.append("\t   echo '  Run scripts/gen_build_makefiles.py.'; exit 1; \\")
-    L.append("\t fi")
-    L.append("")
-    # Real-file rule: <Mod>.agdai depends on its source + its imports' .agdai. make rebuilds only what's stale
-    # (mtime over the explicit DAG); `touch $@` re-aligns after agda's content-hash no-op. m/<Mod> phony alias.
-    L.append("# ── compile: <Mod>.agdai : <Mod>.agda + <direct-import>.agdai ─ real file; touch aligns mtime ──")
-    for m in mods:
-        pre = " ".join(ai(d) for d in sorted(deps[m]))
-        L.append(f"{ai(m)}: $(AGDA_ROOT)/{disk[m]} {pre}".rstrip())
-        L.append(f"\t@$(AGDA) $(AGDA_FLAGS) +RTS -M$(MEM_CAP) -RTS -i $(AGDA_ROOT) $(AGDA_ROOT)/{disk[m]} && touch $@")
-        L.append(f"m/{m}: {ai(m)}")
-    L.append("")
-    # ⟡gqs-make-targets: parallel-to-compile SPPF ingest — one --ingest-core per module (INDEPENDENT of the
-    # compile; WAL+busy_timeout in sppf_db → parallel decode / serialized insert; self-skips unadvanced cores).
-    # The root `catalog` target uses the BATCHED engine instead; these `i/` targets are the run-alongside form.
-    L.append("# ── ingest: parallel-to-compile SPPF internment (run `make -f Flat.mk ingest` alongside) ──")
-    L.append("ingest: $(ITARGETS)")
-    for m in mods:
-        L.append(f"i/{m}:")
-        L.append(f"\t@python3 $(SCRIPTS)/sppf_db.py --ingest-core $(AGDA_ROOT)/{disk[m]}")
-    L.append("")
-    L.append("clean:")
-    L.append("\t@true")
-    L.append("")
-    return "\n".join(L)
+def kahn_depth(disk: dict[str, str], deps: dict[str, set[str]]) -> tuple[int, list[str]]:
+    """Return `(critical_path_depth, order)`; a cycle exits 2, as the origin did."""
+    return build_compat.kahn_depth(disk, deps)
 
 
-def root_text():
-    """Thin root agda/Makefile — root-only targets (shim/catalog/check*/advise) + `all`/`clean` delegating
-    to Flat.mk. `make -C agda -j` (the pre-commit gate) runs `all` → the flat import-DAG build under one
-    jobserver. NOT recursive-agda; the compile lives entirely in Flat.mk."""
-    return "\n".join([
-        MARKER,
-        "# Top-level entry: per-file, memory-confined Agda build. `all` delegates to the flat import-DAG",
-        "# makefile (Flat.mk); root-only invariant/catalog/advise targets live here. Correctness is Agda's",
-        "# (transitive re-check); make bounds RAM + orders by import DAG. See scripts/gen_build_makefiles.py.",
-        "",
-        *_shim_block(),
-        ".PHONY: all clean shim catalog check check-makefiles check-defproof check-vacuity check-index check-import check-decltag check-carrier check-sumtype check-public check-cap check-apex advise",
-        "all:",
-        "\t@$(MAKE) -f Flat.mk all",
-        "clean:",
-        "\t@$(MAKE) -f Flat.mk clean",
-        "# ⟡gqs-catalog-engine: (re)build the .agdai shim (iff agdai_shim.hs changed) + catalog.db from the",
-        "# interned SPPF. `catalog` = the BATCHED controller/actuator build (sppf_db \"\"): ONE process models the",
-        "# topology once, then rides the decode-parallelism roofline INTERNALLY — per window it co-reads the LIVE",
-        "# contention and decodes via a ThreadPool of shim subprocesses sized to the free CPU (interner+DB insert",
-        "# serial → NO python-spawn tax), self-skipping unchanged cores. Cheaper than per-core `make -f Flat.mk",
-        "# ingest' for the common incremental case (no spawn tax) and it self-parallelizes the full rebuild.",
-        "shim:",
-        "\t@$(MAKE) -C ../jea/metalanguage shim",
-        "catalog: shim",
-        "\t@python3 ../scripts/sppf_db.py \"\" --argperm",
-        "# Aggregate invariant GATE (same checks the pre-commit hook runs):",
-        "# def/proof separation + makefile-tree sync + UP non-vacuity + shape index. Blocking.",
-        "check: check-defproof check-makefiles check-vacuity check-index check-import check-decltag check-carrier check-sumtype check-public check-cap check-apex",
-        "\t@echo 'all invariant checks passed.'",
-        "# Verify Flat.mk + the root Makefile are in sync with the source tree.",
-        "check-makefiles:",
-        "\t@python3 ../scripts/gen_build_makefiles.py --check",
-        "# Verify def/proof separation (definition-providers import no proof modules).",
-        "check-defproof:",
-        "\t@../scripts/check_def_proof_separation.sh",
-        "# Verify no vacuous (⊤-collapse) universal properties outside the sanctioned two.",
-        "check-vacuity:",
-        "\t@../scripts/check_up_nonvacuity.sh",
-        "# Verify the shape-node collision index is current (names→shapes, visible).",
-        "check-index:",
-        "\t@python3 ../scripts/sppf_node_index.py --check",
-        "# Ratchet: no NEW bare imports of genuinely-ambiguous names (specialize by shape).",
-        "check-import:",
-        "\t@python3 ../scripts/check_import_shape.py --quiet",
-        "# Every genuinely-ambiguous declaration carries a visible shape tag.",
-        "check-decltag:",
-        "\t@python3 ../scripts/decl_shape_tag.py",
-        "# Canonical operators live in their carrier's home, one-per-file (no forks/buckets).",
-        "check-carrier:",
-        "\t@python3 ../scripts/check_carrier_locality.py --quiet",
-        "# Ratchet: duplicate type-declarations are DEBT (paydown-only); no NEW forked copy.",
-        "check-sumtype:",
-        "\t@python3 ../scripts/check_sumtype_ratchet.py --quiet",
-        "# Ratchet: a WHOLESALE `open … public` re-export is DEBT (paydown-only) — module",
-        "# application COPIES, so it re-materializes the upstream API into every consumer.",
-        "check-public:",
-        "\t@python3 ../scripts/check_public_ratchet.py --quiet",
-        "# Ratchet: a module's elaboration PEAK over 128MB is DEBT (paydown-only) — the census",
-        "# that lets MEM_CAP descend mechanically. SHARD/split/seal a new offender; never raise the cap.",
-        "check-cap:",
-        "\t@python3 ../scripts/check_cap_ratchet.py --quiet",
-        "# Apex gate: every relational law-motif (≥3 instances) must have a parametric",
-        "# apex (a parameterizable module, NOT an index). No baseline — build the apex.",
-        "check-apex:",
-        "\t@python3 ../scripts/law_motif_apex.py --check",
-        "# ADVISORY (non-blocking): judgment reports, deliberately NOT in `check` /",
-        "# the hook (each has real false positives, so they inform, never gate):",
-        "#   * theorem-per-file pressure (signature counts)",
-        "#   * categorical grounding (domain algebraic modules w/ no Category dep)",
-        "advise:",
-        "\t@../scripts/check_file_sizes.sh",
-        "\t@../scripts/check_categorical_grounding.sh",
-        "",
-    ])
+def kahn_check(disk: dict[str, str], deps: dict[str, set[str]]) -> None:
+    """Refuse a cyclic graph (exit 2)."""
+    build_compat.kahn_check(disk, deps)
 
 
-def main():
-    check = "--check" in sys.argv
-    disk, deps = parse_tree()
-    targets = {
-        os.path.join(AGDA_DIR, "Flat.mk"): flat_text(disk, deps),
-        os.path.join(AGDA_DIR, "Makefile"): root_text(),
-    }
+def flat_text(disk: dict[str, str], deps: dict[str, set[str]]) -> str:
+    """Render `agda/Flat.mk` (faithful mode) for the given graph."""
+    settings = flat_emit.Settings(
+        marker=MARKER,
+        shim_dir=SHIM_DIR,
+        membudget=str(build_settings.MEMBUDGET),
+        mem_cap=MEM_CAP,
+        ver=build_ver(),
+    )
+    return flat_emit.text(flat_emit.from_origin(disk, deps), settings)
 
-    if check:
-        problems = []
-        for path, body in targets.items():
-            if not os.path.exists(path):
-                problems.append("missing: " + os.path.relpath(path, ROOT))
-            elif open(path, encoding="utf8").read() != body:
-                problems.append("stale:   " + os.path.relpath(path, ROOT))
-        if problems:
-            print("gen_build_makefiles --check: FAILED")
-            for p in problems:
-                print("  " + p)
-            print("Run scripts/gen_build_makefiles.py to regenerate.")
-            sys.exit(1)
-        print(f"gen_build_makefiles --check: OK ({len(targets)} makefiles current, "
-              f"{len(disk)} modules)")
-        sys.exit(0)
 
-    written = 0
-    for path, body in targets.items():
-        old = open(path, encoding="utf8").read() if os.path.exists(path) else None
-        if old != body:
-            open(path, "w", encoding="utf8").write(body)
-            written += 1
-    print(f"gen_build_makefiles: wrote/updated {written} of {len(targets)} makefiles "
-          f"({len(disk)} modules, import-DAG source-parsed).")
+def root_text() -> str:
+    """Render `agda/Makefile` (faithful mode)."""
+    return root_emit.text()
+
+
+def jobs() -> int:
+    """Return the `make -j` width (`build_settings.jobs`)."""
+    return build_settings.jobs()
+
+
+def jobs_flag() -> list[str]:
+    """Return `["-j", "<n>"]` (`build_settings.jobs_flag`)."""
+    return build_settings.jobs_flag()
+
+
+def _census(sync: bool) -> int:  # noqa: FBT001 - the injected hook's signature
+    """Run the census sync or check; a missing marker pair exits 1, as the origin did."""
+    census = cast("_Census", _load("build_census", _SCRIPTS / "build_census.py"))
+    try:
+        return census.cmd_sync() if sync else census.cmd_check()
+    except census.BlockError as exc:
+        sys.stderr.write(f"gen_build_makefiles: {exc}\n")
+        return 1
+
+
+def _snapshot(path: Path) -> None:
+    """Arm edit_snapshot before rewriting a makefile; a missing snapshot tool only warns."""
+    try:
+        snap = cast("_Snapshot", _load("edit_snapshot", _SCRATCH / "edit_snapshot.py"))
+        snap.guard("gen_build_makefiles", [str(path)], intent="apply")
+    except (ImportError, OSError) as exc:
+        sys.stderr.write(f"   snapshot unavailable ({exc}) — recover via git if needed\n")
+
+
+def main() -> int:
+    """Dispatch the CLI (`substrate.build_gen_cli`), supplying the scripts/ hooks."""
+    hooks = build_gen_cli.Hooks(
+        graph=lambda: agda_dag.parse(strip=_strip()), snapshot=_snapshot, census=_census
+    )
+    return build_gen_cli.main(sys.argv[1:], hooks)
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

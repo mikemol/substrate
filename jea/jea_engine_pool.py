@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """jea_engine_pool.py — the COMMON STRUCTURE under "fixed-DAG fold" vs "spawn/rewrite" (correcting C2's
 either/or). One reduce-step `reduce(node) -> EMIT value | SPAWN children`, scheduled by readiness over a
 pool that GROWS iff a rule spawns. Both the ℚ-fold and the rewrite engine are instances:
@@ -21,14 +23,16 @@ Witnesses (each [W]):
 3. COMMON STRUCTURE: the SAME kernel + reduce-step runs both; fixed-DAG = no-spawn (pool static),
    rewrite = spawn (pool grows). One emit-or-spawn reduce-step, two regimes.
 """
+
 import os
+
 os.environ.setdefault("CUDA_PATH", "/usr")
 import numpy as np, cupy as cp
 from fractions import Fraction
 from jea_generator_dag import build_dag
 
 ADD, MUL, LEAF, SPAWN = 0, 1, 2, 3
-_SRC = r'''
+_SRC = r"""
 typedef unsigned long long u64;
 extern "C" __global__
 void pool(int* op,int* narg,int* lch,int* rch, u64* vN,u64* vD, volatile int* status,
@@ -78,7 +82,7 @@ void pool(int* op,int* narg,int* lch,int* rch, u64* vN,u64* vD, volatile int* st
     }
     if (t==0) *out_sweeps = (int)sw;
 }
-'''
+"""
 _kern = cp.RawKernel(_SRC, "pool")
 
 
@@ -88,22 +92,54 @@ def _run(op, narg, lch, rch, vN, vD, status, pending, qtail0, npool):
     numeric passed is assert_bound = npool -- a PROVEN-invariant self-check (sweeps <= node-count <= npool), NOT a
     cap: if the kernel exceeds it, the proof was violated (a bug) and err=2 fires. Normal runs exit via pending==0
     far below it. (This is how the Agda code eliminates fuel: prove productivity, loop on the structural guard.)"""
-    nsm = cp.cuda.Device().attributes["MultiProcessorCount"]; blocks, threads = 8*nsm, 128
+    nsm = cp.cuda.Device().attributes["MultiProcessorCount"]
+    blocks, threads = 8 * nsm, 128
     d = lambda a, t: cp.asarray(a, t)
-    op=d(op,cp.int32); narg=d(narg,cp.int32); lch=d(lch,cp.int32); rch=d(rch,cp.int32)
-    vN=d(vN,cp.uint64); vD=d(vD,cp.uint64); status=d(status,cp.int32)
-    qtail=cp.full(1,qtail0,cp.int32); pend=cp.full(1,pending,cp.int32); err=cp.zeros(1,cp.int32)  # qtail0 = allocated-so-far
-    sweeps=cp.zeros(1,cp.int32)
-    _kern((blocks,),(threads,),(op,narg,lch,rch,vN,vD,status,qtail,pend,err,np.int32(npool),
-                                np.int64(npool),sweeps))     # assert_bound = npool (PROVEN: sweeps<=nodes<=npool)
+    op = d(op, cp.int32)
+    narg = d(narg, cp.int32)
+    lch = d(lch, cp.int32)
+    rch = d(rch, cp.int32)
+    vN = d(vN, cp.uint64)
+    vD = d(vD, cp.uint64)
+    status = d(status, cp.int32)
+    qtail = cp.full(1, qtail0, cp.int32)
+    pend = cp.full(1, pending, cp.int32)
+    err = cp.zeros(1, cp.int32)  # qtail0 = allocated-so-far
+    sweeps = cp.zeros(1, cp.int32)
+    _kern(
+        (blocks,),
+        (threads,),
+        (
+            op,
+            narg,
+            lch,
+            rch,
+            vN,
+            vD,
+            status,
+            qtail,
+            pend,
+            err,
+            np.int32(npool),
+            np.int64(npool),
+            sweeps,
+        ),
+    )  # assert_bound = npool (PROVEN: sweeps<=nodes<=npool)
     cp.cuda.Stream.null.synchronize()
-    return vN.get(), vD.get(), int(qtail.get()[0]), int(err.get()[0]), int(pend.get()[0]), int(sweeps.get()[0])
+    return (
+        vN.get(),
+        vD.get(),
+        int(qtail.get()[0]),
+        int(err.get()[0]),
+        int(pend.get()[0]),
+        int(sweeps.get()[0]),
+    )
 
 
 def _dag_depth(lch, rch, N):
     """critical-path depth (children indices < parent in build_dag's bottom-up order) -- INFORMATIONAL: the
     structural loop self-paces to ~depth sweeps, NOT npool; shows productivity gives O(depth), no bound imposed."""
-    lvl = [0]*N
+    lvl = [0] * N
     for i in range(N):
         l, r = lch[i], rch[i]
         if l >= 0 or r >= 0:
@@ -113,49 +149,90 @@ def _dag_depth(lch, rch, N):
 
 def run_qfold(g):
     """fixed-DAG: rules all terminal (add/mul/leaf), pool STATIC (npool=N, no spawn)."""
-    N=g["N"]
-    op=[(2 if g["op"][i]==-1 else g["op"][i]) for i in range(N)]   # leaf -> LEAF, else add/mul
-    narg=[0]*N; lch=list(g["lch"]); rch=list(g["rch"]); vN=list(g["vN"]); vD=list(g["vD"])
-    status=[1 if op[i]==LEAF else 0 for i in range(N)]; pending=sum(1 for i in range(N) if op[i]!=LEAF)
-    depth = _dag_depth(lch, rch, N)                               # informational only (no bound imposed)
-    gn,gd,qt,err,pend,sw=_run(op,narg,lch,rch,vN,vD,status,pending,N,N)   # qtail0=N (all pre-allocated), npool=N
-    r=g["root"]; return Fraction(int(gn[r]),int(gd[r])), qt, N, err, pend, sw, depth
+    N = g["N"]
+    op = [(2 if g["op"][i] == -1 else g["op"][i]) for i in range(N)]  # leaf -> LEAF, else add/mul
+    narg = [0] * N
+    lch = list(g["lch"])
+    rch = list(g["rch"])
+    vN = list(g["vN"])
+    vD = list(g["vD"])
+    status = [1 if op[i] == LEAF else 0 for i in range(N)]
+    pending = sum(1 for i in range(N) if op[i] != LEAF)
+    depth = _dag_depth(lch, rch, N)  # informational only (no bound imposed)
+    gn, gd, qt, err, pend, sw = _run(
+        op, narg, lch, rch, vN, vD, status, pending, N, N
+    )  # qtail0=N (all pre-allocated), npool=N
+    r = g["root"]
+    return Fraction(int(gn[r]), int(gd[r])), qt, N, err, pend, sw, depth
 
 
 def run_rewrite(ns, cap):
     """rewrite: seed SPAWN_E roots; pool GROWS via spawn. Returns each root's value."""
-    K=len(ns); op=[SPAWN]*cap; narg=[0]*cap; lch=[-1]*cap; rch=[-1]*cap
-    vN=[0]*cap; vD=[1]*cap; status=[2]*cap                       # status 2 (skip) for unallocated slots
-    for i,n in enumerate(ns): op[i]=SPAWN; narg[i]=n; status[i]=0
+    K = len(ns)
+    op = [SPAWN] * cap
+    narg = [0] * cap
+    lch = [-1] * cap
+    rch = [-1] * cap
+    vN = [0] * cap
+    vD = [1] * cap
+    status = [2] * cap  # status 2 (skip) for unallocated slots
+    for i, n in enumerate(ns):
+        op[i] = SPAWN
+        narg[i] = n
+        status[i] = 0
     # pending = K real seeds; qtail0=K (only seeds allocated); the pool GROWS into [K,cap) via spawn
-    depth = max(ns)                                                # informational only (spawn-depth; no bound imposed)
-    gn,gd,qt,err,pend,sw=_run(op,narg,lch,rch,vN,vD,status,K,K,cap)
+    depth = max(ns)  # informational only (spawn-depth; no bound imposed)
+    gn, gd, qt, err, pend, sw = _run(op, narg, lch, rch, vN, vD, status, K, K, cap)
     return [int(gn[i]) for i in range(K)], qt, err, pend, sw, depth
 
 
 if __name__ == "__main__":
     # 1. Q-fold on the pool engine
-    g=build_dag(64,3); val,qt,N,err,pend,sw1,depth1=run_qfold(g)
-    w1 = val==g["truth"] and err==0 and pend==0 and qt==N      # pool STATIC (qt==N, no spawn)
+    g = build_dag(64, 3)
+    val, qt, N, err, pend, sw1, depth1 = run_qfold(g)
+    w1 = val == g["truth"] and err == 0 and pend == 0 and qt == N  # pool STATIC (qt==N, no spawn)
     # 2. rewrite E(n)=2^n on the SAME engine
-    ns=[8,10,12]; cap=sum((2<<n) for n in ns)+len(ns)+16
-    vals,qt2,err2,pend2,sw2,depth2=run_rewrite(ns,cap)
-    w2 = vals==[1<<n for n in ns] and err2==0 and pend2==0 and qt2>len(ns)   # pool GREW (spawn)
-    w3 = w1 and w2                                             # SAME kernel ran both
+    ns = [8, 10, 12]
+    cap = sum((2 << n) for n in ns) + len(ns) + 16
+    vals, qt2, err2, pend2, sw2, depth2 = run_rewrite(ns, cap)
+    w2 = (
+        vals == [1 << n for n in ns] and err2 == 0 and pend2 == 0 and qt2 > len(ns)
+    )  # pool GREW (spawn)
+    w3 = w1 and w2  # SAME kernel ran both
     # Δ-J2: NO FUEL. The loop drains on the STRUCTURAL condition pending==0; termination is PROVEN (productivity:
     # narg-descent + no-deadlock). npool is a PROVEN-invariant assertion (sweeps<=nodes<=npool), never the control:
     # err stays 0 (assertion never fired) and the actual sweeps self-pace to ~depth, far below npool.
-    w4 = (pend==0 and err==0 and sw1 < N) and (pend2==0 and err2==0 and sw2 < cap)
+    w4 = (pend == 0 and err == 0 and sw1 < N) and (pend2 == 0 and err2 == 0 and sw2 < cap)
     print("common structure: one emit-or-spawn reduce-step runs BOTH the Q-fold and the rewrite\n")
-    print(f"1. Q-FOLD via pool engine: root={val} == truth {g['truth']}; pool STATIC (qtail={qt}==N): {w1}")
-    print(f"2. REWRITE via SAME engine: E{ns} -> {vals} == {[1<<n for n in ns]}; pool GREW (qtail {len(ns)}->{qt2}): {w2}")
-    print(f"3. COMMON STRUCTURE (one kernel/reduce-step; fixed-DAG = no-spawn special case of emit-or-spawn): {w3}")
-    print(f"4. Δ-J2 NO FUEL -- structural drain + PRODUCTIVITY proof: Q-fold drained in {sw1} sweeps (~depth {depth1}; "
-          f"proven assert npool={N} never hit, err={err}); rewrite {sw2} sweeps (~depth {depth2}; assert cap={cap}, err={err2}): {w4}")
-    ok=w1 and w2 and w3 and w4
-    print(f"\n  {'PASS' if ok else 'FAIL'} — spawn is NOT a distinct evaluation model: the fixed-DAG combine is the")
-    print(f"  NO-SPAWN special case of one reduce-step `reduce(node) -> emit | spawn`. emit-or-carry is the")
-    print(f"  generator_step primitive at the VALUE level (gcd residue) AND the STRUCTURE level (spawned")
-    print(f"  children) -- recursively. C2's 'spawn is a separate axis' was the either/or; this is the join.")
-    print(f"  FOLD-IN: this reduce-step subsumes combine_window (terminal rules) + universal_engine (spawn)")
-    print(f"  + escalation (spawn a wider carrier) -- the C-arc's real scheduler is the growable pool.")
+    print(
+        f"1. Q-FOLD via pool engine: root={val} == truth {g['truth']}; pool STATIC (qtail={qt}==N): {w1}"
+    )
+    print(
+        f"2. REWRITE via SAME engine: E{ns} -> {vals} == {[1 << n for n in ns]}; pool GREW (qtail {len(ns)}->{qt2}): {w2}"
+    )
+    print(
+        f"3. COMMON STRUCTURE (one kernel/reduce-step; fixed-DAG = no-spawn special case of emit-or-spawn): {w3}"
+    )
+    print(
+        f"4. Δ-J2 NO FUEL -- structural drain + PRODUCTIVITY proof: Q-fold drained in {sw1} sweeps (~depth {depth1}; "
+        f"proven assert npool={N} never hit, err={err}); rewrite {sw2} sweeps (~depth {depth2}; assert cap={cap}, err={err2}): {w4}"
+    )
+    ok = w1 and w2 and w3 and w4
+    print(
+        f"\n  {'PASS' if ok else 'FAIL'} — spawn is NOT a distinct evaluation model: the fixed-DAG combine is the"
+    )
+    print(
+        f"  NO-SPAWN special case of one reduce-step `reduce(node) -> emit | spawn`. emit-or-carry is the"
+    )
+    print(
+        f"  generator_step primitive at the VALUE level (gcd residue) AND the STRUCTURE level (spawned"
+    )
+    print(
+        f"  children) -- recursively. C2's 'spawn is a separate axis' was the either/or; this is the join."
+    )
+    print(
+        f"  FOLD-IN: this reduce-step subsumes combine_window (terminal rules) + universal_engine (spawn)"
+    )
+    print(
+        f"  + escalation (spawn a wider carrier) -- the C-arc's real scheduler is the growable pool."
+    )

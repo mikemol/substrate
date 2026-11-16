@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """type_sppf.py — pass types through the wedge to build an SPPF of structure.
 
 Walk the type-dependency graph bottom-up. For each data/record type, extract a
@@ -12,19 +14,21 @@ reference is the SPPF cycle node (the bastardized-Sequitur "already a path").
 Reports: isomorphism classes (≥2 types sharing a skeleton-hash) and the top
 recurring field-shape motifs.
 """
+
 import os, re, sys, collections, hashlib
-from _agdatext import strip
+import _agdatext
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "agda", "Substrate"))
 STRUCT = {"→", "×", "Σ", "⊎", "≡", "⊤", "⊥", "Set", "Set₁", "Set₂", "∀", "List", "Vec", "Fin", "ℕ"}
 
 # 1. extract type blocks: decl line + following indented lines.
-blocks = {}   # name -> (kind, [type-expr strings])
+blocks = {}  # name -> (kind, [type-expr strings])
 declre = re.compile(r"^(data|record)\s+(\S+)(.*)$")
 for dp, _, fns in os.walk(ROOT):
     for fn in fns:
-        if not fn.endswith(".agda"): continue
-        lines = strip(open(os.path.join(dp, fn), encoding="utf-8").read()).splitlines()
+        if not fn.endswith(".agda"):
+            continue
+        lines = _agdatext.strip(open(os.path.join(dp, fn), encoding="utf-8").read()).splitlines()
         i = 0
         while i < len(lines):
             m = declre.match(lines[i])
@@ -39,10 +43,12 @@ for dp, _, fns in os.walk(ROOT):
                         exprs.append(lines[j])
                     j += 1
                 blocks.setdefault(name, (kind, exprs))
-                i = j; continue
+                i = j
+                continue
             i += 1
 
 known = set(blocks)
+
 
 def field_shape(expr, hashes, stack):
     out = []
@@ -50,15 +56,19 @@ def field_shape(expr, hashes, stack):
         if t in STRUCT:
             out.append(t)
         elif t in known:
-            if t in stack:        # cycle: already a path in the SPPF
+            if t in stack:  # cycle: already a path in the SPPF
                 out.append("⟲")
             else:
                 out.append("T" + hashes.get(t, "?")[:6])
     return tuple(out)
 
+
 hashes = {}
+
+
 def node_hash(name, stack=()):
-    if name in hashes: return hashes[name]
+    if name in hashes:
+        return hashes[name]
     kind, exprs = blocks[name]
     stack = stack + (name,)
     # ensure deps hashed first (bottom-up); ignore cycles via stack
@@ -70,6 +80,7 @@ def node_hash(name, stack=()):
     h = hashlib.sha1((kind + "|" + repr(shapes)).encode()).hexdigest()
     hashes[name] = h
     return h
+
 
 for n in list(blocks):
     node_hash(n)
@@ -91,7 +102,8 @@ for n in blocks:
     kind, exprs = blocks[n]
     for e in exprs:
         fs = field_shape(e, hashes, (n,))
-        if fs: motif[fs] += 1
+        if fs:
+            motif[fs] += 1
 print(f"\ntop recurring field-shape motifs:")
 for fs, c in motif.most_common(15):
     print(f"  {c:4d}  {' '.join(fs)}")

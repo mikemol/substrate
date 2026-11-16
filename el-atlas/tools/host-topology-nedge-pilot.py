@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 host-topology-nedge-pilot.py — T-series pilot: the HOST (CPU/memory) topology as a nedge
 G-Value conductance network (candidate claim HTP). The CPU-side mirror of gpu-topology.

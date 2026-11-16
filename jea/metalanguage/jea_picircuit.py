@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """jea_picircuit.py — Δ-Π-circuit: the metalanguage as a CIRCUIT operating point.
 
 The metalanguage is GRADED along multiple axes (depth, fan-in, cross-term-degree,
@@ -26,14 +28,16 @@ SAME ones jea_onegraph uses on the GPU carrier; here on `Fraction` (the GPU stac
 needed -- only the circuit algebra). AI-Δ0's device version and this are one structure
 through two carriers, the same way ast and cst are.
 """
+
 from __future__ import annotations
 import sys, os, math, argparse
 from fractions import Fraction
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from jea_pysim import Corpus, expand
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))   # jea/ root
-import jea_circuit as CIRC                  # Π2: the shared carrier-parametric circuit-solve (stdlib; no GPU stack)
+
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  # jea/ root
+import jea_circuit as CIRC  # Π2: the shared carrier-parametric circuit-solve (stdlib; no GPU stack)
 
 
 # --------------------------------------------------------------------------
@@ -82,13 +86,22 @@ class GradingCircuit:
         self.live_axes = self._discover_axes()
 
     # ---- the grading axes, each a function node_id -> raw grade (higher = more of that axis) ----
-    def _axis_fanin(self, nid):      # how widely shared (units). high => vocabulary => generator-ward
+    def _axis_fanin(self, nid):  # how widely shared (units). high => vocabulary => generator-ward
         return self.U[nid]
-    def _axis_shallow(self, nid):    # shallowness = N_depth - mindepth. shallow => atom => generator-ward
+
+    def _axis_shallow(
+        self, nid
+    ):  # shallowness = N_depth - mindepth. shallow => atom => generator-ward
         return max(1, 8 - min(8, self._mindepth[nid]))
-    def _axis_size(self, nid):       # subtree size (Wedge-quotient length). large => composite => idiom-ward
+
+    def _axis_size(
+        self, nid
+    ):  # subtree size (Wedge-quotient length). large => composite => idiom-ward
         return self._size[nid]
-    def _axis_surprisal(self, nid):  # cross-term: shared beyond what parts predict. high => idiom (cocycle)
+
+    def _axis_surprisal(
+        self, nid
+    ):  # cross-term: shared beyond what parts predict. high => idiom (cocycle)
         nn = self.C.I.nodes[nid]
         kids = list(nn.children)
         if not kids:
@@ -98,15 +111,19 @@ class GradingCircuit:
         # log2=0), not an independent draw. Counting it inflated the prediction's smallness ->
         # spurious surprise. Use distinct child ids = the free children. Read from the SPPF
         # (distinct-ids), not recomputed -- the diamond is already in the structure.
-        free_kids = list(dict.fromkeys(kids))      # distinct ids, order-preserving = independent draws
+        free_kids = list(dict.fromkeys(kids))  # distinct ids, order-preserving = independent draws
         log_pred = math.log2(self.N)
         for c in free_kids:
             uc = self.U.get(c) or len(self.C.node_units.get(c, {0}))
             log_pred += math.log2(max(uc, 1) / self.N)
         return max(0.0, math.log2(max(self.U[nid], 1)) - log_pred)
 
-    _AXES = {"fanin": "_axis_fanin", "shallow": "_axis_shallow",
-             "size": "_axis_size", "surprisal": "_axis_surprisal"}
+    _AXES = {
+        "fanin": "_axis_fanin",
+        "shallow": "_axis_shallow",
+        "size": "_axis_size",
+        "surprisal": "_axis_surprisal",
+    }
 
     def _discover_axes(self) -> list[str]:
         """An axis is LIVE iff its grade varies across the shared nodes (else it contributes
@@ -149,7 +166,9 @@ class GradingCircuit:
         if shared_kids:
             # explained-ness: 1/(1+surprisal) -- high when surprisal~0 (fully predicted = coboundary),
             # low when surprisal large (the composition is the idiom). Scaled by how composite it is.
-            explained = Fraction(1, 1).limit_denominator() / (1 + surp_q) if surp_q >= 0 else Fraction(1)
+            explained = (
+                Fraction(1, 1).limit_denominator() / (1 + surp_q) if surp_q >= 0 else Fraction(1)
+            )
             composite = Fraction(len(shared_kids), max(1, len(nn.children)))
             g[COBND] = parallel(g[COBND], explained * composite)
         if g[IDIOM] == 0 and g[COBND] == 0:
@@ -168,10 +187,15 @@ class GradingCircuit:
         # dominant terminal = largest share; confounded if the top two shares are close (split current)
         ordered = sorted(shares.items(), key=lambda kv: -kv[1])
         top, second = ordered[0], ordered[1]
-        confounded = (top[1] - second[1]) < Fraction(1, 5)   # within 0.2 share => genuinely multigraded
-        return {"shares": {t: float(shares[t]) for t in TERMINALS},
-                "class": top[0], "confounded": confounded,
-                "conductances": {t: float(g[t]) for t in TERMINALS}}
+        confounded = (top[1] - second[1]) < Fraction(
+            1, 5
+        )  # within 0.2 share => genuinely multigraded
+        return {
+            "shares": {t: float(shares[t]) for t in TERMINALS},
+            "class": top[0],
+            "confounded": confounded,
+            "conductances": {t: float(g[t]) for t in TERMINALS},
+        }
 
     def classify_all(self) -> dict:
         """Run the operating-point solve over every shared node. Return the metalanguage as the
@@ -181,13 +205,19 @@ class GradingCircuit:
         for nid in self.U:
             op = self.operating_point(nid)
             nn = self.C.I.nodes[nid]
-            rec = (nid, self.U[nid], self._size[nid],
-                   (nn.kind, nn.op, nn.lit), op["shares"], op["confounded"])
+            rec = (
+                nid,
+                self.U[nid],
+                self._size[nid],
+                (nn.kind, nn.op, nn.lit),
+                op["shares"],
+                op["confounded"],
+            )
             out[op["class"]].append(rec)
             if op["confounded"]:
                 out["confounded"].append(rec)
         for k in out:
-            out[k].sort(key=lambda r: -(r[1] * r[2]))   # by fan-in * size (impact)
+            out[k].sort(key=lambda r: -(r[1] * r[2]))  # by fan-in * size (impact)
         return out
 
 
@@ -236,17 +266,22 @@ class SPPFCircuit:
         only those that actually vary (topology_breakers: a constant grading is no grading).
         These are not invented axes; they are the DAG's own structural functionals."""
         cand = {
-            "in_degree":   lambda nid: self.I.fanin[nid],                          # parents (sharing)
-            "unit_spread": lambda nid: self.U[nid],                                # distinct units
-            "out_degree":  lambda nid: len(self.I.nodes[nid].children),            # arity
-            "reach":       lambda nid: len(self.C._support(nid)),                  # subtree size
-            "parent_units":lambda nid: len({u for p in self.parents.get(nid, [])   # contexts it feeds
-                                            for u in self.C.node_units.get(p, ())}),
+            "in_degree": lambda nid: self.I.fanin[nid],  # parents (sharing)
+            "unit_spread": lambda nid: self.U[nid],  # distinct units
+            "out_degree": lambda nid: len(self.I.nodes[nid].children),  # arity
+            "reach": lambda nid: len(self.C._support(nid)),  # subtree size
+            "parent_units": lambda nid: len(
+                {
+                    u
+                    for p in self.parents.get(nid, [])  # contexts it feeds
+                    for u in self.C.node_units.get(p, ())
+                }
+            ),
         }
         live = {}
         for name, fn in cand.items():
             vals = {fn(nid) for nid in self.U}
-            if len(vals) > 1:                       # varies => a live grading
+            if len(vals) > 1:  # varies => a live grading
                 live[name] = fn
         return live
 
@@ -254,10 +289,10 @@ class SPPFCircuit:
     def _node_conductances(self, nid, gradings) -> dict:
         """Read the node's edge distribution as currents toward the three classification terminals.
         Each is a RATIO of edge quantities already in the SPPF -- ℚ, exact, no re-derivation."""
-        fanin = self.I.fanin[nid]                              # in-edges (parents)
-        units = self.U[nid]                                    # distinct units
+        fanin = self.I.fanin[nid]  # in-edges (parents)
+        units = self.U[nid]  # distinct units
         kids = list(self.I.nodes[nid].children)
-        free_kids = list(dict.fromkeys(kids))                  # distinct children (diamonds once)
+        free_kids = list(dict.fromkeys(kids))  # distinct children (diamonds once)
         reach = len(self.C._support(nid))
         # GENERATOR current: leaks UP to many parents / many units, and is SMALL (atom-like).
         #   read as fan-in spread relative to its size: high fan-in + small reach = vocabulary.
@@ -267,7 +302,9 @@ class SPPFCircuit:
         #   read as the product-ish of children's unit-shares (the parts co-occurring).
         if free_kids:
             child_share = sum(self.U.get(c, len(self.C.node_units.get(c, {0}))) for c in free_kids)
-            g_cob = Fraction(child_share, max(1, self.N * len(free_kids))) * Fraction(len(free_kids), 1)
+            g_cob = Fraction(child_share, max(1, self.N * len(free_kids))) * Fraction(
+                len(free_kids), 1
+            )
         else:
             g_cob = Fraction(0)
         # IDIOM current: what's left -- the node recurs (units) MORE than down-flow explains and
@@ -279,7 +316,9 @@ class SPPFCircuit:
             pred *= Fraction(max(uc, 1), self.N)
         predicted_units = pred * self.N if free_kids else Fraction(units)
         g_idi = Fraction(units, 1) / predicted_units if predicted_units > 0 else Fraction(0)
-        g_idi = g_idi if free_kids and g_idi > 1 else Fraction(0)   # only when recurs MORE than predicted
+        g_idi = (
+            g_idi if free_kids and g_idi > 1 else Fraction(0)
+        )  # only when recurs MORE than predicted
         return {GEN: g_gen, IDIOM: g_idi, COBND: g_cob}
 
     def operating_point(self, nid, gradings) -> dict:
@@ -295,8 +334,12 @@ class SPPFCircuit:
             shares[t] = current_divider(g[t], [g[o] for o in TERMINALS if o != t])
         ordered = sorted(shares.items(), key=lambda kv: -kv[1])
         confounded = (ordered[0][1] - ordered[1][1]) < Fraction(1, 5)
-        return {"shares": {t: float(shares[t]) for t in TERMINALS}, "class": ordered[0][0],
-                "confounded": confounded, "g": {t: float(g[t]) for t in TERMINALS}}
+        return {
+            "shares": {t: float(shares[t]) for t in TERMINALS},
+            "class": ordered[0][0],
+            "confounded": confounded,
+            "g": {t: float(g[t]) for t in TERMINALS},
+        }
 
     def classify_all(self) -> dict:
         gradings = self.discover_gradings()
@@ -304,8 +347,14 @@ class SPPFCircuit:
         for nid in self.U:
             op = self.operating_point(nid, gradings)
             nn = self.I.nodes[nid]
-            rec = (nid, self.U[nid], len(self.C._support(nid)),
-                   (nn.kind, nn.op, nn.lit), op["shares"], op["confounded"])
+            rec = (
+                nid,
+                self.U[nid],
+                len(self.C._support(nid)),
+                (nn.kind, nn.op, nn.lit),
+                op["shares"],
+                op["confounded"],
+            )
             out[op["class"]].append(rec)
             if op["confounded"]:
                 out["confounded"].append(rec)
@@ -317,7 +366,8 @@ class SPPFCircuit:
 def main(argv=None):
     ap = argparse.ArgumentParser(
         description="Δ-Π-circuit: the metalanguage as the Kron-reduced operating point of the "
-                    "grading-conductance network (no argmin, no objective -- circuit semantics).")
+        "grading-conductance network (no argmin, no objective -- circuit semantics)."
+    )
     ap.add_argument("files", nargs="*", help="Python files or globs")
     ap.add_argument("--min-units", type=int, default=2, help="min units sharing a node (default 2)")
     ap.add_argument("--show", type=int, default=12, help="rows per class (default 12)")
@@ -338,11 +388,13 @@ def main(argv=None):
     print(f"  (these are the SPPF's structural functionals that VARY; the operating point is a")
     print(f"   derivation OF the SPPF -- conductances are its existing edges, read not recomputed)")
 
-    def hdr(h): return h[0] + (f"[{h[2]}]" if h[2] else "") + (f"({h[1]})" if h[1] else "")
+    def hdr(h):
+        return h[0] + (f"[{h[2]}]" if h[2] else "") + (f"({h[1]})" if h[1] else "")
+
     def show(label, key):
         rows = res[key]
         print(f"\n{label} ({len(rows)} nodes):")
-        for nid, u, sz, head, shares, conf in rows[:args.show]:
+        for nid, u, sz, head, shares, conf in rows[: args.show]:
             sh = " ".join(f"{t[:3]}={shares[t]:.2f}" for t in TERMINALS)
             c = "  <CONFOUNDED>" if conf else ""
             print(f"  {hdr(head):<26} units {u:>3} size {sz:>3} | {sh}{c}")
@@ -352,8 +404,10 @@ def main(argv=None):
     show("IDIOMS (settled -> idiom / cocycle)", IDIOM)
     show("DERIVABLE (settled -> coboundary)", COBND)
     show("CONFOUNDED (axes disagree -- genuinely multigraded cross-terms)", "confounded")
-    print(f"\nNo objective was minimized. Each node SETTLED where the grading conductances "
-          f"divided the current (KCL). The confounded set is the cross-term -- surfaced, not averaged.")
+    print(
+        f"\nNo objective was minimized. Each node SETTLED where the grading conductances "
+        f"divided the current (KCL). The confounded set is the cross-term -- surfaced, not averaged."
+    )
     return 0
 
 

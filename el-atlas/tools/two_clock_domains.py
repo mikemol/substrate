@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 two_clock_domains.py — the correction the power-arms experiment forced: `clock` is TWO clocks
 (candidate 2CK). The cost-cotype's prove-or-reveal property, exercised by a real falsification.

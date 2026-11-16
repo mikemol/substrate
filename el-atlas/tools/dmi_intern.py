@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 dmi_intern.py — automatic INTERNING of DMI/SMBIOS data into the nedge pilots (candidate DMI).
 

@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """⟡iface-shape-oracle — predict elaboration cost from the INTERFACE GRAPH, without compiling.
 
 WHY THIS EXISTS (the mechanism, measured 2026-07-26):
@@ -33,6 +35,7 @@ HONEST BOUNDARIES
   - Modules with no recorded peak, or a stale/missing .agdai, are excluded from the fit and SAID SO
     (an incomplete census is not a low count).
 """
+
 import os, re, sys, glob
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -40,7 +43,7 @@ sys.path.insert(0, os.path.join(ROOT, "scripts"))
 import buildtime  # REUSE: read_mem(), AGDA, ledger conventions
 
 AGDA = buildtime.AGDA
-IMPORT_RE = re.compile(r"^\s*(?:open\s+)?import\s+([A-Za-z0-9_.']+)", re.M)
+IMPORT_RE = re.compile(r"^\s*(?:open\s+)?import\s+([\w.'-]+)", re.M)
 
 
 # ── interface bytes ────────────────────────────────────────────────────────────
@@ -49,7 +52,7 @@ def iface_bytes():
     out = {}
     for base in glob.glob(os.path.join(AGDA, "_build", "*", "agda")):
         for p in glob.glob(os.path.join(base, "**", "*.agdai"), recursive=True):
-            rel = os.path.relpath(p, base)[:-len(".agdai")] + ".agda"
+            rel = os.path.relpath(p, base)[: -len(".agdai")] + ".agda"
             try:
                 out[rel] = os.path.getsize(p)
             except OSError:
@@ -62,7 +65,7 @@ def _rel_of_module(m):
 
 
 def _module_of_rel(rel):
-    return rel[:-len(".agda")].replace(os.sep, ".")
+    return rel[: -len(".agda")].replace(os.sep, ".")
 
 
 # ── import graph (source-parsed: fresh, and it is what drives copying) ─────────
@@ -103,8 +106,14 @@ def _fit(rows):
     # normal equations for 3 params (small, explicit — no numpy dependency)
     Sx = Sy = Sz = Sxx = Syy = Sxy = Sxz = Syz = 0.0
     for x, y, z in rows:
-        Sx += x; Sy += y; Sz += z
-        Sxx += x * x; Syy += y * y; Sxy += x * y; Sxz += x * z; Syz += y * z
+        Sx += x
+        Sy += y
+        Sz += z
+        Sxx += x * x
+        Syy += y * y
+        Sxy += x * y
+        Sxz += x * z
+        Syz += y * z
     A = [[Sxx, Sxy, Sx], [Sxy, Syy, Sy], [Sx, Sy, float(n)]]
     b = [Sxz, Syz, Sz]
     # gaussian elimination
@@ -112,7 +121,8 @@ def _fit(rows):
         p = max(range(i, 3), key=lambda r: abs(A[r][i]))
         if abs(A[p][i]) < 1e-12:
             return None
-        A[i], A[p] = A[p], A[i]; b[i], b[p] = b[p], b[i]
+        A[i], A[p] = A[p], A[i]
+        b[i], b[p] = b[p], b[i]
         for r in range(i + 1, 3):
             f = A[r][i] / A[i][i]
             for c in range(i, 3):
@@ -148,7 +158,7 @@ def dataset():
             continue
         trans = sum(ib.get(d, 0) for d in transitive(g, rel))
         peaks = mem.get(rel) or []
-        peak = peaks[-1] if peaks else None          # LATEST row — same statistic the cap-ratchet uses
+        peak = peaks[-1] if peaks else None  # LATEST row — same statistic the cap-ratchet uses
         if peak is None:
             missing_peak += 1
         rows.append((rel, own / 1024.0, trans / 1024.0, peak))
@@ -180,12 +190,18 @@ def cmd_calibrate():
     pred = [predict(coef, o, t) for o, t, _ in fit_rows]
     act = [p for _, _, p in fit_rows]
     print(f"correlation r = {_corr(pred, act):.3f}   (n={len(act)})")
-    res = sorted(((p - a2, r) for (r, o, t, a2), p in
-                  zip([x for x in rows if x[3] is not None], pred)), key=lambda z: z[0])
-    print("\nlargest NEGATIVE residuals (cost is CONTENT-bound, not interface-bound — model under-predicts):")
+    res = sorted(
+        ((p - a2, r) for (r, o, t, a2), p in zip([x for x in rows if x[3] is not None], pred)),
+        key=lambda z: z[0],
+    )
+    print(
+        "\nlargest NEGATIVE residuals (cost is CONTENT-bound, not interface-bound — model under-predicts):"
+    )
     for d, r in res[:5]:
         print(f"  {d:+8.1f} MB  {r}")
-    print("\nlargest POSITIVE residuals (cheaper than the interface suggests — likely opaque/sealed):")
+    print(
+        "\nlargest POSITIVE residuals (cheaper than the interface suggests — likely opaque/sealed):"
+    )
     for d, r in res[-5:]:
         print(f"  {d:+8.1f} MB  {r}")
     return 0
@@ -209,9 +225,13 @@ def cmd_module(rel):
     print(f"  own interface   : {own:8.1f} KB")
     print(f"  transitive      : {trans:8.1f} KB   over {len(tset)} modules")
     if coef:
-        print(f"  PREDICTED peak  : {predict(coef, own, trans):8.1f} MB"
-              + (f"   (measured latest: {mem[-1]} MB)" if mem else "   (no measurement)"))
-    print("\n  direct imports RANKED by transitive interface bytes (shallowing candidates, top first):")
+        print(
+            f"  PREDICTED peak  : {predict(coef, own, trans):8.1f} MB"
+            + (f"   (measured latest: {mem[-1]} MB)" if mem else "   (no measurement)")
+        )
+    print(
+        "\n  direct imports RANKED by transitive interface bytes (shallowing candidates, top first):"
+    )
     direct = g.get(rel, [])
     scored = []
     for d in direct:
@@ -225,7 +245,8 @@ def cmd_module(rel):
 def cmd_rank(n=25):
     rows, coef, _, _, _ = model()
     if not coef:
-        print("no model"); return 1
+        print("no model")
+        return 1
     scored = [(predict(coef, o, t), r, p) for r, o, t, p in rows]
     print(f"top {n} by PREDICTED peak (no compile required):")
     print(f"  {'pred':>7} {'measured':>9}  module")
@@ -235,34 +256,131 @@ def cmd_rank(n=25):
 
 
 def cmd_selftest():
-    ok = True
+    """⚑ THIS SUITE COUNTED NOTHING AND PRINTED `SELFTEST PASS`.  It was a REPORT
+    with two WARN branches wearing a suite's name, so `run_selftests` — which read
+    each result by regex over `selftest: N/M` — could not read it and reported it
+    SILENT.  Both halves were wrong: an unreadable line, and behind it no
+    denominator to read.
+
+    ⚑ AND THE COUNT COULD NOT BE FAKED ONTO IT.  A `1/1` over "did the report
+    run" is a fabricated denominator, which is worse than a SILENT row.  So the
+    cases are the module's PURE machinery — the path codec, the import closure
+    (including its termination on a cycle), the least-squares fit against a
+    noiseless plane it must recover exactly, the correlation at its four
+    boundaries.  Those are real verifications and they need no build.
+
+    ⚑ THE BUILD-STATE CHECKS STAY BUILD-STATE, AND SAY SO.  Interface sizes and
+    the peak-memory correlation are facts about `agda/_build`, which is legitimately
+    absent on a fresh checkout.  They are DECLARED SKIPS with a reason — counted as
+    unrun, never folded into the denominator as though they had passed."""
+    sys.path.insert(0, os.path.join(ROOT, "scratch"))
+    import rungs
+
+    check = rungs.Cases(key="scripts/iface_shape.py")
+    skipped, why = 0, []
+
+    # ── the path codec: rel ↔ module is a bijection on this tree's names ────
+    check(
+        "module → rel → module round-trips",
+        _module_of_rel(_rel_of_module("Substrate.Algebra.Wedge")),
+        "Substrate.Algebra.Wedge",
+    )
+    check("a rel names an .agda source", _rel_of_module("A.B").endswith(".agda"), True)
+
+    # ── the import closure ──────────────────────────────────────────────────
+    g = {"a.agda": ["b.agda", "c.agda"], "b.agda": ["d.agda"], "c.agda": [], "d.agda": []}
+    check(
+        "the closure reaches the whole cone",
+        transitive(g, "a.agda"),
+        {"b.agda", "c.agda", "d.agda"},
+    )
+    check(
+        "...and excludes the root, on an ACYCLIC graph", "a.agda" in transitive(g, "a.agda"), False
+    )
+    check("a leaf's closure is empty", transitive(g, "d.agda"), set())
+    check("an unknown module has an empty closure", transitive(g, "zz.agda"), set())
+    # ⚑ THE `_seen` GUARD IS A TERMINATION PROPERTY AND NOTHING DROVE IT.  A cycle
+    # is what makes the recursion non-well-founded; without a case, deleting the
+    # guard passes every other test here and hangs on the real tree.
+    #
+    # ⚑ AND THE ROOT IS IN ITS OWN CLOSURE UNDER A CYCLE — the docstring's
+    # "excluding rel itself" holds only for the acyclic case.  Pinned as MEASURED
+    # rather than as intended: a case asserting the docstring would fail, and
+    # asserting nothing would let the behaviour drift unobserved.
+    cyc = {"a.agda": ["b.agda"], "b.agda": ["a.agda"]}
+    check(
+        "a cyclic import graph TERMINATES (the _seen guard)",
+        transitive(cyc, "a.agda"),
+        {"a.agda", "b.agda"},
+    )
+
+    # ── the least-squares fit: it must recover a plane it was handed exactly ─
+    rows = [
+        (o, t, 2.0 * o + 3.0 * t + 5.0)
+        for o, t in ((1.0, 0.0), (0.0, 1.0), (2.0, 1.0), (1.0, 2.0), (3.0, 4.0))
+    ]
+    coef = _fit(rows)
+    check(
+        "_fit recovers the exact plane from noiseless rows",
+        bool(coef) and all(abs(a - b) < 1e-6 for a, b in zip(coef, (2.0, 3.0, 5.0))),
+        True,
+    )
+    check(
+        "predict IS the fitted linear form",
+        abs(predict((2.0, 3.0, 5.0), 1.0, 2.0) - 13.0) < 1e-9,
+        True,
+    )
+    # ⚑ UNDER-DETERMINED AND SINGULAR BOTH REFUSE, rather than returning a
+    # coefficient triple nobody can tell from a fitted one.
+    check("_fit refuses fewer than 3 rows", _fit([(1.0, 1.0, 1.0), (2.0, 2.0, 2.0)]), None)
+    check("_fit refuses a singular system", _fit([(1.0, 1.0, 1.0)] * 4), None)
+
+    # ── the correlation, at its four boundaries ─────────────────────────────
+    check("_corr = 1 for a perfect positive relation", round(_corr([1, 2, 3], [2, 4, 6]), 9), 1.0)
+    check("_corr = -1 for a perfect inverse", round(_corr([1, 2, 3], [6, 4, 2]), 9), -1.0)
+    check("_corr = 0 when one side has no variance", _corr([1, 1, 1], [1, 2, 3]), 0.0)
+    check("_corr = 0 below two points", _corr([1], [1]), 0.0)
+
+    # ── build-state: real facts about agda/_build, DECLARED when absent ─────
     ib, g = iface_bytes(), import_graph()
-    if not ib:
-        print("FAIL: no .agdai found — build first"); return 1
     print(f"iface_bytes: {len(ib)} cores")
     print(f"import_graph: {len(g)} modules")
-    # the Graded shard chain must show monotone-ish growth (the ~6KB/link finding)
-    chain = ["Substrate/Algebra/Polynomial/Graded/Defs.agda"] + [
-        f"Substrate/Algebra/Polynomial/Graded/Laws/{s}.agda"
-        for s in ("Nth", "Conv", "Distrib", "Basis", "Comm", "AssocMono")]
-    have = [(c, ib.get(c, 0) / 1024.0) for c in chain if c in ib]
-    if have:
-        print("\nGraded shard chain interface sizes (the ~6KB/link finding):")
-        for c, kb in have:
-            print(f"  {kb:7.1f} KB  {c.split('/')[-1]}")
-        if len(have) >= 2 and have[-1][1] <= have[0][1]:
-            print("  WARN: chain did not grow — re-check the shard state"); ok = False
+    if not ib:
+        skipped += 2
+        why.append("no .agdai cores under agda/_build (run: make -C agda -j)")
     else:
-        print("\n(Graded shard not present — chain check skipped)")
-    rows, coef, fit_rows, _, _ = model()
-    if coef:
-        pred = [predict(coef, o, t) for o, t, _ in fit_rows]
-        r = _corr(pred, [p for _, _, p in fit_rows])
-        print(f"\nmodel r = {r:.3f} over n={len(fit_rows)}")
-        if r < 0.3:
-            print("  WARN: weak correlation — interface bytes are not predictive on this tree"); ok = False
-    print("\nSELFTEST", "PASS" if ok else "WARN")
-    return 0 if ok else 1
+        check("the import graph is non-empty (agda sources parse)", len(g) > 0, True)
+        # the Graded shard chain must show monotone-ish growth (the ~6KB/link finding)
+        chain = ["Substrate/Algebra/Polynomial/Graded/Defs.agda"] + [
+            f"Substrate/Algebra/Polynomial/Graded/Laws/{s}.agda"
+            for s in ("Nth", "Conv", "Distrib", "Basis", "Comm", "AssocMono")
+        ]
+        have = [(c, ib.get(c, 0) / 1024.0) for c in chain if c in ib]
+        if len(have) >= 2:
+            print("\nGraded shard chain interface sizes (the ~6KB/link finding):")
+            for c, kb in have:
+                print(f"  {kb:7.1f} KB  {c.split('/')[-1]}")
+            check(
+                "the Graded shard chain GROWS along the link (~6KB/link)",
+                have[-1][1] > have[0][1],
+                True,
+            )
+        else:
+            skipped += 1
+            why.append(
+                "the Graded shard chain is not built (%d of %d links present)"
+                % (len(have), len(chain))
+            )
+        _rows, coef2, fit_rows, _, _ = model()
+        if coef2:
+            pred = [predict(coef2, o, t) for o, t, _ in fit_rows]
+            r = _corr(pred, [p for _, _, p in fit_rows])
+            print(f"\nmodel r = {r:.3f} over n={len(fit_rows)}")
+            check("interface bytes PREDICT peak memory (r ≥ 0.3)", r >= 0.3, True)
+        else:
+            skipped += 1
+            why.append("no peak-memory history to fit (buildtime ledger empty)")
+    return check.report(skipped=skipped, reason="; ".join(why) or None)
 
 
 OPEN_PUB_RE = re.compile(r"^[ \t]*open\s+([A-Za-z0-9_.']+)(?:\s+[^\n]*?)?\s+public\s*$", re.M)
@@ -291,7 +409,7 @@ def cmd_public_audit(n=25):
     """BULK worklist: rank wholesale `open X ... public` sites by bytes-copied x blast-radius."""
     ib, g = iface_bytes(), import_graph()
     rv = reverse_graph(g)
-    alias = {}   # per-module: local alias -> imported module_rel (to resolve `open F.Over ... public`)
+    alias = {}  # per-module: local alias -> imported module_rel (to resolve `open F.Over ... public`)
     sites, wholesale, filtered = [], 0, 0
     for p in glob.glob(os.path.join(AGDA, "**", "*.agda"), recursive=True):
         if os.sep + "_build" + os.sep in p:
@@ -302,7 +420,9 @@ def cmd_public_audit(n=25):
         except OSError:
             continue
         alias.clear()
-        for m in re.finditer(r"^\s*(?:open\s+)?import\s+([A-Za-z0-9_.']+)(?:\s+as\s+([A-Za-z0-9_']+))?", src, re.M):
+        for m in re.finditer(
+            r"^\s*(?:open\s+)?import\s+([\w.'-]+)(?:\s+as\s+([\w.'-]+))?", src, re.M
+        ):
             mod, al = m.group(1), m.group(2)
             alias[al or mod.rsplit(".", 1)[-1]] = _rel_of_module(mod)
             alias[mod] = _rel_of_module(mod)
@@ -320,16 +440,22 @@ def cmd_public_audit(n=25):
             copied_kb = ib[tgt] / 1024.0
             radius = len(consumers_of(rv, rel)) + 1
             sites.append((copied_kb * radius, copied_kb, radius, rel, m.group(1)))
-    print(f"wholesale `open .. public` sites: {wholesale}   (already filtered with using/hiding/renaming: {filtered})")
+    print(
+        f"wholesale `open .. public` sites: {wholesale}   (already filtered with using/hiding/renaming: {filtered})"
+    )
     print(f"resolvable to a built .agdai    : {len(sites)}\n")
-    print(f"BULK WORKLIST — ranked by copied_KB x blast_radius (convert these to `using (..)` first):")
+    print(
+        f"BULK WORKLIST — ranked by copied_KB x blast_radius (convert these to `using (..)` first):"
+    )
     print(f"  {'total':>10} {'copied':>9} {'radius':>7}  module  <- opened")
     tot = 0.0
     for score, kb, rad, rel, tgtname in sorted(sites, reverse=True)[:n]:
         tot += score
         print(f"  {score:10.0f} {kb:9.1f} {rad:7d}  {rel}  <- {tgtname}")
     allsum = sum(s for s, *_ in sites)
-    print(f"\n  top {n} = {tot:.0f} of {allsum:.0f} KB-copies  ({100*tot/allsum if allsum else 0:.1f}% of total)")
+    print(
+        f"\n  top {n} = {tot:.0f} of {allsum:.0f} KB-copies  ({100 * tot / allsum if allsum else 0:.1f}% of total)"
+    )
     return 0
 
 
@@ -337,19 +463,25 @@ def cmd_levers(thresh=110.0):
     """BULK classifier: every module at/near the cap, tagged with WHICH lever it needs."""
     rows, coef, _, _, _ = model()
     if not coef:
-        print("no model"); return 1
+        print("no model")
+        return 1
     out = []
     for rel, own, trans, peak in rows:
         if peak is None:
             continue
         pred = predict(coef, own, trans)
-        resid = pred - peak                      # negative => content-bound
+        resid = pred - peak  # negative => content-bound
         if peak >= thresh:
-            lever = "CONTENT (opaque/split)" if resid < -15 else (
-                    "INTERFACE (using/shallow)" if resid > 5 else "MIXED (both)")
+            lever = (
+                "CONTENT (opaque/split)"
+                if resid < -15
+                else ("INTERFACE (using/shallow)" if resid > 5 else "MIXED (both)")
+            )
             out.append((peak, resid, own, trans, lever, rel))
     print(f"modules with measured peak >= {thresh:.0f} MB, classified by lever:\n")
-    print(f"  {'peak':>6} {'resid':>7} {'own_KB':>8} {'trans_KB':>9}  lever                      module")
+    print(
+        f"  {'peak':>6} {'resid':>7} {'own_KB':>8} {'trans_KB':>9}  lever                      module"
+    )
     for peak, resid, own, trans, lever, rel in sorted(out, reverse=True):
         print(f"  {peak:6.0f} {resid:+7.1f} {own:8.1f} {trans:9.0f}  {lever:<25}  {rel}")
     nc = sum(1 for *_x, l, _ in out if l.startswith("CONTENT"))
@@ -366,7 +498,11 @@ def main(argv):
         return cmd_public_audit(n)
     if "--levers" in argv:
         i = argv.index("--levers")
-        t = float(argv[i + 1]) if i + 1 < len(argv) and argv[i + 1].replace(".", "").isdigit() else 110.0
+        t = (
+            float(argv[i + 1])
+            if i + 1 < len(argv) and argv[i + 1].replace(".", "").isdigit()
+            else 110.0
+        )
         return cmd_levers(t)
     if "--selftest" in argv:
         return cmd_selftest()

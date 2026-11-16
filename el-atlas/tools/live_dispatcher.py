@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 AI-11: the LIVE dispatcher -- the static conductance model made into a continual control loop.
 

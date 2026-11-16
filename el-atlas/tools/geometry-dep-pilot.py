@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 geometry-dep-pilot.py — S24: speculative Cartesian joining proximate to
 breakers; geometry dependencies beyond the declarations.

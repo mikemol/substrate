@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 het_validate.py — AI-2: validate the het-dispatch PREDICTION against a REAL measured workload.
 

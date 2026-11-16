@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """jea_engine_tiers.py — C3 (on the pool engine): the carrier ladder as ESCALATION-AS-SPAWN.
 
 The common-structure turn established: escalation IS a spawn. C3 folds the carrier tiers (u64 -> u128 ->
@@ -24,23 +26,33 @@ Witnesses (each [W]):
 4. ONE MECHANISM: escalation-spawn is the SAME `reduce -> emit|spawn` as the structural spawn (E(n));
    carrier escalation is just the spawn-a-wider-carrier case.
 """
+
 # --- jea-evolution rung bootstrap: jea/ foundation + sibling rungs on the path (see 00_SYLLABUS.md) ---
 import os as _os, sys as _sys, glob as _glob
-_EVO = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))   # .../jea/evolution
+
+_EVO = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))  # .../jea/evolution
 _sys.path[:0] = [_os.path.dirname(_EVO), *sorted(_glob.glob(_os.path.join(_EVO, "*", "")))]
 # --- end bootstrap ---
 import os
+
 os.environ.setdefault("CUDA_PATH", "/usr")
 from math import gcd
 from jea_engine import build_mul_tree
 from jea_limb_gpu import gpu_mul, to_limbs, from_limbs
 import cupy as cp
 
-def tier_of(v):                       # the tier a value actually needs
-    b = int(v).bit_length(); return 0 if b <= 64 else (1 if b <= 128 else 2)
-def tier_of_w(w):                     # the tier a width needs
+
+def tier_of(v):  # the tier a value actually needs
+    b = int(v).bit_length()
+    return 0 if b <= 64 else (1 if b <= 128 else 2)
+
+
+def tier_of_w(w):  # the tier a width needs
     return 0 if w <= 64 else (1 if w <= 128 else 2)
-def bw(v): return int(v).bit_length()
+
+
+def bw(v):
+    return int(v).bit_length()
 
 
 def evaluate(g):
@@ -50,46 +62,91 @@ def evaluate(g):
     are computed on the GPU via jea_limb (the unbounded tier delivers). The prediction is a sound upper
     bound (predicted >= actual), so the placed carrier never overflows."""
     N, L = g["N"], g["L"]
-    val = [None] * N; tier = [0] * N; ptier = [0] * N; spawns = 0; bytelimb_ok = True; sound = True
+    val = [None] * N
+    tier = [0] * N
+    ptier = [0] * N
+    spawns = 0
+    bytelimb_ok = True
+    sound = True
     for i in range(N):
-        if g["op"][i] == -1:                                  # leaf
-            val[i] = g["vN"][i]; ptier[i] = tier[i] = tier_of(val[i])
+        if g["op"][i] == -1:  # leaf
+            val[i] = g["vN"][i]
+            ptier[i] = tier[i] = tier_of(val[i])
         else:
             a, b = g["lch"][i], g["rch"][i]
-            pt = tier_of_w(bw(val[a]) + bw(val[b]))           # PREDICT the tier from operand widths (before computing)
+            pt = tier_of_w(
+                bw(val[a]) + bw(val[b])
+            )  # PREDICT the tier from operand widths (before computing)
             ptier[i] = pt
-            spawns += pt - max(ptier[a], ptier[b]) if pt > max(ptier[a], ptier[b]) else 0   # predicted tier climbs = spawns
-            if pt == 2:                                       # placed at byte-limb -> compute there (the unbounded tier delivers)
-                v = from_limbs(gpu_mul(cp.asarray(to_limbs(int(val[a]))), cp.asarray(to_limbs(int(val[b]))))[0])
-                if v != val[a] * val[b]: bytelimb_ok = False
+            spawns += (
+                pt - max(ptier[a], ptier[b]) if pt > max(ptier[a], ptier[b]) else 0
+            )  # predicted tier climbs = spawns
+            if pt == 2:  # placed at byte-limb -> compute there (the unbounded tier delivers)
+                v = from_limbs(
+                    gpu_mul(cp.asarray(to_limbs(int(val[a]))), cp.asarray(to_limbs(int(val[b]))))[0]
+                )
+                if v != val[a] * val[b]:
+                    bytelimb_ok = False
             else:
                 v = val[a] * val[b]
-            val[i] = v; tier[i] = tier_of(v)
-            if tier[i] > pt: sound = False                    # prediction must be an upper bound (never under-tier -> never overflow)
+            val[i] = v
+            tier[i] = tier_of(v)
+            if tier[i] > pt:
+                sound = (
+                    False  # prediction must be an upper bound (never under-tier -> never overflow)
+                )
     return val, tier, ptier, spawns, bytelimb_ok, sound
 
 
 if __name__ == "__main__":
-    primes = [1000000007,1000000009,1000000021,1000000033,1000000087,1000000093,1000000097,1000000103]
-    g = build_mul_tree(primes); truth = g["truth"].numerator    # all-mul of 8 ~10^9 primes -> ~240-bit root
+    primes = [
+        1000000007,
+        1000000009,
+        1000000021,
+        1000000033,
+        1000000087,
+        1000000093,
+        1000000097,
+        1000000103,
+    ]
+    g = build_mul_tree(primes)
+    truth = g["truth"].numerator  # all-mul of 8 ~10^9 primes -> ~240-bit root
     val, tier, ptier, spawns, bytelimb_ok, sound = evaluate(g)
-    root_exact = (val[g["root"]] == truth)
-    hist = {t: ptier.count(t) for t in (0, 1, 2)}               # PREDICTED tier placement
-    w1 = root_exact and ptier[g["root"]] == 2                   # root placed at byte-limb tier, exact
-    w2 = hist[2] > 0 and spawns > 0 and sound                   # tiers reached by PREDICTED spawns; prediction sound
-    w3 = bytelimb_ok                                            # every byte-limb-placed combine delivered exact
-    w4 = True                                                   # same reduce-step as structural spawn (framing)
-    print("C3 -- carrier ladder as escalation-as-spawn, PREDICTED not detected (I2), on the reduce-step\n")
+    root_exact = val[g["root"]] == truth
+    hist = {t: ptier.count(t) for t in (0, 1, 2)}  # PREDICTED tier placement
+    w1 = root_exact and ptier[g["root"]] == 2  # root placed at byte-limb tier, exact
+    w2 = hist[2] > 0 and spawns > 0 and sound  # tiers reached by PREDICTED spawns; prediction sound
+    w3 = bytelimb_ok  # every byte-limb-placed combine delivered exact
+    w4 = True  # same reduce-step as structural spawn (framing)
+    print(
+        "C3 -- carrier ladder as escalation-as-spawn, PREDICTED not detected (I2), on the reduce-step\n"
+    )
     print(f"  all-mul of 8 ~10^9 primes; root = {g['truth'].numerator.bit_length()} bits")
-    print(f"  PREDICTED tier placement (0=u64,1=u128,2=byte-limb): {hist}; predicted escalation-spawns: {spawns}")
-    print(f"  prediction sound (predicted tier >= actual, no overflow): {sound};  root exact: {root_exact}")
+    print(
+        f"  PREDICTED tier placement (0=u64,1=u128,2=byte-limb): {hist}; predicted escalation-spawns: {spawns}"
+    )
+    print(
+        f"  prediction sound (predicted tier >= actual, no overflow): {sound};  root exact: {root_exact}"
+    )
     print(f"\n1. ROOT EXACT (placed at byte-limb tier, >2^128): {w1}")
-    print(f"2. PREDICT NOT DETECT (tier predicted from operand widths before combine; SOUND upper bound): {w2}")
-    print(f"3. BYTE-LIMB DELIVERS (every byte-limb-placed combine == Python via jea_limb GPU): {w3}")
+    print(
+        f"2. PREDICT NOT DETECT (tier predicted from operand widths before combine; SOUND upper bound): {w2}"
+    )
+    print(
+        f"3. BYTE-LIMB DELIVERS (every byte-limb-placed combine == Python via jea_limb GPU): {w3}"
+    )
     print(f"4. ONE MECHANISM (escalation-spawn == structural spawn's reduce -> emit|spawn): {w4}")
     ok = w1 and w2 and w3 and w4
-    print(f"\n  {'PASS' if ok else 'FAIL'} — C3: the carrier ladder is escalation-AS-SPAWN, PREDICTED from operand")
-    print(f"  bit-widths (the migration law) -- the combine is PLACED at the right tier (u64->u128->byte-limb)")
-    print(f"  before computing, never compute-narrow-overflow-retry (I2: predict, don't detect). The top tier")
-    print(f"  (byte-limb, jea_limb) is unbounded so it DELIVERS exact. Same reduce -> emit|spawn as the E(n)")
+    print(
+        f"\n  {'PASS' if ok else 'FAIL'} — C3: the carrier ladder is escalation-AS-SPAWN, PREDICTED from operand"
+    )
+    print(
+        f"  bit-widths (the migration law) -- the combine is PLACED at the right tier (u64->u128->byte-limb)"
+    )
+    print(
+        f"  before computing, never compute-narrow-overflow-retry (I2: predict, don't detect). The top tier"
+    )
+    print(
+        f"  (byte-limb, jea_limb) is unbounded so it DELIVERS exact. Same reduce -> emit|spawn as the E(n)"
+    )
     print(f"  rewrite. Folds U3+I2 into the engine. NEXT: C4 (oracle/intern stages), C5 (runner).")

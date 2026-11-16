@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 kernel_cost_model.py — dissolve the kernel-rate OPACITY: predict a kernel's throughput from its
 STRUCTURE, not by running it (candidate claim KCM).

@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """jea_actuator.py — Δ-J1 / AI-11b: the on-device ACTUATOR that consumes the resident telemetry package live.
 
 The device half of the controller/actuator split (jea_telemetry is the host half). The frozen JUDGEMENT this
@@ -27,14 +29,17 @@ Witnesses (each [W]):
 3. ATOMIC SWAP (no torn read): host writes the inactive slot then flips active; the actuator only ever reads a
    whole slot -- the recorded operating points are exactly the published ones (never a mixed/half slot).
 """
+
 import os, sys, time
+
 os.environ.setdefault("CUDA_PATH", "/usr")
 import numpy as np, cupy as cp
 
-FIELDS = 4        # [op, fstar%, bneck, epoch]
+FIELDS = 4  # [op, fstar%, bneck, epoch]
 LOGCAP = 256
 
-_actuator = cp.RawKernel(r'''
+_actuator = cp.RawKernel(
+    r"""
 extern "C" __global__ void actuator(volatile int* pkg, volatile int* active, volatile int* stop,
                                     int* log, int* logn, int fields, long maxiter, int spin) {
     if (blockIdx.x != 0 || threadIdx.x != 0) return;     // a single persistent lead thread (coop-style)
@@ -51,12 +56,15 @@ extern "C" __global__ void actuator(volatile int* pkg, volatile int* active, vol
     }
     *logn = n;
 }
-''', "actuator")
+""",
+    "actuator",
+)
 
 
 class DeviceBuffer:
     """The device-resident telemetry buffer the host publishes into. Mirrors jea_telemetry.DoubleBuffer, but the
     slots live in GPU memory and the consumer is the persistent kernel."""
+
     def __init__(self):
         self.pkg = cp.zeros(2 * FIELDS, cp.int32)
         self.active = cp.zeros(1, cp.int32)
@@ -66,15 +74,20 @@ class DeviceBuffer:
     def publish(self, op, fstar_pct, bneck, epoch):
         inactive = 1 - self._cur
         # write the INACTIVE slot fully (kernel still reads the active one), THEN flip active = atomic swap
-        self.pkg[inactive * FIELDS:inactive * FIELDS + FIELDS] = cp.asarray([op, fstar_pct, bneck, epoch], cp.int32)
+        self.pkg[inactive * FIELDS : inactive * FIELDS + FIELDS] = cp.asarray(
+            [op, fstar_pct, bneck, epoch], cp.int32
+        )
         self.active[:] = inactive
         self._cur = inactive
 
 
 if __name__ == "__main__":
-    print("Δ-J1 / AI-11b: persistent on-device actuator consuming the host-published RESIDENT telemetry package\n")
+    print(
+        "Δ-J1 / AI-11b: persistent on-device actuator consuming the host-published RESIDENT telemetry package\n"
+    )
     buf = DeviceBuffer()
-    log = cp.zeros(LOGCAP, cp.int32); logn = cp.zeros(1, cp.int32)
+    log = cp.zeros(LOGCAP, cp.int32)
+    logn = cp.zeros(1, cp.int32)
 
     # initial resident package (epoch 0) before the actuator starts
     buf.publish(op=10, fstar_pct=0, bneck=0, epoch=0)
@@ -82,33 +95,60 @@ if __name__ == "__main__":
     # launch the persistent actuator ASYNC on its own stream so host publishes run concurrently
     strm = cp.cuda.Stream(non_blocking=True)
     with strm:
-        _actuator((1,), (1,), (buf.pkg, buf.active, buf.stop, log, logn,
-                               np.int32(FIELDS), np.int64(50_000_000), np.int32(20_000)))
-    time.sleep(0.05)   # let it start polling
+        _actuator(
+            (1,),
+            (1,),
+            (
+                buf.pkg,
+                buf.active,
+                buf.stop,
+                log,
+                logn,
+                np.int32(FIELDS),
+                np.int64(50_000_000),
+                np.int32(20_000),
+            ),
+        )
+    time.sleep(0.05)  # let it start polling
 
     # the host control loop: publish a SEQUENCE of operating points (the navigator's output over time)
-    published = [11, 22, 33, 11, 44]   # operating points (e.g. g/dispatch codes) at epochs 1..5
+    published = [11, 22, 33, 11, 44]  # operating points (e.g. g/dispatch codes) at epochs 1..5
     for i, op in enumerate(published, start=1):
         buf.publish(op=op, fstar_pct=i * 10, bneck=i % 3, epoch=i)
         time.sleep(0.05)
 
-    buf.stop[:] = 1                    # retire the persistent kernel
+    buf.stop[:] = 1  # retire the persistent kernel
     strm.synchronize()
-    n = int(logn.get()[0]); seen = [int(x) for x in log.get()[:n]]
+    n = int(logn.get()[0])
+    seen = [int(x) for x in log.get()[:n]]
     print(f"  host published operating points (epochs 0..5): {[10] + published}")
     print(f"  device actuator recorded (what it acted on live): {seen}")
 
     expected = [10] + published
-    w1 = True                                                # the kernel read device-resident pkg each iter (by construction)
-    w2 = len(seen) >= 2 and seen[0] == 10                    # it tracked multiple live publishes during ONE run
-    w3 = seen == expected                                    # exact sequence, in order -> no torn read, no missed swap
-    print(f"\nW1 RESIDENT CONSUMPTION (persistent kernel reads device-resident package; host writes, device reads): {w1}")
-    print(f"W2 LIVE RECONFIG, NO RELAUNCH (one kernel instance tracked {len(seen)} published operating points): {w2}")
+    w1 = True  # the kernel read device-resident pkg each iter (by construction)
+    w2 = len(seen) >= 2 and seen[0] == 10  # it tracked multiple live publishes during ONE run
+    w3 = seen == expected  # exact sequence, in order -> no torn read, no missed swap
+    print(
+        f"\nW1 RESIDENT CONSUMPTION (persistent kernel reads device-resident package; host writes, device reads): {w1}"
+    )
+    print(
+        f"W2 LIVE RECONFIG, NO RELAUNCH (one kernel instance tracked {len(seen)} published operating points): {w2}"
+    )
     print(f"W3 ATOMIC SWAP, NO TORN READ (recorded sequence == published sequence exactly): {w3}")
     ok = w1 and w2 and w3
-    print(f"\n  {'PASS' if ok else 'FAIL (timing-sensitive: the actuator may have polled faster/slower than the host published)'} "
-          f"— the device CONSUMES the resident telemetry package and reconfigures LIVE, no relaunch. The host")
-    print(f"  publishes (double-buffer swap); the persistent megakernel reads the active slot and actuates on the")
-    print(f"  operating point. The static-schedule JUDGEMENT is deleted -- device behavior is now a function of the")
-    print(f"  live evidence. REMAINING (the full megakernel): branch real eval-work on the operating point (same")
-    print(f"  read + a switch); wire the host side to jea_telemetry.collect_package + jea_navigator.navigate.")
+    print(
+        f"\n  {'PASS' if ok else 'FAIL (timing-sensitive: the actuator may have polled faster/slower than the host published)'} "
+        f"— the device CONSUMES the resident telemetry package and reconfigures LIVE, no relaunch. The host"
+    )
+    print(
+        f"  publishes (double-buffer swap); the persistent megakernel reads the active slot and actuates on the"
+    )
+    print(
+        f"  operating point. The static-schedule JUDGEMENT is deleted -- device behavior is now a function of the"
+    )
+    print(
+        f"  live evidence. REMAINING (the full megakernel): branch real eval-work on the operating point (same"
+    )
+    print(
+        f"  read + a switch); wire the host side to jea_telemetry.collect_package + jea_navigator.navigate."
+    )

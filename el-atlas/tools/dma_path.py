@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 dma_path.py — AI-7a: the DMA sub-network as a conductance graph, sharing the iMC with compute.
 

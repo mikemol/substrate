@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """jea_oneforest.py — Σ-FOREST (Δ-Π-oneforest): the verification gate as a CrossMix readout.
 
 Intern source + core + kernel into ONE forest, then the project's REASON falls out as a readout, not
@@ -33,8 +35,10 @@ WHY no faked Agda arm: inventing shim output would be the invent-attributions er
 ATTACHED by interface (add_arm consumes the documented {units:[(qname,root)]} shape that
 core_intern_agdai returns) and EXERCISED by whoever has the toolchain. Here we prove the gate on the
 two arms we can run, and the third composes by construction (same Intern, same unit shape)."""
+
 from __future__ import annotations
 import sys, os
+
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "metalanguage"))
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from jea_pyalg import Intern, CrossMix, lower_source, IR
@@ -42,9 +46,10 @@ from jea_pyalg import Intern, CrossMix, lower_source, IR
 
 class OneForest:
     """One Intern, units from multiple arms, the cross-term readout over them."""
+
     def __init__(self):
         self.I = Intern()
-        self.arms: dict[str, list[tuple[str, int]]] = {}    # arm -> [(qname, interned_root), ...]
+        self.arms: dict[str, list[tuple[str, int]]] = {}  # arm -> [(qname, interned_root), ...]
         self.cross = CrossMix(self.I)
         self._shape_memo: dict[int, tuple] = {}
 
@@ -56,6 +61,7 @@ class OneForest:
 
     def add_cuda(self, arm: str, src: str, qname: str):
         import jea_cuda
+
         # jea_cuda.lower_cuda interns into ITS own call; rebind it to ours by passing our Intern
         root = jea_cuda.lower_cuda(src, self.I)[0]
         self.arms.setdefault(arm, []).append((qname, root))
@@ -66,6 +72,7 @@ class OneForest:
         agdai_shim (ghc -package Agda) -- present in the integrating session's env, not necessarily here.
         Consumes the documented {units:[(qname,root)]} shape; drops in unchanged."""
         import jea_agdai
+
         res = jea_agdai.core_intern_agdai(agdai_path, self.I, shim_bin=shim_bin)
         self.arms.setdefault(arm, []).extend(res["units"])
         return res["units"]
@@ -85,7 +92,10 @@ class OneForest:
                 j = stack.pop()
                 if j in seen:
                     continue
-                seen.add(j); n = self.I.nodes[j]; ks.add(n.kind); stack.extend(n.children)
+                seen.add(j)
+                n = self.I.nodes[j]
+                ks.add(n.kind)
+                stack.extend(n.children)
         return ks
 
     # ── the readout: the cross-arm verification gate ─────────────────────────
@@ -105,18 +115,26 @@ class OneForest:
                 cand = [(self.cross.shared_fraction(ra, r), r) for r in ub.values()]
                 if not cand:
                     continue
-                frac, rb = max(cand); how = "by-support"
+                frac, rb = max(cand)
+                how = "by-support"
             ct = self.cross.cross_term(ra, rb)
-            out.append({"unit": q, "match": how,
-                        "realizes": ct.degree == 0,
-                        "degree": ct.degree,
-                        "shared_fraction": round(self.cross.shared_fraction(ra, rb), 3),
-                        "a_residue": ct.a_residue, "b_residue": ct.b_residue})
+            out.append(
+                {
+                    "unit": q,
+                    "match": how,
+                    "realizes": ct.degree == 0,
+                    "degree": ct.degree,
+                    "shared_fraction": round(self.cross.shared_fraction(ra, rb), 3),
+                    "a_residue": ct.a_residue,
+                    "b_residue": ct.b_residue,
+                }
+            )
         return out
 
     # ── the COMPLETENESS readout: does every unit have a mirror at all? ───────
-    def coverage(self, arm_a: str, arm_b: str, floor: float = 0.5,
-                 manifest: dict[str, str] | None = None) -> dict:
+    def coverage(
+        self, arm_a: str, arm_b: str, floor: float = 0.5, manifest: dict[str, str] | None = None
+    ) -> dict:
         """The completeness/recall companion to `gate`. `gate` answers PRECISION ("is each *matched*
         pair faithful?"); `coverage` answers RECALL ("does every unit have a mirror at all?"). The bare
         gate cannot see recall — it iterates arm_a only and, for an arm_a unit with no real partner,
@@ -157,12 +175,17 @@ class OneForest:
 
         shared_vocab = sorted(self._vocab(arm_a) & self._vocab(arm_b))
         result = {
-            "arm_a": arm_a, "arm_b": arm_b, "floor": floor,
-            "n_a": len(au), "n_b": len(bu),
+            "arm_a": arm_a,
+            "arm_b": arm_b,
+            "floor": floor,
+            "n_a": len(au),
+            "n_b": len(bu),
             "coverage_a": round(a_ok / len(au), 3) if au else 1.0,
             "coverage_b": round(b_ok / len(bu), 3) if bu else 1.0,
-            "a_orphans": a_orphans, "b_orphans": b_orphans,
-            "shared_vocab": shared_vocab, "comparable": bool(shared_vocab),
+            "a_orphans": a_orphans,
+            "b_orphans": b_orphans,
+            "shared_vocab": shared_vocab,
+            "comparable": bool(shared_vocab),
         }
         if manifest is not None:
             ad, bd, misses = dict(au), dict(bu), []
@@ -174,14 +197,21 @@ class OneForest:
                 else:
                     ct = self.cross.cross_term(ad[qa], bd[qb])
                     if ct.degree != 0:
-                        misses.append({"expected": f"{qa}→{qb}",
-                                       "reason": f"present but unfaithful (degree {ct.degree})",
-                                       "shared_fraction": round(self.cross.shared_fraction(ad[qa], bd[qb]), 3)})
+                        misses.append(
+                            {
+                                "expected": f"{qa}→{qb}",
+                                "reason": f"present but unfaithful (degree {ct.degree})",
+                                "shared_fraction": round(
+                                    self.cross.shared_fraction(ad[qa], bd[qb]), 3
+                                ),
+                            }
+                        )
             result["manifest_misses"] = misses
             result["manifest_complete"] = not misses
 
-        result["complete"] = (not a_orphans and not b_orphans
-                              and (manifest is None or result["manifest_complete"]))
+        result["complete"] = (
+            not a_orphans and not b_orphans and (manifest is None or result["manifest_complete"])
+        )
         return result
 
     # ── the SYMMETRIC structural correspondence: discovered, not declared ─────
@@ -197,7 +227,9 @@ class OneForest:
         of the unit-sets up to the gauge) — completeness as symmetry, with no manifest of intentions."""
         au, bu = self.arms.get(arm_a, []), self.arms.get(arm_b, [])
 
-        def argbest(r, others):  # (best shared_fraction, index) of r's most-shared partner in others
+        def argbest(
+            r, others
+        ):  # (best shared_fraction, index) of r's most-shared partner in others
             cand = [(self.cross.shared_fraction(r, ro), j) for j, (_, ro) in enumerate(others)]
             return max(cand) if cand else (0.0, None)
 
@@ -209,11 +241,19 @@ class OneForest:
             if j is None or fa < floor:
                 continue
             fb, i2 = b_best[j]
-            if i2 == i:                      # reciprocal mutual-best ⇒ the symmetric correspondent
+            if i2 == i:  # reciprocal mutual-best ⇒ the symmetric correspondent
                 ct = self.cross.cross_term(ra, bu[j][1])
-                pairs.append({"a": qa, "b": bu[j][0], "shared_fraction": round(fa, 3),
-                              "degree": ct.degree, "exact": ct.degree == 0})
-                a_matched.add(i); b_matched.add(j)
+                pairs.append(
+                    {
+                        "a": qa,
+                        "b": bu[j][0],
+                        "shared_fraction": round(fa, 3),
+                        "degree": ct.degree,
+                        "exact": ct.degree == 0,
+                    }
+                )
+                a_matched.add(i)
+                b_matched.add(j)
         a_orphans = [qa for i, (qa, _) in enumerate(au) if i not in a_matched]
         b_orphans = [qb for j, (qb, _) in enumerate(bu) if j not in b_matched]
         # COMPARABILITY is QUOTIENT-RELATIVE. This `comparable` is at the FINEST (label-full) rung: two
@@ -226,12 +266,21 @@ class OneForest:
         # generalizing jea_seam_provenance). `comparable` flags the rung, it is not a verdict of non-mirroring.
         va, vb = self._vocab(arm_a), self._vocab(arm_b)
         shared_vocab = sorted(va & vb)
-        return {"arm_a": arm_a, "arm_b": arm_b, "floor": floor,
-                "n_a": len(au), "n_b": len(bu), "pairs": pairs,
-                "a_orphans": a_orphans, "b_orphans": b_orphans,
-                "n_pairs": len(pairs), "exact_pairs": sum(p["exact"] for p in pairs),
-                "symmetric": not a_orphans and not b_orphans,
-                "shared_vocab": shared_vocab, "comparable": bool(shared_vocab)}
+        return {
+            "arm_a": arm_a,
+            "arm_b": arm_b,
+            "floor": floor,
+            "n_a": len(au),
+            "n_b": len(bu),
+            "pairs": pairs,
+            "a_orphans": a_orphans,
+            "b_orphans": b_orphans,
+            "n_pairs": len(pairs),
+            "exact_pairs": sum(p["exact"] for p in pairs),
+            "symmetric": not a_orphans and not b_orphans,
+            "shared_vocab": shared_vocab,
+            "comparable": bool(shared_vocab),
+        }
 
     # ── the COARSE rung: label-free structural shape (where generic concepts live) ──
     def shape(self, i: int) -> tuple:
@@ -259,7 +308,9 @@ class OneForest:
                 j = stack.pop()
                 if j in seen:
                     continue
-                seen.add(j); out.add(self.shape(j)); stack.extend(self.I.nodes[j].children)
+                seen.add(j)
+                out.add(self.shape(j))
+                stack.extend(self.I.nodes[j].children)
         return out
 
     def shared_structure(self, arm_a: str, arm_b: str) -> dict:
@@ -270,13 +321,20 @@ class OneForest:
         generic pair coming up across Python and Agda is the proof the coarse rung is non-vacuous."""
         sa, sb = self._shapes(arm_a), self._shapes(arm_b)
         shared = sa & sb
-        LEAF = (0, ()); PAIR = (2, (LEAF, LEAF))
-        return {"arm_a": arm_a, "arm_b": arm_b,
-                "n_shapes_a": len(sa), "n_shapes_b": len(sb), "n_shared": len(shared),
-                "shared_fraction_a": round(len(shared) / len(sa), 3) if sa else 1.0,
-                "shared_fraction_b": round(len(shared) / len(sb), 3) if sb else 1.0,
-                "leaf_shared": LEAF in shared, "generic_pair_shared": PAIR in shared,
-                "shared_shapes": sorted(shared, key=lambda s: len(str(s)))[:12]}
+        LEAF = (0, ())
+        PAIR = (2, (LEAF, LEAF))
+        return {
+            "arm_a": arm_a,
+            "arm_b": arm_b,
+            "n_shapes_a": len(sa),
+            "n_shapes_b": len(sb),
+            "n_shared": len(shared),
+            "shared_fraction_a": round(len(shared) / len(sa), 3) if sa else 1.0,
+            "shared_fraction_b": round(len(shared) / len(sb), 3) if sb else 1.0,
+            "leaf_shared": LEAF in shared,
+            "generic_pair_shared": PAIR in shared,
+            "shared_shapes": sorted(shared, key=lambda s: len(str(s)))[:12],
+        }
 
     # ── apply CrossMul AGAIN: quotient to shape, then the cross-term re-applies cross-language ──
     def quotient_to_shape(self) -> "OneForest":
@@ -298,8 +356,9 @@ class OneForest:
             if i in memo:
                 return memo[i]
             kids = self.I.nodes[i].children
-            sid = G.I.intern(IR(kind=str(len(kids)),
-                                children=tuple(sorted(reintern(c) for c in kids))))
+            sid = G.I.intern(
+                IR(kind=str(len(kids)), children=tuple(sorted(reintern(c) for c in kids)))
+            )
             memo[i] = sid
             return sid
 
@@ -353,73 +412,117 @@ if __name__ == "__main__":
     # ARM 'spec' = source intent; 'impl' = a faithful realization; 'broken' = a divergent one (same
     # qname, different body). The gate asks, structurally: does the other arm REALIZE spec? (stand-in
     # for source↔core↔kernel; the Agda-core and CUDA arms attach identically below.)
-    F.add_python("spec",   "def axpy(x, y):\n    return x + y\n", "axpy")
-    F.add_python("impl",   "def axpy(x, y):\n    return x + y\n", "axpy")   # faithful
-    F.add_python("broken", "def axpy(x, y):\n    return x * y\n", "axpy")   # same name, divergent body
+    F.add_python("spec", "def axpy(x, y):\n    return x + y\n", "axpy")
+    F.add_python("impl", "def axpy(x, y):\n    return x + y\n", "axpy")  # faithful
+    F.add_python(
+        "broken", "def axpy(x, y):\n    return x * y\n", "axpy"
+    )  # same name, divergent body
 
     def show(a, b):
         print(f"--- gate({a}, {b}): does {b} realize {a}? ---")
         for row in F.gate(a, b):
-            verdict = "REALIZES (orthogonal, degree 0)" if row["realizes"] else \
-                      f"DIVERGES (degree {row['degree']}, shared {row['shared_fraction']})"
+            verdict = (
+                "REALIZES (orthogonal, degree 0)"
+                if row["realizes"]
+                else f"DIVERGES (degree {row['degree']}, shared {row['shared_fraction']})"
+            )
             print(f"  {row['unit']:12} [{row['match']}]  {verdict}")
             if not row["realizes"]:
                 print(f"       a_residue={row['a_residue']}  b_residue={row['b_residue']}")
 
-    show("spec", "impl")            # REALIZES (orthogonal)
+    show("spec", "impl")  # REALIZES (orthogonal)
     print()
-    show("spec", "broken")          # DIVERGES -- the gate localizes the obstruction (the residues)
+    show("spec", "broken")  # DIVERGES -- the gate localizes the obstruction (the residues)
     print()
 
     # ── COMPLETENESS readout: the gate above is blind to a MISSING mirror. Give 'spec' a 2nd algorithm
     #    with no realization, and 'impl' an extra unit with no spec -> coverage flags both as orphans.
-    print("--- coverage(spec, impl): does EVERY unit have a mirror? (recall, not just precision) ---")
-    F.add_python("spec", "def dot(u, v):\n    return sum(a * b for a, b in zip(u, v))\n", "dot")   # no impl
-    F.add_python("impl", "def scale(x, k):\n    return x * k\n", "scale")                            # no spec
+    print(
+        "--- coverage(spec, impl): does EVERY unit have a mirror? (recall, not just precision) ---"
+    )
+    F.add_python(
+        "spec", "def dot(u, v):\n    return sum(a * b for a, b in zip(u, v))\n", "dot"
+    )  # no impl
+    F.add_python("impl", "def scale(x, k):\n    return x * k\n", "scale")  # no spec
     cov = F.coverage("spec", "impl", floor=0.6)
-    print(f"  coverage_a(spec→impl)={cov['coverage_a']}  coverage_b(impl→spec)={cov['coverage_b']}  "
-          f"complete={cov['complete']}")
+    print(
+        f"  coverage_a(spec→impl)={cov['coverage_a']}  coverage_b(impl→spec)={cov['coverage_b']}  "
+        f"complete={cov['complete']}"
+    )
     print(f"  spec orphans (no impl mirror): {[o['unit'] for o in cov['a_orphans']]}")
     print(f"  impl orphans (no spec mirror): {[o['unit'] for o in cov['b_orphans']]}")
     print()
-    print("--- correspondence(spec, impl): the SYMMETRIC structural matching (discovered, not declared) ---")
+    print(
+        "--- correspondence(spec, impl): the SYMMETRIC structural matching (discovered, not declared) ---"
+    )
     corr = F.correspondence("spec", "impl", floor=0.6)
     for p in corr["pairs"]:
         verdict = "EXACT (degree 0)" if p["exact"] else f"graded (degree {p['degree']})"
         print(f"  {p['a']} ↔ {p['b']}   shared {p['shared_fraction']}  {verdict}")
-    print(f"  orphans: spec={corr['a_orphans']}  impl={corr['b_orphans']}   symmetric={corr['symmetric']}")
-    print(f"  comparable={corr['comparable']} at the LABEL rung (shared vocab: {corr['shared_vocab'][:5]}...)")
+    print(
+        f"  orphans: spec={corr['a_orphans']}  impl={corr['b_orphans']}   symmetric={corr['symmetric']}"
+    )
+    print(
+        f"  comparable={corr['comparable']} at the LABEL rung (shared vocab: {corr['shared_vocab'][:5]}...)"
+    )
     print()
 
     # ── the QUOTIENT LADDER: a foreign arm with a DIFFERENT label vocabulary still shares STRUCTURE.
     #    Mint a binary node of two atoms under foreign kinds (the Python-vs-Agda situation in miniature):
     #    label-incomparable, yet the GENERIC PAIR corresponds at the coarse shape rung.
     import jea_pyalg
+
     leaf1 = F.I.intern(jea_pyalg.IR(kind="Foreign", op="a"))
     leaf2 = F.I.intern(jea_pyalg.IR(kind="Foreign", op="b"))
-    F.add_units("foreign", [("pair", F.I.intern(jea_pyalg.IR(kind="Foreign", children=(leaf1, leaf2))))])
-    print("--- the data the right way: shared_structure(spec, foreign) at the LABEL-FREE shape rung ---")
+    F.add_units(
+        "foreign", [("pair", F.I.intern(jea_pyalg.IR(kind="Foreign", children=(leaf1, leaf2))))]
+    )
+    print(
+        "--- the data the right way: shared_structure(spec, foreign) at the LABEL-FREE shape rung ---"
+    )
     lab = F.correspondence("spec", "foreign", floor=0.6)
     ss = F.shared_structure("spec", "foreign")
-    print(f"  label rung:  comparable={lab['comparable']}  (disjoint kinds -> 'nothing' at this rung)")
-    print(f"  shape rung:  generic_pair_shared={ss['generic_pair_shared']}  leaf_shared={ss['leaf_shared']}  "
-          f"n_shared={ss['n_shared']}")
-    print("  => quotient far enough and the GENERIC PAIR (2,(leaf,leaf)) corresponds across the vocabulary gap.")
+    print(
+        f"  label rung:  comparable={lab['comparable']}  (disjoint kinds -> 'nothing' at this rung)"
+    )
+    print(
+        f"  shape rung:  generic_pair_shared={ss['generic_pair_shared']}  leaf_shared={ss['leaf_shared']}  "
+        f"n_shared={ss['n_shared']}"
+    )
+    print(
+        "  => quotient far enough and the GENERIC PAIR (2,(leaf,leaf)) corresponds across the vocabulary gap."
+    )
     print()
-    print("--- apply CrossMul AGAIN: re-intern by shape, the cross-term re-applies (now non-vacuous) ---")
-    lab = max(F.cross.shared_fraction(r, fr) for _, r in F.arms["spec"] for _, fr in F.arms["foreign"])
+    print(
+        "--- apply CrossMul AGAIN: re-intern by shape, the cross-term re-applies (now non-vacuous) ---"
+    )
+    lab = max(
+        F.cross.shared_fraction(r, fr) for _, r in F.arms["spec"] for _, fr in F.arms["foreign"]
+    )
     G = F.quotient_to_shape()
-    shp = max(G.cross.shared_fraction(r, fr) for _, r in G.arms["spec"] for _, fr in G.arms["foreign"])
-    print(f"  spec~foreign cross-term: label rung shared_fraction={lab:.3f} (vacuous) -> shape rung {shp:.3f} (real)")
-    print("  CrossMul level-1 = labels (within-language); level-2 = shapes (cross-language). Same machine, one rung up.")
+    shp = max(
+        G.cross.shared_fraction(r, fr) for _, r in G.arms["spec"] for _, fr in G.arms["foreign"]
+    )
+    print(
+        f"  spec~foreign cross-term: label rung shared_fraction={lab:.3f} (vacuous) -> shape rung {shp:.3f} (real)"
+    )
+    print(
+        "  CrossMul level-1 = labels (within-language); level-2 = shapes (cross-language). Same machine, one rung up."
+    )
     print()
-    print("--- but a scalar is crud: the TRUNCATABLE profile S(g) by shape-size (read the CURVE, not a number) ---")
+    print(
+        "--- but a scalar is crud: the TRUNCATABLE profile S(g) by shape-size (read the CURVE, not a number) ---"
+    )
     raxpy = dict(G.arms["spec"])["axpy"]
-    for label, rb in (("axpy ~ axpy (identical)", dict(G.arms["spec"])["axpy"]),
-                      ("axpy ~ dot   (different)", dict(G.arms["spec"])["dot"])):
+    for label, rb in (
+        ("axpy ~ axpy (identical)", dict(G.arms["spec"])["axpy"]),
+        ("axpy ~ dot   (different)", dict(G.arms["spec"])["dot"]),
+    ):
         p = G.profile(raxpy, rb, gmax=7)
         print(f"  {label:26} S(g)=[{' '.join(f'{f:.2f}' for _, f in p)}]  cliff@{G.cliff(p, 0.9)}")
-    print("  flat 1.0 = correspondence at every grade; a decay = shares the universal vocabulary, sheds content.")
+    print(
+        "  flat 1.0 = correspondence at every grade; a decay = shares the universal vocabulary, sheds content."
+    )
     print()
 
     # The other arms compose into the SAME forest+gate with NO new mechanism. They are ENVIRONMENT-BOUND
@@ -429,21 +532,39 @@ if __name__ == "__main__":
     # .agdai exist (a stale/absent interface -> graceful skip; rebuild with `agda --safe`).
     print("--- agda-core arm (REAL, via the landed Φ4 shim) ---")
     try:
-        units = F.add_agda_core("core", os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                                                     "agda-emit", "Emit.agdai"))
-        print(f"  {len(units)} Agda definitions interned into the SAME forest; gate(spec, core) computes the "
-              f"cross-term across a real cross-LANGUAGE pair (Python spec ↔ Agda core):")
+        units = F.add_agda_core(
+            "core",
+            os.path.join(os.path.dirname(os.path.abspath(__file__)), "agda-emit", "Emit.agdai"),
+        )
+        print(
+            f"  {len(units)} Agda definitions interned into the SAME forest; gate(spec, core) computes the "
+            f"cross-term across a real cross-LANGUAGE pair (Python spec ↔ Agda core):"
+        )
         for row in F.gate("spec", "core")[:3]:
-            print(f"    {row['unit']:20} [{row['match']}]  degree {row['degree']}  shared {row['shared_fraction']}")
+            print(
+                f"    {row['unit']:20} [{row['match']}]  degree {row['degree']}  shared {row['shared_fraction']}"
+            )
     except Exception as e:
         print(f"  skipped (env-bound): {type(e).__name__}: {str(e).splitlines()[0]}")
-        print("  (runs where ghc+Agda + a fresh interface exist -- the arm composes by construction)")
+        print(
+            "  (runs where ghc+Agda + a fresh interface exist -- the arm composes by construction)"
+        )
 
     # CUDA kernel arm via libclang: env-bound; composes by construction when the jea_cuda front-end is present.
     print("\n--- cuda kernel arm (env-bound front-end) ---")
     try:
-        F.add_cuda("kernel", "__global__ void axpy(float* x, float* y, float* z){ z[0]=x[0]+y[0]; }", "axpy")
-        print(f"  kernel arm units: {[q for q,_ in F.arms['kernel']]}; gate(spec, kernel) runs identically.")
+        F.add_cuda(
+            "kernel",
+            "__global__ void axpy(float* x, float* y, float* z){ z[0]=x[0]+y[0]; }",
+            "axpy",
+        )
+        print(
+            f"  kernel arm units: {[q for q, _ in F.arms['kernel']]}; gate(spec, kernel) runs identically."
+        )
     except ModuleNotFoundError:
-        print("  jea_cuda front-end not present in this env; the arm composes by construction (same Intern,")
-        print("  same {(qname,root)} unit shape) -- no new mechanism, exercised where libclang exists.")
+        print(
+            "  jea_cuda front-end not present in this env; the arm composes by construction (same Intern,"
+        )
+        print(
+            "  same {(qname,root)} unit shape) -- no new mechanism, exercised where libclang exists."
+        )

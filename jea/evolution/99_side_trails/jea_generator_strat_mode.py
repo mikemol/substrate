@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 # SIDE-TRAIL (off the main spine) -- explored, then absorbed/superseded; not a rung of the linear ladder. See ../00_SYLLABUS.md
 """jea_generator_strat_mode.py — U2: the eager/lazy MODE knob in the HIGH-THROUGHPUT stratified path.
 
@@ -22,12 +24,15 @@ Witnesses (each [W]):
 3. THROUGHPUT: lazy passes <= eager passes (fewer kernel launches) for every tree -- the structural win.
 4. ESCALATE preserved + mode-independent (detected at the u128 product, never wrapped).
 """
+
 # --- jea-evolution rung bootstrap: jea/ foundation + sibling rungs on the path (see 00_SYLLABUS.md) ---
 import os as _os, sys as _sys, glob as _glob
-_EVO = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))   # .../jea/evolution
+
+_EVO = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))  # .../jea/evolution
 _sys.path[:0] = [_os.path.dirname(_EVO), *sorted(_glob.glob(_os.path.join(_EVO, "*", "")))]
 # --- end bootstrap ---
 import os, time
+
 os.environ.setdefault("CUDA_PATH", "/usr")
 import numpy as np, cupy as cp
 from fractions import Fraction
@@ -36,7 +41,10 @@ import jea_core
 import jea_generator_dag as DAG
 from jea_generator_strat import strata_of, _lh
 
-_SRC = jea_core.Q128_CUDA + jea_core.CTRL_CUDA + r'''
+_SRC = (
+    jea_core.Q128_CUDA
+    + jea_core.CTRL_CUDA
+    + r"""
 extern "C" __global__
 void combine_stratum_mode(
     const int* snodes, int ns, int K, int mode,
@@ -73,7 +81,8 @@ void combine_stratum_mode(
         atomicMax((int*)obsmax, ready[slot]? s : s+1);
     }
 }
-'''
+"""
+)
 _kern = jea_core.build_kernel(_SRC, "combine_stratum_mode", int128=True)
 
 
@@ -81,37 +90,86 @@ def run_strat_mode(g, mode, B=256, K0=4, want_detail=False):
     nsm = cp.cuda.Device().attributes["MultiProcessorCount"]
     nblocks = 8 * nsm
     N, L = g["N"], g["L"]
-    vNl, vNh = _lh(g["vN"]); vDl, vDh = _lh(g["vD"])
-    lch = cp.asarray(g["lch"], cp.int32); rch = cp.asarray(g["rch"], cp.int32); op = cp.asarray(g["op"], cp.int32)
+    vNl, vNh = _lh(g["vN"])
+    vDl, vDh = _lh(g["vD"])
+    lch = cp.asarray(g["lch"], cp.int32)
+    rch = cp.asarray(g["rch"], cp.int32)
+    op = cp.asarray(g["op"], cp.int32)
     ready = cp.asarray([1 if i < L else 0 for i in range(N)], cp.int32)
     initf = cp.asarray([1 if i < L else 0 for i in range(N)], cp.int32)
-    z = lambda: cp.zeros(N, cp.uint64); al, ah, bl, bh, naNl, naNh, naDl, naDh = z(), z(), z(), z(), z(), z(), z(), z()
+    z = lambda: cp.zeros(N, cp.uint64)
+    al, ah, bl, bh, naNl, naNh, naDl, naDh = z(), z(), z(), z(), z(), z(), z(), z()
     steps = cp.zeros(N, cp.int32)
-    notdone = cp.zeros(1, cp.int32); obsmax = cp.zeros(1, cp.int32); escalate = cp.zeros(1, cp.int32)
+    notdone = cp.zeros(1, cp.int32)
+    obsmax = cp.zeros(1, cp.int32)
+    escalate = cp.zeros(1, cp.int32)
     strata = [cp.asarray(s, cp.int32) for s in strata_of(g)]
-    K = K0; passes = 0
-    cp.cuda.Stream.null.synchronize(); t0 = time.perf_counter()
+    K = K0
+    passes = 0
+    cp.cuda.Stream.null.synchronize()
+    t0 = time.perf_counter()
     for sn in strata:
         ns = int(sn.size)
         while True:
             notdone[0] = 0
-            _kern((nblocks,), (B,),
-                  (sn, np.int32(ns), np.int32(K), np.int32(mode), vNl, vNh, vDl, vDh, lch, rch, op, ready, initf,
-                   al, ah, bl, bh, naNl, naNh, naDl, naDh, steps, notdone, obsmax, escalate))
+            _kern(
+                (nblocks,),
+                (B,),
+                (
+                    sn,
+                    np.int32(ns),
+                    np.int32(K),
+                    np.int32(mode),
+                    vNl,
+                    vNh,
+                    vDl,
+                    vDh,
+                    lch,
+                    rch,
+                    op,
+                    ready,
+                    initf,
+                    al,
+                    ah,
+                    bl,
+                    bh,
+                    naNl,
+                    naNh,
+                    naDl,
+                    naDh,
+                    steps,
+                    notdone,
+                    obsmax,
+                    escalate,
+                ),
+            )
             passes += 1
-            if mode == 0 or int(notdone.get()[0]) == 0: break    # lazy: never re-passed
+            if mode == 0 or int(notdone.get()[0]) == 0:
+                break  # lazy: never re-passed
             K = jea_core.relax_q_ref(K, int(obsmax.get()[0]))
-    cp.cuda.Stream.null.synchronize(); ms = (time.perf_counter() - t0) * 1e3
+    cp.cuda.Stream.null.synchronize()
+    ms = (time.perf_counter() - t0) * 1e3
     r = g["root"]
-    rn = (int(vNh.get()[r]) << 64) | int(vNl.get()[r]); rd = (int(vDh.get()[r]) << 64) | int(vDl.get()[r])
-    out = dict(rn=rn, rd=rd, escalate=int(escalate.get()[0]), ms=ms, nstrata=len(strata), passes=passes,
-               gwork=int(steps.get().sum()), threads=nblocks * B)
-    if want_detail:                                              # non-canonical count over combines (host)
+    rn = (int(vNh.get()[r]) << 64) | int(vNl.get()[r])
+    rd = (int(vDh.get()[r]) << 64) | int(vDl.get()[r])
+    out = dict(
+        rn=rn,
+        rd=rd,
+        escalate=int(escalate.get()[0]),
+        ms=ms,
+        nstrata=len(strata),
+        passes=passes,
+        gwork=int(steps.get().sum()),
+        threads=nblocks * B,
+    )
+    if want_detail:  # non-canonical count over combines (host)
         gNl, gNh, gDl, gDh = vNl.get(), vNh.get(), vDl.get(), vDh.get()
         nc = 0
         for i in range(L, N):
-            n = (int(gNh[i]) << 64) | int(gNl[i]); d = (int(gDh[i]) << 64) | int(gDl[i])
-            if d and gcd(n, d) != 1: nc += 1
+            n = (int(gNh[i]) << 64) | int(gNl[i])
+            d = (int(gDh[i]) << 64) | int(gDl[i])
+            if d and gcd(n, d) != 1:
+                nc += 1
         out["noncanon"] = nc
     return out
 
@@ -119,42 +177,79 @@ def run_strat_mode(g, mode, B=256, K0=4, want_detail=False):
 if __name__ == "__main__":
     print("U2 — eager/lazy MODE in the stratified high-throughput path\n")
     print("  exactness + Pareto + the LAZY RANGE COST (random +/x DAG; 128-bit carrier):")
+
     # honest verdict: escalate WRAPS the stored value here (only flags) -> escalated != exact. Lazy's
     # UNREDUCED intermediates overflow 128-bit far sooner than eager's reduced values = lazy's range cost.
     def verdict(r, truth):
-        if r["escalate"] == 1: return "ESCALATED"        # carrier can't hold it; correctly flagged (U3 delivers)
+        if r["escalate"] == 1:
+            return "ESCALATED"  # carrier can't hold it; correctly flagged (U3 delivers)
         return "exact" if Fraction(r["rn"], r["rd"]) == truth else "WRONG"
-    allok = True; w_pareto = True; w_thru = True
-    for L in (64, 128, 256, 512):
-        g = DAG.build_dag(L, 3); truth = g["truth"]
-        e = run_strat_mode(g, 1, want_detail=True); l = run_strat_mode(g, 0, want_detail=True)
-        ve, vl = verdict(e, truth), verdict(l, truth)
-        allok &= ve != "WRONG" and vl != "WRONG"          # correct = exact OR correctly-flagged escalation
-        if ve == "exact" and vl == "exact":               # clean exact-both rung -> check the Pareto here
-            w_pareto &= (l["gwork"] == 0 and l["passes"] == l["nstrata"] and e["gwork"] > 0
-                         and l["noncanon"] > 0 and e["noncanon"] == 0)
-        w_thru &= l["passes"] <= e["passes"]
-        print(f"     L={L:4d} ({g['N']:>4} nodes):  EAGER {ve:>9} (gcd-work={e['gwork']:>4}, passes={e['passes']})  |  "
-              f"LAZY {vl:>9} (gcd-work={l['gwork']}, passes={l['passes']}, non-canon={l['noncanon']:>3})")
 
-    print("\n  throughput (same tree, both modes; EAGER = exact/canonical, LAZY = fast but range-limited):")
+    allok = True
+    w_pareto = True
+    w_thru = True
+    for L in (64, 128, 256, 512):
+        g = DAG.build_dag(L, 3)
+        truth = g["truth"]
+        e = run_strat_mode(g, 1, want_detail=True)
+        l = run_strat_mode(g, 0, want_detail=True)
+        ve, vl = verdict(e, truth), verdict(l, truth)
+        allok &= ve != "WRONG" and vl != "WRONG"  # correct = exact OR correctly-flagged escalation
+        if ve == "exact" and vl == "exact":  # clean exact-both rung -> check the Pareto here
+            w_pareto &= (
+                l["gwork"] == 0
+                and l["passes"] == l["nstrata"]
+                and e["gwork"] > 0
+                and l["noncanon"] > 0
+                and e["noncanon"] == 0
+            )
+        w_thru &= l["passes"] <= e["passes"]
+        print(
+            f"     L={L:4d} ({g['N']:>4} nodes):  EAGER {ve:>9} (gcd-work={e['gwork']:>4}, passes={e['passes']})  |  "
+            f"LAZY {vl:>9} (gcd-work={l['gwork']}, passes={l['passes']}, non-canon={l['noncanon']:>3})"
+        )
+
+    print(
+        "\n  throughput (same tree, both modes; EAGER = exact/canonical, LAZY = fast but range-limited):"
+    )
     import jea_generator_unified as U
-    g = U.build_balanced_add(16); run_strat_mode(g, 1); run_strat_mode(g, 0)        # warm
-    e = run_strat_mode(g, 1); l = run_strat_mode(g, 0)
+
+    g = U.build_balanced_add(16)
+    run_strat_mode(g, 1)
+    run_strat_mode(g, 0)  # warm
+    e = run_strat_mode(g, 1)
+    l = run_strat_mode(g, 0)
     te, tl = g["N"] / e["ms"] * 1e3 / 1e6, g["N"] / l["ms"] * 1e3 / 1e6
-    print(f"     L=2^16 ({g['N']} nodes): EAGER {e['ms']:.2f} ms = {te:.0f} M/s esc={e['escalate']} ({e['passes']} passes)  |  "
-          f"LAZY {l['ms']:.2f} ms = {tl:.0f} M/s esc={l['escalate']} ({l['passes']} passes)")
-    print(f"     (NB: on this deep all-+ fraction tree LAZY's unreduced denominators escalate -> its M/s is")
-    print(f"      throughput-with-escalation, NOT exact; EAGER stays exact. The honest exact path is EAGER.)")
+    print(
+        f"     L=2^16 ({g['N']} nodes): EAGER {e['ms']:.2f} ms = {te:.0f} M/s esc={e['escalate']} ({e['passes']} passes)  |  "
+        f"LAZY {l['ms']:.2f} ms = {tl:.0f} M/s esc={l['escalate']} ({l['passes']} passes)"
+    )
+    print(
+        f"     (NB: on this deep all-+ fraction tree LAZY's unreduced denominators escalate -> its M/s is"
+    )
+    print(
+        f"      throughput-with-escalation, NOT exact; EAGER stays exact. The honest exact path is EAGER.)"
+    )
     w_thru &= l["passes"] <= e["passes"]
 
-    w1 = allok; w2 = w_pareto; w3 = w_thru; w4 = True
+    w1 = allok
+    w2 = w_pareto
+    w3 = w_thru
+    w4 = True
     print(f"\n1. CORRECT both modes (exact OR correctly-flagged-escalation, no WRONG): {w1}")
-    print(f"2. PARETO in stratified path (lazy 0-gcd/1-pass-per-stratum/non-canonical; eager gcd/canonical): {w2}")
+    print(
+        f"2. PARETO in stratified path (lazy 0-gcd/1-pass-per-stratum/non-canonical; eager gcd/canonical): {w2}"
+    )
     print(f"3. THROUGHPUT (lazy passes <= eager passes, fewer launches): {w3}")
     print(f"4. ESCALATE preserved + mode-independent (u128 detect): {w4}")
     ok = w1 and w2 and w3 and w4
-    print(f"\n  {'PASS' if ok else 'FAIL'} — U2: the value<->trace MODE knob now lives in the high-throughput")
-    print(f"  stratified path too; the controller there steers K AND mode. Lazy = one pass/stratum (max")
-    print(f"  throughput, the trace-window arm); eager = canonical (re-passed gcd). Same deadlock-free")
+    print(
+        f"\n  {'PASS' if ok else 'FAIL'} — U2: the value<->trace MODE knob now lives in the high-throughput"
+    )
+    print(
+        f"  stratified path too; the controller there steers K AND mode. Lazy = one pass/stratum (max"
+    )
+    print(
+        f"  throughput, the trace-window arm); eager = canonical (re-passed gcd). Same deadlock-free"
+    )
     print(f"  stratification, same 128-bit escalate-don't-truncate.")

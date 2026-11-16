@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """jea_mat260_verify.py — Σ4: the FOREST-apex, on the mat260 cipher corpus.
 
 The capstone of the Σ apparatus, on real material: intern the mat260 cipher OMML into ONE forest (the
@@ -21,8 +23,10 @@ unnecessary for trust: mat260's own `*-omml` refl pins ALREADY machine-verify re
 OMML string (Agda, --safe, 0 postulates). So jea's value-add here is the cross-MODE structural map +
 the Octave generation arm (Σ-OMML→Octave) that mat260 lacks -- NOT re-deriving the proven OMML↔Tm link.
 """
+
 from __future__ import annotations
 import sys, os, argparse, csv
+
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from jea_pyalg import Intern, CrossMix
 from jea_omml import lower_omml
@@ -32,17 +36,23 @@ from jea_omml import lower_omml
 # gate; the live source of truth is omml-manifest.tsv via --manifest (which is what gives the full 12 +
 # the 6/6 operator-faithfulness). Keep this fixture CORRECT but do not let it pretend to be the corpus.
 _CIPHERS = {
-    "ECB-stUpd":  "<m:oMath><m:r>()</m:r></m:oMath>",
-    "ECB-output": ('<m:oMath><m:func><m:fName><m:r>E</m:r></m:fName><m:e><m:d><m:dPr><m:begChr m:val="("/>'
-                   '<m:endChr m:val=")"/><m:sepChr m:val=","/></m:dPr><m:e><m:r>k</m:r></m:e><m:e><m:r>p</m:r>'
-                   '</m:e></m:d></m:e></m:func></m:oMath>'),
-    "CBC-stUpd":  ('<m:oMath><m:func><m:fName><m:r>E</m:r></m:fName><m:e><m:d><m:dPr><m:begChr m:val="("/>'
-                   '<m:endChr m:val=")"/><m:sepChr m:val=","/></m:dPr><m:e><m:r>k</m:r></m:e><m:e><m:brk/><m:d>'
-                   '<m:dPr><m:begChr m:val="("/><m:endChr m:val=")"/></m:dPr><m:e><m:r>p</m:r><m:r>⊕</m:r>'
-                   '<m:sSub><m:e><m:r>s</m:r></m:e><m:sub><m:r>i−1</m:r></m:sub></m:sSub></m:e></m:d></m:e>'
-                   '</m:d></m:e></m:func></m:oMath>'),
-    "CTR-stUpd":  ('<m:oMath><m:func><m:fName><m:r>Inc</m:r></m:fName><m:e><m:d><m:dPr><m:begChr m:val="("/>'
-                   '<m:endChr m:val=")"/></m:dPr><m:e><m:r>i</m:r></m:e></m:d></m:e></m:func></m:oMath>'),
+    "ECB-stUpd": "<m:oMath><m:r>()</m:r></m:oMath>",
+    "ECB-output": (
+        '<m:oMath><m:func><m:fName><m:r>E</m:r></m:fName><m:e><m:d><m:dPr><m:begChr m:val="("/>'
+        '<m:endChr m:val=")"/><m:sepChr m:val=","/></m:dPr><m:e><m:r>k</m:r></m:e><m:e><m:r>p</m:r>'
+        "</m:e></m:d></m:e></m:func></m:oMath>"
+    ),
+    "CBC-stUpd": (
+        '<m:oMath><m:func><m:fName><m:r>E</m:r></m:fName><m:e><m:d><m:dPr><m:begChr m:val="("/>'
+        '<m:endChr m:val=")"/><m:sepChr m:val=","/></m:dPr><m:e><m:r>k</m:r></m:e><m:e><m:brk/><m:d>'
+        '<m:dPr><m:begChr m:val="("/><m:endChr m:val=")"/></m:dPr><m:e><m:r>p</m:r><m:r>⊕</m:r>'
+        "<m:sSub><m:e><m:r>s</m:r></m:e><m:sub><m:r>i−1</m:r></m:sub></m:sSub></m:e></m:d></m:e>"
+        "</m:d></m:e></m:func></m:oMath>"
+    ),
+    "CTR-stUpd": (
+        '<m:oMath><m:func><m:fName><m:r>Inc</m:r></m:fName><m:e><m:d><m:dPr><m:begChr m:val="("/>'
+        '<m:endChr m:val=")"/></m:dPr><m:e><m:r>i</m:r></m:e></m:d></m:e></m:func></m:oMath>'
+    ),
 }
 # Two CORRECT equivalence pairs (mat260: same formula): CBC stUpd==output (E(k,p⊕s)); CTR stUpd ==
 # ChaCha20 stUpd (Inc(i)). (CFB-stUpd was DROPPED here -- mat260's F2 fix made it p⊕trim(E(k,s)), and the
@@ -50,8 +60,8 @@ _CIPHERS = {
 # side; see commit msg.) This embedded set is an ILLUSTRATIVE SUBSET (correct as of 2026-06-17), NOT the
 # live corpus -- pass --manifest <omml-manifest.tsv> for the full 12 (the source of truth; --manifest +
 # --agdai is what produced the 6/6 operator-faithfulness).
-_CIPHERS["CBC-output"]      = _CIPHERS["CBC-stUpd"]
-_CIPHERS["ChaCha20-stUpd"]  = _CIPHERS["CTR-stUpd"]
+_CIPHERS["CBC-output"] = _CIPHERS["CBC-stUpd"]
+_CIPHERS["ChaCha20-stUpd"] = _CIPHERS["CTR-stUpd"]
 
 
 # ── Σ4b: the OPERATOR-correspondence gate (the renderOMML adapter, at the level that bridges cleanly) ──
@@ -63,10 +73,19 @@ _CIPHERS["ChaCha20-stUpd"]  = _CIPHERS["CTR-stUpd"]
 # so "does the OMML use exactly the operators the Agda proof uses?" IS the renderOMML correspondence,
 # checkable by extracting Op.* from the *-step core (robust — vars/rendering don't matter) and the
 # heads/BinOps from the OMML, then comparing per mode. Bridges OMML↔Agda where it is clean.
-_OP_TO_OMML = {                                            # mat260 Op constructor -> OMML head/operator
-    "opE": "E", "opXorBlk": "⊕", "opXorSeg": "⊕", "opXorStr": "⊕",
-    "opConcat": "Concat", "opInc": "Inc", "opPermute": "Permute", "opInit": "Init",
-    "opTrim": "trim", "opFromBlk": "fromBlk", "opInject": "inject", "opUnit": "()",
+_OP_TO_OMML = {  # mat260 Op constructor -> OMML head/operator
+    "opE": "E",
+    "opXorBlk": "⊕",
+    "opXorSeg": "⊕",
+    "opXorStr": "⊕",
+    "opConcat": "Concat",
+    "opInc": "Inc",
+    "opPermute": "Permute",
+    "opInit": "Init",
+    "opTrim": "trim",
+    "opFromBlk": "fromBlk",
+    "opInject": "inject",
+    "opUnit": "()",
 }
 
 
@@ -95,7 +114,8 @@ _COERCION_SUB_TO_OP = {"𝒮→𝓑": "inject", "𝓑→𝔹*": "fromBlk"}
 def omml_cipher_ops(omml_str: str) -> set:
     """The operators an OMML term uses: App heads (E/Inc/Concat/…) + BinOp symbols (⊕) + carrier
     Coercion nodes (ι_{sub} -> inject/fromBlk). The OMML side of the renderOMML correspondence."""
-    I = Intern(); root, _ = lower_omml(omml_str, I)
+    I = Intern()
+    root, _ = lower_omml(omml_str, I)
     ops = set()
     for j in range(I.size()):
         n = I.nodes[j]
@@ -104,9 +124,9 @@ def omml_cipher_ops(omml_str: str) -> set:
             ops.add(h.op or (h.payload[0] if h.payload else "?"))
         elif n.kind == "BinOp":
             ops.add("⊕" if n.op == "Xor" else n.op)
-        elif n.kind == "Coercion":                         # ι_{sub} = renderOMML(opInject/opFromBlk)
+        elif n.kind == "Coercion":  # ι_{sub} = renderOMML(opInject/opFromBlk)
             ops.add(_COERCION_SUB_TO_OP.get(n.op, n.op))
-        elif n.kind == "Name" and n.op == "()":           # the nullary unit (opUnit), rendered as "()"
+        elif n.kind == "Name" and n.op == "()":  # the nullary unit (opUnit), rendered as "()"
             ops.add("()")
     return ops
 
@@ -121,6 +141,7 @@ def op_correspondence(ciphers: dict, agdai_path: str) -> dict:
     of its OMML stUpd+output operator sets. MATCH = the OMML uses exactly the proven operators."""
     import re as _re
     import jea_agdai
+
     I = Intern()
     rep = jea_agdai.core_intern_agdai(agdai_path, I)
     U = dict(rep["units"])
@@ -136,19 +157,24 @@ def op_correspondence(ciphers: dict, agdai_path: str) -> dict:
         if step is None:
             continue
         aset = agda_cipher_ops(I, step)
-        elided = aset - oset                               # in the proof, not shown in the OMML
-        out[mode] = {"agda": sorted(aset), "omml": sorted(oset),
-                     "match": aset == oset,
-                     "elided": sorted(elided), "extra": sorted(oset - aset),
-                     # faithful = the OMML shows every SUBSTANTIVE op; the only Agda-extras are coercions
-                     "faithful": (oset - aset == set()) and elided <= _COERCIONS}
+        elided = aset - oset  # in the proof, not shown in the OMML
+        out[mode] = {
+            "agda": sorted(aset),
+            "omml": sorted(oset),
+            "match": aset == oset,
+            "elided": sorted(elided),
+            "extra": sorted(oset - aset),
+            # faithful = the OMML shows every SUBSTANTIVE op; the only Agda-extras are coercions
+            "faithful": (oset - aset == set()) and elided <= _COERCIONS,
+        }
     return out
 
 
 def verify(ciphers: dict, agdai_path: str | None = None) -> dict:
     """Intern the cipher OMML into ONE forest; report equivalence classes + a degree-0 gate; optionally
     compose the Agda-proof arm. Returns {classes, realizes, diverges, agda}."""
-    I = Intern(); X = CrossMix(I)
+    I = Intern()
+    X = CrossMix(I)
     roots = {}
     for name, omml in ciphers.items():
         r, _ = lower_omml(omml, I)
@@ -159,59 +185,93 @@ def verify(ciphers: dict, agdai_path: str | None = None) -> dict:
     realizes = diverges = None
     eq = [r for r, ns in roots.items() if len(ns) > 1]
     if eq:
-        r = eq[0]; ct = X.cross_term(r, r)
+        r = eq[0]
+        ct = X.cross_term(r, r)
         realizes = (roots[r][0], roots[r][1], ct.degree)
     rs = list(roots)
     if len(rs) >= 2:
         a, b = rs[0], rs[-1]
         ct = X.cross_term(a, b)
-        diverges = (roots[a][0], roots[b][0], ct.degree,
-                    round(X.shared_fraction(a, b), 2), ct.a_residue[:3], ct.b_residue[:3])
+        diverges = (
+            roots[a][0],
+            roots[b][0],
+            ct.degree,
+            round(X.shared_fraction(a, b), 2),
+            ct.a_residue[:3],
+            ct.b_residue[:3],
+        )
 
     agda = None
     if agdai_path and os.path.exists(agdai_path):
         try:
             import jea_agdai
-            rep = jea_agdai.core_intern_agdai(agdai_path, I)   # composes into the SAME forest
-            agda = {"defns": len(rep["units"]), "core_nodes": rep["core_nodes"], "edges": rep["edges_present"]}
+
+            rep = jea_agdai.core_intern_agdai(agdai_path, I)  # composes into the SAME forest
+            agda = {
+                "defns": len(rep["units"]),
+                "core_nodes": rep["core_nodes"],
+                "edges": rep["edges_present"],
+            }
         except Exception as e:
             agda = {"error": f"{type(e).__name__}: {str(e).splitlines()[0]}"}
-    return {"classes": classes, "realizes": realizes, "diverges": diverges, "agda": agda, "n": len(ciphers)}
+    return {
+        "classes": classes,
+        "realizes": realizes,
+        "diverges": diverges,
+        "agda": agda,
+        "n": len(ciphers),
+    }
 
 
 def main(argv=None):
-    ap = argparse.ArgumentParser(description="Σ4: verify structural correspondence over the mat260 cipher corpus.")
+    ap = argparse.ArgumentParser(
+        description="Σ4: verify structural correspondence over the mat260 cipher corpus."
+    )
     ap.add_argument("--manifest", help="omml-manifest.tsv (default: embedded 12-cipher set)")
-    ap.add_argument("--agdai", help="mat260 CryptographicTotalSpace.agdai (optional Agda-proof arm)")
+    ap.add_argument(
+        "--agdai", help="mat260 CryptographicTotalSpace.agdai (optional Agda-proof arm)"
+    )
     args = ap.parse_args(argv)
 
     ciphers = dict(_CIPHERS)
     if args.manifest:
-        ciphers = {n: x for n, x in (r for r in csv.reader(open(args.manifest), delimiter="\t") if r)}
+        ciphers = {
+            n: x for n, x in (r for r in csv.reader(open(args.manifest), delimiter="\t") if r)
+        }
 
     print("=== Σ4 FOREST-apex: cross-arm verification over the mat260 cipher corpus ===\n")
     rep = verify(ciphers, agdai_path=args.agdai)
     print(f"interned {rep['n']} cipher OMML terms into ONE forest.\n")
-    print("STRUCTURAL EQUIVALENCE CLASSES (modes sharing ONE interned transition — the cross-mode map):")
+    print(
+        "STRUCTURAL EQUIVALENCE CLASSES (modes sharing ONE interned transition — the cross-mode map):"
+    )
     for r, names in sorted(rep["classes"].items()):
         print(f"  ≡  {names}")
     if rep["realizes"]:
         a, b, d = rep["realizes"]
-        print(f"\nGATE (the Σ1 cross-term): {a} vs {b} → degree {d} = REALIZES (one canonical term)")
+        print(
+            f"\nGATE (the Σ1 cross-term): {a} vs {b} → degree {d} = REALIZES (one canonical term)"
+        )
     if rep["diverges"]:
         a, b, d, sf, ar, br = rep["diverges"]
         print(f"GATE: {a} vs {b} → degree {d}, shared {sf} = DIVERGES; residue a={ar} b={br}")
     print("\nAGDA-PROOF arm (core_intern_agdai on mat260's .agdai):")
     if rep["agda"] is None:
-        print("  (pass --agdai <CryptographicTotalSpace.agdai> to compose it; validated: 261 defns decode)")
+        print(
+            "  (pass --agdai <CryptographicTotalSpace.agdai> to compose it; validated: 261 defns decode)"
+        )
     elif "error" in rep["agda"]:
         print(f"  composed with error: {rep['agda']['error']}")
     else:
-        print(f"  composed into the SAME forest: {rep['agda']['defns']} defns, "
-              f"{rep['agda']['core_nodes']} core nodes, edges={rep['agda']['edges']}")
+        print(
+            f"  composed into the SAME forest: {rep['agda']['defns']} defns, "
+            f"{rep['agda']['core_nodes']} core nodes, edges={rep['agda']['edges']}"
+        )
     # Σ4b: the OPERATOR-correspondence gate (the renderOMML adapter, at the operator level)
     if args.agdai and os.path.exists(args.agdai):
-        print("\nΣ4b OPERATOR CORRESPONDENCE (Agda *-step ops  vs  OMML ops, per mode — the renderOMML link):")
+        print(
+            "\nΣ4b OPERATOR CORRESPONDENCE (Agda *-step ops  vs  OMML ops, per mode — the renderOMML link):"
+        )
         try:
             corr = op_correspondence(ciphers, args.agdai)
             for mode, c in sorted(corr.items()):
@@ -223,16 +283,30 @@ def main(argv=None):
                     tag = f"✗ DIFFER (omml-extra {c['extra']}, agda-extra {c['elided']})"
                 print(f"  {mode:10} {tag}   agda {c['agda']}  omml {c['omml']}")
             nfaith = sum(1 for c in corr.values() if c["match"] or c["faithful"])
-            print(f"  → {nfaith}/{len(corr)} modes FAITHFUL: the OMML shows every SUBSTANTIVE operator the")
-            print(f"    Agda proof uses (the only Agda-extras are sort-COERCIONS renderOMML elides — a real,")
-            print(f"    machine-found fact about the presentation, NOT a discrepancy in the cryptography).")
+            print(
+                f"  → {nfaith}/{len(corr)} modes FAITHFUL: the OMML shows every SUBSTANTIVE operator the"
+            )
+            print(
+                f"    Agda proof uses (the only Agda-extras are sort-COERCIONS renderOMML elides — a real,"
+            )
+            print(
+                f"    machine-found fact about the presentation, NOT a discrepancy in the cryptography)."
+            )
         except Exception as e:
             print(f"  (skipped: {type(e).__name__}: {str(e).splitlines()[0]})")
 
-    print("\nHONEST SCOPE: Σ4b delivers the OPERATOR-level correspondence (robust — Op.* from the core vs")
-    print("OMML heads/BinOps). The full var-by-var degree-0 TERM gate is DECLINED: it needs decoding")
-    print("AgdaCore Tm.app/All-vector + var Fin + mat260's context→name map (brittle, mat260-coupled),")
-    print("for pedagogical value mat260's *-omml refl pins already machine-verify. Operator-level is the")
+    print(
+        "\nHONEST SCOPE: Σ4b delivers the OPERATOR-level correspondence (robust — Op.* from the core vs"
+    )
+    print(
+        "OMML heads/BinOps). The full var-by-var degree-0 TERM gate is DECLINED: it needs decoding"
+    )
+    print(
+        "AgdaCore Tm.app/All-vector + var Fin + mat260's context→name map (brittle, mat260-coupled),"
+    )
+    print(
+        "for pedagogical value mat260's *-omml refl pins already machine-verify. Operator-level is the"
+    )
     print("mature slice; OMML=rendered-Tm vs .agdai=raw-Tm stays a level-gap the refl pins own.")
     return 0
 

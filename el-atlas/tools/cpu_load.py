@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """cpu_load — the shared CPU matmul-throughput workload for the el-atlas measurement probes.
 
 A spin: multiply x·y ``iters`` times and return one element (the read defeats dead-code elimination).

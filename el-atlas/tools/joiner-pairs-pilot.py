@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """W2: the two waiting joiner pairs, one stratum down.
 {LOC,L26}: witness sets over (lock, probe) cells — per-cell failure
 signatures compared mechanically. {PUR,PRO}: the collapse family

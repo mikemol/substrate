@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """jea_apex.py — Δ-Ω (AI-Ω) + Δ-Ω-carrier: the apex megakernel = pool ⊕ actuator ⊕ megakernel, on the EXISTING
 u128 escalating carrier (jea_core.Q128_CUDA) -- NOT raw u64, NOT a reinvented fold.
 
@@ -24,18 +26,23 @@ Witnesses (each [W]):
 3. CORRECT UNDER LIVE RECONFIG + PRODUCTIVITY: root==truth while the host live-published MULTIPLE active-lane
    counts during the ONE drain; drained via pending==0 (no fuel); err==0.
 """
+
 import os, sys, time
+
 os.environ.setdefault("CUDA_PATH", "/usr")
 import numpy as np, cupy as cp
+
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import jea_core
 from jea_generator_dag import build_dag
 import jea_engine_pool as POOL
 from fractions import Fraction
 
-FIELDS = 4        # package: [g (active-lane count = on-device schedule), fstar%, bneck, epoch]
+FIELDS = 4  # package: [g (active-lane count = on-device schedule), fstar%, bneck, epoch]
 
-_SRC = jea_core.Q128_CUDA + r'''
+_SRC = (
+    jea_core.Q128_CUDA
+    + r"""
 __device__ __forceinline__ int bitlen128(u128 v){
   u64 hi=(u64)(v>>64), lo=(u64)v;
   if (hi) return 128 - __clzll(hi);
@@ -153,22 +160,35 @@ extern "C" __global__ void apex(
   }
   if (gid==0) *gtracen = gn;
 }
-'''
-assert _SRC.isascii(), "kernel source must be ASCII -- NVRTC writes it via the ascii codec; a Greek Δ/Σ in a comment fails the compile"
+"""
+)
+assert _SRC.isascii(), (
+    "kernel source must be ASCII -- NVRTC writes it via the ascii codec; a Greek Δ/Σ in a comment fails the compile"
+)
 _apex = cp.RawKernel(_SRC, "apex", options=("--device-int128",))
 
 
 if __name__ == "__main__":
-    print("Δ-Σ-decide: the apex SUPERVISOR computes the operating point ON-DEVICE from host-uploaded evidence\n")
-    g = build_dag(256, 6); N = g["N"]                            # 66-bit truth: intermediates OVERFLOW u64, fit u128
-    op=[(2 if g["op"][i]==-1 else g["op"][i]) for i in range(N)]
-    lch=list(g["lch"]); rch=list(g["rch"]); vN=[int(x) for x in g["vN"]]; vD=[int(x) for x in g["vD"]]
-    status=[1 if op[i]==2 else 0 for i in range(N)]; pending=sum(1 for i in range(N) if op[i]!=2)
+    print(
+        "Δ-Σ-decide: the apex SUPERVISOR computes the operating point ON-DEVICE from host-uploaded evidence\n"
+    )
+    g = build_dag(256, 6)
+    N = g["N"]  # 66-bit truth: intermediates OVERFLOW u64, fit u128
+    op = [(2 if g["op"][i] == -1 else g["op"][i]) for i in range(N)]
+    lch = list(g["lch"])
+    rch = list(g["rch"])
+    vN = [int(x) for x in g["vN"]]
+    vD = [int(x) for x in g["vD"]]
+    status = [1 if op[i] == 2 else 0 for i in range(N)]
+    pending = sum(1 for i in range(N) if op[i] != 2)
     truth, root = g["truth"], g["root"]
 
-    d=lambda a,t: cp.asarray(a,t); MASK=0xFFFFFFFFFFFFFFFF
-    nsm=cp.cuda.Device().attributes["MultiProcessorCount"]; blocks,threads=8*nsm,128; full=blocks*threads
-    tb=max(truth.numerator.bit_length(), truth.denominator.bit_length())
+    d = lambda a, t: cp.asarray(a, t)
+    MASK = 0xFFFFFFFFFFFFFFFF
+    nsm = cp.cuda.Device().attributes["MultiProcessorCount"]
+    blocks, threads = 8 * nsm, 128
+    full = blocks * threads
+    tb = max(truth.numerator.bit_length(), truth.denominator.bit_length())
 
     # Δ-Σ-decide: the HOST uploads raw EVIDENCE (surfaces it measured + live /sys meters the GPU can't read); the
     # on-device SUPERVISOR (apex lead thread, gid==0) computes the OPERATING POINT on-GPU. navigate() below is ONLY
@@ -177,78 +197,206 @@ if __name__ == "__main__":
     # this ad-hoc array (Δ-Σ-trace, recorded as the next arc -- the decision sequence IS a never-discard-residue trace).
     import jea_navigator as NAV
     import live_dispatcher as LD
-    surf=NAV.discover_surfaces()
-    gsf=NAV.measure_g_surface(g)                               # g-surface of the apex's OWN dag (host MEASUREMENT)
-    trip=float(LD._TRIP); pmax=float(surf["pcie_max"]); TF=14
-    BN={"iMC/iGPU":0,"thermal":1,"PCIe/link":2}               # host bottleneck string -> on-device index
+
+    surf = NAV.discover_surfaces()
+    gsf = NAV.measure_g_surface(g)  # g-surface of the apex's OWN dag (host MEASUREMENT)
+    trip = float(LD._TRIP)
+    pmax = float(surf["pcie_max"])
+    TF = 14
+    BN = {"iMC/iGPU": 0, "thermal": 1, "PCIe/link": 2}  # host bottleneck string -> on-device index
 
     def run_drain(T, link):
         """One full drain under ONE uploaded evidence package: the supervisor decides ON-DEVICE, workers drain.
         Fresh device arrays each call (the drain mutates them). Returns (root, err, pending, decision-trace dt)."""
-        dop=d(op,cp.int32); dnarg=cp.zeros(N,cp.int32); dlch=d(lch,cp.int32); drch=d(rch,cp.int32)
-        vNlo=d([v&MASK for v in vN],cp.uint64); vNhi=d([v>>64 for v in vN],cp.uint64)
-        vDlo=d([v&MASK for v in vD],cp.uint64); vDhi=d([v>>64 for v in vD],cp.uint64)
-        bln=d([v.bit_length() for v in vN],cp.int32); bld=d([v.bit_length() for v in vD],cp.int32)
-        escal=cp.zeros(N,cp.int32); tier=cp.zeros(N,cp.int32); dstatus=d(status,cp.int32)
-        qtail=cp.full(1,N,cp.int32); pend=cp.full(1,pending,cp.int32); err=cp.zeros(1,cp.int32)
-        pkg=cp.full(2*FIELDS,full,cp.int32); active=cp.zeros(1,cp.int32)                       # safe default schedule
-        gtrace=cp.zeros(256,cp.int32); gtracen=cp.zeros(1,cp.int32)
-        vec=[surf["imc"],pmax,surf["pcie_eff"],surf["cpu_eff"],float(T),float(link),trip,
-             gsf["coop"],gsf["strat"],gsf["spread"],float(tb),0.9,0.7,0.0]                     # raw EVIDENCE
-        tpkg=cp.asarray(vec+[0.0]*TF, cp.float64); dout=cp.zeros(1+7*8,cp.int32)
-        _apex((blocks,),(threads,),(dop,dnarg,dlch,drch,vNlo,vNhi,vDlo,vDhi,bln,bld,escal,tier,dstatus,
-                                    qtail,pend,err,np.int32(N),np.int64(N),pkg,active,np.int32(FIELDS),
-                                    gtrace,gtracen,np.int32(256),np.int32(0),
-                                    tpkg,dout,np.int32(TF),np.int32(nsm),np.int32(full),np.int32(1)))
+        dop = d(op, cp.int32)
+        dnarg = cp.zeros(N, cp.int32)
+        dlch = d(lch, cp.int32)
+        drch = d(rch, cp.int32)
+        vNlo = d([v & MASK for v in vN], cp.uint64)
+        vNhi = d([v >> 64 for v in vN], cp.uint64)
+        vDlo = d([v & MASK for v in vD], cp.uint64)
+        vDhi = d([v >> 64 for v in vD], cp.uint64)
+        bln = d([v.bit_length() for v in vN], cp.int32)
+        bld = d([v.bit_length() for v in vD], cp.int32)
+        escal = cp.zeros(N, cp.int32)
+        tier = cp.zeros(N, cp.int32)
+        dstatus = d(status, cp.int32)
+        qtail = cp.full(1, N, cp.int32)
+        pend = cp.full(1, pending, cp.int32)
+        err = cp.zeros(1, cp.int32)
+        pkg = cp.full(2 * FIELDS, full, cp.int32)
+        active = cp.zeros(1, cp.int32)  # safe default schedule
+        gtrace = cp.zeros(256, cp.int32)
+        gtracen = cp.zeros(1, cp.int32)
+        vec = [
+            surf["imc"],
+            pmax,
+            surf["pcie_eff"],
+            surf["cpu_eff"],
+            float(T),
+            float(link),
+            trip,
+            gsf["coop"],
+            gsf["strat"],
+            gsf["spread"],
+            float(tb),
+            0.9,
+            0.7,
+            0.0,
+        ]  # raw EVIDENCE
+        tpkg = cp.asarray(vec + [0.0] * TF, cp.float64)
+        dout = cp.zeros(1 + 7 * 8, cp.int32)
+        _apex(
+            (blocks,),
+            (threads,),
+            (
+                dop,
+                dnarg,
+                dlch,
+                drch,
+                vNlo,
+                vNhi,
+                vDlo,
+                vDhi,
+                bln,
+                bld,
+                escal,
+                tier,
+                dstatus,
+                qtail,
+                pend,
+                err,
+                np.int32(N),
+                np.int64(N),
+                pkg,
+                active,
+                np.int32(FIELDS),
+                gtrace,
+                gtracen,
+                np.int32(256),
+                np.int32(0),
+                tpkg,
+                dout,
+                np.int32(TF),
+                np.int32(nsm),
+                np.int32(full),
+                np.int32(1),
+            ),
+        )
         cp.cuda.Stream.null.synchronize()
-        rn=(int(vNhi.get()[root])<<64)|int(vNlo.get()[root]); rd=(int(vDhi.get()[root])<<64)|int(vDlo.get()[root])
-        return (Fraction(rn,rd) if rd else None), int(err.get()[0]), int(pend.get()[0]), [int(x) for x in dout.get()]
+        rn = (int(vNhi.get()[root]) << 64) | int(vNlo.get()[root])
+        rd = (int(vDhi.get()[root]) << 64) | int(vDlo.get()[root])
+        return (
+            (Fraction(rn, rd) if rd else None),
+            int(err.get()[0]),
+            int(pend.get()[0]),
+            [int(x) for x in dout.get()],
+        )
 
-    tel=LD.poll()                                            # live meters (off-GPU; uploaded as evidence)
-    epochs=[("live",tel["T"],tel["link_state"]), ("hot(synthetic)",120.0,0.50),
-            ("live-again",tel["T"],tel["link_state"])]       # recurring evidence -> the WAL should INTERN it (Δ-Σ-trace c)
-    import jea_eval as EVAL                                  # the TRACE HOME: fold the supervisor decision WAL here
-    decisions=[]; hits=[]; got=None; e=0; pe=0
-    for label,T,link in epochs:                              # one drain per evidence pkg -> supervisor decides on-device
-        got,e,pe,dt = run_drain(T,link)
-        f1000,bn,gd = (dt[2],dt[3],dt[4]) if dt[0]>=1 else (0,-1,0)
-        was_hit,canon = EVAL.record_decision((round(T,1),round(link,3)), (f1000,bn,gd))  # fold dout into the WAL/SPPF
-        hits.append(was_hit and canon==(f1000,bn,gd))        # recurring evidence -> hit, cached decision is faithful
-        ref=NAV.navigate(surf,{"T":T,"link_state":link,"gov":"?"},dict(dag=g,C=0.9,f=0.7,bits=tb,spawn=False))
-        decisions.append((label,T,link,(f1000,bn,gd),ref))
+    tel = LD.poll()  # live meters (off-GPU; uploaded as evidence)
+    epochs = [
+        ("live", tel["T"], tel["link_state"]),
+        ("hot(synthetic)", 120.0, 0.50),
+        ("live-again", tel["T"], tel["link_state"]),
+    ]  # recurring evidence -> the WAL should INTERN it (Δ-Σ-trace c)
+    import jea_eval as EVAL  # the TRACE HOME: fold the supervisor decision WAL here
 
-    u64_val = POOL.run_qfold(g)[0]                              # SAME DAG on the raw-u64 carrier (overflows)
+    decisions = []
+    hits = []
+    got = None
+    e = 0
+    pe = 0
+    for label, T, link in epochs:  # one drain per evidence pkg -> supervisor decides on-device
+        got, e, pe, dt = run_drain(T, link)
+        f1000, bn, gd = (dt[2], dt[3], dt[4]) if dt[0] >= 1 else (0, -1, 0)
+        was_hit, canon = EVAL.record_decision(
+            (round(T, 1), round(link, 3)), (f1000, bn, gd)
+        )  # fold dout into the WAL/SPPF
+        hits.append(
+            was_hit and canon == (f1000, bn, gd)
+        )  # recurring evidence -> hit, cached decision is faithful
+        ref = NAV.navigate(
+            surf,
+            {"T": T, "link_state": link, "gov": "?"},
+            dict(dag=g, C=0.9, f=0.7, bits=tb, spawn=False),
+        )
+        decisions.append((label, T, link, (f1000, bn, gd), ref))
+
+    u64_val = POOL.run_qfold(g)[0]  # SAME DAG on the raw-u64 carrier (overflows)
     print(f"  DAG: {N} nodes, truth ~{tb} bits (intermediates overflow u64); true root = {truth}")
-    print(f"  ON-DEVICE supervisor decisions (one drain per uploaded evidence pkg; the GPU computed each operating point):")
-    agree=True
-    for label,T,link,dev,ref in decisions:
-        f1000,bn,gd=dev; dev_f=f1000/1000.0; ref_bn=BN.get(ref["bottleneck"],-1)
-        ok_f=abs(dev_f-ref["fstar"])<=0.02; ok_bn=(bn==ref_bn)
-        agree=agree and ok_f and ok_bn
-        print(f"    {label:<15} T={T:.0f}C link={link:.2f}: ON-DEVICE f*={dev_f:.2f} bneck={bn} g={gd} "
-              f"| host-ref f*={ref['fstar']} bneck={ref_bn} -> match f*:{ok_f} bneck:{ok_bn}")
-    print(f"  u128-apex root = {got}  ({'CORRECT' if got==truth else 'WRONG'}); drained pending->{pe}, err={e}")
-    print(f"  raw-u64 carrier (same DAG) = {u64_val}  ({'overflow/WRONG' if u64_val!=truth else 'ok'})")
+    print(
+        f"  ON-DEVICE supervisor decisions (one drain per uploaded evidence pkg; the GPU computed each operating point):"
+    )
+    agree = True
+    for label, T, link, dev, ref in decisions:
+        f1000, bn, gd = dev
+        dev_f = f1000 / 1000.0
+        ref_bn = BN.get(ref["bottleneck"], -1)
+        ok_f = abs(dev_f - ref["fstar"]) <= 0.02
+        ok_bn = bn == ref_bn
+        agree = agree and ok_f and ok_bn
+        print(
+            f"    {label:<15} T={T:.0f}C link={link:.2f}: ON-DEVICE f*={dev_f:.2f} bneck={bn} g={gd} "
+            f"| host-ref f*={ref['fstar']} bneck={ref_bn} -> match f*:{ok_f} bneck:{ok_bn}"
+        )
+    print(
+        f"  u128-apex root = {got}  ({'CORRECT' if got == truth else 'WRONG'}); drained pending->{pe}, err={e}"
+    )
+    print(
+        f"  raw-u64 carrier (same DAG) = {u64_val}  ({'overflow/WRONG' if u64_val != truth else 'ok'})"
+    )
 
     # Δ-Σ-trace (c): the decision WAL is HELD + INTERNED in jea_eval (the same trace home as the eval memo).
-    w_wal = (EVAL.wal_len()==len(epochs)) and (EVAL.distinct_decisions() < EVAL.wal_len()) and any(hits)
-    print(f"\n  DECISION WAL (held in jea_eval -- the SAME trace home as the eval/SPPF memo): {EVAL.wal_len()} steps "
-          f"-> {EVAL.distinct_decisions()} distinct (recurring 'live' evidence INTERNED; supervisor reused the cached decision)")
+    w_wal = (
+        (EVAL.wal_len() == len(epochs))
+        and (EVAL.distinct_decisions() < EVAL.wal_len())
+        and any(hits)
+    )
+    print(
+        f"\n  DECISION WAL (held in jea_eval -- the SAME trace home as the eval/SPPF memo): {EVAL.wal_len()} steps "
+        f"-> {EVAL.distinct_decisions()} distinct (recurring 'live' evidence INTERNED; supervisor reused the cached decision)"
+    )
 
-    fmoves = len({dv[3][0] for dv in decisions})>=2 or len({dv[3][1] for dv in decisions})>=2  # decision moved w/ evidence
-    w1 = agree and len(decisions)>=1                           # on-device decision == host navigate() reference
-    w2 = (got==truth) and (u64_val != truth) and (e==0)        # carrier exact where u64 overflowed
-    w3 = (got==truth) and (pe==0) and fmoves                   # correct+productive; decision RESPONDS to evidence
-    print(f"\nW1 DECISION ON-DEVICE == host reference (the SUPERVISOR computed f*/bottleneck/g/knobs on-GPU from the")
-    print(f"   uploaded evidence; matches navigate() within rounding -- faithful port, no host decision in the drive path): {w1}")
+    fmoves = (
+        len({dv[3][0] for dv in decisions}) >= 2 or len({dv[3][1] for dv in decisions}) >= 2
+    )  # decision moved w/ evidence
+    w1 = agree and len(decisions) >= 1  # on-device decision == host navigate() reference
+    w2 = (got == truth) and (u64_val != truth) and (e == 0)  # carrier exact where u64 overflowed
+    w3 = (
+        (got == truth) and (pe == 0) and fmoves
+    )  # correct+productive; decision RESPONDS to evidence
+    print(
+        f"\nW1 DECISION ON-DEVICE == host reference (the SUPERVISOR computed f*/bottleneck/g/knobs on-GPU from the"
+    )
+    print(
+        f"   uploaded evidence; matches navigate() within rounding -- faithful port, no host decision in the drive path): {w1}"
+    )
     print(f"W2 CARRIER EXACT BEYOND u64 (u128 root==truth where raw-u64 overflowed; err=0): {w2}")
-    print(f"W3 CORRECT + DECISION RESPONDS TO EVIDENCE (root==truth, pending->0; on-device f*/bottleneck differ live vs")
-    print(f"   hot -- the supervisor re-decides per uploaded package, no host-sync per decision): {w3}")
-    print(f"W4 DECISION WAL ≡ EEA/SPPF TRACE (Δ-Σ-trace c: the decision sequence is HELD + INTERNED in jea_eval's memo")
-    print(f"   -- recurring evidence dedups to one node, the cached decision reused; durable, not an ephemeral dout): {w_wal}")
-    ok=w1 and w2 and w3 and w_wal
-    print(f"\n  {'PASS' if ok else 'FAIL'} — Δ-Σ-decide: the operating-point SOLVE now runs ON-DEVICE. The host uploads")
-    print(f"  raw evidence (surfaces it measured + live /sys meters the GPU can't read); the apex SUPERVISOR (gid==0)")
-    print(f"  reads it and computes f*/bottleneck/schedule-g/mode/repr/carrier on-GPU -- matching the host navigate()")
-    print(f"  oracle, NO host round-trip per decision (host = sensor, supervisor = decision). The decision TRACE is a")
-    print(f"  WAL that should live in the term-algebra SPPF/EEA structure (Δ-Σ-trace), not this ad-hoc array.")
+    print(
+        f"W3 CORRECT + DECISION RESPONDS TO EVIDENCE (root==truth, pending->0; on-device f*/bottleneck differ live vs"
+    )
+    print(
+        f"   hot -- the supervisor re-decides per uploaded package, no host-sync per decision): {w3}"
+    )
+    print(
+        f"W4 DECISION WAL ≡ EEA/SPPF TRACE (Δ-Σ-trace c: the decision sequence is HELD + INTERNED in jea_eval's memo"
+    )
+    print(
+        f"   -- recurring evidence dedups to one node, the cached decision reused; durable, not an ephemeral dout): {w_wal}"
+    )
+    ok = w1 and w2 and w3 and w_wal
+    print(
+        f"\n  {'PASS' if ok else 'FAIL'} — Δ-Σ-decide: the operating-point SOLVE now runs ON-DEVICE. The host uploads"
+    )
+    print(
+        f"  raw evidence (surfaces it measured + live /sys meters the GPU can't read); the apex SUPERVISOR (gid==0)"
+    )
+    print(
+        f"  reads it and computes f*/bottleneck/schedule-g/mode/repr/carrier on-GPU -- matching the host navigate()"
+    )
+    print(
+        f"  oracle, NO host round-trip per decision (host = sensor, supervisor = decision). The decision TRACE is a"
+    )
+    print(
+        f"  WAL that should live in the term-algebra SPPF/EEA structure (Δ-Σ-trace), not this ad-hoc array."
+    )

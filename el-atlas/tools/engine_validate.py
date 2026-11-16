@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 engine_validate.py — AI-6: validate the perf engine's bottleneck VIEWS against a real measured
 bottleneck (not just internal consistency). Only the het composition law had met ground truth.

@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 # =============================================================================
 # jea_parity_species_probe.py   (Ⓟ — the orbit-cloud parity-species probe)
 #
@@ -60,24 +62,33 @@ from math import comb
 
 def cyc_maps(nv):
     """The (nv)! frame actions on the cycle space of K_nv (exact rational)."""
-    edges = list(combinations(range(nv), 2)); eidx = {e: i for i, e in enumerate(edges)}
-    tree = set((0, j) for j in range(1, nv)); rows = []
+    edges = list(combinations(range(nv), 2))
+    eidx = {e: i for i, e in enumerate(edges)}
+    tree = set((0, j) for j in range(1, nv))
+    rows = []
     for e in edges:
         if e in tree:
             continue
-        a, b = e; v = [0] * len(edges); v[eidx[e]] += 1
+        a, b = e
+        v = [0] * len(edges)
+        v[eidx[e]] += 1
         if a != 0:
             v[eidx[(0, a)]] -= 1
         if b != 0:
             v[eidx[(0, b)]] += 1
         rows.append(v)
-    C = sp.Matrix(rows); Cpinv = C.T * (C * C.T).inv()
+    C = sp.Matrix(rows)
+    Cpinv = C.T * (C * C.T).inv()
 
     def edge_perm(p):
-        m = len(edges); P = sp.zeros(m, m)
+        m = len(edges)
+        P = sp.zeros(m, m)
         for j, (a, b) in enumerate(edges):
-            pa, pb = p[a], p[b]; e2 = (pa, pb) if pa < pb else (pb, pa); P[eidx[e2], j] = 1
+            pa, pb = p[a], p[b]
+            e2 = (pa, pb) if pa < pb else (pb, pa)
+            P[eidx[e2], j] = 1
         return P
+
     return [(p, C * edge_perm(p) * Cpinv) for p in permutations(range(nv))], C.shape[0]
 
 
@@ -91,29 +102,36 @@ def nilpotent_index(M, cap=8):
 
 
 from jea_check import Checks
-_checks = Checks(); check = _checks.check; results = _checks.results
+
+_checks = Checks()
+check = _checks.check
+results = _checks.results
 
 
 def probe_rung(n):
     """Returns (n_distinct, species-dict) for rung n (K_{n+1}, cycle-dim C(n,2))."""
-    nv = n + 1; cyc_dim = comb(n, 2)
+    nv = n + 1
+    cyc_dim = comb(n, 2)
     print(f"\n=== rung {n}: K{nv}, cycle-dim {cyc_dim} ===")
-    maps, dim = cyc_maps(nv); I = sp.eye(dim)
+    maps, dim = cyc_maps(nv)
+    I = sp.eye(dim)
     classes = []
-    for (p, M) in maps:
+    for p, M in maps:
         hit = None
         for k, (rep, idx) in enumerate(classes):
             if sp.simplify(M - rep) == sp.zeros(dim, dim):
-                hit = k; break
+                hit = k
+                break
         if hit is None:
             classes.append((M, [p]))
         else:
             classes[hit][1].append(p)
-    n_distinct = len(classes); n_collisions = sum(len(idx) - 1 for _, idx in classes)
+    n_distinct = len(classes)
+    n_collisions = sum(len(idx) - 1 for _, idx in classes)
     print(f"  frames {len(maps)} -> distinct maps {n_distinct}  (collisions: {n_collisions})")
     # for each COLLIDING pair, the 'invisible' g = p1 . p0^-1, its action T_g, and species
     species = {}
-    for (M, ps) in classes:
+    for M, ps in classes:
         if len(ps) < 2:
             continue
         p0 = ps[0]
@@ -121,15 +139,23 @@ def probe_rung(n):
             inv0 = [0] * nv
             for i, x in enumerate(p0):
                 inv0[x] = i
-            g = tuple(p1[inv0[i]] for i in range(nv))     # p1 ∘ p0^-1
+            g = tuple(p1[inv0[i]] for i in range(nv))  # p1 ∘ p0^-1
             _, Tg = next((pp, MM) for pp, MM in maps if pp == g)
             isI = sp.simplify(Tg - I) == sp.zeros(dim, dim)
             invol = sp.simplify(Tg * Tg - I) == sp.zeros(dim, dim)
-            N = sp.simplify(Tg - I); nidx = nilpotent_index(N)
-            kind = ("trivial" if isI else
-                    "IDEMPOTENT/involution (T^2=I)" if invol else
-                    f"NILPOTENT (N^{nidx}=0)" if nidx else "OTHER")
-            species.setdefault(kind, 0); species[kind] += 1
+            N = sp.simplify(Tg - I)
+            nidx = nilpotent_index(N)
+            kind = (
+                "trivial"
+                if isI
+                else "IDEMPOTENT/involution (T^2=I)"
+                if invol
+                else f"NILPOTENT (N^{nidx}=0)"
+                if nidx
+                else "OTHER"
+            )
+            species.setdefault(kind, 0)
+            species[kind] += 1
     if species:
         print(f"  reroute species: {dict(species)}")
     else:
@@ -149,20 +175,32 @@ def main():
         if any("NILPOTENT" in k for k in species):
             saw_nilpotent = True
         if n == 3:
-            check("rung 3: cloud is exactly 22 (idempotent V2 reroute, not 24, not float)", n_distinct == 22)
-            check("rung 3: the reroute is IDEMPOTENT species (T^2=I), NOT nilpotent",
-                  any("IDEMPOTENT" in k for k in species))
-            check("rung 3: NO nilpotent reroute (clean extreme only)",
-                  not any("NILPOTENT" in k for k in species))
+            check(
+                "rung 3: cloud is exactly 22 (idempotent V2 reroute, not 24, not float)",
+                n_distinct == 22,
+            )
+            check(
+                "rung 3: the reroute is IDEMPOTENT species (T^2=I), NOT nilpotent",
+                any("IDEMPOTENT" in k for k in species),
+            )
+            check(
+                "rung 3: NO nilpotent reroute (clean extreme only)",
+                not any("NILPOTENT" in k for k in species),
+            )
         else:  # rungs >= 4 are faithful: distinct == (n+1)!, no reroute
             from math import factorial
-            check(f"rung {n}: FAITHFUL (distinct == {n + 1}! = {factorial(n + 1)}, no reroute)",
-                  n_distinct == factorial(n + 1) and not species)
+
+            check(
+                f"rung {n}: FAITHFUL (distinct == {n + 1}! = {factorial(n + 1)}, no reroute)",
+                n_distinct == factorial(n + 1) and not species,
+            )
 
     print("\n=== VERDICT ===")
-    check("no NILPOTENT reroute appears in the orbit cloud at any tested rung "
-          "(the nilpotent species lives only in cross_term, invisible to orbit geometry)",
-          not saw_nilpotent)
+    check(
+        "no NILPOTENT reroute appears in the orbit cloud at any tested rung "
+        "(the nilpotent species lives only in cross_term, invisible to orbit geometry)",
+        not saw_nilpotent,
+    )
 
     return 0 if _checks.tally("exact checks") else 1
 

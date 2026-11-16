@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 gpu-topology-nedge-pilot.py — T-series pilot: GPU hardware topology as a nedge G-Value
 conductance network (candidate claim GPT).

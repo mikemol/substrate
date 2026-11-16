@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Emit membudget's proof-cost ledger to cassian's VictoriaMetrics via OTLP.
 
 The membudget wrapper records per-module `<module>\\t<seconds>\\t<peak_mb>` into each
@@ -18,19 +20,32 @@ VERIFY BY THE DATA, NEVER THE 200: an empty/malformed OTLP POST still returns 20
 `vm_rows_inserted_total{type="opentelemetry"}` (the guide's stated verify counter) does NOT
 exist on this instance, so this does a READ-YOUR-WRITE instead: it emits a heartbeat gauge
 `membudget_emit_unixtime` whose VALUE is this run's start-time, then polls until that exact
-value is queryable back — proving ingestion, not just transport. The FIRST run creates new
-metric NAMES, whose label-index appearance lags the write by up to ~20s (steady-state ~1-2s).
+value is queryable back — proving ingestion, not just transport.
+
+⚑ THE DEADLINE IS THE STORE'S FLOOR, NOT A GUESS, AND OURS WAS UNDER IT.  This polled 30s
+against VM's `-search.latencyOffset`, which DEFAULTS TO 30s: an instant query evaluates at
+`now − offset`, so the point is not queryable until the deadline has already expired, and a
+correct push reported `✗ NOT queryable`.  paperkit measured it end to end (30.77s at the
+default vs 10.5s at `-search.latencyOffset=1s`).  That is the `vm_rows_inserted_total` class
+one layer down: read-your-write replaced a counter that reported failure on success, and an
+under-floor deadline reintroduced the same false negative in the replacement.  The default
+now comes from `scratch/tsdbprobe.DEADLINE` — one constant, shared with the reader that
+carries cassian's `query-readback` semantics, so the two cannot drift.
 
 Metrics (resource `service.name="substrate.membudget"` → job label, distinct from cassian's own):
     membudget_peak_mb{module,dir}       gauge  — max maxRSS over the last K builds (cap-relevant worst case)
     membudget_build_seconds{module,dir} gauge  — median build seconds over the last K builds
     membudget_build_count{module,dir}   gauge  — how many recent runs the above summarise
 """
+
 from __future__ import annotations
 import argparse, json, os, statistics, sys, time, urllib.parse, urllib.request
 from collections import defaultdict
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, os.path.join(REPO, "scratch"))
+import tsdbprobe as _probe  # noqa: E402  — THE verify authority; never re-derive its deadline
+
 AGDA_ROOT = os.path.join(REPO, "agda")
 OTLP_ENDPOINT = "http://127.0.0.1:8428/opentelemetry/v1/metrics"
 QUERY_BASE = "http://127.0.0.1:8428"
@@ -89,7 +104,45 @@ def query_scalar(query_base: str, promql: str) -> float | None:
     return max(float(v["value"][1]) for v in res)
 
 
-def emit(data, endpoint: str, emit_start: float):
+def emit_gauges(
+    service: str,
+    prefix: str,
+    series: dict,
+    at: float,
+    endpoint: str,
+    meter_name: str | None = None,
+    units: dict | None = None,
+) -> None:
+    """THE OTLP producer. One shape, three callers; never a fourth.
+
+    `series` is `{metric_suffix: {labels_frozen: value}}`, where `labels_frozen` is a
+    tuple of `(key, value)` pairs — hashable, order-stable, and arbitrary-arity, so a
+    per-module ledger (`module`,`dir`), a per-suite roster (`suite`) and a bare aggregate
+    (`()`) are the same call rather than three emitters.
+
+    ⚑ THIS EXISTS BECAUSE THE LEDGER→GAUGE SHAPE IS ONE CAPABILITY AND WAS WRITTEN TWICE
+    (CLAUDE.md: *"TWO EMITTERS EXIST AND BOTH HAND-ROLL THE BOILERPLATE … do not add a
+    third"*).  A per-dir TSV whose first column is a target name and whose rest are named
+    numeric SLIs, aggregated last-K, is the shared form — `.agda-times.tsv`,
+    `.selftest-last.tsv` and `.agda-profile.tsv` are three instances of it.  The third had
+    NO export path at all, which is the tell that the duplication was costing reach and
+    not merely lines.
+
+    ⚑ AND THE DUPLICATION WAS NOT COSMETIC — IT HELD TWO MEASURED CONSTRAINTS.
+    `Resource(attributes=…)`, NOT `Resource.create()`: the latter injects a RANDOM
+    per-process `service.instance.id` plus `telemetry.sdk.*` labels, so every run mints a
+    fresh series set (~4148 churn series bought that lesson) instead of UPDATING the same
+    series over time.  And the heartbeat's VALUE is the run's start time, so verification
+    is read-your-write on a value we control — never the transport's 200, which an
+    empty/malformed POST also returns.  Two copies of a constraint is two places for it to
+    drift; that is the argument for the lift, independent of line count.
+
+    ⚑ `at` TRAVELS WITH THE SAMPLE, never `time.time()` read in here.  A REPLAY IS NOT A
+    RE-MEASUREMENT: a sample buffered during an outage carries its own moment, and
+    stamping it with the replay's clock would make the backfilled series a fiction —
+    worse than the gap it fills.  Callers pass the sample's own `at`; this function has no
+    opinion about now.
+    """
     import socket
     from opentelemetry.sdk.resources import Resource
     from opentelemetry.sdk.metrics import MeterProvider
@@ -97,61 +150,166 @@ def emit(data, endpoint: str, emit_start: float):
     from opentelemetry.exporter.otlp.proto.http.metric_exporter import OTLPMetricExporter
     from opentelemetry.metrics import Observation
 
+    units = units or {}
     exporter = OTLPMetricExporter(endpoint=endpoint)
     reader = PeriodicExportingMetricReader(exporter, export_interval_millis=3_600_000)
-    # ⚑ Resource(attributes=…), NOT Resource.create(): the latter injects a RANDOM
-    # `service.instance.id` (UUID per process) + `telemetry.sdk.*` version labels, so every
-    # run would mint a fresh series set (cardinality churn). Pin both to STABLE values so a
-    # re-run UPDATES the same (module,dir) series over time — proper time-series semantics.
     provider = MeterProvider(
         metric_readers=[reader],
-        resource=Resource(attributes={
-            "service.name": "substrate.membudget",
-            "service.instance.id": socket.gethostname(),
-        }),
+        resource=Resource(
+            attributes={
+                "service.name": service,
+                "service.instance.id": socket.gethostname(),
+            }
+        ),
     )
-    meter = provider.get_meter("membudget")
+    meter = provider.get_meter(meter_name or prefix)
 
-    def gauge_cb(pick):
-        def cb(_options):
-            for (reldir, mod), (peak, secs, n) in data.items():
-                attrs = {"module": mod, "dir": reldir}
-                yield Observation(pick(peak, secs, n), attrs)
+    def _cb(points):
+        # ⚑ BIND `points` AS A DEFAULT ARG, never close over the loop variable: a late-bound
+        # closure would make every gauge emit the LAST metric's points — one wrong series set
+        # per run, silently, with the right series NAMES.
+        def cb(_options, _pts=points):
+            for labels, value in sorted(_pts.items()):
+                yield Observation(value, dict(labels))
+
         return cb
 
-    meter.create_observable_gauge("membudget_peak_mb",
-                                  callbacks=[gauge_cb(lambda p, s, n: p)], unit="MB")
-    meter.create_observable_gauge("membudget_build_seconds",
-                                  callbacks=[gauge_cb(lambda p, s, n: s)], unit="s")
-    meter.create_observable_gauge("membudget_build_count",
-                                  callbacks=[gauge_cb(lambda p, s, n: n)], unit="1")
+    for suffix, points in sorted(series.items()):
+        meter.create_observable_gauge(
+            f"{prefix}_{suffix}", callbacks=[_cb(points)], unit=units.get(suffix, "1")
+        )
 
-    # Heartbeat we control: value == this run's start unix time. Reading it back ≥ emit_start
-    # confirms INGESTION (not just the transport 200) — read-your-write on a known value.
-    def hb_cb(_options):
-        from opentelemetry.metrics import Observation as _Obs
-        yield _Obs(emit_start, {})
-    meter.create_observable_gauge("membudget_emit_unixtime", callbacks=[hb_cb], unit="s")
+    # The heartbeat is emitted BY THE PRODUCER, so no caller can forget it and then have
+    # nothing to verify against. Its value is `at` verbatim (see the ⚑ above).
+    meter.create_observable_gauge(f"{prefix}_emit_unixtime", callbacks=[_cb({(): at})], unit="s")
 
     provider.force_flush(timeout_millis=15_000)  # collect (fires callbacks) + export
     provider.shutdown()
 
 
+def emit(data, endpoint: str, emit_start: float):
+    """membudget's ledger → the shared producer. Kept as the named caller, not re-derived."""
+    emit_gauges(
+        service="substrate.membudget",
+        prefix="membudget",
+        series={
+            "peak_mb": {(("module", m), ("dir", d)): p for (d, m), (p, _s, _n) in data.items()},
+            "build_seconds": {
+                (("module", m), ("dir", d)): s for (d, m), (_p, s, _n) in data.items()
+            },
+            "build_count": {(("module", m), ("dir", d)): n for (d, m), (_p, _s, n) in data.items()},
+        },
+        at=emit_start,
+        endpoint=endpoint,
+        units={"peak_mb": "MB", "build_seconds": "s", "build_count": "1"},
+    )
+
+
+def _selftest() -> bool:
+    """⚑ THE PRODUCER HAD NO SUITE, so it was INVISIBLE to `run_selftests` rather than
+    passing — the gap that let `rename_at_source` ship a live bug through a green run.
+    These drive the two things the lift can break SILENTLY: the label projection and
+    the per-metric closure binding.
+    """
+    cases, ok = [], 0
+
+    def check(label, cond):
+        nonlocal ok
+        cases.append((label, bool(cond)))
+        if cond:
+            ok += 1
+
+    # The membudget projection: the ledger's (dir, module) key must survive as LABELS.
+    data = {
+        ("Algebra/F2", "GF256.agda"): (300.0, 12.5, 5),
+        ("Foundation", "Nat.agda"): (64.0, 1.5, 2),
+    }
+    ser = {
+        "peak_mb": {(("module", m), ("dir", d)): p for (d, m), (p, _s, _n) in data.items()},
+        "build_seconds": {(("module", m), ("dir", d)): s for (d, m), (_p, s, _n) in data.items()},
+    }
+    check(
+        "projection keeps dir+module distinct",
+        len(ser["peak_mb"]) == 2
+        and ser["peak_mb"][(("module", "GF256.agda"), ("dir", "Algebra/F2"))] == 300.0,
+    )
+
+    # ⚑ THE LATE-BINDING TRAP, driven rather than reasoned about. Building callbacks in a
+    # loop that closes over the loop variable makes EVERY gauge emit the LAST metric's
+    # points — correct series NAMES, wrong values, no error. This asserts each callback
+    # returns ITS OWN metric's points, which is exactly what a late-bound closure fails.
+    def _cb(points):
+        def cb(_o, _pts=points):
+            return sorted(_pts.items())
+
+        return cb
+
+    built = {suffix: _cb(pts) for suffix, pts in sorted(ser.items())}
+    got = {suffix: dict(fn(None)) for suffix, fn in built.items()}
+    check(
+        "each gauge emits its OWN points (late-binding guard)",
+        got["peak_mb"] != got["build_seconds"]
+        and got["build_seconds"][(("module", "Nat.agda"), ("dir", "Foundation"))] == 1.5,
+    )
+
+    # A bare aggregate and the heartbeat share the empty-label shape.
+    check("empty labels are a valid point", dict(_cb({(): 42.0})(None)) == {(): 42.0})
+
+    # ⚑ SORTED, so a re-run emits points in a STABLE order rather than dict order.
+    check(
+        "points are emitted in sorted order",
+        [k for k, _ in _cb(ser["peak_mb"])(None)] == sorted(ser["peak_mb"]),
+    )
+
+    # aggregate()'s contract: peak is the MAX over last-K (cap-relevant), secs the MEDIAN.
+    import tempfile
+
+    with tempfile.TemporaryDirectory() as td:
+        sub = os.path.join(td, "Algebra")
+        os.makedirs(sub)
+        with open(os.path.join(sub, ".agda-times.tsv"), "w") as fh:
+            fh.write("M.agda\t1.0\t100\nM.agda\t5.0\t300\nM.agda\t3.0\t200\n")
+        agg = aggregate(td, 5)
+        peak, secs, n = agg[("Algebra", "M.agda")]
+        check("aggregate: peak = MAX (worst case, not median)", peak == 300.0)
+        check("aggregate: seconds = MEDIAN over last K", secs == 3.0 and n == 3)
+
+    for label, good in cases:
+        if not good:
+            print(f"  FAIL {label}")
+    print(f"selftest: {ok}/{len(cases)}")
+    return ok == len(cases)
+
+
 def main() -> int:
-    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    if "--selftest" in sys.argv:
+        return 0 if _selftest() else 1
+    ap = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
     ap.add_argument("--endpoint", default=OTLP_ENDPOINT, help="OTLP metrics ingest URL")
-    ap.add_argument("--query-base", default=QUERY_BASE, help="VictoriaMetrics base for verify-by-counter")
+    ap.add_argument(
+        "--query-base", default=QUERY_BASE, help="VictoriaMetrics base for verify-by-counter"
+    )
     ap.add_argument("--last-k", type=int, default=5, help="summarise the last K runs per module")
     ap.add_argument("--root", default=AGDA_ROOT, help="tree to scan for .agda-times.tsv")
     ap.add_argument("--dry-run", action="store_true", help="print the aggregate; do not emit")
-    ap.add_argument("--deadline", type=float, default=30.0, help="seconds to poll for the counter to move")
+    ap.add_argument(
+        "--deadline",
+        type=float,
+        default=_probe.DEFAULT_DEADLINE,
+        help="seconds to poll for OUR value to read back "
+        f"(default {_probe.DEFAULT_DEADLINE:.0f}s: VM's -search.latencyOffset floor plus index time)",
+    )
     args = ap.parse_args()
 
     data = aggregate(args.root, args.last_k)
     n_modules = len(data)
     n_points = n_modules * 3
-    print(f"membudget-otlp: {n_modules} modules from ledgers under {os.path.relpath(args.root, REPO)} "
-          f"(last-{args.last_k}); {n_points} data points.")
+    print(
+        f"membudget-otlp: {n_modules} modules from ledgers under {os.path.relpath(args.root, REPO)} "
+        f"(last-{args.last_k}); {n_points} data points."
+    )
     if not data:
         print("  no ledger rows found — nothing to emit.")
         return 0
@@ -175,12 +333,23 @@ def main() -> int:
             break
     if hb is not None and hb >= emit_start - 1.0:
         peak = query_scalar(args.query_base, "count(membudget_peak_mb)")
-        print(f"  ✓ ingested (read-your-write): membudget_emit_unixtime = {hb:.0f} ≥ emit_start "
-              f"{emit_start:.0f}; membudget_peak_mb series present = {'?' if peak is None else int(peak)}. "
-              f"{n_points} points emitted.")
+        print(
+            f"  ✓ ingested (read-your-write): membudget_emit_unixtime = {hb:.0f} ≥ emit_start "
+            f"{emit_start:.0f}; membudget_peak_mb series present = {'?' if peak is None else int(peak)}. "
+            f"{n_points} points emitted."
+        )
         return 0
-    print(f"  ✗ NOT queryable within {args.deadline:.0f}s (membudget_emit_unixtime={hb}). "
-          f"Transport 200 ≠ ingestion — the POST was empty/malformed or dropped.", file=sys.stderr)
+    # ⚑ NOT CONFIRMED IS NOT FAILED, and this message used to say it was ("the POST was
+    # empty/malformed or dropped").  The predicate cannot distinguish un-indexed from
+    # dropped from store-down (cassian's A67), so naming one is an unestablished cause —
+    # the same overclaim that made `vm_rows_inserted_total` report failure on success.
+    print(
+        f"  ✗ NOT CONFIRMED within {args.deadline:.0f}s (membudget_emit_unixtime={hb}). "
+        f"The write may have ingested and not yet be queryable, or been dropped, or the "
+        f"store may be down — this check cannot tell which. Transport 200 ≠ ingestion; "
+        f"diagnose with: python3 scratch/tsdbprobe.py --reachable",
+        file=sys.stderr,
+    )
     return 1
 
 

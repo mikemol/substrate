@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """nat_enum.py — ⟡nat-enum (+ ⟡nat-enum-residue): synthesize tower NATURALITY LAWS from
 the typechecked cores' models, INCLUDING the residue of every "failed" square.
 
@@ -19,60 +21,115 @@ not overfitting. Emits NEW laws (holding + residue) as Agda statements; the proo
 
 Usage:  python3 jea/metalanguage/nat_enum.py [--emit OUT.agda]
 """
+
 from __future__ import annotations
 import sys, os, argparse, subprocess
 from itertools import product
 import numpy as np
 
+
 # ------------------------------------------------------------------ Fin-vector models
-def punchin(p, x): return x if x < p else x + 1
-def insert_at(p, s): return [p] + [punchin(p, v) for v in s]
+def punchin(p, x):
+    return x if x < p else x + 1
+
+
+def insert_at(p, s):
+    return [p] + [punchin(p, v) for v in s]
+
+
 def decode(digits):
     s = []
-    for d in digits: s = insert_at(d, s)
+    for d in digits:
+        s = insert_at(d, s)
     return s
-def blockSum(s, t): m = len(s); return list(s) + [m + v for v in t]
+
+
+def blockSum(s, t):
+    m = len(s)
+    return list(s) + [m + v for v in t]
+
+
 def tensor(s, t):
-    n = len(t); out = [0] * (len(s) * n)
+    n = len(t)
+    out = [0] * (len(s) * n)
     for i in range(len(s)):
-        for j in range(n): out[i * n + j] = s[i] * n + t[j]
+        for j in range(n):
+            out[i * n + j] = s[i] * n + t[j]
     return out
-def sign(s): return sum(1 for i in range(len(s)) for j in range(i + 1, len(s)) if s[i] > s[j]) & 1
-def length(d): return sum(d)
-def lp_oplus(a, b): return list(b) + list(a)                       # _⊕_
-def lp_otimes(a, b):                                              # _⊗ˢ_ (offsetDigit p n q = p*n+q)
-    n = len(b); return [p * n + q for p in a for q in b]
+
+
+def sign(s):
+    return sum(1 for i in range(len(s)) for j in range(i + 1, len(s)) if s[i] > s[j]) & 1
+
+
+def length(d):
+    return sum(d)
+
+
+def lp_oplus(a, b):
+    return list(b) + list(a)  # _⊕_
+
+
+def lp_otimes(a, b):  # _⊗ˢ_ (offsetDigit p n q = p*n+q)
+    n = len(b)
+    return [p * n + q for p in a for q in b]
+
+
 def all_paths(n):
-    if n == 0: yield []; return
+    if n == 0:
+        yield []
+        return
     for pre in all_paths(n - 1):
-        for d in range(n): yield pre + [d]
+        for d in range(n):
+            yield pre + [d]
+
 
 # ------------------------------------------------------------------ vocabulary
 K = 6
 # map -> (F:LehmerPath->X, codomain, agda-apply X↦term, import homes)
 MAPS = {
-    "decode": (lambda l: decode(l),       "perm", (lambda x: f"decode {x}"),
-               ["Substrate.WitnessTower.LehmerPath"]),
-    "sign":   (lambda l: sign(decode(l)), "f2", (lambda x: f"bool→F₂ (sign (decode {x}))"),
-               ["Substrate.WitnessTower.LehmerPath", "Substrate.WitnessTower.Wedge.OrientationRigCatPermSign",
-                "Substrate.Algebra.F2.FromBool"]),
-    "len":    (lambda l: length(l),       "nat",  (lambda x: f"pyLength {x}"),
-               ["Substrate.WitnessTower.Wedge.PyAstRewriteSemantics"]),
+    "decode": (
+        lambda l: decode(l),
+        "perm",
+        (lambda x: f"decode {x}"),
+        ["Substrate.WitnessTower.LehmerPath"],
+    ),
+    "sign": (
+        lambda l: sign(decode(l)),
+        "f2",
+        (lambda x: f"bool→F₂ (sign (decode {x}))"),
+        [
+            "Substrate.WitnessTower.LehmerPath",
+            "Substrate.WitnessTower.Wedge.OrientationRigCatPermSign",
+            "Substrate.Algebra.F2.FromBool",
+        ],
+    ),
+    "len": (
+        lambda l: length(l),
+        "nat",
+        (lambda x: f"pyLength {x}"),
+        ["Substrate.WitnessTower.Wedge.PyAstRewriteSemantics"],
+    ),
 }
 SOURCE_OPS = {
-    "⊕":  (lp_oplus,  "Substrate.WitnessTower.Wedge.OrientationSum._⊕_"),
+    "⊕": (lp_oplus, "Substrate.WitnessTower.Wedge.OrientationSum._⊕_"),
     "⊗ˢ": (lp_otimes, "Substrate.WitnessTower.Wedge.OrientationProductStructural._⊗ˢ_"),
 }
 # perm-codomain target ops (hom-check; a perm residue would be recon(δ), synth_agda_prototype's residue class)
-PERM_OPS = {"blockSum": (blockSum, "Substrate.WitnessTower.Wedge.OrientationDistributor.blockSum"),
-            "_⊗_":      (tensor,   "Substrate.WitnessTower.Wedge.OrientationProduct._⊗_")}
+PERM_OPS = {
+    "blockSum": (blockSum, "Substrate.WitnessTower.Wedge.OrientationDistributor.blockSum"),
+    "_⊗_": (tensor, "Substrate.WitnessTower.Wedge.OrientationProduct._⊗_"),
+}
 
 # ------------------------------------------------------------------ closed-form synthesis
 # monomial = (var, gm, gn): value = (F x if 'a' else F y) * m^gm * n^gn ; grade-degree ≤ 2, length-linear.
 BASIS = [(v, gm, gn) for v in ("a", "b") for gm in range(3) for gn in range(3) if gm + gn <= 2]
+
+
 def mono_val(mon, a, b, m, n):
     v, gm, gn = mon
-    return (a if v == "a" else b) * (m ** gm) * (n ** gn)
+    return (a if v == "a" else b) * (m**gm) * (n**gn)
+
 
 def collect(F, op_s):
     data = {}
@@ -81,81 +138,116 @@ def collect(F, op_s):
             key = (F(l1), F(l2), m, n)
             val = F(op_s(l1, l2))
             if key in data and data[key] != val:
-                return None                                       # not a function of (a,b,m,n): out of scope
+                return None  # not a function of (a,b,m,n): out of scope
             data[key] = val
     return data
 
+
 def fit_nat(F, op_s):
     data = collect(F, op_s)
-    if data is None: return None
-    keys = sorted(data); Y = np.array([data[k] for k in keys], float)
+    if data is None:
+        return None
+    keys = sorted(data)
+    Y = np.array([data[k] for k in keys], float)
     X = np.array([[mono_val(mo, *k) for mo in BASIS] for k in keys], float)
     coef, *_ = np.linalg.lstsq(X, Y, rcond=None)
     cr = np.round(coef).astype(int)
-    if not np.array_equal(X @ cr, Y.astype(int)): return None
+    if not np.array_equal(X @ cr, Y.astype(int)):
+        return None
     return [(BASIS[i], int(c)) for i, c in enumerate(cr) if c]
+
 
 def fit_bool(F, op_s):
     """GF(2) fit over grade-parity-weighted {s₁,s₂} — brute force (small basis)."""
     data = collect(F, op_s)
-    if data is None: return None
+    if data is None:
+        return None
     b2 = [(v, gm, gn) for v in ("a", "b") for gm in (0, 1) for gn in (0, 1) if gm + gn <= 1]
     keys = sorted(data)
     rows = [[(mono_val(mo, *k) & 1) for mo in b2] for k in keys]
     Y = [data[k] & 1 for k in keys]
-    for combo in range(1 << len(b2)):                             # 2^|b2| ≤ 64
+    for combo in range(1 << len(b2)):  # 2^|b2| ≤ 64
         sel = [i for i in range(len(b2)) if combo >> i & 1]
         if all(sum(r[i] for i in sel) & 1 == y for r, y in zip(rows, Y)):
             return [(b2[i], 1) for i in sel]
     return None
 
+
 # ------------------------------------------------------------------ mechanical primitive synthesis
 # A ℕ → (finite type) primitive-recursive def is synthesized from its numpy model: base = model 0,
 # step detected from the finite step-table. NO hand-derivation. GENERAL — not parity-specific.
 BOOL_STEPS = {"not": lambda b: 1 - b, "id": lambda b: b, "false": lambda b: 0, "true": lambda b: 1}
+
+
 def synth_prim_rec(model):
     base = model(0)
-    step = next((s for s, f in BOOL_STEPS.items() if all(model(k + 1) == f(model(k)) for k in range(64))), None)
+    step = next(
+        (s for s, f in BOOL_STEPS.items() if all(model(k + 1) == f(model(k)) for k in range(64))),
+        None,
+    )
     return None if step is None else ("false" if base == 0 else "true", step)
+
 
 def write_prim(home, name, model):
     """Mechanically emit `name : ℕ → Bool` at module `home`, base+step detected from `model`."""
     r = synth_prim_rec(model)
-    if r is None: return False
+    if r is None:
+        return False
     base, step = r
     body = {"not": f"not ({name} n)", "id": f"{name} n", "false": "false", "true": "true"}[step]
     path = os.path.join(REPO, "agda", *home.split(".")) + ".agda"
     os.makedirs(os.path.dirname(path), exist_ok=True)
-    L = [f"-- MECHANICALLY SYNTHESIZED (nat_enum.synth_prim_rec): base = model 0, step detected from the",
-         f"-- finite Bool→Bool table against a numpy model. Not hand-derived.",
-         "{-# OPTIONS --safe --without-K #-}", "", f"module {home} where", "",
-         "open import Substrate.Foundation.Nat using (ℕ; zero; suc)",
-         "open import Substrate.Foundation.Bool using (Bool; true; false; not)", "",
-         f"{name} : ℕ → Bool", f"{name} zero    = {base}", f"{name} (suc n) = {body}", ""]
-    open(path, "w").write("\n".join(L)); return True
+    L = [
+        f"-- MECHANICALLY SYNTHESIZED (nat_enum.synth_prim_rec): base = model 0, step detected from the",
+        f"-- finite Bool→Bool table against a numpy model. Not hand-derived.",
+        "{-# OPTIONS --safe --without-K #-}",
+        "",
+        f"module {home} where",
+        "",
+        "open import Substrate.Foundation.Nat using (ℕ; zero; suc)",
+        "open import Substrate.Foundation.Bool using (Bool; true; false; not)",
+        "",
+        f"{name} : ℕ → Bool",
+        f"{name} zero    = {base}",
+        f"{name} (suc n) = {body}",
+        "",
+    ]
+    open(path, "w").write("\n".join(L))
+    return True
+
 
 # the primitive registry: dep-name -> (fallback synth home, numpy model). REUSE-FIRST: a dep is
 # resolved to its EXISTING tree home if present (grep), and only MECHANICALLY SYNTHESIZED if absent.
 SYNTH_REGISTRY = {"parity": ("Substrate.Algebra.N-to-F2-Parity", lambda n: n & 1)}
+
+
 def resolve_dep(dep):
     """reuse-first: grep the SOURCE tree; return the ACTUAL found home; synthesize only if absent."""
     fallback, model = SYNTH_REGISTRY[dep]
-    r = subprocess.run(["grep", "-rlE", "--include=*.agda", f"^{dep} :",
-                        os.path.join(REPO, "agda", "Substrate")], capture_output=True, text=True)
-    if r.stdout.strip():                                          # REUSE — derive the real home from the path
+    r = subprocess.run(
+        ["grep", "-rlE", "--include=*.agda", f"^{dep} :", os.path.join(REPO, "agda", "Substrate")],
+        capture_output=True,
+        text=True,
+    )
+    if r.stdout.strip():  # REUSE — derive the real home from the path
         path = sorted(r.stdout.strip().split("\n"))[0]
         home = os.path.relpath(path, os.path.join(REPO, "agda"))[:-5].replace("/", ".")
         return home, False
-    write_prim(fallback, dep, model); return fallback, True
+    write_prim(fallback, dep, model)
+    return fallback, True
+
 
 # ------------------------------------------------------------------ classify + render
 def as_hom(form, cod):
     """is the closed form a single clean target op of (F x, F y)?  return op-name or None."""
     s = {(m, c) for m, c in form}
     A, B = (("a", 0, 0), 1), (("b", 0, 0), 1)
-    if cod == "nat" and s == {A, B}: return "_+_"
-    if cod == "f2" and s == {A, B}: return "_+₂_"       # F₂ addition (= xor); reused, renamed on import
+    if cod == "nat" and s == {A, B}:
+        return "_+_"
+    if cod == "f2" and s == {A, B}:
+        return "_+₂_"  # F₂ addition (= xor); reused, renamed on import
     return None
+
 
 def render(form, fa, cod):
     """render the closed form; return (agda-rhs, deps) — deps = primitives it references that may
@@ -163,28 +255,58 @@ def render(form, fa, cod):
     parts, deps = [], set()
     for (v, gm, gn), c in sorted(form):
         base = f"({fa('l₁' if v == 'a' else 'l₂')})"
-        if cod == "f2":                                           # scalar-mult-by-grade in F₂ = parity · (reuse)
+        if cod == "f2":  # scalar-mult-by-grade in F₂ = parity · (reuse)
             guards = (["parity m"] if gm else []) + (["parity n"] if gn else [])
-            if guards: deps.add("parity")
+            if guards:
+                deps.add("parity")
             parts.append(base if not guards else "(" + " ·₂ ".join(guards + [base]) + ")")
-        else:                                                     # scalar-mult-by-grade in ℕ = *  (exists, no dep)
-            parts.append(" * ".join(([str(c)] if c != 1 else []) + ["m"] * gm + ["n"] * gn + [base]))
+        else:  # scalar-mult-by-grade in ℕ = *  (exists, no dep)
+            parts.append(
+                " * ".join(([str(c)] if c != 1 else []) + ["m"] * gm + ["n"] * gn + [base])
+            )
     return (" +₂ " if cod == "f2" else " + ").join(parts), deps
 
+
 REPO = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+
+
 def already_proven(fn, sn):
     name = {("decode", "⊕"): "decode-⊕", ("decode", "⊗ˢ"): "decode-⊗ˢ"}.get((fn, sn))
-    if not name: return None
-    r = subprocess.run(["grep", "-rl", f"{name} :", os.path.join(REPO, "agda", "Substrate")],
-                       capture_output=True, text=True)
+    if not name:
+        return None
+    r = subprocess.run(
+        ["grep", "-rl", f"{name} :", os.path.join(REPO, "agda", "Substrate")],
+        capture_output=True,
+        text=True,
+    )
     return name if r.stdout.strip() else None
+
 
 # ------------------------------------------------------------------ ⟡nat-enum-higher: the DISTRIBUTOR (J₃)
 # left = a ⊗ˢ (b ⊕ c) ; right = (a ⊗ˢ b) ⊕ (a ⊗ˢ c) — the two forms differ by the distributor δ.
-def dist_left(la, lb, lc):  return lp_otimes(la, lp_oplus(lb, lc))
-def dist_right(la, lb, lc): return lp_oplus(lp_otimes(la, lb), lp_otimes(la, lc))
-GW3 = [(0,0,0),(1,0,0),(0,1,0),(0,0,1),(2,0,0),(0,2,0),(0,0,2),(1,1,0),(1,0,1),(0,1,1)]  # m,p,q deg≤2
-KH = 4                                                            # smaller range for the TRIPLE product (|paths|³)
+def dist_left(la, lb, lc):
+    return lp_otimes(la, lp_oplus(lb, lc))
+
+
+def dist_right(la, lb, lc):
+    return lp_oplus(lp_otimes(la, lb), lp_otimes(la, lc))
+
+
+GW3 = [
+    (0, 0, 0),
+    (1, 0, 0),
+    (0, 1, 0),
+    (0, 0, 1),
+    (2, 0, 0),
+    (0, 2, 0),
+    (0, 0, 2),
+    (1, 1, 0),
+    (1, 0, 1),
+    (0, 1, 1),
+]  # m,p,q deg≤2
+KH = 4  # smaller range for the TRIPLE product (|paths|³)
+
+
 def fit_dist_nat(F):
     """fit the residue F(left) - F(right) over {a,b,c} × grade-monomials(m,p,q, deg≤2)."""
     data = {}
@@ -192,37 +314,53 @@ def fit_dist_nat(F):
         for la, lb, lc in product(all_paths(m), all_paths(p), all_paths(q)):
             key = (F(la), F(lb), F(lc), m, p, q)
             data[key] = F(dist_left(la, lb, lc)) - F(dist_right(la, lb, lc))
-    keys = sorted(data); Y = np.array([data[k] for k in keys], float)
+    keys = sorted(data)
+    Y = np.array([data[k] for k in keys], float)
+
     def mono(a, b, c, m, p, q):
-        return [(a if v == 0 else b if v == 1 else c) * m**gm * p**gp * q**gq
-                for (gm, gp, gq) in GW3 for v in (0, 1, 2)]
+        return [
+            (a if v == 0 else b if v == 1 else c) * m**gm * p**gp * q**gq
+            for (gm, gp, gq) in GW3
+            for v in (0, 1, 2)
+        ]
+
     X = np.array([mono(*k) for k in keys], float)
     cr = np.round(np.linalg.lstsq(X, Y, rcond=None)[0]).astype(int)
-    if not np.array_equal(X @ cr, Y.astype(int)): return None
+    if not np.array_equal(X @ cr, Y.astype(int)):
+        return None
     names = [(v, gm, gp, gq) for (gm, gp, gq) in GW3 for v in ("a", "b", "c")]
     return [(names[i], int(c)) for i, c in enumerate(cr) if c]
 
+
 def respects_dist(F):
-    return all(F(dist_left(la, lb, lc)) == F(dist_right(la, lb, lc))
-               for m, p, q in product(range(KH), range(KH), range(KH))
-               for la, lb, lc in product(all_paths(m), all_paths(p), all_paths(q)))
+    return all(
+        F(dist_left(la, lb, lc)) == F(dist_right(la, lb, lc))
+        for m, p, q in product(range(KH), range(KH), range(KH))
+        for la, lb, lc in product(all_paths(m), all_paths(p), all_paths(q))
+    )
+
 
 def render_dist_nat(form, fa):
     parts = []
     for (v, gm, gp, gq), c in sorted(form):
         base = f"({fa('l₁' if v == 'a' else 'l₂' if v == 'b' else 'l₃')})"
-        parts.append(" * ".join(([str(c)] if c != 1 else []) + ["m"]*gm + ["p"]*gp + ["q"]*gq + [base]))
+        parts.append(
+            " * ".join(([str(c)] if c != 1 else []) + ["m"] * gm + ["p"] * gp + ["q"] * gq + [base])
+        )
     return " + ".join(parts) if parts else "?"
+
 
 def run_higher(emit_path):
     print("⟡nat-enum-higher: the DISTRIBUTOR coherence  F(a ⊗ˢ (b ⊕ c)) vs F((a⊗ˢb) ⊕ (a⊗ˢc))\n")
-    laws = []   # (name, lhs-map-apply, kind, rhs)
+    laws = []  # (name, lhs-map-apply, kind, rhs)
     for fn, (F, cod, fa, _) in MAPS.items():
         L = lambda x: fa(x)
         lhs = L("(_⊗ˢ_ l₁ (_⊕_ l₂ l₃))")
         rhs_right = L("(_⊕_ (_⊗ˢ_ l₁ l₂) (_⊗ˢ_ l₁ l₃))")
         if cod == "perm":
-            print(f"  decode: respects δ = {respects_dist(F)}  → residue = δ (reuse OrientationDistributor); not re-emitted")
+            print(
+                f"  decode: respects δ = {respects_dist(F)}  → residue = δ (reuse OrientationDistributor); not re-emitted"
+            )
             continue
         if respects_dist(F):
             print(f"  {fn}: RESPECTS δ (coherent; δ is even for sign)")
@@ -233,90 +371,151 @@ def run_higher(emit_path):
             print(f"  {fn}: RESIDUE  {fn}(left) - {fn}(right) = {res}")
             laws.append((fn, lhs, "res", f"{rhs_right} + {res}"))
     if emit_path:
-        write_higher(emit_path, laws); print(f"\n[emit] {len(laws)} higher law(s) → {emit_path}")
+        write_higher(emit_path, laws)
+        print(f"\n[emit] {len(laws)} higher law(s) → {emit_path}")
+
 
 def write_higher(path, laws):
     mod = os.path.splitext(os.path.basename(path))[0]
-    homes = {"Substrate.Foundation.Eq", "Substrate.WitnessTower.LehmerPath", "Substrate.Foundation.Nat",
-             "Substrate.Foundation.Bool", "Substrate.Algebra.F2.FromBool", "Substrate.Algebra.N-to-F2-Parity",
-             "Substrate.WitnessTower.Wedge.OrientationRigCatPermSign", "Substrate.WitnessTower.Wedge.PyAstRewriteSemantics",
-             "Substrate.WitnessTower.Wedge.OrientationSum", "Substrate.WitnessTower.Wedge.OrientationProductStructural"}
-    L = ["-- ⟡nat-enum-higher — the DISTRIBUTOR (J₃) coherence for maps, as a --safe PARAMETERIZED module.",
-         "{-# OPTIONS --safe --without-K #-}", "", f"module {mod} where", ""]
+    homes = {
+        "Substrate.Foundation.Eq",
+        "Substrate.WitnessTower.LehmerPath",
+        "Substrate.Foundation.Nat",
+        "Substrate.Foundation.Bool",
+        "Substrate.Algebra.F2.FromBool",
+        "Substrate.Algebra.N-to-F2-Parity",
+        "Substrate.WitnessTower.Wedge.OrientationRigCatPermSign",
+        "Substrate.WitnessTower.Wedge.PyAstRewriteSemantics",
+        "Substrate.WitnessTower.Wedge.OrientationSum",
+        "Substrate.WitnessTower.Wedge.OrientationProductStructural",
+    }
+    L = [
+        "-- ⟡nat-enum-higher — the DISTRIBUTOR (J₃) coherence for maps, as a --safe PARAMETERIZED module.",
+        "{-# OPTIONS --safe --without-K #-}",
+        "",
+        f"module {mod} where",
+        "",
+    ]
     L += [f"open import {h}" for h in sorted(homes)]
     if any(MAPS[fn][1] == "f2" for (fn, *_) in laws):
         L.append("open import Substrate.Algebra.F2 using (F₂) renaming (_+_ to _+₂_; _·_ to _·₂_)")
     L += ["", "module Laws"]
-    for (fn, lhs, kind, rhs) in laws:
-        L.append(f"  ({fn}-δ : ∀ {{m p q}} (l₁ : LehmerPath m) (l₂ : LehmerPath p) (l₃ : LehmerPath q) → {lhs} ≡ {rhs})")
+    for fn, lhs, kind, rhs in laws:
+        L.append(
+            f"  ({fn}-δ : ∀ {{m p q}} (l₁ : LehmerPath m) (l₂ : LehmerPath p) (l₃ : LehmerPath q) → {lhs} ≡ {rhs})"
+        )
     L += ["  where", ""]
     open(path, "w").write("\n".join(L))
 
+
 # ------------------------------------------------------------------ driver
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument("--emit"); ap.add_argument("--higher")
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--emit")
+    ap.add_argument("--higher")
     args = ap.parse_args()
-    if args.higher: run_higher(args.higher); return
-    print(f"⟡nat-enum: synthesizing naturality laws (+ residues) over MAPS={list(MAPS)} "
-          f"× {list(SOURCE_OPS)}  (grades < {K})\n")
+    if args.higher:
+        run_higher(args.higher)
+        return
+    print(
+        f"⟡nat-enum: synthesizing naturality laws (+ residues) over MAPS={list(MAPS)} "
+        f"× {list(SOURCE_OPS)}  (grades < {K})\n"
+    )
     emit = []
     for (fn, (F, cod, fa, _)), (sn, (op_s, s_qn)) in product(MAPS.items(), SOURCE_OPS.items()):
         if cod == "perm":
             hit = None
             for tn, (op_t, t_qn) in PERM_OPS.items():
-                if all(F(op_s(l1, l2)) == op_t(F(l1), F(l2))
-                       for m, n in product(range(K), range(K))
-                       for l1, l2 in product(all_paths(m), all_paths(n))):
-                    hit = (tn, t_qn); break
+                if all(
+                    F(op_s(l1, l2)) == op_t(F(l1), F(l2))
+                    for m, n in product(range(K), range(K))
+                    for l1, l2 in product(all_paths(m), all_paths(n))
+                ):
+                    hit = (tn, t_qn)
+                    break
             if hit:
                 prov = already_proven(fn, sn)
-                print(f"  ✓ HOM     {fn}({sn}) = {hit[0]}    [{'PROVEN '+prov if prov else 'NEW'}]")
-                if not prov: emit.append(("hom", fn, sn, fa, s_qn, hit, set()))
+                print(
+                    f"  ✓ HOM     {fn}({sn}) = {hit[0]}    [{'PROVEN ' + prov if prov else 'NEW'}]"
+                )
+                if not prov:
+                    emit.append(("hom", fn, sn, fa, s_qn, hit, set()))
             else:
-                print(f"  ~ RESIDUE {fn}({sn}) : perm-valued δ = recon(op_t, ·) — synth_agda_prototype residue class")
+                print(
+                    f"  ~ RESIDUE {fn}({sn}) : perm-valued δ = recon(op_t, ·) — synth_agda_prototype residue class"
+                )
             continue
         form = (fit_nat if cod == "nat" else fit_bool)(F, op_s)
         if form is None:
-            print(f"  · {fn}({sn}) : no closed form in the bounded basis"); continue
+            print(f"  · {fn}({sn}) : no closed form in the bounded basis")
+            continue
         hom = as_hom(form, cod)
         rhs, deps = render(form, fa, cod)
         kind = "HOM    " if hom else "RESIDUE"
-        print(f"  ✓ {kind} {fn}({sn}) = {rhs}" + (f"   [deps: {', '.join(sorted(deps))}]" if deps else ""))
+        print(
+            f"  ✓ {kind} {fn}({sn}) = {rhs}"
+            + (f"   [deps: {', '.join(sorted(deps))}]" if deps else "")
+        )
         emit.append(("law", fn, sn, fa, s_qn, rhs, deps))
 
     if args.emit and emit:
-        all_deps = set().union(*(e[6] for e in emit))             # Minesweeper cascade — GENERAL, not per-codomain
+        all_deps = set().union(
+            *(e[6] for e in emit)
+        )  # Minesweeper cascade — GENERAL, not per-codomain
         for dep in sorted(all_deps):
             home, synthed = resolve_dep(dep)
-            print(f"[cascade] {'synthesized' if synthed else 'resolved'} dependency `{dep}` → {home}")
-        write_agda(args.emit, emit); print(f"\n[emit] {len(emit)} law(s) → {args.emit}")
+            print(
+                f"[cascade] {'synthesized' if synthed else 'resolved'} dependency `{dep}` → {home}"
+            )
+        write_agda(args.emit, emit)
+        print(f"\n[emit] {len(emit)} law(s) → {args.emit}")
+
 
 def write_agda(path, emit):
     """Emit a --safe PARAMETERIZED module: each synthesized law is a module PARAMETER the
     consumer discharges by instantiation (no ? holes, no postulates — --safe-clean)."""
     mod = os.path.splitext(os.path.basename(path))[0]
-    homes = {"Substrate.Foundation.Eq", "Substrate.WitnessTower.LehmerPath",
-             "Substrate.Foundation.Nat", "Substrate.Foundation.Bool"}
-    for (k, fn, sn, fa, s_qn, extra, deps) in emit:
-        homes |= set(MAPS[fn][3]); homes.add(s_qn.rsplit(".", 1)[0])
-        homes |= {SYNTH_REGISTRY[d][0] for d in deps}             # resolved/synthesized dependency homes
-        if k == "hom": homes.add(extra[1].rsplit(".", 1)[0])
-    L = ["-- ⟡nat-enum — numpy-synthesized naturality laws (holding + residue) as a PARAMETERIZED module.",
-         "-- --safe: the laws are module PARAMETERS (interface); the consumer discharges each by",
-         "-- instantiation with a proof. No ? holes, no postulates. (decode-⊕ / decode-⊗ˢ already PROVEN",
-         "-- in the tree — reused, not re-stated.)",
-         "{-# OPTIONS --safe --without-K #-}", "", f"module {mod} where", ""]
+    homes = {
+        "Substrate.Foundation.Eq",
+        "Substrate.WitnessTower.LehmerPath",
+        "Substrate.Foundation.Nat",
+        "Substrate.Foundation.Bool",
+    }
+    for k, fn, sn, fa, s_qn, extra, deps in emit:
+        homes |= set(MAPS[fn][3])
+        homes.add(s_qn.rsplit(".", 1)[0])
+        homes |= {SYNTH_REGISTRY[d][0] for d in deps}  # resolved/synthesized dependency homes
+        if k == "hom":
+            homes.add(extra[1].rsplit(".", 1)[0])
+    L = [
+        "-- ⟡nat-enum — numpy-synthesized naturality laws (holding + residue) as a PARAMETERIZED module.",
+        "-- --safe: the laws are module PARAMETERS (interface); the consumer discharges each by",
+        "-- instantiation with a proof. No ? holes, no postulates. (decode-⊕ / decode-⊗ˢ already PROVEN",
+        "-- in the tree — reused, not re-stated.)",
+        "{-# OPTIONS --safe --without-K #-}",
+        "",
+        f"module {mod} where",
+        "",
+    ]
     L += [f"open import {h}" for h in sorted(homes)]
-    if any(MAPS[fn][1] == "f2" for (k, fn, *_) in emit):          # F₂ ops, renamed to avoid the ℕ _+_ clash
+    if any(MAPS[fn][1] == "f2" for (k, fn, *_) in emit):  # F₂ ops, renamed to avoid the ℕ _+_ clash
         L.append("open import Substrate.Algebra.F2 using (F₂) renaming (_+_ to _+₂_; _·_ to _·₂_)")
     L += ["", "module Laws"]
-    for (k, fn, sn, fa, s_qn, extra, _deps) in emit:
+    for k, fn, sn, fa, s_qn, extra, _deps in emit:
         sop = s_qn.rsplit(".", 1)[1]
         lhs = fa(f"({sop} l₁ l₂)")
         rhs = f"{extra[0]} ({fa('l₁')}) ({fa('l₂')})" if k == "hom" else extra
-        L.append(f"  ({fn}-{sn} : ∀ {{m n}} (l₁ : LehmerPath m) (l₂ : LehmerPath n) → {lhs} ≡ {rhs})")
-    L += ["  where", "", "  -- consequences of the synthesized laws are derived here; instantiate to discharge.", ""]
+        L.append(
+            f"  ({fn}-{sn} : ∀ {{m n}} (l₁ : LehmerPath m) (l₂ : LehmerPath n) → {lhs} ≡ {rhs})"
+        )
+    L += [
+        "  where",
+        "",
+        "  -- consequences of the synthesized laws are derived here; instantiate to discharge.",
+        "",
+    ]
     open(path, "w").write("\n".join(L))
+
 
 if __name__ == "__main__":
     main()

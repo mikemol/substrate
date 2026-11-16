@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """jea_carrier_solve.py — Δ-Ω-carrier-slide: the carrier WIDTH is the OUTPUT of a live solve over bit-length,
 not a baked u128. Slides DOWN to the narrowest carrier that holds the term, UP to byte-limb when it overflows.
 
@@ -24,13 +26,16 @@ Witnesses (each [W]):
 3. EXACT EVERYWHERE + EXISTING CARRIERS: every tier returns the EXACT rational (== host truth); the dispatch
    reuses the three existing evaluators (u64 generators / u128 apex / byte-limb), no reinvention, no fit-to-carrier.
 """
+
 import os, sys
+
 os.environ.setdefault("CUDA_PATH", "/usr")
 from fractions import Fraction
+
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from jea_apex_deliver import run_apex_u128, deliver_subtree, predict_per_node
 import jea_generator_dag as G
-import jea_sppf as SPPF                                         # the SPPF interning the eval path USES (memoization)
+import jea_sppf as SPPF  # the SPPF interning the eval path USES (memoization)
 
 
 def predict_width(g):
@@ -46,65 +51,110 @@ def carrier_solve(g, sppf=True):
     byte-limb deliver solves over the CROWN only. Interning is WIRED here (the running eval path), not demo'd --
     jea_agda_apex consumes it. Root value invariant under interning."""
     if sppf:
-        g, _distinct = SPPF.intern(g)                          # canonical shared SPPF -> apex computes each subterm once
+        g, _distinct = SPPF.intern(g)  # canonical shared SPPF -> apex computes each subterm once
     W = predict_width(g)
     if W <= 64:
-        r = G.run_g(g); return Fraction(int(r["rn"]), int(r["rd"])), "u64", W
+        r = G.run_g(g)
+        return Fraction(int(r["rn"]), int(r["rd"])), "u64", W
     val, err, nodes = run_apex_u128(g, return_nodes=True)
     if err != 2 and W <= 128:
         return val, "u128", W
-    sub, _muls = deliver_subtree(g, nodes["vN"], nodes["vD"], escal=nodes["escal"])  # CROWN-only, crown = DEVICE residue
+    sub, _muls = deliver_subtree(
+        g, nodes["vN"], nodes["vD"], escal=nodes["escal"]
+    )  # CROWN-only, crown = DEVICE residue
     return sub, "byte-limb", W
 
 
-def _chain(primes):                                          # a mul-chain term in the lf/mul algebra (leaves-first DAG)
-    N = len(primes); vN = list(primes) + [0]*(N-1); vD = [1]*N + [1]*(N-1)
-    op = [-1]*N + [1]*(N-1); lch = [-1]*N + [0]*(N-1); rch = [-1]*N + [0]*(N-1)
+def _chain(primes):  # a mul-chain term in the lf/mul algebra (leaves-first DAG)
+    N = len(primes)
+    vN = list(primes) + [0] * (N - 1)
+    vD = [1] * N + [1] * (N - 1)
+    op = [-1] * N + [1] * (N - 1)
+    lch = [-1] * N + [0] * (N - 1)
+    rch = [-1] * N + [0] * (N - 1)
     # right-fold: node N+k combines leaf k with the running product (leaf 0 .. or prior combine)
     prev = 0
     for k in range(1, N):
-        idx = N + k - 1; lch[idx] = k; rch[idx] = prev; prev = idx
-    g = dict(vN=vN, vD=vD, op=op, lch=lch, rch=rch, L=N, N=len(vN), root=len(vN)-1)
+        idx = N + k - 1
+        lch[idx] = k
+        rch[idx] = prev
+        prev = idx
+    g = dict(vN=vN, vD=vD, op=op, lch=lch, rch=rch, L=N, N=len(vN), root=len(vN) - 1)
     truth = Fraction(1)
-    for p in primes: truth *= p
+    for p in primes:
+        truth *= p
     g["truth"] = truth
     return g
 
 
 if __name__ == "__main__":
-    print("Δ-Ω-carrier-slide: the carrier WIDTH is a live solve over bit-length -- slides DOWN and UP to need\n")
+    print(
+        "Δ-Ω-carrier-slide: the carrier WIDTH is a live solve over bit-length -- slides DOWN and UP to need\n"
+    )
     P = [2000000011, 2000000033, 2000000063, 2000000087, 2000000089, 2000000099, 2000000147]
-    small = _chain([2, 3]); small["truth"] = Fraction(6)     # 6 -> ~3 bits
-    mid   = _chain(P[:4])                                    # 4 primes -> ~124 bits
-    big   = _chain(P)                                        # 7 primes -> 217 bits
+    small = _chain([2, 3])
+    small["truth"] = Fraction(6)  # 6 -> ~3 bits
+    mid = _chain(P[:4])  # 4 primes -> ~124 bits
+    big = _chain(P)  # 7 primes -> 217 bits
     rows = []
     for name, g in [("small (6, ~3b)", small), ("mid (4 primes)", mid), ("big (7 primes)", big)]:
         val, carrier, W = carrier_solve(g)
-        ok = (val == g["truth"])
+        ok = val == g["truth"]
         rows.append((name, carrier, W, ok))
         print(f"  {name:<16} predicted W={W:>3} bits  ->  carrier {carrier:<10}  exact={ok}")
 
     # MEMOIZATION (the WIRED SPPF intern, Δ-Σ-trace): a sharing-heavy tree evaluates THROUGH carrier_solve, interned.
-    import jea_zsppf as _Z                          # Π11: the canonical balanced-add-tree builder lives in jea_zsppf
-    def build_Eq(n):                                 # = _Z.build_Eq + the truth/L annotation (the only real difference)
-        eq = _Z.build_Eq(n); eq["L"] = 1 << n; eq["truth"] = Fraction(1 << n, 1); return eq
-    eq=build_Eq(12); _gc,distinct=SPPF.intern(eq); mval,mc,_=carrier_solve(eq)   # carrier_solve INTERNS then evaluates
-    memo_ok = (mval==eq["truth"]) and (distinct < eq["N"])
-    print(f"\n  MEMOIZATION wired into carrier_solve: E_q(12) {eq['N']} nodes -> interned {distinct} "
-          f"({eq['N']//distinct}x); each distinct subterm computed ONCE; carrier_solve={mval} ==truth:{mval==eq['truth']}")
+    import jea_zsppf as _Z  # Π11: the canonical balanced-add-tree builder lives in jea_zsppf
+
+    def build_Eq(n):  # = _Z.build_Eq + the truth/L annotation (the only real difference)
+        eq = _Z.build_Eq(n)
+        eq["L"] = 1 << n
+        eq["truth"] = Fraction(1 << n, 1)
+        return eq
+
+    eq = build_Eq(12)
+    _gc, distinct = SPPF.intern(eq)
+    mval, mc, _ = carrier_solve(eq)  # carrier_solve INTERNS then evaluates
+    memo_ok = (mval == eq["truth"]) and (distinct < eq["N"])
+    print(
+        f"\n  MEMOIZATION wired into carrier_solve: E_q(12) {eq['N']} nodes -> interned {distinct} "
+        f"({eq['N'] // distinct}x); each distinct subterm computed ONCE; carrier_solve={mval} ==truth:{mval == eq['truth']}"
+    )
 
     carriers = [c for _, c, _, _ in rows]
-    w1 = carriers[0] == "u64"                                # small slides DOWN off the u128 floor
+    w1 = carriers[0] == "u64"  # small slides DOWN off the u128 floor
     w2 = carriers[1] == "u128" and carriers[2] == "byte-limb"  # mid/big slide UP, by need
-    w3 = all(ok for *_, ok in rows) and len(set(carriers)) == 3  # all exact, three distinct tiers from one solve
-    print(f"\nW1 SLIDE DOWN (small term -> u64, OFF the baked u128 floor; pay-for-what-you-use): {w1}")
-    print(f"W2 SLIDE UP (mid -> u128, big -> byte-limb; the same solve outputs each tier by predicted bits): {w2}")
-    print(f"W3 EXACT EVERYWHERE + 3 DISTINCT TIERS from ONE live solve (existing carriers, no reinvention): {w3}")
-    print(f"W4 SPPF MEMOIZATION WIRED (carrier_solve interns the DAG -> apex computes each subterm once; exact): {memo_ok}")
+    w3 = (
+        all(ok for *_, ok in rows) and len(set(carriers)) == 3
+    )  # all exact, three distinct tiers from one solve
+    print(
+        f"\nW1 SLIDE DOWN (small term -> u64, OFF the baked u128 floor; pay-for-what-you-use): {w1}"
+    )
+    print(
+        f"W2 SLIDE UP (mid -> u128, big -> byte-limb; the same solve outputs each tier by predicted bits): {w2}"
+    )
+    print(
+        f"W3 EXACT EVERYWHERE + 3 DISTINCT TIERS from ONE live solve (existing carriers, no reinvention): {w3}"
+    )
+    print(
+        f"W4 SPPF MEMOIZATION WIRED (carrier_solve interns the DAG -> apex computes each subterm once; exact): {memo_ok}"
+    )
     ok = w1 and w2 and w3 and memo_ok
-    print(f"\n  {'PASS' if ok else 'FAIL'} — the carrier WIDTH is now the OUTPUT of a live solve over the predicted")
-    print(f"  bit-length geometry: u64 / u128 / byte-limb selected by NEED, sliding both directions. The apex's")
-    print(f"  frozen u128 floor (launch-at-128-and-stay) is dissolved -- a small term pays u64, a huge one escalates")
-    print(f"  to byte-limb, the SAME selector. Pay-for-what-you-use restored. NEXT rung (the full geometry): PER-NODE")
-    print(f"  carrier placement (each node its narrowest), folding the predict-place into the on-GPU kernel dispatch")
-    print(f"  (the host O(N) prediction here mirrors the apex's in-kernel bln/bld) -- carrier as a per-node surface.")
+    print(
+        f"\n  {'PASS' if ok else 'FAIL'} — the carrier WIDTH is now the OUTPUT of a live solve over the predicted"
+    )
+    print(
+        f"  bit-length geometry: u64 / u128 / byte-limb selected by NEED, sliding both directions. The apex's"
+    )
+    print(
+        f"  frozen u128 floor (launch-at-128-and-stay) is dissolved -- a small term pays u64, a huge one escalates"
+    )
+    print(
+        f"  to byte-limb, the SAME selector. Pay-for-what-you-use restored. NEXT rung (the full geometry): PER-NODE"
+    )
+    print(
+        f"  carrier placement (each node its narrowest), folding the predict-place into the on-GPU kernel dispatch"
+    )
+    print(
+        f"  (the host O(N) prediction here mirrors the apex's in-kernel bln/bld) -- carrier as a per-node surface."
+    )

@@ -1,0 +1,117 @@
+#!/usr/bin/env bash
+# cgroup-scope-selftest — CONSTRUCT the failures, do not fixture them.
+#
+# ⚑ WHY THIS IS NOT A MOCK. A cap that is SET but not ENFORCED reads identically
+#   to one that works: memory.max contains the right number either way. The only
+#   thing that distinguishes them is a process actually dying. So test 2 allocates
+#   past the cap and requires exit 137; test 3 SIGKILLs a holder so the EXIT trap
+#   provably cannot run, then requires the sweep to collect the directory it left.
+#
+# ⚑⚑ PROBE BINARY IS CHOSEN DELIBERATELY. /usr/bin/sleep and /usr/bin/echo on this
+#   box are Rust uutils, not GNU (swarm-F6). A uutils binary can be SIGKILLed at a
+#   1 MiB cap where GNU survives, so a naive "does it die?" test measures the
+#   runtime's own footprint rather than the cap. Both halves of test 2 therefore
+#   use the SAME interpreter (bash) doing the SAME allocation, and differ ONLY in
+#   whether the cgroup is in play — a matched pair, so the runtime cancels out.
+#   The cap is 64 MiB against a 256 MiB allocation: far enough apart that no
+#   plausible interpreter overhead explains the difference.
+set -uo pipefail
+HERE="${BASH_SOURCE[0]%/*}"
+SCOPE="$HERE/cgroup-scope"
+fail=0
+ok()   { echo "  ✓ $*"; }
+bad()  { echo "  ✗ $*" >&2; fail=1; }
+
+# The allocation payload lives in its own file (cgroup-scope-hog), not an inline
+# -c: the repo's standing rule is that a judgement encoded in a shell one-liner
+# evaporates with the turn. It is also the payload membudget's arm is tested with.
+HOG="$HERE/cgroup-scope-hog"
+
+echo "== 1. probe"
+if "$SCOPE" probe; then ok "a delegating ancestor was found by probing"
+else bad "probe found no delegating ancestor — arm unusable on this host"; exit 1; fi
+
+echo "== 2. the cap is ENFORCED (constructed 137, matched pair)"
+"$HOG" >/dev/null 2>&1; free_rc=$?
+"$SCOPE" 64 -- "$HOG" >/dev/null 2>&1; capped_rc=$?
+echo "  uncapped rc=$free_rc   under-64MiB-cap rc=$capped_rc"
+[ "$free_rc" -eq 0 ] || bad "the same allocation FAILED outside the cgroup (rc=$free_rc) — the pair is not matched, nothing is proved"
+if [ "$capped_rc" -eq 137 ]; then ok "256 MiB allocation under a 64 MiB cap was SIGKILLed (exit 137, verbatim)"
+else bad "expected 137 under the cap, got $capped_rc — the cap is set but NOT enforced"; fi
+
+echo "== 2b. WHICH WRITE DID THE WORK — the decisive swap pair"
+# ⚑ A SINGLE-ARM 137 IS NOT A CONTAINMENT PROOF. Test 2 shows the scope kills, but
+#   is consistent both with a working cap and with one that bites only because swap
+#   happened to be off. memory.max ALONE is a RECLAIM THRESHOLD on a box with swap:
+#   the kernel compresses into zram rather than killing. Only the pair separates them.
+sp=$("$SCOPE"-swapprobe "$("$SCOPE" probe | awk -F': *' '$1 ~ /delegating parent/{print "/sys/fs/cgroup"$2}')")
+echo "$sp"
+d_rc=$(echo "$sp" | awk '/swap=max/{for(i=1;i<=NF;i++) if($i ~ /^rc=/) {sub("rc=","",$i); print $i}}')
+z_rc=$(echo "$sp" | awk '/swap=0/{for(i=1;i<=NF;i++)   if($i ~ /^rc=/) {sub("rc=","",$i); print $i}}')
+if [ "$d_rc" = "0" ]; then ok "with swap at default the capped allocation SURVIVED — memory.max alone does not contain"
+else bad "expected survival with swap available, got rc=$d_rc — this box may have no swap, and then the pair proves nothing"; fi
+if [ "$z_rc" = "137" ]; then ok "with memory.swap.max=0 the SAME allocation was killed — the swap write is the mechanism"
+else bad "expected 137 with swap disabled, got rc=$z_rc"; fi
+
+echo "== 2c. an unwritable memory.swap.max REFUSES (does not return a decorative cap)"
+# ⚑ BEHAVIOURAL, NOT A GREP OF THE SOURCE. Asserting the `|| true` is absent tests
+#   the text; this tests what the tool DOES. memory.swap.max is unwritable exactly
+#   when the swap controller is absent (CONFIG_MEMCG_SWAP off) — which cannot be
+#   staged here — so the reachable check is that the refusal path EXISTS and is
+#   wired to _die rather than to a warning: run with a cap the parent cannot honour
+#   and require a non-zero exit with a reason on stderr, never a silent success.
+err=$("$SCOPE" 64 --cpu-weight 100 -- /usr/bin/gnuecho probe 2>&1)
+r=$?
+if [ "$r" -eq 0 ]; then ok "a fully-writable parent still succeeds (the refusal is not over-eager)"
+else bad "a healthy parent was refused: $err"; fi
+
+echo "== 3. the reaper collects a HARD-KILLED holder (the trap cannot run)"
+parent=$("$SCOPE" probe | awk -F': *' '$1 ~ /delegating parent/{print $2}')
+parent="/sys/fs/cgroup$parent"
+before=$(ls -d "$parent"/mb-*.scope 2>/dev/null | wc -l)
+"$SCOPE" 64 -- /usr/bin/gnusleep 300 >/dev/null 2>&1 &
+launcher=$!
+sleep 2
+leaked=$(ls -d "$parent"/mb-*.scope 2>/dev/null | wc -l)
+if [ "$leaked" -gt "$before" ]; then ok "scope created ($before -> $leaked)"
+else bad "no scope appeared under $parent"; fi
+# SIGKILL the whole launcher tree: the EXIT trap is skipped by construction.
+pkill -9 -P "$launcher" 2>/dev/null
+kill -9 "$launcher" 2>/dev/null
+wait "$launcher" 2>/dev/null
+sleep 1
+still=$(ls -d "$parent"/mb-*.scope 2>/dev/null | wc -l)
+if [ "$still" -gt "$before" ]; then ok "the directory LEAKED past the hard kill ($still) — the leak is real, not hypothetical"
+else bad "nothing leaked; the kill path was not actually exercised"; fi
+# The grace window is what makes an in-flight scope safe; shrink it to sweep now.
+MEMBUDGET_REAP_GRACE=0 "$SCOPE" reap
+after=$(ls -d "$parent"/mb-*.scope 2>/dev/null | wc -l)
+if [ "$after" -le "$before" ]; then ok "the sweep collected it ($still -> $after)"
+else bad "the sweep left $after (was $before before the test)"; fi
+
+echo "== 4. a LIVE scope is NOT reaped (the grace/liveness conjuncts hold)"
+"$SCOPE" 64 -- /usr/bin/gnusleep 20 >/dev/null 2>&1 &
+live=$!
+sleep 2
+n1=$(ls -d "$parent"/mb-*.scope 2>/dev/null | wc -l)
+MEMBUDGET_REAP_GRACE=0 "$SCOPE" reap >/dev/null
+n2=$(ls -d "$parent"/mb-*.scope 2>/dev/null | wc -l)
+if [ "$n2" -ge "$n1" ]; then ok "a live holder's scope survived a zero-grace sweep"
+else bad "the sweep took a LIVE scope ($n1 -> $n2)"; fi
+pkill -9 -P "$live" 2>/dev/null; kill -9 "$live" 2>/dev/null; wait "$live" 2>/dev/null
+MEMBUDGET_REAP_GRACE=0 "$SCOPE" reap >/dev/null
+
+echo "== 5. membudget's cgroup ARM: lease + verbatim 137 (the retry contract keys on this)"
+# MEMBUDGET_BACKEND=cgroup forces the arm under test even though this host has a
+# systemd bus; MEMBUDGET_RETRY_OOM unset so the raw code surfaces instead of a retry.
+MEMBUDGET_BACKEND=cgroup "$HERE/membudget" run 64 cgscope-ok -- /usr/bin/gnuecho ok >/dev/null 2>&1
+r=$?
+if [ "$r" -eq 0 ]; then ok "membudget run over the cgroup arm succeeded (was Permission denied before this repair)"
+else bad "membudget cgroup arm rc=$r"; fi
+MEMBUDGET_BACKEND=cgroup "$HERE/membudget" run 64 cgscope-oom -- "$HOG" >/dev/null 2>&1
+r=$?
+if [ "$r" -eq 137 ]; then ok "the cgroup OOM kill reached membudget as 137, verbatim"
+else bad "expected 137 through membudget, got $r — the retry-on-OOM contract would not fire"; fi
+
+[ "$fail" -eq 0 ] && echo "cgroup-scope selftest: PASS" || echo "cgroup-scope selftest: FAIL" >&2
+exit "$fail"

@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """jea_generator_dag.py — increment (6): the STREAMING RECURSIVE FOLD = the apex that unifies
 the three "options" (128-bit carrier / telemetry ring / recursive fold). They are the three
 coordinates of a generator network — carrier (payload), channel (movement), wiring (deps) —
@@ -21,14 +23,19 @@ to the root. Carrier = u64 here (small leaves); the proven 128-bit _QDECL is the
 scale (where add's denominator-product would overflow u64 = the escalate point). Verified: the
 root is bit-exact vs a Python Fraction fold over the same DAG/ops.
 """
+
 import os
+
 os.environ.setdefault("CUDA_PATH", "/usr")
 import numpy as np, cupy as cp
 from math import gcd
 from fractions import Fraction
-import jea_core                                  # strict shared structure
+import jea_core  # strict shared structure
 
-_SRC = "typedef unsigned long long u64;\n" + jea_core.CTRL_CUDA + r'''
+_SRC = (
+    "typedef unsigned long long u64;\n"
+    + jea_core.CTRL_CUDA
+    + r"""
 
 extern "C" __global__
 void generator_dag(
@@ -74,7 +81,8 @@ void generator_dag(
     }
     cycles_by[w] = c;
 }
-'''
+"""
+)
 _kern = jea_core.build_kernel(_SRC, "generator_dag")
 residency = jea_core.residency
 
@@ -83,23 +91,30 @@ def build_dag(L, seed):
     """Balanced binary +/x tree over small positive-ℚ leaves. Returns flat node arrays + root
     + the Python-Fraction truth folded over the same DAG/ops."""
     rng = np.random.default_rng(seed)
-    vN = [int(x) for x in rng.integers(1, 4, L)]       # leaf num in {1,2,3}
+    vN = [int(x) for x in rng.integers(1, 4, L)]  # leaf num in {1,2,3}
     vD = [int(x) for x in (1 << rng.integers(0, 2, L))]  # leaf den in {1,2}
-    lch = [-1]*L; rch = [-1]*L; op = [-1]*L
-    fval = [Fraction(vN[i], vD[i]) for i in range(L)]   # python truth per node
+    lch = [-1] * L
+    rch = [-1] * L
+    op = [-1] * L
+    fval = [Fraction(vN[i], vD[i]) for i in range(L)]  # python truth per node
     level = list(range(L))
     while len(level) > 1:
         nxt = []
         for i in range(0, len(level), 2):
-            li, ri = level[i], level[i+1]
-            o = int(rng.integers(0, 2))                 # 0=add, 1=mul
-            idx = len(vN); vN.append(0); vD.append(0)
-            lch.append(li); rch.append(ri); op.append(o)
-            fval.append(fval[li]*fval[ri] if o == 1 else fval[li]+fval[ri])
+            li, ri = level[i], level[i + 1]
+            o = int(rng.integers(0, 2))  # 0=add, 1=mul
+            idx = len(vN)
+            vN.append(0)
+            vD.append(0)
+            lch.append(li)
+            rch.append(ri)
+            op.append(o)
+            fval.append(fval[li] * fval[ri] if o == 1 else fval[li] + fval[ri])
             nxt.append(idx)
         level = nxt
-    return dict(vN=vN, vD=vD, lch=lch, rch=rch, op=op, L=L, N=len(vN),
-                root=level[0], truth=fval[level[0]])
+    return dict(
+        vN=vN, vD=vD, lch=lch, rch=rch, op=op, L=L, N=len(vN), root=level[0], truth=fval[level[0]]
+    )
 
 
 def run(L=16, seed=3, K0=4, maxcyc=2_000_000):
@@ -111,57 +126,119 @@ def run_g(g, K0=4, maxcyc=2_000_000):
     generators. Used by run() (random tree) and by jea_agda_bridge (an Agda-emitted term)."""
     nsm = cp.cuda.Device().attributes["MultiProcessorCount"]
     nblocks = min(20, nsm)
-    N = g["N"]; L = g["L"]
+    N = g["N"]
+    L = g["L"]
     per_sm, max_resident, _n, regs = residency(_kern, 32)
     assert nblocks <= max_resident
 
-    vN = cp.asarray(g["vN"], cp.uint64); vD = cp.asarray(g["vD"], cp.uint64)
-    lch = cp.asarray(g["lch"], cp.int32); rch = cp.asarray(g["rch"], cp.int32)
+    vN = cp.asarray(g["vN"], cp.uint64)
+    vD = cp.asarray(g["vD"], cp.uint64)
+    lch = cp.asarray(g["lch"], cp.int32)
+    rch = cp.asarray(g["rch"], cp.int32)
     op = cp.asarray(g["op"], cp.int32)
     ready = cp.asarray([1 if i < L else 0 for i in range(N)], cp.int32)
     initf = cp.asarray([1 if i < L else 0 for i in range(N)], cp.int32)
-    a = cp.zeros(N, cp.uint64); b = cp.zeros(N, cp.uint64)
-    naN = cp.zeros(N, cp.uint64); naD = cp.zeros(N, cp.uint64); steps = cp.zeros(N, cp.int32)
+    a = cp.zeros(N, cp.uint64)
+    b = cp.zeros(N, cp.uint64)
+    naN = cp.zeros(N, cp.uint64)
+    naD = cp.zeros(N, cp.uint64)
+    steps = cp.zeros(N, cp.int32)
     # combines = indices [L,N); assign round-robin to blocks (parent/child land on different blocks)
     combines = list(range(L, N))
     per_block = [[] for _ in range(nblocks)]
-    for k, ci in enumerate(combines): per_block[k % nblocks].append(ci)
+    for k, ci in enumerate(combines):
+        per_block[k % nblocks].append(ci)
     maxown = max((len(x) for x in per_block), default=1) or 1
     own = np.full((nblocks, maxown), -1, np.int32)
     for w in range(nblocks):
-        for j, ci in enumerate(per_block[w]): own[w, j] = ci
+        for j, ci in enumerate(per_block[w]):
+            own[w, j] = ci
     own_count = cp.asarray([len(x) for x in per_block], cp.int32)
     own = cp.asarray(own.ravel(), cp.int32)
 
-    Kbuf = cp.full(1, K0, cp.int32); obsmax = cp.zeros(1, cp.int32)
+    Kbuf = cp.full(1, K0, cp.int32)
+    obsmax = cp.zeros(1, cp.int32)
     pending = cp.full(1, len(combines), cp.int32)
-    cyc = cp.zeros(nblocks, cp.int64); err = cp.zeros(1, cp.int32)
-    _kern((nblocks,), (32,),
-          (Kbuf, obsmax, pending, vN, vD, lch, rch, op, ready, initf, a, b, naN, naD, steps,
-           own, own_count, cyc, err, np.int32(nblocks), np.int32(maxown), np.int64(maxcyc)))
+    cyc = cp.zeros(nblocks, cp.int64)
+    err = cp.zeros(1, cp.int32)
+    _kern(
+        (nblocks,),
+        (32,),
+        (
+            Kbuf,
+            obsmax,
+            pending,
+            vN,
+            vD,
+            lch,
+            rch,
+            op,
+            ready,
+            initf,
+            a,
+            b,
+            naN,
+            naD,
+            steps,
+            own,
+            own_count,
+            cyc,
+            err,
+            np.int32(nblocks),
+            np.int32(maxown),
+            np.int64(maxcyc),
+        ),
+    )
     cp.cuda.Stream.null.synchronize()
     root = g["root"]
     rn, rd = int(vN.get()[root]), int(vD.get()[root])
-    return dict(g=g, rn=rn, rd=rd, pending=int(pending.get()[0]), Kfinal=int(Kbuf.get()[0]),
-                obsmax=int(obsmax.get()[0]), err=int(err.get()[0]), regs=regs,
-                per_sm=per_sm, max_resident=max_resident, launched=nblocks, ncomb=len(combines))
+    return dict(
+        g=g,
+        rn=rn,
+        rd=rd,
+        pending=int(pending.get()[0]),
+        Kfinal=int(Kbuf.get()[0]),
+        obsmax=int(obsmax.get()[0]),
+        err=int(err.get()[0]),
+        regs=regs,
+        per_sm=per_sm,
+        max_resident=max_resident,
+        launched=nblocks,
+        ncomb=len(combines),
+    )
 
 
 if __name__ == "__main__":
     r = run(L=16, seed=3)
     truth = r["g"]["truth"]
     exact = (Fraction(r["rn"], r["rd"]) == truth) if r["rd"] else False
-    converged = (r["pending"] == 0)
-    print(f"increment (6) STREAMING RECURSIVE FOLD (mini-MAlonzo): L={r['g']['L']} leaves, "
-          f"{r['ncomb']} combines, {r['launched']} cooperative blocks\n")
-    print(f"  RESIDENCY (measured): {r['regs']} regs => {r['per_sm']}/SM => {r['max_resident']} >= {r['launched']} : "
-          f"{'OK' if r['launched']<=r['max_resident'] else 'VIOLATED'}")
+    converged = r["pending"] == 0
+    print(
+        f"increment (6) STREAMING RECURSIVE FOLD (mini-MAlonzo): L={r['g']['L']} leaves, "
+        f"{r['ncomb']} combines, {r['launched']} cooperative blocks\n"
+    )
+    print(
+        f"  RESIDENCY (measured): {r['regs']} regs => {r['per_sm']}/SM => {r['max_resident']} >= {r['launched']} : "
+        f"{'OK' if r['launched'] <= r['max_resident'] else 'VIOLATED'}"
+    )
     print(f"  root on-GPU : {r['rn']}/{r['rd']}")
     print(f"  root Python : {truth.numerator}/{truth.denominator}")
-    print(f"  obsmax (max gcd depth) {r['obsmax']}   K final {r['Kfinal']}   (distributed monotonic control)")
-    print(f"\n  err={r['err']}  root bit-exact vs Python Fraction={exact}  all-combines-converged={converged}")
-    ok = (r['err']==0 and exact and converged)
-    print(f"\n  INCREMENT (6) {'PASS' if ok else 'FAIL'} — an arbitrary term-algebra DAG evaluated by the SAME")
-    print(f"  branchless cooperative generators, streaming bottom-up via a monotonic readiness gate")
-    print(f"  (wiring as data in the store). Carrier=u64 (128-bit _QDECL = the typedef swap for scale);")
-    print(f"  channel = the store itself. The three 'options' unified: carrier/channel/wiring, one object.")
+    print(
+        f"  obsmax (max gcd depth) {r['obsmax']}   K final {r['Kfinal']}   (distributed monotonic control)"
+    )
+    print(
+        f"\n  err={r['err']}  root bit-exact vs Python Fraction={exact}  all-combines-converged={converged}"
+    )
+    ok = r["err"] == 0 and exact and converged
+    print(
+        f"\n  INCREMENT (6) {'PASS' if ok else 'FAIL'} — an arbitrary term-algebra DAG evaluated by the SAME"
+    )
+    print(
+        f"  branchless cooperative generators, streaming bottom-up via a monotonic readiness gate"
+    )
+    print(
+        f"  (wiring as data in the store). Carrier=u64 (128-bit _QDECL = the typedef swap for scale);"
+    )
+    print(
+        f"  channel = the store itself. The three 'options' unified: carrier/channel/wiring, one object."
+    )

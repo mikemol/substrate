@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 nve-alias-delta-pilot.py — S9: validate the delta between the two vE
 formulations that S8 recorded as a "supersession":

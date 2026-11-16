@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 power_probe_root.py — AI-4 empirical close (RUN AS ROOT). Battery EC reports no power even to root,
 but RAPL energy_uj is root-readable. Measures CPU-package (incl iGPU) + platform(psys) power via

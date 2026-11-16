@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 # _shred_graph.py — the single-source Agda data/record dependency graph the shred tools were each rebuilding.
 # Surfaced by the reuse wedge (scratch/scripts_dedup.py) as the rung-1 consolidation: after the rung-0 pure
 # leaves (strip/split_arrows/_b64) were lifted, the residual IDENTICAL families were `reach` (3 files), `rank`
@@ -14,37 +16,56 @@
 #
 # Invoked as `scripts/<tool>.py`, so a bare `from _shred_graph import ShredGraph` resolves (scripts/ = path[0]).
 import os, re, collections
-from _agdatext import strip, split_arrows
+import _agdatext
+import os as _o, sys as _s
+
+_s.path.insert(
+    0, _o.path.join(_o.path.dirname(_o.path.dirname(_o.path.abspath(__file__))), "scratch")
+)
+from agda_lex import HEADER as _HEADER  # THE header authority; never re-derive
 
 
 class ShredGraph:
     def __init__(self, root):
-        self.text = {}; self.kind = {}; self.home = {}; self.modof = {}; self.fileof = {}
+        self.text = {}
+        self.kind = {}
+        self.home = {}
+        self.modof = {}
+        self.fileof = {}
         self.body = collections.defaultdict(list)
-        modre = re.compile(r"^module\s+(\S+)\s+where", re.M)
+        modre = _HEADER  # was ^module\s+(\S+)\s+where — missed 149 parameterized headers + 2 unicode names
         declre = re.compile(r"^(data|record)\s+(\S+)(.*)$")
         for dp, _, fns in os.walk(root):
             for fn in fns:
                 if not fn.endswith(".agda"):
                     continue
-                p = os.path.join(dp, fn); t = strip(open(p, encoding="utf-8").read()); self.text[p] = t
+                p = os.path.join(dp, fn)
+                t = _agdatext.strip(open(p, encoding="utf-8").read())
+                self.text[p] = t
                 mm = modre.search(t)
                 if mm:
-                    self.modof[p] = mm.group(1); self.fileof[mm.group(1)] = p
-                lines = t.splitlines(); i = 0
+                    self.modof[p] = mm.group(1)
+                    self.fileof[mm.group(1)] = p
+                lines = t.splitlines()
+                i = 0
                 while i < len(lines):
                     m = declre.match(lines[i])
                     if m:
-                        name, rest = m.group(2), m.group(3); self.body[name].append(rest); j = i + 1
-                        self.kind.setdefault(name, m.group(1)); self.home.setdefault(name, p)
+                        name, rest = m.group(2), m.group(3)
+                        self.body[name].append(rest)
+                        j = i + 1
+                        self.kind.setdefault(name, m.group(1))
+                        self.home.setdefault(name, p)
                         while j < len(lines) and (lines[j].strip() == "" or lines[j][:1] in " \t"):
                             if " : " in lines[j]:
                                 self.body[name].append(lines[j].split(" : ", 1)[1])
                             j += 1
-                        i = j; continue
+                        i = j
+                        continue
                     i += 1
         self.known = set(self.kind)
-        self.produced = set(); self.consumed = set()
+        self.produced = set()
+        self.consumed = set()
         sig = re.compile(r"^\s*[^\s:]+\s*:\s*(.+)$")
         for t in self.text.values():
             for line in t.splitlines():
@@ -52,14 +73,14 @@ class ShredGraph:
                 if not m:
                     continue
                 if "→" in m.group(1):
-                    parts = split_arrows(m.group(1))
+                    parts = _agdatext.split_arrows(m.group(1))
                     for a in parts[:-1]:
                         self.consumed |= set(self.toks(a))
                     self.produced |= set(self.toks(parts[-1]))
                 else:
                     self.produced |= set(self.toks(m.group(1)))
         self.imports = collections.defaultdict(set)
-        impre = re.compile(r"^\s*(?:open\s+import|import)\s+([A-Za-z0-9_.'-]+)", re.M)
+        impre = re.compile(r"^\s*(?:open\s+import|import)\s+([\w.'-]+)", re.M)
         for p, t in self.text.items():
             if p not in self.modof:
                 continue
@@ -75,12 +96,14 @@ class ShredGraph:
         return [t for t in re.split(r"[\s()\[\]{};,.]+", s) if t in self.known]
 
     def reach(self, mod):
-        seen = {mod}; q = collections.deque([mod])
+        seen = {mod}
+        q = collections.deque([mod])
         while q:
             u = q.popleft()
             for v in self.importers[u]:
                 if v not in seen:
-                    seen.add(v); q.append(v)
+                    seen.add(v)
+                    q.append(v)
         return len(seen) - 1
 
     def rank(self, T):

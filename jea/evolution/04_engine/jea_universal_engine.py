@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """jea_universal_engine.py — U6: fuse spawn (+) scheduler (+) rewrite into ONE kernel (the APEX-1 keystone).
 
 The pieces existed apart: the SPAWN loop (jea_ackermann_spec/_gpu) does dynamic work production but is
@@ -33,12 +35,14 @@ Witnesses (each [W]):
 4. FUSED REWRITE: one kernel pattern-matches constructors and applies spawn/leaf/reduce rules -- spawn (+)
    schedule (+) rewrite in a single object.
 """
+
 import os
+
 os.environ.setdefault("CUDA_PATH", "/usr")
 import numpy as np, cupy as cp
 
 # tags: 0=E-pending, 1=node-pending, 2=DONE, 3/4=BUSY claims
-_SRC = r'''
+_SRC = r"""
 extern "C" __global__
 void engine(int* tag, int* narg, int* lch, int* rch, unsigned long long* val, volatile int* ready,
             volatile int* qtail, volatile int* rootsleft, volatile int* poolesc,
@@ -77,46 +81,87 @@ void engine(int* tag, int* narg, int* lch, int* rch, unsigned long long* val, vo
         __threadfence();
     }
 }
-'''
+"""
 _kern = cp.RawKernel(_SRC, "engine")
 
 if __name__ == "__main__":
     rng = np.random.default_rng(0)
     nroots = 128
-    ns = [4 + int(i % 10) for i in range(nroots)]              # E(n), n in [4,13]; tree size 2^(n+1)-1
-    total = sum((2 << n) - 1 for n in ns)                      # exact pool need (full binary expansion, no sharing)
+    ns = [4 + int(i % 10) for i in range(nroots)]  # E(n), n in [4,13]; tree size 2^(n+1)-1
+    total = sum((2 << n) - 1 for n in ns)  # exact pool need (full binary expansion, no sharing)
     npool = total + nroots + 16
-    tag = cp.full(npool, 2, cp.int32)                          # unallocated = DONE (skipped); roots = E-pending
+    tag = cp.full(npool, 2, cp.int32)  # unallocated = DONE (skipped); roots = E-pending
     tag[:nroots] = 0
-    narg = cp.zeros(npool, cp.int32); narg[:nroots] = cp.asarray(ns, cp.int32)
-    lch = cp.zeros(npool, cp.int32); rch = cp.zeros(npool, cp.int32)
-    val = cp.zeros(npool, cp.uint64); ready = cp.zeros(npool, cp.int32)
-    qtail = cp.full(1, nroots, cp.int32); rootsleft = cp.full(1, nroots, cp.int32); poolesc = cp.zeros(1, cp.int32)
+    narg = cp.zeros(npool, cp.int32)
+    narg[:nroots] = cp.asarray(ns, cp.int32)
+    lch = cp.zeros(npool, cp.int32)
+    rch = cp.zeros(npool, cp.int32)
+    val = cp.zeros(npool, cp.uint64)
+    ready = cp.zeros(npool, cp.int32)
+    qtail = cp.full(1, nroots, cp.int32)
+    rootsleft = cp.full(1, nroots, cp.int32)
+    poolesc = cp.zeros(1, cp.int32)
 
     nsm = cp.cuda.Device().attributes["MultiProcessorCount"]
     blocks, threads = 8 * nsm, 128
-    _kern((blocks,), (threads,),
-          (tag, narg, lch, rch, val, ready, qtail, rootsleft, poolesc,
-           np.int32(nroots), np.int32(npool), np.int64(2000)))
+    _kern(
+        (blocks,),
+        (threads,),
+        (
+            tag,
+            narg,
+            lch,
+            rch,
+            val,
+            ready,
+            qtail,
+            rootsleft,
+            poolesc,
+            np.int32(nroots),
+            np.int32(npool),
+            np.int64(2000),
+        ),
+    )
     cp.cuda.Stream.null.synchronize()
 
-    v = val.get(); created = int(qtail.get()[0]); left = int(rootsleft.get()[0]); esc = int(poolesc.get()[0])
+    v = val.get()
+    created = int(qtail.get()[0])
+    left = int(rootsleft.get()[0])
+    esc = int(poolesc.get()[0])
     exact = all(int(v[i]) == (1 << ns[i]) for i in range(nroots))
     w1 = exact
-    w2 = created > nroots * 8                                  # the pool grew massively at runtime (spawned)
-    w3 = left == 0 and esc == 0                                # all roots resolved, no overflow, terminated
-    w4 = True                                                  # rewrite rules applied in-kernel (below)
-    print(f"universal engine — {nroots} roots E(n), n in [{min(ns)},{max(ns)}]; ONE kernel, {blocks}x{threads} workers\n")
-    print(f"  nodes seeded: {nroots}   nodes after dynamic spawning: {created}   ({created//nroots}x growth at runtime)")
+    w2 = created > nroots * 8  # the pool grew massively at runtime (spawned)
+    w3 = left == 0 and esc == 0  # all roots resolved, no overflow, terminated
+    w4 = True  # rewrite rules applied in-kernel (below)
+    print(
+        f"universal engine — {nroots} roots E(n), n in [{min(ns)},{max(ns)}]; ONE kernel, {blocks}x{threads} workers\n"
+    )
+    print(
+        f"  nodes seeded: {nroots}   nodes after dynamic spawning: {created}   ({created // nroots}x growth at runtime)"
+    )
     print(f"  roots unresolved: {left}   pool-escalate: {esc}")
-    print(f"  sample: E({ns[0]})={int(v[0])} (==2^{ns[0]}={1<<ns[0]}), E({ns[-1]})={int(v[nroots-1])} (==2^{ns[-1]}={1<<ns[-1]})")
+    print(
+        f"  sample: E({ns[0]})={int(v[0])} (==2^{ns[0]}={1 << ns[0]}), E({ns[-1]})={int(v[nroots - 1])} (==2^{ns[-1]}={1 << ns[-1]})"
+    )
     print(f"\n1. EXACT (every root E(n) == 2^n): {w1}")
-    print(f"2. DYNAMIC WORK PRODUCTION (pool grew {nroots} -> {created} at runtime, not pre-built): {w2}")
+    print(
+        f"2. DYNAMIC WORK PRODUCTION (pool grew {nroots} -> {created} at runtime, not pre-built): {w2}"
+    )
     print(f"3. PARALLEL + DEADLOCK-FREE (full grid, all roots resolved, terminated): {w3}")
     print(f"4. FUSED REWRITE (one kernel: pattern-match constructor -> spawn/leaf/reduce): {w4}")
     ok = w1 and w2 and w3 and w4
-    print(f"\n  {'PASS' if ok else 'FAIL'} — U6: spawn (+) scheduler (+) rewrite FUSED in one kernel. A computation")
-    print(f"  whose tree is built AT RUNTIME (dynamic work production via atomic-bump spawn) is scheduled")
-    print(f"  data-parallel across the whole grid, deadlock-free (monotonic readiness gate, no blocking),")
-    print(f"  by term-rewriting (pattern-match the constructor). The APEX-1 keystone. NEXT: Ackermann's rule")
-    print(f"  set in the same engine (U6 follow-on); device-side interning to share spawned subterms (U7).")
+    print(
+        f"\n  {'PASS' if ok else 'FAIL'} — U6: spawn (+) scheduler (+) rewrite FUSED in one kernel. A computation"
+    )
+    print(
+        f"  whose tree is built AT RUNTIME (dynamic work production via atomic-bump spawn) is scheduled"
+    )
+    print(
+        f"  data-parallel across the whole grid, deadlock-free (monotonic readiness gate, no blocking),"
+    )
+    print(
+        f"  by term-rewriting (pattern-match the constructor). The APEX-1 keystone. NEXT: Ackermann's rule"
+    )
+    print(
+        f"  set in the same engine (U6 follow-on); device-side interning to share spawned subterms (U7)."
+    )

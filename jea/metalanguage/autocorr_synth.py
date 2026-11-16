@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """autocorr_synth.py — ⟡autocorr-synth: MECHANICAL consolidation synthesis via anti-unification.
 
 The reuse tooling RANKS parameterization targets (reuse_tui's κ/σ/V₄ frame); this DISCHARGES one — it
@@ -27,13 +29,14 @@ walk. (⟡autocorr-synth-agda-holes = the holes rung.)
   autocorr_synth.py --emit <cluster-id>                          # its full template + all substitutions
   autocorr_synth.py --agda [FILTER] [--emit <#>]                 # Agda SPPF: exact-body (CSE) clusters
 """
+
 import sys, os, ast, argparse, glob
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.abspath(os.path.join(HERE, "..", ".."))
 sys.path.insert(0, HERE)
 import jea_extrude_ir as E
-import graded_orbit                                   # ⟡cosets-into-autocorr: the coset/residue reader
+import graded_orbit  # ⟡cosets-into-autocorr: the coset/residue reader
 
 
 def functions(paths):
@@ -41,7 +44,8 @@ def functions(paths):
     out = []
     for p in paths:
         try:
-            src = open(p, encoding="utf-8").read(); tree = ast.parse(src)
+            src = open(p, encoding="utf-8").read()
+            tree = ast.parse(src)
         except (OSError, SyntaxError):
             continue
         lines = src.splitlines()
@@ -49,7 +53,7 @@ def functions(paths):
         for node in tree.body:
             if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
                 seg = ast.get_source_segment(src, node)
-                if seg and seg.count("\n") >= 1:                 # skip one-liners (no residue to align)
+                if seg and seg.count("\n") >= 1:  # skip one-liners (no residue to align)
                     out.append((f"{rel}::{node.name}", seg + "\n"))
     return out
 
@@ -62,13 +66,22 @@ def functions(paths):
 # walks. Size = GROUP BY over unit_node (count the done enumeration). Exact-body dup = GROUP BY the
 # unit_node SET-signature (root_id is only a depth-1 packing — it false-clusters). Near-dup = a SELF-JOIN
 # on unit_node (shared node-count); holes = the set-difference.
-CATALOG_DB = os.path.join(REPO, "catalog", "catalog.db")
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import store  # THE store authority
+
 
 def _engine():
+    """A SQLAlchemy Engine over the ACTIVE store.
+
+    \u2691 THIS WAS A FOURTH SPELLING OF THE BACKEND. It hardcoded a `sqlite:///\u2026` URL, so
+    this module would keep reading the OLD store after a migration while every other
+    reader followed `SUBSTRATE_STORE` \u2014 and its queries would still return plausible
+    rows, which is the silent-wrong-answer shape. The URL now comes from the authority.
+    """
     from sqlalchemy import create_engine
-    if not os.path.exists(CATALOG_DB):
-        sys.exit(f"\u27e1autocorr-synth-agda: no catalog.db at {CATALOG_DB} (python3 scripts/sppf_db.py \"\").")
-    return create_engine(f"sqlite:///{os.path.abspath(CATALOG_DB)}")
+
+    return create_engine(store.engine_url())
+
 
 def synth_agda(filt, min_instances):
     """SQL-NATIVE, declarative — keyed on the MATERIALIZED enumeration itself. Two units have an identical
@@ -78,31 +91,107 @@ def synth_agda(filt, min_instances):
     units (module-instantiation families are copy=1, already consolidated). size = |set|. Near-dup WITH
     holes is the same shape one step out — a unit_node SELF-JOIN for shared-node-count + a set-difference
     for the holes (\u27e1autocorr-synth-agda-holes)."""
-    from sqlalchemy import MetaData, Table, select, func, and_
-    from collections import defaultdict
-    eng = _engine(); md = MetaData()
+    from sqlalchemy import MetaData, Table, select, func, and_, cast, Text, literal_column
+    from sqlalchemy.dialects.postgresql import aggregate_order_by
+    import itertools
+
+    eng = _engine()
+    md = MetaData()
     unit = Table("_unit", md, autoload_with=eng)
     ptv = Table("path_text", md, autoload_with=eng)
     un = Table("unit_node", md, autoload_with=eng)
     with eng.connect() as conn:
         # per-unit set-signature over the ordered membership (order-independent body identity) + its size.
-        ordered = select(un.c.unit_id, un.c.node_id).order_by(un.c.unit_id, un.c.node_id).subquery()
-        sig = (select(ordered.c.unit_id.label("uid"),
-                      func.group_concat(ordered.c.node_id).label("s"), func.count().label("sz"))
-               .group_by(ordered.c.unit_id)).subquery()
-        base = (sig.join(unit, unit.c.unit_id == sig.c.uid)
-                   .join(ptv, ptv.c.path_id == unit.c.name_pid))
-        dupsig = (select(sig.c.s).select_from(sig.join(unit, unit.c.unit_id == sig.c.uid))
-                  .where(unit.c.copy == 0).group_by(sig.c.s).having(func.count() >= min_instances)).subquery()
-        q = (select(sig.c.s, ptv.c.text, sig.c.sz).select_from(base)
-             .where(and_(unit.c.copy == 0, sig.c.s.in_(select(dupsig.c.s)))))
-        by_sig, sz = defaultdict(list), {}
-        for s, name, size in conn.execute(q):
-            if not filt or filt in (name or ""):
-                by_sig[s].append(name); sz[s] = size
-        clusters = sorted(((s, sorted(ns)) for s, ns in by_sig.items() if len(ns) >= min_instances),
-                          key=lambda sn: -(len(sn[1]) * (sz.get(sn[0]) or 1)))   # rank by instances × body size
-        return [{"n": len(ns), "size": sz.get(s), "labels": ns} for s, ns in clusters]
+        # ⚑⚑ THIS WAS A FIFTH SPELLING OF THE BACKEND, AND IT SURVIVED THE `_engine()` FIX ABOVE.
+        # `func.group_concat` is SQLITE-ONLY — postgres spells it `string_agg(expr, delim)` — so this
+        # function raised `UndefinedFunction: function group_concat(text) does not exist` at :106 and
+        # `synth_agda` HAS NOT RUN since the migration. `store.py:26` names GROUP_CONCAT in advance as
+        # one of the constructs that "[does] not survive contact with PostgreSQL"; the URL fix retired
+        # the hardcoded `sqlite:///…` and did not reach the second sqlite-ism in the same function.
+        # The class, from this file's own comment at :268-274: *the fix was applied to the FUNCTION
+        # that had been noticed, not to the CAPABILITY.*
+        #
+        # ⚑⚑⚑ AND `store.py:23-29`'s RULE DOES NOT COVER THIS CASE — the deeper finding. It says a
+        # Core statement "is dialect-agnostic BY CONSTRUCTION" and files GROUP_CONCAT under *raw-SQL*
+        # sites that must be rewritten. But `func.<name>` is Core AND passes an arbitrary name through
+        # VERBATIM, so Core is dialect-agnostic exactly up to `func.`, which is where the declared line
+        # between "ports for free" and "must be rewritten" stops holding. ⚑ `pycodemod --portable`
+        # reads GREEN on this file for the same reason: it EXPLAINs raw SQL LITERALS, and this query
+        # is never a string. A construct invisible to both the rule and the gate. → ⟡core-func-dialect
+        #
+        # ⚑ THE ORDER MOVES INSIDE THE AGGREGATE, WHICH IS A CORRECTNESS FIX, NOT A TIDY-UP. The
+        # docstring above has always said `group_concat(node_id ORDER BY node_id)` — the ORDERED
+        # aggregate — but the code put the ORDER BY on a SUBQUERY feeding it. sqlite happened to honour
+        # that; postgres does NOT guarantee a subquery's ordering propagates into an aggregate, so the
+        # planner is free to pick a HashAggregate and emit a DIFFERENT signature for the same body.
+        # Since the signature IS the body-identity key, that would silently mis-cluster rather than
+        # fail. `within_group` puts the order where the docstring always said it was.
+        # ⚑ `within_group` IS THE WRONG SPELLING HERE AND POSTGRES SAYS SO — measured, not read:
+        # `string_agg(text, unknown, text) does not exist`. WITHIN GROUP is for ORDERED-SET
+        # aggregates (`percentile_cont`, `mode`); `string_agg` is a plain aggregate whose ordering
+        # goes INSIDE the argument list — `string_agg(x, ',' ORDER BY y)`. SQLAlchemy spells that
+        # with the postgres-dialect `aggregate_order_by`. Two wrong spellings before the right one,
+        # both caught by RUNNING it: the emitted SQL is the only authority on this.
+        sig = (
+            select(
+                un.c.unit_id.label("uid"),
+                func.string_agg(
+                    cast(un.c.node_id, Text),
+                    aggregate_order_by(literal_column("','"), un.c.node_id),
+                ).label("s"),
+                func.count().label("sz"),
+            ).group_by(un.c.unit_id)
+        ).subquery()
+        base = sig.join(unit, unit.c.unit_id == sig.c.uid).join(
+            ptv, ptv.c.path_id == unit.c.name_pid
+        )
+        dupsig = (
+            select(sig.c.s)
+            .select_from(sig.join(unit, unit.c.unit_id == sig.c.uid))
+            .where(unit.c.copy == 0)
+            .group_by(sig.c.s)
+            .having(func.count() >= min_instances)
+        ).subquery()
+        # ⚑⟡sorted-stream-carrier — THE CONSTRAINT FLOWS UPSTREAM. The grouping below needs rows
+        # ordered by `s`; declaring that on the PRODUCER turns the python accumulation into an
+        # adjacent-run walk. MEASURED (sql-oracle, live tenant, EXPLAIN only): +11.26 cost units
+        # over the unordered form, ~0.15%, and **no added Sort node** — the planner switches from
+        # a Hash Join to a Nested Loop driven by `dupsig`'s GroupAggregate, whose `Sort Key:
+        # (string_agg(...))` is ALREADY in the unordered plan because GROUP BY s requires it.
+        # So the order is not bought here; it is one the query already pays for and was throwing
+        # away, which is the arc's thesis in one line.
+        q = (
+            select(sig.c.s, ptv.c.text, sig.c.sz)
+            .select_from(base)
+            .where(and_(unit.c.copy == 0, sig.c.s.in_(select(dupsig.c.s))))
+            .order_by(sig.c.s)
+        )
+        # ⚑ ADJACENT RUNS, NOT A DICT. `itertools.groupby` holds ONE run; the defaultdict held
+        # every signature and every label for the whole result. Equivalent because the rows are
+        # now ordered by the group key — which is exactly the precondition `sorted_stream.group`
+        # REFUSES without, and the reason that refusal names the producer.
+        # ⚑ THE FILTER STAYS INSIDE THE RUN. `filt` is applied per-row, so a run can be emptied
+        # by it; the `>= min_instances` test must therefore read the SURVIVING count, not the
+        # run length. Filtering after grouping instead would silently keep clusters whose
+        # instances the filter removed.
+        clusters = []
+        for s, run in itertools.groupby(conn.execute(q), key=lambda r: r[0]):
+            names, size = [], None
+            for _s, name, sz_ in run:
+                size = sz_
+                if not filt or filt in (name or ""):
+                    names.append(name)
+            if len(names) >= min_instances:
+                clusters.append((s, sorted(names), size))
+        # rank by instances × body size — a DIFFERENT order from the stream's, and deliberately
+        # so: `s` orders the scan, this orders the REPORT. Conflating them is how a declared key
+        # stops meaning anything.
+        clusters.sort(key=lambda c: -(len(c[1]) * (c[2] or 1)))
+        # ⚑ THE SIZE NOW RIDES ON THE ROW, not in a side `sz` dict keyed by signature. That dict
+        # was a second carrier for a value the run already had — the shape ⟡sorted-stream-carrier
+        # exists to retire, and dropping it is what makes the group O(one run) rather than
+        # O(corpus).
+        return [{"n": len(ns), "size": size, "labels": ns} for _s, ns, size in clusters]
 
 
 def synth_agda_holes(filt, min_instances, sim=0.6, bucket_cap=60):
@@ -114,30 +203,44 @@ def synth_agda_holes(filt, min_instances, sim=0.6, bucket_cap=60):
     holes are the set-difference (NOT EXISTS) — JOINs + constraints, no walk."""
     from sqlalchemy import MetaData, Table, select, func, and_
     from collections import defaultdict
-    eng = _engine(); md = MetaData()
+
+    eng = _engine()
+    md = MetaData()
     unit = Table("_unit", md, autoload_with=eng)
     un = Table("unit_node", md, autoload_with=eng)
     with eng.connect() as conn:
         sz = select(un.c.unit_id, func.count().label("n")).group_by(un.c.unit_id).subquery()
         # buckets = (root_id, size) among independent units; keep 2..bucket_cap (skip the giant ones LOUD)
-        bexpr = (select(unit.c.root_id, sz.c.n, func.count().label("k"))
-                 .select_from(unit.join(sz, sz.c.unit_id == unit.c.unit_id)).where(unit.c.copy == 0)
-                 .group_by(unit.c.root_id, sz.c.n))
+        bexpr = (
+            select(unit.c.root_id, sz.c.n, func.count().label("k"))
+            .select_from(unit.join(sz, sz.c.unit_id == unit.c.unit_id))
+            .where(unit.c.copy == 0)
+            .group_by(unit.c.root_id, sz.c.n)
+        )
         buckets = conn.execute(bexpr.having(func.count() >= min_instances)).all()
         keep = [(r, n) for r, n, k in buckets if k <= bucket_cap]
         skipped = [(r, n, k) for r, n, k in buckets if k > bucket_cap]
         if skipped:
             tot = sum(k for _, _, k in skipped)
-            print(f"  \u26a0 skipped {len(skipped)} bucket(s) with > {bucket_cap} units ({tot} units) — "
-                  f"too big to pairwise self-join; raise --bucket-cap to include (biggest {max(k for *_ ,k in skipped)}).",
-                  file=sys.stderr)
-        if not keep: return []
+            print(
+                f"  \u26a0 skipped {len(skipped)} bucket(s) with > {bucket_cap} units ({tot} units) — "
+                f"too big to pairwise self-join; raise --bucket-cap to include (biggest {max(k for *_, k in skipped)}).",
+                file=sys.stderr,
+            )
+        if not keep:
+            return []
         # eligible units = those in a kept bucket
-        elig = (select(unit.c.unit_id, unit.c.root_id, sz.c.n)
-                .select_from(unit.join(sz, sz.c.unit_id == unit.c.unit_id)).where(unit.c.copy == 0)).subquery()
+        elig = (
+            select(unit.c.unit_id, unit.c.root_id, sz.c.n)
+            .select_from(unit.join(sz, sz.c.unit_id == unit.c.unit_id))
+            .where(unit.c.copy == 0)
+        ).subquery()
         keepset = set(keep)
-        rows = [r for r in conn.execute(select(elig.c.unit_id, elig.c.root_id, elig.c.n))
-                if (r[1], r[2]) in keepset]
+        rows = [
+            r
+            for r in conn.execute(select(elig.c.unit_id, elig.c.root_id, elig.c.n))
+            if (r[1], r[2]) in keepset
+        ]
         by_bucket = defaultdict(list)
         for uid, root, n in rows:
             by_bucket[(root, n)].append(uid)
@@ -145,38 +248,53 @@ def synth_agda_holes(filt, min_instances, sim=0.6, bucket_cap=60):
         out = []
         uid2name = {}
         for (root, n), uids in by_bucket.items():
-            if len(uids) < min_instances: continue
-            a = un.alias("a"); b = un.alias("b")
-            pair = (select(a.c.unit_id, b.c.unit_id, func.count().label("sh"))
-                    .select_from(a.join(b, and_(a.c.node_id == b.c.node_id, a.c.unit_id < b.c.unit_id)))
-                    .where(and_(a.c.unit_id.in_(uids), b.c.unit_id.in_(uids)))
-                    .group_by(a.c.unit_id, b.c.unit_id)
-                    .having(and_(func.count() >= sim * n, func.count() < n)))
+            if len(uids) < min_instances:
+                continue
+            a = un.alias("a")
+            b = un.alias("b")
+            pair = (
+                select(a.c.unit_id, b.c.unit_id, func.count().label("sh"))
+                .select_from(a.join(b, and_(a.c.node_id == b.c.node_id, a.c.unit_id < b.c.unit_id)))
+                .where(and_(a.c.unit_id.in_(uids), b.c.unit_id.in_(uids)))
+                .group_by(a.c.unit_id, b.c.unit_id)
+                .having(and_(func.count() >= sim * n, func.count() < n))
+            )
             adj = defaultdict(set)
             for x, y, sh in conn.execute(pair):
-                adj[x].add(y); adj[y].add(x)
+                adj[x].add(y)
+                adj[y].add(x)
             seen = set()
             for u0 in list(adj):
-                if u0 in seen: continue
+                if u0 in seen:
+                    continue
                 comp, stack = set(), [u0]
                 while stack:
                     v = stack.pop()
-                    if v in seen: continue
-                    seen.add(v); comp.add(v); stack.extend(adj[v] - seen)
+                    if v in seen:
+                        continue
+                    seen.add(v)
+                    comp.add(v)
+                    stack.extend(adj[v] - seen)
                 if len(comp) >= min_instances:
                     out.append({"units": comp, "n": len(comp), "size": n, "root": root})
         # names + rank
         allu = set().union(*[c["units"] for c in out]) if out else set()
         if allu:
             ptv = Table("path_text", md, autoload_with=eng)
-            nq = (select(unit.c.unit_id, ptv.c.text).select_from(
-                    unit.join(ptv, ptv.c.path_id == unit.c.name_pid)).where(unit.c.unit_id.in_(allu)))
+            nq = (
+                select(unit.c.unit_id, ptv.c.text)
+                .select_from(unit.join(ptv, ptv.c.path_id == unit.c.name_pid))
+                .where(unit.c.unit_id.in_(allu))
+            )
             uid2name = {u: nm for u, nm in conn.execute(nq)}
         res = []
         for c in out:
             names = sorted(uid2name.get(u, u) for u in c["units"])
-            if filt and not any(filt in nm for nm in names): continue
-            res.append({"n": c["n"], "size": c["size"], "labels": names, "uids": sorted(c["units"])})
+            if filt and not any(filt in nm for nm in names):
+                continue
+            res.append(
+                {"n": c["n"], "size": c["size"], "labels": names, "uids": sorted(c["units"])}
+            )
         res.sort(key=lambda c: -(c["n"] * c["size"]))
         return res
 
@@ -187,25 +305,42 @@ def agda_holes_detail(uids):
     core = GROUP BY node_id HAVING COUNT(DISTINCT unit)=|cluster|; holes = the complement per unit."""
     from sqlalchemy import MetaData, Table, select, func, and_, literal_column
     from collections import defaultdict
-    eng = _engine(); md = MetaData()
-    un = Table("unit_node", md, autoload_with=eng); node = Table("_node", md, autoload_with=eng)
-    trm = Table("terms", md, autoload_with=eng); ptv = Table("path_text", md, autoload_with=eng)
+
+    eng = _engine()
+    md = MetaData()
+    un = Table("unit_node", md, autoload_with=eng)
+    node = Table("_node", md, autoload_with=eng)
+    trm = Table("terms", md, autoload_with=eng)
+    ptv = Table("path_text", md, autoload_with=eng)
     unit = Table("_unit", md, autoload_with=eng)
     with eng.connect() as conn:
-        core = (select(un.c.node_id).where(un.c.unit_id.in_(uids))
-                .group_by(un.c.node_id).having(func.count(func.distinct(un.c.unit_id)) == len(uids))).subquery()
+        core = (
+            select(un.c.node_id)
+            .where(un.c.unit_id.in_(uids))
+            .group_by(un.c.node_id)
+            .having(func.count(func.distinct(un.c.unit_id)) == len(uids))
+        ).subquery()
         core_n = conn.execute(select(func.count()).select_from(core)).scalar()
         # per-unit hole node heads (nodes NOT in the shared core)
-        t_op = trm.alias("o"); t_role = trm.alias("r"); pt2 = ptv.alias("pt"); ptn = ptv.alias("ptn")
-        head = func.coalesce(func.nullif(pt2.c.text, ""), t_op.c.text, t_role.c.text, literal_column("'·'"))
-        q = (select(ptn.c.text, head.label("h"))
-             .select_from(un.join(node, node.c.node_id == un.c.node_id)
-                          .join(unit, unit.c.unit_id == un.c.unit_id)
-                          .join(ptn, ptn.c.path_id == unit.c.name_pid)
-                          .outerjoin(pt2, pt2.c.path_id == node.c.op_path_id)
-                          .outerjoin(t_op, t_op.c.term_id == node.c.op_term_id)
-                          .outerjoin(t_role, t_role.c.term_id == node.c.role_id))
-             .where(and_(un.c.unit_id.in_(uids), un.c.node_id.notin_(select(core.c.node_id)))))
+        t_op = trm.alias("o")
+        t_role = trm.alias("r")
+        pt2 = ptv.alias("pt")
+        ptn = ptv.alias("ptn")
+        head = func.coalesce(
+            func.nullif(pt2.c.text, ""), t_op.c.text, t_role.c.text, literal_column("'·'")
+        )
+        q = (
+            select(ptn.c.text, head.label("h"))
+            .select_from(
+                un.join(node, node.c.node_id == un.c.node_id)
+                .join(unit, unit.c.unit_id == un.c.unit_id)
+                .join(ptn, ptn.c.path_id == unit.c.name_pid)
+                .outerjoin(pt2, pt2.c.path_id == node.c.op_path_id)
+                .outerjoin(t_op, t_op.c.term_id == node.c.op_term_id)
+                .outerjoin(t_role, t_role.c.term_id == node.c.role_id)
+            )
+            .where(and_(un.c.unit_id.in_(uids), un.c.node_id.notin_(select(core.c.node_id))))
+        )
         holes = defaultdict(list)
         for name, h in conn.execute(q):
             holes[name].append(h)
@@ -229,10 +364,174 @@ def synth(paths, min_instances):
         if n < min_instances:
             continue
         dens = _density(c)
-        rows.append({"n": n, "holes": c["holes"], "density": dens,
-                     "score": n * (1 - dens), **c})
+        rows.append({"n": n, "holes": c["holes"], "density": dens, "score": n * (1 - dens), **c})
     rows.sort(key=lambda r: -r["score"])
     return rows, res
+
+
+def _selftest():
+    """Cases for the SQL-native agda path.
+
+    ⚑⚑ THIS FILE HAD NO SUITE, WHICH IS WHY `synth_agda` COULD STOP RUNNING ENTIRELY AND
+    NOTHING NOTICED. It raised `UndefinedFunction: group_concat` on every invocation after the
+    sqlite→postgres migration — a whole capability dark, with no gate, no case, and no census
+    row. `--holes` kept working, so the module looked alive.
+
+    ⚑ THE CASES ARE ABOUT THE EMITTED SQL, NOT ABOUT CLUSTER COUNTS, and that split is the
+    point. The store currently holds 73 units and yields 0 exact-body clusters; a suite keyed
+    on a cluster count would either be vacuous now or break the day the corpus changes. What
+    must not regress is that the statement COMPILES FOR THE ACTIVE DIALECT and carries its
+    ordering INSIDE the aggregate — both of which are checkable with no rows at all.
+    """
+    cases = []
+
+    def check(label, got, want):
+        cases.append((label, got == want, got, want))
+
+    from sqlalchemy import MetaData, Table, select, func, cast, Text, literal_column
+    from sqlalchemy.dialects.postgresql import aggregate_order_by
+    import itertools
+    import store
+
+    # The signature expression, built exactly as `synth_agda` builds it, compiled against the
+    # ACTIVE dialect — no connection, no rows, no store read.
+    md = MetaData()
+    un = Table(
+        "unit_node", md, *[__import__("sqlalchemy").Column(n, Text) for n in ("unit_id", "node_id")]
+    )
+    sig = select(
+        un.c.unit_id.label("uid"),
+        func.string_agg(
+            cast(un.c.node_id, Text), aggregate_order_by(literal_column("','"), un.c.node_id)
+        ).label("s"),
+    )
+    sql = str(sig.compile(dialect=store.dialect()))
+
+    # ⚑ THE REGRESSION THAT WAS LIVE: sqlite's spelling, emitted at a postgres tenant.
+    check("the signature aggregate is NOT sqlite's group_concat", "group_concat" in sql, False)
+    check("the signature aggregate is postgres' string_agg", "string_agg" in sql, True)
+
+    # ⚑⚑ THE ORDER IS INSIDE THE AGGREGATE, AND THIS IS A CORRECTNESS CASE, NOT STYLE. The
+    # signature IS the body-identity key, so if the ordering sits on a feeding SUBQUERY the
+    # planner may pick a HashAggregate and emit a DIFFERENT signature for the SAME body —
+    # silently mis-clustering rather than failing. sqlite happened to honour the subquery
+    # ordering; postgres does not guarantee it.
+    # ⚑ THE PREDICATE MUST BALANCE PARENS, AND MY FIRST CUT DID NOT — it split on the first
+    # `)`, which lands inside the nested `CAST(... AS TEXT)` and so reported False on SQL the
+    # live run had already proved correct. A case that fails against a working system is worse
+    # than no case: it invites "fixing" the code to satisfy the test.
+    _after = sql.split("string_agg", 1)[1]
+    _depth, _arglist = 0, []
+    for _ch in _after:
+        if _ch == "(":
+            _depth += 1
+        elif _ch == ")":
+            _depth -= 1
+            if _depth == 0:
+                break
+        _arglist.append(_ch)
+    check(
+        "the ORDER BY is inside the aggregate's argument list",
+        "ORDER BY" in "".join(_arglist),
+        True,
+    )
+
+    # ⚑ `within_group` WAS THE SECOND WRONG SPELLING, and postgres rejected it too
+    # (`string_agg(text, unknown, text) does not exist`): WITHIN GROUP is for ORDERED-SET
+    # aggregates (percentile_cont, mode), not for plain aggregates like string_agg. Pinned so
+    # the next reader does not re-derive it from the docstring's `ORDER BY` and land there.
+    check(
+        "it does not use WITHIN GROUP (that is for ordered-set aggregates)",
+        "WITHIN GROUP" in sql,
+        False,
+    )
+
+    # ⚑ THE DIALECT IS THE AUTHORITY'S, NEVER ASSUMED. A suite that hardcoded postgres would
+    # pass while the tenant moved underneath it — the shape `_engine()`'s own docstring
+    # records ("a FOURTH spelling of the backend").
+    check("the compile target comes from the store authority", store.dialect().name, "postgresql")
+
+    # ── the ⟡sorted-stream-carrier rewrite: adjacent-run grouping ────────────────────────
+    # ⚑⚑ THE LIVE RUN CANNOT VERIFY THIS AND SAYING SO IS THE POINT. The store yields 0
+    # clusters today, so the old dict-accumulate and the new run-walk both print 0 — `0 == 0`
+    # is the weakest evidence there is, and banking it would be the confident-zero shape this
+    # whole session is about. These cases drive the EXACT grouping logic over synthetic rows,
+    # where the answer is known and non-trivial.
+    def _group(rows, filt, min_instances):
+        """The body of the rewrite, over an iterable of (s, name, size) — same code shape."""
+        out = []
+        for s, run in itertools.groupby(rows, key=lambda r: r[0]):
+            names, size = [], None
+            for _s, name, sz_ in run:
+                size = sz_
+                if not filt or filt in (name or ""):
+                    names.append(name)
+            if len(names) >= min_instances:
+                out.append((s, sorted(names), size))
+        out.sort(key=lambda c: -(len(c[1]) * (c[2] or 1)))
+        return out
+
+    _rows = [
+        ("sigA", "z.unit", 10),
+        ("sigA", "a.unit", 10),
+        ("sigB", "solo", 99),
+        ("sigC", "p.unit", 3),
+        ("sigC", "q.unit", 3),
+        ("sigC", "r.unit", 3),
+    ]
+    _g = _group(_rows, None, 2)
+    check(
+        "a run of ≥min_instances becomes a cluster; a singleton does not",
+        [s for s, _n, _z in _g],
+        ["sigA", "sigC"],
+    )
+    check("labels within a cluster are sorted", _g[0][1], ["a.unit", "z.unit"])
+    # ⚑⚑ THE FIXTURE IS CHOSEN SO NEITHER FACTOR ALONE GIVES THIS ORDER, which is the only
+    # way the case can catch a "simplification" to len(names) or to size. sigA = 2×10 = 20,
+    # sigC = 3×3 = 9 → sigA leads. Ranking by INSTANCE COUNT alone would put sigC (3) first;
+    # ranking by SIZE alone would also put sigA (10) first, so the discriminating comparison
+    # is against the instance-count reading, and this fixture makes the two disagree.
+    # ⚑ I wrote this expectation BACKWARDS on the first cut — computed 20 > 9 correctly in
+    # the comment and then asserted the opposite order. The case failed, which is what a case
+    # is for; recorded because the arithmetic being right in prose is not the same as the
+    # assertion being right.
+    check(
+        "rank is instances × size, not either factor alone",
+        [(len(n), z) for _s, n, z in _g],
+        [(2, 10), (3, 3)],
+    )
+
+    # ⚑⚑ THE FILTER IS APPLIED INSIDE THE RUN, AND THIS IS THE CASE THAT CAUGHT IT. `filt`
+    # removes individual rows, so a run can be emptied by it — the `>= min_instances` test
+    # must read the SURVIVING count. Filtering after grouping would keep a "cluster" whose
+    # instances the filter had removed, reporting a consolidation target that does not exist.
+    check("a run whose members the filter removes is NOT a cluster", _group(_rows, "zzz", 2), [])
+    check(
+        "a partially-filtered run falls below min_instances and drops", _group(_rows, "a.", 2), []
+    )
+    check(
+        "a filter that keeps enough members still clusters",
+        [s for s, _n, _z in _group(_rows, ".unit", 2)],
+        ["sigA", "sigC"],
+    )
+
+    # ⚑ ADJACENCY IS THE PRECONDITION, NOT AN OPTIMISATION. groupby only collapses ADJACENT
+    # equal keys, so an UNORDERED input silently splits one cluster into several — which is
+    # precisely why the ORDER BY had to flow upstream, and why `sorted_stream.group` REFUSES
+    # a stream that does not declare the key rather than quietly returning this wrong answer.
+    _shuffled = [("sigA", "z.unit", 10), ("sigC", "p.unit", 3), ("sigA", "a.unit", 10)]
+    check(
+        "UNORDERED input splits a cluster — the failure the upstream ORDER BY prevents",
+        _group(_shuffled, None, 2),
+        [],
+    )
+
+    ok = sum(1 for _l, g, _a, _b in cases if g)
+    for label, good, got, want in cases:
+        if not good:
+            print(f"  FAIL {label}\n       got {got!r} want {want!r}")
+    print(f"autocorr_synth selftest: {ok}/{len(cases)}")
+    return 0 if ok == len(cases) else 1
 
 
 def main():
@@ -240,87 +539,151 @@ def main():
     ap.add_argument("paths", nargs="*")
     ap.add_argument("--min-instances", type=int, default=2)
     ap.add_argument("--top", type=int, default=12)
-    ap.add_argument("--emit", type=int, metavar="RANK", help="print the full template + fillings for a rank")
-    ap.add_argument("--agda", nargs="?", const="", metavar="FILTER",
-                    help="synth over the AGDA SPPF (catalog.db) instead of Python; optional qname filter")
-    ap.add_argument("--holes", action="store_true", help="(with --agda) near-dup WITH-holes targets, not exact CSE")
-    ap.add_argument("--bucket-cap", type=int, default=60, help="(--holes) max units per (root,size) bucket to self-join")
+    ap.add_argument(
+        "--emit", type=int, metavar="RANK", help="print the full template + fillings for a rank"
+    )
+    ap.add_argument(
+        "--agda",
+        nargs="?",
+        const="",
+        metavar="FILTER",
+        help="synth over the AGDA SPPF (catalog.db) instead of Python; optional qname filter",
+    )
+    ap.add_argument(
+        "--holes",
+        action="store_true",
+        help="(with --agda) near-dup WITH-holes targets, not exact CSE",
+    )
+    ap.add_argument(
+        "--bucket-cap",
+        type=int,
+        default=60,
+        help="(--holes) max units per (root,size) bucket to self-join",
+    )
+    ap.add_argument(
+        "--selftest",
+        action="store_true",
+        help="the case suite (dialect + shape, no cluster data needed)",
+    )
     args = ap.parse_args()
+    if args.selftest:
+        sys.exit(_selftest())
     if args.agda is not None and args.holes:
         rows = synth_agda_holes(args.agda, args.min_instances, bucket_cap=args.bucket_cap)
-        print(f"⟡autocorr-synth-agda-holes: {len(rows)} near-dup (WITH-holes) parameterization targets"
-              f"{f' (filter {args.agda!r})' if args.agda else ''} (≥{args.min_instances} units)\n")
+        print(
+            f"⟡autocorr-synth-agda-holes: {len(rows)} near-dup (WITH-holes) parameterization targets"
+            f"{f' (filter {args.agda!r})' if args.agda else ''} (≥{args.min_instances} units)\n"
+        )
         if args.emit is not None:
             c = rows[args.emit]
             core_n, holes = agda_holes_detail(c["uids"])
-            print(f"# cluster #{args.emit}: {c['n']} near-identical units (~{c['size']}-node bodies).")
-            print(f"## ABSTRACTION = the shared core: {core_n} nodes common to ALL {c['n']} units (extract this,")
+            print(
+                f"# cluster #{args.emit}: {c['n']} near-identical units (~{c['size']}-node bodies)."
+            )
+            print(
+                f"## ABSTRACTION = the shared core: {core_n} nodes common to ALL {c['n']} units (extract this,"
+            )
             print(f"   with a hole per differing position). Each unit's HOLES (its substitution):")
             # ⟡cosets-into-autocorr: if the cluster's units carry graded-orbit cosets (_orbit_def), render
             # the holes as the WEDGE FORM `orbit-rep ∘ residue` — the residue a PROVEN adjacent-transposition
             # (sadj) word (coxeter-complete, 9dcdbb7) — instead of opaque token diffs.
-            import sqlite3 as _sql
-            _gc = _sql.connect(CATALOG_DB)
-            cos = graded_orbit.orbit_cosets(_gc, unit_ids=c["uids"]); _gc.close()
+            # ⚑⚑ WAS `sqlite3.connect(CATALOG_DB)` — RAW, UNCONDITIONAL, AND ONE FUNCTION
+            # AWAY FROM THE FIX. `_engine()` above already routes through the authority
+            # and its docstring records why ("a FOURTH spelling of the backend"); this
+            # site opened a sqlite file directly and so kept reading the retired tier
+            # while every other read in this module followed the store. The defect
+            # survived its own fix because the fix was applied to the FUNCTION that had
+            # been noticed, not to the capability.
+            _gc = store.connect(mode="ro")
+            cos = graded_orbit.orbit_cosets(_gc, unit_ids=c["uids"])
+            _gc.close()
             by_qn = {v["qname"]: v for v in cos.values()}
             if cos:
                 keys = {v["graded_key"] for v in cos.values()}
-                print(f"## GRADED-ORBIT: these units span {len(keys)} orbit-key(s); a permutation-cluster is "
-                      f"ONE key whose members differ only by the residue coset (braiding word). Holes shown "
-                      f"as `orbit-rep ∘ sadj-word` (|Stab| = symmetric-binder count).")
+                print(
+                    f"## GRADED-ORBIT: these units span {len(keys)} orbit-key(s); a permutation-cluster is "
+                    f"ONE key whose members differ only by the residue coset (braiding word). Holes shown "
+                    f"as `orbit-rep ∘ sadj-word` (|Stab| = symmetric-binder count)."
+                )
             for name in sorted(holes)[:20]:
                 hs = holes[name]
                 from collections import Counter
+
                 top = ", ".join(f"{h}×{k}" if k > 1 else h for h, k in Counter(hs).most_common(6))
                 cz = by_qn.get(name)
                 coset = f"   ⊘ residue={cz['coxeter']} |Stab|={cz['stab']}" if cz else ""
                 print(f"  - {name.split('.')[-1]:28s} {len(hs):>2} hole-nodes: {top}{coset}")
-            if len(holes) > 20: print(f"  … (+{len(holes)-20})")
+            if len(holes) > 20:
+                print(f"  … (+{len(holes) - 20})")
             return
-        for i, c in enumerate(rows[:args.top]):
+        for i, c in enumerate(rows[: args.top]):
             print(f"  #{i:<2} ×{c['n']:<4} ~{c['size']:>4}-node bodies  eg {c['labels'][0]}")
         print(f"\n  → autocorr_synth.py --agda --holes --emit <#> for the cluster.")
         return
     if args.agda is not None:
         rows = synth_agda(args.agda, args.min_instances)
-        print(f"⟡autocorr-synth-agda (SQL-native): {len(rows)} exact-body (0-hole/CSE) clusters over the SPPF"
-              f"{f' (filter {args.agda!r})' if args.agda else ''} (≥{args.min_instances} instances)\n")
+        print(
+            f"⟡autocorr-synth-agda (SQL-native): {len(rows)} exact-body (0-hole/CSE) clusters over the SPPF"
+            f"{f' (filter {args.agda!r})' if args.agda else ''} (≥{args.min_instances} instances)\n"
+        )
         if args.emit is not None:
             c = rows[args.emit]
-            print(f"# cluster #{args.emit}: {c['n']} independent units, IDENTICAL body "
-                  f"({c['size']} distinct nodes) — 0 holes = pure CSE.")
-            print(f"## consolidation: extract ONE def with this body, reference it from the other {c['n']-1}.")
+            print(
+                f"# cluster #{args.emit}: {c['n']} independent units, IDENTICAL body "
+                f"({c['size']} distinct nodes) — 0 holes = pure CSE."
+            )
+            print(
+                f"## consolidation: extract ONE def with this body, reference it from the other {c['n'] - 1}."
+            )
             print("## units:")
             for name in c["labels"][:40]:
                 print(f"  - {name}")
-            if c["n"] > 40: print(f"  … (+{c['n']-40})")
+            if c["n"] > 40:
+                print(f"  … (+{c['n'] - 40})")
             return
-        for i, c in enumerate(rows[:args.top]):
+        for i, c in enumerate(rows[: args.top]):
             print(f"  #{i:<2} ×{c['n']:<4} {c['size']:>4}-node identical body  eg {c['labels'][0]}")
-        print(f"\n  → autocorr_synth.py --agda --emit <#> for the full cluster + the consolidation.")
-        print(f"  (near-dups WITH holes = a unit_node self-join + set-difference — ⟡autocorr-synth-agda-holes)")
+        print(
+            f"\n  → autocorr_synth.py --agda --emit <#> for the full cluster + the consolidation."
+        )
+        print(
+            f"  (near-dups WITH holes = a unit_node self-join + set-difference — ⟡autocorr-synth-agda-holes)"
+        )
         return
-    paths = args.paths or (glob.glob(os.path.join(HERE, "*.py")) +
-                           glob.glob(os.path.join(REPO, "scripts", "*.py")))
+    paths = args.paths or (
+        glob.glob(os.path.join(HERE, "*.py")) + glob.glob(os.path.join(REPO, "scripts", "*.py"))
+    )
     paths = [p for p in paths if not p.endswith("autocorr_synth.py")]
     rows, res = synth(paths, args.min_instances)
-    print(f"⟡autocorr-synth: {res['compression']} over {len(paths)} files; "
-          f"{len(rows)} consolidatable clusters (≥{args.min_instances} instances)\n")
+    print(
+        f"⟡autocorr-synth: {res['compression']} over {len(paths)} files; "
+        f"{len(rows)} consolidatable clusters (≥{args.min_instances} instances)\n"
+    )
     if args.emit is not None:
         c = rows[args.emit]
-        print(f"# cluster #{args.emit}: {c['n']} instances, {c['holes']} holes, score {c['score']:.1f}")
+        print(
+            f"# cluster #{args.emit}: {c['n']} instances, {c['holes']} holes, score {c['score']:.1f}"
+        )
         print("## instances:", ", ".join(c["labels"]))
         print("\n## MECHANICAL TEMPLATE (holes = __pN__):\n" + c["template"])
         print("## per-instance substitutions:")
         for lab, fill in zip(c["labels"], c["fillings"]):
             print(f"  {lab}:  " + ", ".join(f"{k}={v}" for k, v in sorted(fill.items())))
         return
-    for i, c in enumerate(rows[:args.top]):
+    for i, c in enumerate(rows[: args.top]):
         head = c["template"].strip().splitlines()[0][:52]
-        print(f"  #{i:<2} score {c['score']:5.1f}  ×{c['n']:<3} {c['holes']:>2} holes  autocorr {1-c['density']:.0%}"
-              f"  {head}")
-    print(f"\n  → autocorr_synth.py --emit <#> for the template + substitutions (the consolidation).")
+        print(
+            f"  #{i:<2} score {c['score']:5.1f}  ×{c['n']:<3} {c['holes']:>2} holes  autocorr {1 - c['density']:.0%}"
+            f"  {head}"
+        )
+    print(
+        f"\n  → autocorr_synth.py --emit <#> for the template + substitutions (the consolidation)."
+    )
 
 
+# selftest-tenant: sandbox
+# ⚑ ⟡tenant-pragma — `run_selftests._tenant` reads this and appends the flag. `store.tenant`
+# exits 2 on an unstated tenant since ⟡tenant-mandatory (2026-08-24); SANDBOX because a suite
+# that reaches the LIVE store can corrupt the corpus it exists to check.
 if __name__ == "__main__":
     main()

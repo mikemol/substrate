@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """jea_pyalg.py — the Python carrier for the term algebra. A faithful IR lowered from `ast`
 (and, optionally, `libcst` for the surface/report layer) into the SAME Wedge/Trace machinery
 the Agda `Substrate.Algebra.Wedge` defines. NOT a similarity metric: the engine is hash-cons +
@@ -23,6 +25,7 @@ into a canonical form that throws the alternative away.
 `forget` (collapse to the value, discard the structure) is AVAILABLE but is the lossy/annihilating
 read -- the Agda names it forgetful. We live in `Trace`.
 """
+
 from __future__ import annotations
 import ast
 from dataclasses import dataclass, field
@@ -37,12 +40,12 @@ from typing import Optional
 # ============================================================================
 @dataclass(frozen=True)
 class IR:
-    kind: str                       # the ast node class name: 'BinOp', 'Call', 'Name', ...
-    role: str = ""                  # binding role for names: 'arg0','local1','global','attr','' (non-name)
-    op: str = ""                    # operator token kept: 'Add','Mult','Eq', ... (NOT collapsed to 'binop')
-    lit: str = ""                   # literal KIND kept (not value): 'int','str','none', ''
-    children: tuple = ()            # tuple of child IR ids (ints into the intern table) -- hash-cons refs
-    payload: tuple = ()             # RESIDUE: original name, literal value, etc. -- kept, not in the key
+    kind: str  # the ast node class name: 'BinOp', 'Call', 'Name', ...
+    role: str = ""  # binding role for names: 'arg0','local1','global','attr','' (non-name)
+    op: str = ""  # operator token kept: 'Add','Mult','Eq', ... (NOT collapsed to 'binop')
+    lit: str = ""  # literal KIND kept (not value): 'int','str','none', ''
+    children: tuple = ()  # tuple of child IR ids (ints into the intern table) -- hash-cons refs
+    payload: tuple = ()  # RESIDUE: original name, literal value, etc. -- kept, not in the key
     # NB: `children` are IDs (already-interned), so structural equality of (kind,role,op,lit,children)
     # is structural equality ALL THE WAY DOWN, established once at intern (the SPPF property).
 
@@ -59,10 +62,10 @@ class IR:
 # ============================================================================
 class Intern:
     def __init__(self):
-        self.nodes: list[IR] = []           # id -> IR
-        self.table: dict = {}               # key -> id  (the "hash" is just this dict's hashing)
-        self.fanin: list[int] = []          # id -> count of parent references (shared-ness)
-        self.src: list[Optional[tuple]] = []# id -> (lineno,col,end) span for the report layer
+        self.nodes: list[IR] = []  # id -> IR
+        self.table: dict = {}  # key -> id  (the "hash" is just this dict's hashing)
+        self.fanin: list[int] = []  # id -> count of parent references (shared-ness)
+        self.src: list[Optional[tuple]] = []  # id -> (lineno,col,end) span for the report layer
 
     def intern(self, node: IR, span=None) -> int:
         k = node.key()
@@ -73,11 +76,12 @@ class Intern:
             self.table[k] = i
             self.fanin.append(0)
             self.src.append(span)
-            for c in node.children:        # record that this node references its children
+            for c in node.children:  # record that this node references its children
                 self.fanin[c] += 1
         return i
 
-    def size(self): return len(self.nodes)
+    def size(self):
+        return len(self.nodes)
 
 
 # ============================================================================
@@ -91,9 +95,9 @@ class Intern:
 # ============================================================================
 @dataclass(frozen=True)
 class Wedge:
-    quot: tuple          # the head shape (kind,role,op,lit) -- the QUOTIENT, a carrier rep
-    base: int            # the first child id -- the BASE
-    rem: int             # the remainder id (the rest, re-interned) -- recurse here
+    quot: tuple  # the head shape (kind,role,op,lit) -- the QUOTIENT, a carrier rep
+    base: int  # the first child id -- the BASE
+    rem: int  # the remainder id (the rest, re-interned) -- recurse here
     # wedge_eq is carried implicitly: by construction recon(quot,base,rem) re-interns to `a`.
     # We assert it at build (faithful_check) rather than carry a proof object (Python, not Agda),
     # but it is CHECKED, not discarded -- the residue (quot,base,rem) reconstructs a exactly.
@@ -103,21 +107,24 @@ class Wedge:
 class Trace:
     """base(a) | step(head, base, sub).  The chain of decompositions = the GRADING.
     depth(trace) is the grade axis: 'equal up to grade k' = traces agree for k steps."""
-    a: int                       # the node this trace decomposes
-    head: tuple = ()             # the wedge quotient at this step ('' tuple at base)
-    base: int = -1               # the wedge base child ('' at base)
-    sub: Optional["Trace"] = None# the remainder trace (None at base -- the atom z)
 
-    def is_base(self): return self.sub is None
+    a: int  # the node this trace decomposes
+    head: tuple = ()  # the wedge quotient at this step ('' tuple at base)
+    base: int = -1  # the wedge base child ('' at base)
+    sub: Optional["Trace"] = None  # the remainder trace (None at base -- the atom z)
+
+    def is_base(self):
+        return self.sub is None
 
 
 class PyDivStr:
     """C = interned IR ids; z = atoms (childless nodes); recon rebuilds a node from head+base+rem."""
+
     def __init__(self, intern: Intern):
         self.I = intern
 
     def is_z(self, i: int) -> bool:
-        return len(self.I.nodes[i].children) == 0      # atom: nothing left to decompose
+        return len(self.I.nodes[i].children) == 0  # atom: nothing left to decompose
 
     def recon(self, head: tuple, base: int, rem_children: tuple) -> int:
         # rebuild a node from its head shape + base child + remaining children, re-intern it.
@@ -138,7 +145,7 @@ class PyDivStr:
             # re-intern the remainder as a node with the SAME head over the rest (left-fold shape)
             rem = self.I.intern(IR(kind=n.kind, role=n.role, op=n.op, lit=n.lit, children=rest))
         else:
-            rem = -1     # only one child: remainder is empty (the wedge bottoms out next step)
+            rem = -1  # only one child: remainder is empty (the wedge bottoms out next step)
         return Wedge(quot=head, base=base, rem=rem)
 
     def trace(self, i: int) -> Trace:
@@ -148,7 +155,7 @@ class PyDivStr:
         collapse the EEA terminal property -- strict descent to the base case)."""
         w = self.wedge(i)
         if w is None:
-            return Trace(a=i)                                  # base(a): an atom (z)
+            return Trace(a=i)  # base(a): an atom (z)
         if w.rem == -1:
             # single child: the remainder is empty, so descend into the base child itself
             return Trace(a=i, head=w.quot, base=w.base, sub=self.trace(w.base))
@@ -242,7 +249,7 @@ def full_skeleton_steps(intern: Intern, i: int):
     while stack:
         n = intern.nodes[stack.pop()]
         yield (n.kind, n.role, n.op, n.lit)
-        stack.extend(reversed(n.children))     # reversed -> children visited left-to-right (pre-order)
+        stack.extend(reversed(n.children))  # reversed -> children visited left-to-right (pre-order)
 
 
 def full_skeleton(intern: Intern, i: int) -> tuple:
@@ -258,8 +265,8 @@ def full_skeleton(intern: Intern, i: int) -> tuple:
 class Lowerer(ast.NodeVisitor):
     def __init__(self, intern: Intern):
         self.I = intern
-        self.scopes: list[dict] = [{}]      # name -> role, per scope (rename-orbit quotient)
-        self.bound: set = set()             # names that are BOUND somewhere (assigned / parameters)
+        self.scopes: list[dict] = [{}]  # name -> role, per scope (rename-orbit quotient)
+        self.bound: set = set()  # names that are BOUND somewhere (assigned / parameters)
 
     def _role(self, name: str, ctx_store: bool) -> str:
         for sc in reversed(self.scopes):
@@ -267,7 +274,7 @@ class Lowerer(ast.NodeVisitor):
                 return sc[name]
         # new binding: assign a role by scope depth + position (alpha-stable within scope)
         sc = self.scopes[-1]
-        role = f"v{len(self.scopes)-1}_{len(sc)}"
+        role = f"v{len(self.scopes) - 1}_{len(sc)}"
         sc[name] = role
         return role
 
@@ -327,12 +334,17 @@ class Lowerer(ast.NodeVisitor):
             kind = "Name"
             role = self._role(node.arg, True)
             payload = (node.arg,)
-            return self.I.intern(IR(kind=kind, role=role, op="", lit="", children=(), payload=payload),
-                                 (getattr(node, "lineno", -1), getattr(node, "col_offset", -1),
-                                  getattr(node, "end_lineno", -1)))
+            return self.I.intern(
+                IR(kind=kind, role=role, op="", lit="", children=(), payload=payload),
+                (
+                    getattr(node, "lineno", -1),
+                    getattr(node, "col_offset", -1),
+                    getattr(node, "end_lineno", -1),
+                ),
+            )
         elif isinstance(node, ast.Constant):
-            lit = type(node.value).__name__                       # literal KIND, not value
-            payload = (repr(node.value),)                         # residue: the value
+            lit = type(node.value).__name__  # literal KIND, not value
+            payload = (repr(node.value),)  # residue: the value
         elif isinstance(node, (ast.BinOp, ast.UnaryOp, ast.BoolOp, ast.AugAssign)):
             o = getattr(node, "op", None)
             op = type(o).__name__ if o is not None else ""
@@ -399,7 +411,7 @@ class Lowerer(ast.NodeVisitor):
             op = f"simple{node.simple}"
         elif isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
             payload = (node.name,)
-            self.scopes.append({})                                # new scope for the body
+            self.scopes.append({})  # new scope for the body
             # PRESCAN: collect names BOUND in this scope (params + any assignment target + nested
             # def/class names + comprehension/with/for targets) so a name read BEFORE its binding is
             # still recognized as bound (role-quotiented), not mistaken for a free/referential global.
@@ -420,10 +432,15 @@ class Lowerer(ast.NodeVisitor):
         if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
             self.scopes.pop()
 
-        span = (getattr(node, "lineno", -1), getattr(node, "col_offset", -1),
-                getattr(node, "end_lineno", -1))
-        return self.I.intern(IR(kind=kind, role=role, op=op, lit=lit,
-                                children=tuple(child_ids), payload=payload), span)
+        span = (
+            getattr(node, "lineno", -1),
+            getattr(node, "col_offset", -1),
+            getattr(node, "end_lineno", -1),
+        )
+        return self.I.intern(
+            IR(kind=kind, role=role, op=op, lit=lit, children=tuple(child_ids), payload=payload),
+            span,
+        )
 
 
 def lower_source(src: str, intern: Intern) -> list[int]:
@@ -447,20 +464,43 @@ def lower_source(src: str, intern: Intern) -> list[int]:
 # only for Python-SOURCE interning — the agda-core / ast paths never touch it. So detect AVAILABILITY cheaply
 # (find_spec does NOT import) and import libcst LAZILY at the two use sites. (⟡infra: fix the eager optional import.)
 from importlib.util import find_spec as _find_spec
+
 _HAS_CST = _find_spec("libcst") is not None
 
 # cst-kind -> shared canonical (kind, op-extractor).  Maps cst's vocabulary onto ast's heads.
-_CST_BINOP = {"Add": "Add", "Subtract": "Sub", "Multiply": "Mult", "Divide": "Div",
-              "Modulo": "Mod", "Power": "Pow", "FloorDivide": "FloorDiv",
-              "BitAnd": "BitAnd", "BitOr": "BitOr", "BitXor": "BitXor",
-              "LeftShift": "LShift", "RightShift": "RShift", "MatrixMultiply": "MatMult"}
-_TRIVIA = ("Whitespace", "Comma", "Newline", "Semicolon", "EmptyLine", "Colon",
-           "TrailingWhitespace", "ParenthesizedWhitespace", "Comment", "Dot")
+_CST_BINOP = {
+    "Add": "Add",
+    "Subtract": "Sub",
+    "Multiply": "Mult",
+    "Divide": "Div",
+    "Modulo": "Mod",
+    "Power": "Pow",
+    "FloorDivide": "FloorDiv",
+    "BitAnd": "BitAnd",
+    "BitOr": "BitOr",
+    "BitXor": "BitXor",
+    "LeftShift": "LShift",
+    "RightShift": "RShift",
+    "MatrixMultiply": "MatMult",
+}
+_TRIVIA = (
+    "Whitespace",
+    "Comma",
+    "Newline",
+    "Semicolon",
+    "EmptyLine",
+    "Colon",
+    "TrailingWhitespace",
+    "ParenthesizedWhitespace",
+    "Comment",
+    "Dot",
+)
 
 
 class CstLowerer:
     """Lower a libcst tree into the SAME IR/Intern as the ast lowerer, canonicalizing cst's
     structural vocabulary to the shared heads and dropping trivia into residue."""
+
     def __init__(self, intern: Intern, bound: Optional[set] = None):
         self.I = intern
         self.scopes: list[dict] = [{}]
@@ -476,7 +516,7 @@ class CstLowerer:
             if name in sc:
                 return sc[name]
         sc = self.scopes[-1]
-        role = f"v{len(self.scopes)-1}_{len(sc)}"
+        role = f"v{len(self.scopes) - 1}_{len(sc)}"
         sc[name] = role
         return role
 
@@ -500,7 +540,13 @@ class CstLowerer:
         if t in ("SimpleString", "ConcatenatedString", "FormattedString"):
             return "Constant", "", "str", "", (getattr(node, "value", ""),)
         if t == "BinaryOperation":
-            return "BinOp", _CST_BINOP.get(type(node.operator).__name__, type(node.operator).__name__), "", "", ()
+            return (
+                "BinOp",
+                _CST_BINOP.get(type(node.operator).__name__, type(node.operator).__name__),
+                "",
+                "",
+                (),
+            )
         if t == "Comparison":
             ops = "|".join(type(c.operator).__name__ for c in node.comparisons)
             return "Compare", ops, "", "", ()
@@ -521,14 +567,21 @@ class CstLowerer:
     def lower(self, node) -> int | None:
         t = type(node).__name__
         if any(s in t for s in _TRIVIA):
-            return None                                            # trivia: residue, not in the structure
+            return None  # trivia: residue, not in the structure
         # unwrap cst's pure structural wrappers to match ast's flattening
-        if t in ("Module", "IndentedBlock", "SimpleStatementLine", "SimpleStatementSuite",
-                 "Expr", "Parameters", "Decorator"):
+        if t in (
+            "Module",
+            "IndentedBlock",
+            "SimpleStatementLine",
+            "SimpleStatementSuite",
+            "Expr",
+            "Parameters",
+            "Decorator",
+        ):
             kids = [self.lower(c) for c in self._cst_children(node)]
             kids = [k for k in kids if k is not None]
             if t == "Module":
-                return kids                                        # top-level: return list of stmt ids
+                return kids  # top-level: return list of stmt ids
             # a transparent wrapper with one child collapses to that child; else a generic Block
             if len(kids) == 1:
                 return kids[0]
@@ -545,8 +598,14 @@ class CstLowerer:
             # Attribute HEAD converges with ast's (kind="Attribute", op=<attr>, children=(value,)).
             val = self.lower(node.value)
             kids = [val] if val is not None else []
-            return self.I.intern(IR(kind="Attribute", op=node.attr.value,
-                                    children=tuple(kids), payload=(node.attr.value,)))
+            return self.I.intern(
+                IR(
+                    kind="Attribute",
+                    op=node.attr.value,
+                    children=tuple(kids),
+                    payload=(node.attr.value,),
+                )
+            )
 
         kind, op, lit, role, payload = self._kind_and_head(node)
         if kind == "FunctionDef":
@@ -560,13 +619,15 @@ class CstLowerer:
                 kids.append(k)
         if kind == "FunctionDef":
             self.scopes.pop()
-        return self.I.intern(IR(kind=kind, role=role, op=op, lit=lit,
-                                children=tuple(kids), payload=payload))
+        return self.I.intern(
+            IR(kind=kind, role=role, op=op, lit=lit, children=tuple(kids), payload=payload)
+        )
 
     @staticmethod
     def _cst_children(node):
         import dataclasses
-        import libcst as cst                          # ⟡infra: lazy — only the CST arm reaches here
+        import libcst as cst  # ⟡infra: lazy — only the CST arm reaches here
+
         fields = dataclasses.fields(node) if dataclasses.is_dataclass(node) else []
         for f in fields:
             val = getattr(node, f.name, None)
@@ -586,22 +647,27 @@ def lower_source_cst(src: str, intern: Intern) -> list[int]:
     globals collapse (the cst-arm false-duplicate). Falls back to all-free if metadata is unavailable."""
     if not _HAS_CST:
         raise RuntimeError("libcst not available")
-    import libcst as cst                              # ⟡infra: lazy — imported only on the CST lowering path
+    import libcst as cst  # ⟡infra: lazy — imported only on the CST lowering path
+
     mod = cst.parse_module(src)
     bound: set = set()
     module_to_lower = mod
     try:
         from libcst.metadata import MetadataWrapper, ExpressionContextProvider, ExpressionContext
+
         wrapper = MetadataWrapper(mod)
         ctxs = wrapper.resolve(ExpressionContextProvider)
         # bound = the names that are ever a STORE target (mirrors ast's "ctx is Store anywhere -> bound",
         # flat across scopes like the ast lowerer's self.bound). NB import aliases are NOT Name STORE
         # nodes -> they stay FREE, matching the ast lowerer (which also treats import names as free).
-        bound = {n.value for n, c in ctxs.items()
-                 if type(n).__name__ == "Name" and c == ExpressionContext.STORE}
-        module_to_lower = wrapper.module       # metadata is keyed on the wrapper's module nodes
+        bound = {
+            n.value
+            for n, c in ctxs.items()
+            if type(n).__name__ == "Name" and c == ExpressionContext.STORE
+        }
+        module_to_lower = wrapper.module  # metadata is keyed on the wrapper's module nodes
     except Exception:
-        pass                                   # metadata unavailable -> all-free fallback (still no crash)
+        pass  # metadata unavailable -> all-free fallback (still no crash)
     lw = CstLowerer(intern, bound=bound)
     out = lw.lower(module_to_lower)
     return out if isinstance(out, list) else [out]
@@ -636,32 +702,42 @@ class CrossTerm:
     """The graded cross-term at a node pair (ast id, cst id).
     degree 0 = heads agree (orthogonal/coherent); n>0 = re-converge n levels down (graded
     obstruction); degree None = never re-converge within depth (residue carried, max cost)."""
+
     a_id: int
     b_id: int
-    head_agree: bool          # do the two heads (kind,role,op,lit minus residue) coincide?
-    degree: int | None        # nilpotency degree: 0 clean, n>0 graded, None = unbounded
-    a_residue: tuple = ()     # what ast keeps here that cst doesn't (the A-strand cross residue)
-    b_residue: tuple = ()     # what cst keeps here that ast doesn't (the B-strand cross residue)
+    head_agree: bool  # do the two heads (kind,role,op,lit minus residue) coincide?
+    degree: int | None  # nilpotency degree: 0 clean, n>0 graded, None = unbounded
+    a_residue: tuple = ()  # what ast keeps here that cst doesn't (the A-strand cross residue)
+    b_residue: tuple = ()  # what cst keeps here that ast doesn't (the B-strand cross residue)
 
 
 class CrossMix:
     """A -> R <- B for the Python carriers.  Computes, per source position, the cross-term's
     nilpotency degree = the graded agreement of ast and cst.  Orthogonal where they share the
     common structure, graded-nilpotent where they diverge, the degree the cost (kept residue)."""
+
     def __init__(self, intern: Intern):
         self.I = intern
 
     def _head(self, i: int) -> tuple:
         n = self.I.nodes[i]
-        return (n.kind, n.role, n.op, n.lit)   # the canonical head; payload (names/values) is residue
+        return (
+            n.kind,
+            n.role,
+            n.op,
+            n.lit,
+        )  # the canonical head; payload (names/values) is residue
 
     def _subnodes(self, i: int) -> set:
         """The set of interned ids reachable from i (its subterm support in R)."""
-        out = set(); stack = [i]
+        out = set()
+        stack = [i]
         while stack:
             j = stack.pop()
-            if j in out: continue
-            out.add(j); stack.extend(self.I.nodes[j].children)
+            if j in out:
+                continue
+            out.add(j)
+            stack.extend(self.I.nodes[j].children)
         return out
 
     def cross_term(self, a_id: int, b_id: int, max_depth: int = 64) -> CrossTerm:
@@ -675,22 +751,33 @@ class CrossMix:
                     (here: the count of nodes one keeps that the other doesn't, the cross residue).
         The residue is what each side carries that the other doesn't -- kept, the graded obstruction."""
         if a_id == b_id:
-            return CrossTerm(a_id, b_id, head_agree=True, degree=0)   # same canonical node: orthogonal
-        sa = self._subnodes(a_id); sb = self._subnodes(b_id)
+            return CrossTerm(
+                a_id, b_id, head_agree=True, degree=0
+            )  # same canonical node: orthogonal
+        sa = self._subnodes(a_id)
+        sb = self._subnodes(b_id)
         shared = sa & sb
-        only_a = sa - sb; only_b = sb - sa
-        ha = self._head(a_id); hb = self._head(b_id)
+        only_a = sa - sb
+        only_b = sb - sa
+        ha = self._head(a_id)
+        hb = self._head(b_id)
         # the cross-term degree = the size of the non-orthogonal (non-shared) part. Vanishes (0)
         # iff the supports coincide; grows with the divergence. This is the nilpotency degree:
         # the structure shared in R is the orthogonal part, the residue is the graded obstruction.
         degree = len(only_a) + len(only_b)
-        return CrossTerm(a_id, b_id, head_agree=(ha == hb), degree=degree,
-                         a_residue=tuple(sorted(self._head(x) for x in only_a))[:8],
-                         b_residue=tuple(sorted(self._head(x) for x in only_b))[:8])
+        return CrossTerm(
+            a_id,
+            b_id,
+            head_agree=(ha == hb),
+            degree=degree,
+            a_residue=tuple(sorted(self._head(x) for x in only_a))[:8],
+            b_residue=tuple(sorted(self._head(x) for x in only_b))[:8],
+        )
 
     def shared_fraction(self, a_id: int, b_id: int) -> float:
         """The coherent (orthogonal) fraction: |shared support| / |total support|. 1.0 = identical."""
-        sa = self._subnodes(a_id); sb = self._subnodes(b_id)
+        sa = self._subnodes(a_id)
+        sb = self._subnodes(b_id)
         u = sa | sb
         return len(sa & sb) / len(u) if u else 1.0
 
@@ -700,7 +787,9 @@ class CrossMix:
 
 
 if __name__ == "__main__":
-    print("jea_pyalg: Python as a Wedge/Trace carrier (hash-cons SPPF; similarity = a trace_fold)\n")
+    print(
+        "jea_pyalg: Python as a Wedge/Trace carrier (hash-cons SPPF; similarity = a trace_fold)\n"
+    )
     I = Intern()
     # two functions: structurally identical up to variable RENAME (alpha) -> should SHARE under role-lowering
     src_a = "def f(x, y):\n    z = x + y\n    return z * 2\n"
@@ -714,22 +803,29 @@ if __name__ == "__main__":
     D = PyDivStr(I)
 
     # W1: alpha-equivalence -- f and g lower to the SAME interned id (rename-orbit quotient exact).
-    w1 = (ids_a == ids_b)
-    print(f"  W1  ALPHA: f(x,y) and g(a,b) (same up to rename) intern to the SAME id "
-          f"{ids_a}=={ids_b}: {w1}  (role-lowering = the rename quotient; names kept as residue)")
+    w1 = ids_a == ids_b
+    print(
+        f"  W1  ALPHA: f(x,y) and g(a,b) (same up to rename) intern to the SAME id "
+        f"{ids_a}=={ids_b}: {w1}  (role-lowering = the rename quotient; names kept as residue)"
+    )
 
     # W2: faithful_check (wedge_eq) -- recon(decomposition) re-interns to the node, for every node.
     w2 = all(D.faithful_check(i) for i in range(I.size()))
-    print(f"  W2  FAITHFUL (wedge_eq carried+checked): recon(decompose(i))==i for all {I.size()} nodes: {w2}")
+    print(
+        f"  W2  FAITHFUL (wedge_eq carried+checked): recon(decompose(i))==i for all {I.size()} nodes: {w2}"
+    )
 
     # W3: the trace IS the grading -- grade(trace) = decomposition depth; head_spine is the skeleton.
     # collapse is the FORGETFUL read: it returns the chain's TERMINAL atom (Agda's `g`), NOT the head --
     # the annihilating projection. So we assert it lands on an atom (a z, childless), per the Agda semantics.
-    fa = ids_a[0]; ta = D.trace(fa)
+    fa = ids_a[0]
+    ta = D.trace(fa)
     term = collapse(ta)
     w3 = (grade(ta) == len(head_spine(ta))) and D.is_z(term)
-    print(f"  W3  TRACE=GRADING: grade(f)={grade(ta)} == |head_spine|={len(head_spine(ta))}; "
-          f"collapse(f)={term} is an atom (z, the forgetful terminal): {w3}")
+    print(
+        f"  W3  TRACE=GRADING: grade(f)={grade(ta)} == |head_spine|={len(head_spine(ta))}; "
+        f"collapse(f)={term} is an atom (z, the forgetful terminal): {w3}"
+    )
 
     # W4: SIMILARITY = a readout over kept structure, not pairwise distance. f vs h: same skeleton
     #     PREFIX then diverge where the op differs (* vs +). The FULL skeleton (whole subtree) sees the
@@ -738,26 +834,46 @@ if __name__ == "__main__":
     sh = full_skeleton(I, ids_c[0])
     common = 0
     for x, y in zip(sa, sh):
-        if x != y: break
+        if x != y:
+            break
         common += 1
     w4 = (sa != sh) and (common >= 1) and (ids_a[0] != ids_c[0])
-    print(f"  W4  SIMILARITY=READOUT: f vs h full-skeletons agree for {common}/{min(len(sa),len(sh))} "
-          f"nodes then diverge (the op grade: * vs +); distinct ids ({ids_a[0]} vs {ids_c[0]}): {w4}")
+    print(
+        f"  W4  SIMILARITY=READOUT: f vs h full-skeletons agree for {common}/{min(len(sa), len(sh))} "
+        f"nodes then diverge (the op grade: * vs +); distinct ids ({ids_a[0]} vs {ids_c[0]}): {w4}"
+    )
 
     # W5: FAN-IN = the SPPF sharing signal. The `x+y` / `a+b` BinOp subtree is SHARED between f and g
     #     (same after rename) -> its interned node has fan-in from both. Computed once, read as lookup.
     shared = sum(1 for fi in I.fanin if fi >= 2)
-    w5 = (shared >= 1) and (I.size() < (len(ast.dump(ast.parse(src_a))) +  # crude: forest << raw
-                                        len(ast.dump(ast.parse(src_b)))))
-    print(f"  W5  FAN-IN (SPPF sharing): {shared} nodes shared by >=2 parents; forest {I.size()} nodes "
-          f"(f and g's bodies collapsed by rename): {w5}")
+    w5 = (shared >= 1) and (
+        I.size()
+        < (
+            len(ast.dump(ast.parse(src_a)))  # crude: forest << raw
+            + len(ast.dump(ast.parse(src_b)))
+        )
+    )
+    print(
+        f"  W5  FAN-IN (SPPF sharing): {shared} nodes shared by >=2 parents; forest {I.size()} nodes "
+        f"(f and g's bodies collapsed by rename): {w5}"
+    )
 
     ok = w1 and w2 and w3 and w4 and w5
-    print(f"\n  {'PASS' if ok else 'FAIL'} — Python lowered into the Wedge/Trace carrier: hash-cons interning")
-    print(f"  (structural equality all the way down = the SPPF), recon decomposes a node into head+base+")
-    print(f"  remainder, the Trace keeps every step (the grading), and similarity is a trace_fold over the")
-    print(f"  kept trace -- NOT a digest, NOT pairwise distance. Alpha-rename is the role-lowering quotient")
-    print(f"  (names kept as residue); the op grade and the fan-in fall out of the same interned structure.")
+    print(
+        f"\n  {'PASS' if ok else 'FAIL'} — Python lowered into the Wedge/Trace carrier: hash-cons interning"
+    )
+    print(
+        f"  (structural equality all the way down = the SPPF), recon decomposes a node into head+base+"
+    )
+    print(
+        f"  remainder, the Trace keeps every step (the grading), and similarity is a trace_fold over the"
+    )
+    print(
+        f"  kept trace -- NOT a digest, NOT pairwise distance. Alpha-rename is the role-lowering quotient"
+    )
+    print(
+        f"  (names kept as residue); the op grade and the fan-in fall out of the same interned structure."
+    )
 
     # ====================================================================
     # CrossMix witnesses (Substrate.Algebra.Wedge.CrossMul): ast and cst as carriers A,B
@@ -765,7 +881,9 @@ if __name__ == "__main__":
     # NOT forcing equal ids (the diagonal, "not automatic") -- measuring the graded obstruction.
     # ====================================================================
     if _HAS_CST:
-        print("\n  ── CrossMix (CrossMul): ast x cst, cross-term nilpotency degree = graded agreement ──")
+        print(
+            "\n  ── CrossMix (CrossMul): ast x cst, cross-term nilpotency degree = graded agreement ──"
+        )
         src = "def f(x, y):\n    z = x + y\n    return z * 2\n"
         J2 = Intern()
         a_ids = lower_source(src, J2)
@@ -776,7 +894,9 @@ if __name__ == "__main__":
         #     (degree 0, orthogonal). The clean extreme, like CrossMul's two-mul square-zero witness.
         ct_self = X.cross_term(a_ids[0], a_ids[0])
         w6 = (ct_self.degree == 0) and ct_self.head_agree
-        print(f"  W6  SELF-COHERENT: ast vs ast cross-term degree {ct_self.degree} (vanishes -- orthogonal): {w6}")
+        print(
+            f"  W6  SELF-COHERENT: ast vs ast cross-term degree {ct_self.degree} (vanishes -- orthogonal): {w6}"
+        )
 
         # W7: GRADED CROSS-TERM -- ast vs cst of the SAME source. They do NOT force to one id; the
         #     cross-term degree = the non-shared part of their interned support (the graded obstruction).
@@ -784,8 +904,10 @@ if __name__ == "__main__":
         ct = X.cross_term(a_ids[0], b_ids[0])
         frac = X.shared_fraction(a_ids[0], b_ids[0])
         w7 = (ct.degree is not None) and (0.0 <= frac <= 1.0)
-        print(f"  W7  GRADED ast×cst: cross-term degree {ct.degree} (non-shared nodes); shared fraction "
-              f"{frac:.2f}; ast-residue {ct.a_residue[:3]}; cst-residue {ct.b_residue[:3]}: {w7}")
+        print(
+            f"  W7  GRADED ast×cst: cross-term degree {ct.degree} (non-shared nodes); shared fraction "
+            f"{frac:.2f}; ast-residue {ct.a_residue[:3]}; cst-residue {ct.b_residue[:3]}: {w7}"
+        )
 
         # W8: COHERENCE IS GRADED, NOT BINARY -- the shared arithmetic core (`x+y` BinOp(Add)) is MORE
         #     coherent (higher shared fraction) than the whole tree: the obstruction lives in the
@@ -793,24 +915,43 @@ if __name__ == "__main__":
         #     are coherent; the cross-term obstruction concentrates in the non-orthogonal part.
         def find_binop_add(intern, root):
             seen = []
+
             def rec(i):
                 n = intern.nodes[i]
-                if n.kind == "BinOp" and n.op == "Add": seen.append(i)
-                for c in n.children: rec(c)
-            rec(root); return seen[0] if seen else None
-        ba = find_binop_add(J2, a_ids[0]); bb = find_binop_add(J2, b_ids[0])
+                if n.kind == "BinOp" and n.op == "Add":
+                    seen.append(i)
+                for c in n.children:
+                    rec(c)
+
+            rec(root)
+            return seen[0] if seen else None
+
+        ba = find_binop_add(J2, a_ids[0])
+        bb = find_binop_add(J2, b_ids[0])
         if ba is not None and bb is not None:
             core_frac = X.shared_fraction(ba, bb)
-            w8 = (core_frac >= frac)        # the core is at least as coherent as the whole
-            print(f"  W8  GRADED COHERENCE: `x+y` core shared fraction {core_frac:.2f} >= whole-tree {frac:.2f} "
-                  f"-- the obstruction concentrates in the wrappers, not the shared core: {w8}")
+            w8 = core_frac >= frac  # the core is at least as coherent as the whole
+            print(
+                f"  W8  GRADED COHERENCE: `x+y` core shared fraction {core_frac:.2f} >= whole-tree {frac:.2f} "
+                f"-- the obstruction concentrates in the wrappers, not the shared core: {w8}"
+            )
         else:
             w8 = False
             print(f"  W8  GRADED COHERENCE: could not locate shared BinOp(Add): {w8}")
 
         ok2 = w6 and w7 and w8
-        print(f"\n  {'PASS' if ok2 else 'FAIL'} — CrossMix: ast and cst are NOT forced to one id (the diagonal is not")
-        print(f"  automatic); their relationship is the cross-term's NILPOTENCY DEGREE -- graded, not binary.")
-        print(f"  Vanishing degree = orthogonal/coherent (the shared common structure, e.g. the arithmetic")
-        print(f"  core); degree n>0 = a graded obstruction (the ast/cst divergence -- context nodes, wrappers,")
-        print(f"  binding), the degree its cost, the residue kept. Same instrument relates any two carriers.")
+        print(
+            f"\n  {'PASS' if ok2 else 'FAIL'} — CrossMix: ast and cst are NOT forced to one id (the diagonal is not"
+        )
+        print(
+            f"  automatic); their relationship is the cross-term's NILPOTENCY DEGREE -- graded, not binary."
+        )
+        print(
+            f"  Vanishing degree = orthogonal/coherent (the shared common structure, e.g. the arithmetic"
+        )
+        print(
+            f"  core); degree n>0 = a graded obstruction (the ast/cst divergence -- context nodes, wrappers,"
+        )
+        print(
+            f"  binding), the degree its cost, the residue kept. Same instrument relates any two carriers."
+        )

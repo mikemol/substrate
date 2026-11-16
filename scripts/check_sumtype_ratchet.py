@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """check_sumtype_ratchet.py — duplicate type-declarations are DEBT; ratchet them down.
 
 The SIBLING of check_carrier_locality.py. That gate governs canonical OPERATORS
@@ -24,19 +26,19 @@ ratchet does not adjudicate, it only forbids GROWTH and rewards consolidation.
 Blocking gate. Exit 0 = clean, 1 = a new duplicate appeared.
 Usage: check_sumtype_ratchet.py [--quiet]
 """
+
 import os
 import sys
 
 import ratchet
 from check_carrier_locality import ROOT, DECL, strip_comments, agda_files
 
-BASELINE = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                        "sumtype_ratchet_baseline.txt")
+BASELINE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "sumtype_ratchet_baseline.txt")
 
 
 def census():
     """The duplicate-declaration set: {name::relpath} for names declared in ≥2 files."""
-    decls = {}                                    # name -> set of files
+    decls = {}  # name -> set of files
     for path in agda_files():
         with open(path, encoding="utf-8") as fh:
             src = strip_comments(fh.read())
@@ -46,19 +48,32 @@ def census():
                 decls.setdefault(m.group(1), set()).add(path)
     dup = set()
     for name, files in decls.items():
-        if len(files) >= 2:                       # a duplicated type name = debt
+        if len(files) >= 2:  # a duplicated type name = debt
             for path in files:
                 dup.add(f"{name}::{os.path.relpath(path, ROOT)}")
     return dup
 
 
 def main():
+    # ⚑ ROUTED THROUGH THE AUTHORITY (T17/T11).  `--dry-run` already worked —
+    # `set_ratchet` reads it from argv — but a TYPO did not fail: `--queit` was
+    # accepted and the gate ran verbose-but-passing (§7e).  `--dry-run` is NOT
+    # listed: `ratchet.UNIVERSAL_FLAGS` declares it for every caller.
+    if (
+        rc := ratchet.check_argv(sys.argv, {"--quiet", "--list"}, "check_sumtype_ratchet.py")
+    ) is not None:
+        return rc
     quiet = "--quiet" in sys.argv
     return ratchet.set_ratchet(
-        census(), BASELINE, "sumtype-ratchet", quiet,
+        census(),
+        BASELINE,
+        "sumtype-ratchet",
+        quiet,
+        list_keys="--list" in sys.argv,
         noun="duplicate type-declaration(s)",
         refuse_hint="Reuse the existing declaration (import / re-export it), or "
-                    "consolidate the copies onto one home — do NOT add a parallel copy.")
+        "consolidate the copies onto one home — do NOT add a parallel copy.",
+    )
 
 
 if __name__ == "__main__":

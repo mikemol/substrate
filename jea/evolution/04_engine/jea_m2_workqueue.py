@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """jea_m2_workqueue.py — M2a: the real on-device dataflow work-queue (replaces the AI-11b toy stub).
 
 A persistent GPU megakernel DRAINS a lock-free queue of term-algebra nodes, evaluating the actual SPPF
@@ -16,7 +18,9 @@ Witnesses (each [W]):
 3. PERSISTENT DRAIN: ONE kernel launch drains the whole queue (threads loop pulling until head>=n);
    no per-node launch.
 """
+
 import os
+
 os.environ.setdefault("CUDA_PATH", "/usr")
 import numpy as np, cupy as cp
 
@@ -48,26 +52,35 @@ if __name__ == "__main__":
     ref = np.where(op == 0, a, np.where(op == 1, a + b, a * b))
 
     d_op, d_a, d_b = cp.asarray(op), cp.asarray(a), cp.asarray(b)
-    d_res = cp.full(n, np.int64(-(1 << 62)), cp.int64)   # sentinel: unfilled slots stay this
+    d_res = cp.full(n, np.int64(-(1 << 62)), cp.int64)  # sentinel: unfilled slots stay this
     head = cp.zeros(1, cp.int32)
     stop = cp.zeros(1, cp.int32)
     blocks, threads = 64, 128
     print(f"draining {n} term-nodes (gen/+/*) via a persistent megakernel ({blocks}x{threads})\n")
     ker((blocks,), (threads,), (d_op, d_a, d_b, d_res, head, stop, np.int32(n)))
     cp.cuda.Stream.null.synchronize()
-    res = d_res.get(); h = int(head.get()[0])
+    res = d_res.get()
+    h = int(head.get()[0])
 
-    w1 = bool((res == ref).all())                         # correctness vs host reference
-    w2 = bool((res != -(1 << 62)).all()) and h >= n       # exactly-once: all filled, head drained past n
+    w1 = bool((res == ref).all())  # correctness vs host reference
+    w2 = bool((res != -(1 << 62)).all()) and h >= n  # exactly-once: all filled, head drained past n
     # double-check exactly-once stronger: each slot written once is implied by atomicAdd + all-filled + correct
-    w3 = True                                             # single launch above did the full drain
+    w3 = True  # single launch above did the full drain
     print(f"1. CORRECT: all {n} node results == host reference {w1}")
-    print(f"2. LOCK-FREE EXACTLY-ONCE: no unfilled slot, head={h}>= n ({h>=n}) -> each node claimed once {w2}")
+    print(
+        f"2. LOCK-FREE EXACTLY-ONCE: no unfilled slot, head={h}>= n ({h >= n}) -> each node claimed once {w2}"
+    )
     print(f"3. PERSISTENT DRAIN: one launch drained the whole queue {w3}")
 
     ok = w1 and w2 and w3
     print(f"\nM2a WORK-QUEUE: correct {w1}; exactly-once {w2}; persistent-drain {w3}")
-    print(f"\n  {'PASS' if ok else 'FAIL'} — the JEA on-device evaluator's real dataflow core: a lock-free")
-    print(f"  work-queue of term-algebra nodes (gen/+/*) drained EXACTLY-ONCE by a persistent megakernel,")
-    print(f"  host-reference-checked. Replaces the AI-11b toy stub. Built mature so it folds into M2b")
+    print(
+        f"\n  {'PASS' if ok else 'FAIL'} — the JEA on-device evaluator's real dataflow core: a lock-free"
+    )
+    print(
+        f"  work-queue of term-algebra nodes (gen/+/*) drained EXACTLY-ONCE by a persistent megakernel,"
+    )
+    print(
+        f"  host-reference-checked. Replaces the AI-11b toy stub. Built mature so it folds into M2b"
+    )
     print(f"  (dependency dataflow: nodes consume children's results) and M2c (gcd-window fusion).")

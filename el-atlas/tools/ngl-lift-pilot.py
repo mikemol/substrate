@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 ngl-lift-pilot.py — the N2 pilot grounding the lift theorem's [W] grade
 (spec §5.7e identification 3; nedge-decomposition.md §6; cotype N2).

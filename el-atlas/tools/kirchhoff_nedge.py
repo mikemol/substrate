@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 kirchhoff_nedge.py — the nedge conductance model on its PROPER foundation: Kirchhoff nodal
 analysis, with G_OR / G_AND as DERIVED special cases (candidate claim KIR).

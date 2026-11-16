@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 runtime-bridge-pilot.py — review-prompted (R1): three checks behind the
 "static map -> dynamic memory layer" question.

@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 bdp-inside-outside-pilot.py — S12: bidirectionality witness (extends SWP).
 Forward (inside) pass alone answers only the ROOT question; per-node

@@ -1,4 +1,13 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
+# selftest-requires: numpy
+# ⚑ THE ORACLE IS THE POINT OF THIS SUITE, so its dependency is DECLARED rather than
+# skipped around.  `--selftest` returned True on `SKIP (numpy absent)` — an absent
+# dependency scoring as a pass, which the plan recorded (§7d) and did not fix.  With
+# numpy supplied the suite runs 300/300 against a Laplacian-pseudoinverse oracle at
+# worst |Δ|=1.38e-14; without it, that verification silently does not happen.
+# `run_selftests._cmd` reads this line and supplies the package via `uv run --with`.
 """jea_circuit.py — Π2: the carrier-parametric circuit-solve (Kron/Schur reduction), ONE definition
 over a pluggable arithmetic CARRIER.
 
@@ -37,6 +46,7 @@ parallel are the closed-form projection for series-parallel-reducible graphs. Th
 correctly MAPPED the correspondence (G_AND ~ series_schur). No cross-project import: jea carries its OWN
 solves, validatable against el-atlas's the way jea_onegraph self-hosts it -- a homing choice.
 """
+
 from fractions import Fraction
 from itertools import combinations
 
@@ -44,10 +54,17 @@ from itertools import combinations
 class Carrier:
     """A circuit-solve carrier: a field, supplying add/mul/div (+ a `zero`). Remainder is 0 (exact ÷).
     Duck-typed -- any object with add(a,b), mul(a,b), div(a,b) and a `zero` attribute works."""
+
     zero = None
-    def add(self, a, b): raise NotImplementedError
-    def mul(self, a, b): raise NotImplementedError
-    def div(self, a, b): raise NotImplementedError
+
+    def add(self, a, b):
+        raise NotImplementedError
+
+    def mul(self, a, b):
+        raise NotImplementedError
+
+    def div(self, a, b):
+        raise NotImplementedError
 
 
 # ---- the solve: written ONCE, never naming a concrete carrier op ----------------------------
@@ -86,20 +103,25 @@ def nodal_solve(C, n, edges, src, sink):
     closed form for reducible graphs. el-atlas/tools/kirchhoff_nedge.solve is this coordinate's float
     instance. edges: (u, v, G)."""
     if not hasattr(C, "sub") or not hasattr(C, "one"):
-        raise TypeError("nodal_solve is the SUBTRACTIVE coordinate (Gaussian elimination needs .sub); a "
-                        "subtraction-free carrier runs the SAME law via nodal_solve_subfree (the "
-                        "Matrix-Tree ratio) -- it is NOT barred from any graph, this is just a coordinate")
+        raise TypeError(
+            "nodal_solve is the SUBTRACTIVE coordinate (Gaussian elimination needs .sub); a "
+            "subtraction-free carrier runs the SAME law via nodal_solve_subfree (the "
+            "Matrix-Tree ratio) -- it is NOT barred from any graph, this is just a coordinate"
+        )
     z = C.zero
-    L = [[z for _ in range(n)] for _ in range(n)]            # Laplacian over the carrier
+    L = [[z for _ in range(n)] for _ in range(n)]  # Laplacian over the carrier
     for u, v, g in edges:
-        L[u][u] = C.add(L[u][u], g); L[v][v] = C.add(L[v][v], g)
-        L[u][v] = C.sub(L[u][v], g); L[v][u] = C.sub(L[v][u], g)
-    idx = [i for i in range(n) if i != sink]                 # ground `sink`; unit current at `src`
+        L[u][u] = C.add(L[u][u], g)
+        L[v][v] = C.add(L[v][v], g)
+        L[u][v] = C.sub(L[u][v], g)
+        L[v][u] = C.sub(L[v][u], g)
+    idx = [i for i in range(n) if i != sink]  # ground `sink`; unit current at `src`
     pos = {node: r for r, node in enumerate(idx)}
     A = [[L[i][j] for j in idx] for i in idx]
-    b = [z for _ in idx]; b[pos[src]] = C.one
+    b = [z for _ in idx]
+    b[pos[src]] = C.one
     m = len(idx)
-    for k in range(m):                                       # Gaussian elimination over the carrier
+    for k in range(m):  # Gaussian elimination over the carrier
         piv = A[k][k]
         for i in range(k + 1, m):
             f = C.div(A[i][k], piv)
@@ -112,7 +134,7 @@ def nodal_solve(C, n, edges, src, sink):
         for j in range(i + 1, m):
             s = C.sub(s, C.mul(A[i][j], x[j]))
         x[i] = C.div(s, A[i][i])
-    return C.div(C.one, x[pos[src]])                         # G_eff = 1 / v[src]
+    return C.div(C.one, x[pos[src]])  # G_eff = 1 / v[src]
 
 
 def nodal_solve_subfree(C, n, edges, src, sink):
@@ -133,8 +155,10 @@ def nodal_solve_subfree(C, n, edges, src, sink):
     blocks); an efficient monotone evaluator is a separate concern, not claimed here. edges: (u, v, G)."""
     one = getattr(C, "one", None)
     if one is None:
-        raise TypeError("nodal_solve_subfree needs a multiplicative identity (.one); it does NOT need "
-                        ".sub -- that is the whole point (the subtraction-free coordinate of the law)")
+        raise TypeError(
+            "nodal_solve_subfree needs a multiplicative identity (.one); it does NOT need "
+            ".sub -- that is the whole point (the subtraction-free coordinate of the law)"
+        )
     z = C.zero
 
     def _root(parent, x):
@@ -145,35 +169,45 @@ def nodal_solve_subfree(C, n, edges, src, sink):
     def _forest_poly(k, separate):
         total = z
         for combo in combinations(edges, k):
-            parent = list(range(n)); acyclic = True
-            for (u, v, _g) in combo:
+            parent = list(range(n))
+            acyclic = True
+            for u, v, _g in combo:
                 ru, rv = _root(parent, u), _root(parent, v)
-                if ru == rv:                                 # a cycle -> not a forest
-                    acyclic = False; break
+                if ru == rv:  # a cycle -> not a forest
+                    acyclic = False
+                    break
                 parent[ru] = rv
             if not acyclic:
                 continue
             if separate and _root(parent, src) == _root(parent, sink):
-                continue                                     # src,sink must land in different trees
+                continue  # src,sink must land in different trees
             prod = one
-            for (_u, _v, g) in combo:
+            for _u, _v, g in combo:
                 prod = C.mul(prod, g)
             total = C.add(total, prod)
         return total
 
-    T = _forest_poly(n - 1, separate=False)                  # spanning trees       (Matrix-Tree numerator)
-    F_st = _forest_poly(n - 2, separate=True)                # spanning 2-forests    (separating denominator)
-    return C.div(T, F_st)                                    # G_eff = T / F_st -- positive/positive, no sub
+    T = _forest_poly(n - 1, separate=False)  # spanning trees       (Matrix-Tree numerator)
+    F_st = _forest_poly(n - 2, separate=True)  # spanning 2-forests    (separating denominator)
+    return C.div(T, F_st)  # G_eff = T / F_st -- positive/positive, no sub
 
 
 # ---- the simplest carrier: plain exact ℚ (Python Fraction); /0 -> zero (the picircuit policy) ----
 class FractionCarrier(Carrier):
     zero = Fraction(0)
-    one = Fraction(1)                                        # subtraction-HAVING -> enables nodal_solve
-    def add(self, a, b): return a + b
-    def mul(self, a, b): return a * b
-    def div(self, a, b): return a / b if b != 0 else self.zero
-    def sub(self, a, b): return a - b
+    one = Fraction(1)  # subtraction-HAVING -> enables nodal_solve
+
+    def add(self, a, b):
+        return a + b
+
+    def mul(self, a, b):
+        return a * b
+
+    def div(self, a, b):
+        return a / b if b != 0 else self.zero
+
+    def sub(self, a, b):
+        return a - b
 
 
 FRACTION = FractionCarrier()
@@ -191,101 +225,180 @@ def _selftest(trials=300, seed=20260617):
     shared conceptual bug in my two coordinates (validate OUTPUTS, not just inputs). Reproducible (seeded).
     Connected ⟹ the grounded Laplacian is SPD ⟹ Gaussian needs no pivoting (nodal_solve has none)."""
     import random
+
     try:
         import numpy as np
     except ImportError:
-        print("jea_circuit --selftest: SKIP (numpy absent; the independent oracle needs it)"); return True
+        print("jea_circuit --selftest: SKIP (numpy absent; the independent oracle needs it)")
+        return True
     rng = random.Random(seed)
     F = FRACTION
-    worst = 0.0; sample = None
+    worst = 0.0
+    sample = None
     for _ in range(trials):
         n = rng.randint(2, 6)
-        order = list(range(n)); rng.shuffle(order)
+        order = list(range(n))
+        rng.shuffle(order)
         edges = []
-        for i in range(1, n):                                   # random spanning tree -> CONNECTED
-            edges.append((order[i], order[rng.randint(0, i - 1)],
-                          Fraction(rng.randint(1, 6), rng.randint(1, 6))))
-        for _e in range(rng.randint(0, n)):                     # extra edges -> cycles / irreducible topologies
+        for i in range(1, n):  # random spanning tree -> CONNECTED
+            edges.append(
+                (
+                    order[i],
+                    order[rng.randint(0, i - 1)],
+                    Fraction(rng.randint(1, 6), rng.randint(1, 6)),
+                )
+            )
+        for _e in range(rng.randint(0, n)):  # extra edges -> cycles / irreducible topologies
             a, b = rng.sample(range(n), 2)
             edges.append((a, b, Fraction(rng.randint(1, 6), rng.randint(1, 6))))
         s, t = rng.sample(range(n), 2)
         sub = nodal_solve_subfree(F, n, edges, s, t)
         gau = nodal_solve(F, n, edges, s, t)
         if sub != gau:
-            print(f"jea_circuit --selftest: FAIL (coordinates disagree) n={n} s={s} t={t} edges={edges}: "
-                  f"subfree={sub} gauss={gau}"); return False
+            print(
+                f"jea_circuit --selftest: FAIL (coordinates disagree) n={n} s={s} t={t} edges={edges}: "
+                f"subfree={sub} gauss={gau}"
+            )
+            return False
         L = np.zeros((n, n))
-        for (u, v, g) in edges:
-            fg = float(g); L[u, u] += fg; L[v, v] += fg; L[u, v] -= fg; L[v, u] -= fg
+        for u, v, g in edges:
+            fg = float(g)
+            L[u, u] += fg
+            L[v, v] += fg
+            L[u, v] -= fg
+            L[v, u] -= fg
         Lp = np.linalg.pinv(L)
-        oracle = 1.0 / (Lp[s, s] + Lp[t, t] - 2 * Lp[s, t])     # G_eff = 1 / R_eff
+        oracle = 1.0 / (Lp[s, s] + Lp[t, t] - 2 * Lp[s, t])  # G_eff = 1 / R_eff
         err = abs(float(sub) - oracle)
         if err > 1e-6:
-            print(f"jea_circuit --selftest: FAIL (oracle disagrees, |Δ|={err:.2e}) n={n} s={s} t={t} "
-                  f"edges={edges}: subfree={sub}={float(sub):.6f} oracle={oracle:.6f}"); return False
+            print(
+                f"jea_circuit --selftest: FAIL (oracle disagrees, |Δ|={err:.2e}) n={n} s={s} t={t} "
+                f"edges={edges}: subfree={sub}={float(sub):.6f} oracle={oracle:.6f}"
+            )
+            return False
         if err >= worst:
-            worst = err; sample = (n, len(edges), s, t, sub)
+            worst = err
+            sample = (n, len(edges), s, t, sub)
     n, m, s, t, g = sample
-    print(f"jea_circuit --selftest: PASS ({trials} random graphs, n≤6) — sub-free Matrix-Tree == Gaussian")
-    print(f"  (exact ℚ) AND ≈ the numpy Laplacian-pseudoinverse oracle (worst |Δ|={worst:.2e}). The sub-free")
-    print(f"  coordinate is now validated on UNKNOWN graphs, not just the hand-picked witnesses — e.g. a")
-    print(f"  random n={n} {m}-edge graph gave G_eff({s}→{t}) = {g} = {float(g):.6f} (unpredicted in advance).")
+    # ⚑ REPORT THE COUNTED `N/M` LINE.  `scripts/run_selftests.py` treats a missing count
+    # as a FAILURE — deliberately, because a silent selftest is indistinguishable from a
+    # passing one.  This suite does 300 real trials with three independent checks and was
+    # invisible to the runner (frozen DIRS) AND unreportable once found; both are now fixed.
+    print(f"jea_circuit selftest: {trials}/{trials}")
+    print(
+        f"jea_circuit --selftest: PASS ({trials} random graphs, n≤6) — sub-free Matrix-Tree == Gaussian"
+    )
+    print(
+        f"  (exact ℚ) AND ≈ the numpy Laplacian-pseudoinverse oracle (worst |Δ|={worst:.2e}). The sub-free"
+    )
+    print(
+        f"  coordinate is now validated on UNKNOWN graphs, not just the hand-picked witnesses — e.g. a"
+    )
+    print(
+        f"  random n={n} {m}-edge graph gave G_eff({s}→{t}) = {g} = {float(g):.6f} (unpredicted in advance)."
+    )
     return True
 
 
 if __name__ == "__main__":
     import sys
+
     if "--selftest" in sys.argv:
         sys.exit(0 if _selftest() else 1)
+
     # WITNESS: the solve is carrier-agnostic -- the SAME code over ℚ (Fraction) and float agrees,
     # and matches the closed forms. (The graded-ℚ wedge carrier lives in jea_onegraph; the device
     # plane carrier in jea_onegraph.fstar_device -- both are further instances of THIS one solve.)
     class FloatCarrier(Carrier):
         zero = 0.0
         one = 1.0
-        def add(self, a, b): return a + b
-        def mul(self, a, b): return a * b
-        def div(self, a, b): return a / b if b != 0 else 0.0
-        def sub(self, a, b): return a - b
-    class SubFreeCarrier(Carrier):                # graded-ℚ-like: NO .sub (only .one -> the unit, not subtraction)
+
+        def add(self, a, b):
+            return a + b
+
+        def mul(self, a, b):
+            return a * b
+
+        def div(self, a, b):
+            return a / b if b != 0 else 0.0
+
+        def sub(self, a, b):
+            return a - b
+
+    class SubFreeCarrier(
+        Carrier
+    ):  # graded-ℚ-like: NO .sub (only .one -> the unit, not subtraction)
         zero = Fraction(0)
-        one = Fraction(1)                         # multiplicative identity -- a sub-free semiring has it; NOT subtraction
-        def add(self, a, b): return a + b
-        def mul(self, a, b): return a * b
-        def div(self, a, b): return a / b if b != 0 else self.zero
+        one = Fraction(1)  # multiplicative identity -- a sub-free semiring has it; NOT subtraction
+
+        def add(self, a, b):
+            return a + b
+
+        def mul(self, a, b):
+            return a * b
+
+        def div(self, a, b):
+            return a / b if b != 0 else self.zero
+
     F, FL, SF = FRACTION, FloatCarrier(), SubFreeCarrier()
 
-    series = [(0, 1, Fraction(2)), (1, 2, Fraction(3))]                      # A-x-B (series-parallel-reducible)
-    twopar = [(0, 1, Fraction(2)), (0, 1, Fraction(3))]                      # two parallel edges
-    wheat  = [(0, 1, Fraction(1)), (0, 2, Fraction(1)), (1, 3, Fraction(1)),  # balanced Wheatstone bridge --
-              (2, 3, Fraction(1)), (1, 2, Fraction(1))]                       #   IRREDUCIBLE (not series-parallel)
+    series = [(0, 1, Fraction(2)), (1, 2, Fraction(3))]  # A-x-B (series-parallel-reducible)
+    twopar = [(0, 1, Fraction(2)), (0, 1, Fraction(3))]  # two parallel edges
+    wheat = [
+        (0, 1, Fraction(1)),
+        (0, 2, Fraction(1)),
+        (1, 3, Fraction(1)),  # balanced Wheatstone bridge --
+        (2, 3, Fraction(1)),
+        (1, 2, Fraction(1)),
+    ]  #   IRREDUCIBLE (not series-parallel)
 
-    w1 = series_schur(F, Fraction(2), Fraction(3)) == Fraction(6, 5)          # 2·3/(2+3)
+    w1 = series_schur(F, Fraction(2), Fraction(3)) == Fraction(6, 5)  # 2·3/(2+3)
     w2 = current_divider(F, Fraction(2), [Fraction(3), Fraction(5)]) == Fraction(1, 5)  # 2/(2+3+5)
     w3 = parallel(F, Fraction(2), Fraction(3)) == Fraction(5)
-    w4 = fstar(F, Fraction(3), Fraction(2)) == Fraction(2, 5)                 # gg/(gc+gg)=2/5
+    w4 = fstar(F, Fraction(3), Fraction(2)) == Fraction(2, 5)  # gg/(gc+gg)=2/5
     w5 = abs(float(series_schur(F, Fraction(2), Fraction(3))) - series_schur(FL, 2.0, 3.0)) < 1e-12
-    w6 = series_schur(F, Fraction(1), Fraction(0)) == Fraction(0)             # /0 policy -> zero
+    w6 = series_schur(F, Fraction(1), Fraction(0)) == Fraction(0)  # /0 policy -> zero
     # SUBTRACTIVE coordinate (Gaussian): the closed form EMERGES from the nodal solve, exactly.
     w7 = nodal_solve(F, 3, series, 0, 2) == series_schur(F, Fraction(2), Fraction(3))
     w8 = nodal_solve(F, 2, twopar, 0, 1) == parallel(F, Fraction(2), Fraction(3))
-    w9 = nodal_solve(F, 4, wheat, 0, 3) == Fraction(1)                        # irreducible -> resolves to 1
+    w9 = nodal_solve(F, 4, wheat, 0, 3) == Fraction(1)  # irreducible -> resolves to 1
     # COORDINATE distinction is real: nodal_solve (Gaussian) genuinely needs .sub --
     try:
-        nodal_solve(SF, 2, twopar, 0, 1); w10 = False
+        nodal_solve(SF, 2, twopar, 0, 1)
+        w10 = False
     except TypeError:
         w10 = True
     # ...but the GRAPH/capability wall is DISSOLVED: the sub-free carrier solves the SAME graphs via the
     # subtraction-free Matrix-Tree coordinate -- IRREDUCIBLE Wheatstone included, exactly.
-    w11 = nodal_solve_subfree(SF, 4, wheat, 0, 3) == Fraction(1)             # sub-free SOLVES the irreducible graph
-    w12 = nodal_solve_subfree(F, 3, series, 0, 2) == series_schur(F, Fraction(2), Fraction(3))   # == 6/5
-    w13 = nodal_solve_subfree(F, 4, wheat, 0, 3) == nodal_solve(F, 4, wheat, 0, 3)   # both coordinates AGREE
-    w14 = nodal_solve_subfree(SF, 2, twopar, 0, 1) == parallel(F, Fraction(2), Fraction(3))      # parallel, sub-free
+    w11 = nodal_solve_subfree(SF, 4, wheat, 0, 3) == Fraction(
+        1
+    )  # sub-free SOLVES the irreducible graph
+    w12 = nodal_solve_subfree(F, 3, series, 0, 2) == series_schur(
+        F, Fraction(2), Fraction(3)
+    )  # == 6/5
+    w13 = nodal_solve_subfree(F, 4, wheat, 0, 3) == nodal_solve(
+        F, 4, wheat, 0, 3
+    )  # both coordinates AGREE
+    w14 = nodal_solve_subfree(SF, 2, twopar, 0, 1) == parallel(
+        F, Fraction(2), Fraction(3)
+    )  # parallel, sub-free
     ws = [w1, w2, w3, w4, w5, w6, w7, w8, w9, w10, w11, w12, w13, w14]
     ok = all(ws)
-    print(f"jea_circuit (Π2 carrier-parametric solve + Φ1′ Matrix-Tree subtraction-free coordinate): w1..w14 = {ws}")
-    print(f"  {'PASS' if ok else 'FAIL'} — ONE conductance-eval, TWO coordinates of the SAME governing law:")
-    print(f"  nodal_solve = SUBTRACTIVE (Gaussian, needs .sub; kirchhoff_nedge.solve is its float instance),")
-    print(f"  nodal_solve_subfree = SUBTRACTION-FREE (Matrix-Tree ratio T/F_st; the graded-ℚ wedge runs it).")
-    print(f"  The carrier's subtraction-capability selects the COORDINATE, NOT which graphs are solvable —")
-    print(f"  the sub-free wedge solves the IRREDUCIBLE Wheatstone too (w11/w13). The earlier wall was false.")
+    print(
+        f"jea_circuit (Π2 carrier-parametric solve + Φ1′ Matrix-Tree subtraction-free coordinate): w1..w14 = {ws}"
+    )
+    print(
+        f"  {'PASS' if ok else 'FAIL'} — ONE conductance-eval, TWO coordinates of the SAME governing law:"
+    )
+    print(
+        f"  nodal_solve = SUBTRACTIVE (Gaussian, needs .sub; kirchhoff_nedge.solve is its float instance),"
+    )
+    print(
+        f"  nodal_solve_subfree = SUBTRACTION-FREE (Matrix-Tree ratio T/F_st; the graded-ℚ wedge runs it)."
+    )
+    print(
+        f"  The carrier's subtraction-capability selects the COORDINATE, NOT which graphs are solvable —"
+    )
+    print(
+        f"  the sub-free wedge solves the IRREDUCIBLE Wheatstone too (w11/w13). The earlier wall was false."
+    )

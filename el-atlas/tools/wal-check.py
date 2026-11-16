@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """WAL checker: the log must sanction the state, the state must honor
 the log. Checks: (1) wal.md well-formed — BEGIN/END(/ABORT) pairing in
 order, at most one open BEGIN and only as the final entry; (2) a dirty

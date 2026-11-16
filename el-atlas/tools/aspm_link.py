@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 aspm_link.py — AI-7d: the ASPM-dynamic PCIe link as a `dynamic`-kind GraphElement.
 

@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """jea_generator_fold.py — increment (3): the WORKER's gcd-window step_fn, closing the full
 evaluator loop on-device. Same persistent primitive + handshake + exact-ℚ controller as
 jea_generator_kernel.py; the worker's step_fn is now a REAL windowed ℚ reduction:
@@ -17,18 +19,23 @@ node converges, and K climbs in response to the measured depth. (Carrier = u64 h
 the new MECHANISM in focus; the proven 128-bit _QDECL machinery drops in unchanged — the
 windowed-refill loop is carrier-agnostic.)
 """
+
 # --- jea-evolution rung bootstrap: jea/ foundation + sibling rungs on the path (see 00_SYLLABUS.md) ---
 import os as _os, sys as _sys, glob as _glob
-_EVO = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))   # .../jea/evolution
+
+_EVO = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))  # .../jea/evolution
 _sys.path[:0] = [_os.path.dirname(_EVO), *sorted(_glob.glob(_os.path.join(_EVO, "*", "")))]
 # --- end bootstrap ---
 import os
+
 os.environ.setdefault("CUDA_PATH", "/usr")
 import numpy as np, cupy as cp
 from math import gcd
-import jea_core                                  # strict shared structure (control law, ASCII gate, residency)
+import jea_core  # strict shared structure (control law, ASCII gate, residency)
 
-_SRC = jea_core.CTRL_CUDA + r'''
+_SRC = (
+    jea_core.CTRL_CUDA
+    + r"""
 extern "C" __global__
 void generator_fold(
     volatile int* K, volatile int* tick, volatile int* acked, volatile int* telem,
@@ -82,38 +89,77 @@ void generator_fold(
         }
     }
 }
-'''
+"""
+)
 _kern = jea_core.build_kernel(_SRC, "generator_fold")
-residency = jea_core.residency                  # the measured liveness invariant, shared
+residency = jea_core.residency  # the measured liveness invariant, shared
 
 
 def run(nodes, T=40, K0=4, maxspin=200_000_000):
     """nodes = list of (N,D); replicated to every worker. Returns per-node (outN,outD),
     convergence flags, the K-trajectory each worker saw, and err."""
     nsm = cp.cuda.Device().attributes["MultiProcessorCount"]
-    nblocks = min(20, nsm); num_workers = nblocks - 1
+    nblocks = min(20, nsm)
+    num_workers = nblocks - 1
     # measured residency invariant — refuse to launch a comm graph that can't stay live.
     per_sm, max_resident, _nsm, regs = residency(_kern, 32)
     assert nblocks <= max_resident, (
         f"RESIDENCY VIOLATION: launching {nblocks} blocks but only {max_resident} can be "
-        f"co-resident ({regs} regs ⇒ {per_sm}/SM × {nsm} SMs) — cyclic comm graph would deadlock.")
+        f"co-resident ({regs} regs ⇒ {per_sm}/SM × {nsm} SMs) — cyclic comm graph would deadlock."
+    )
     run._residency = (regs, per_sm, max_resident, nblocks)
     nodes_per = len(nodes)
     total = num_workers * nodes_per
     Na = cp.asarray([N for _ in range(num_workers) for (N, _D) in nodes], cp.uint64)
     Da = cp.asarray([D for _ in range(num_workers) for (_N, D) in nodes], cp.uint64)
-    a  = Na.copy(); b = Da.copy()
-    steps = cp.zeros(total, cp.int32); doneN = cp.zeros(total, cp.int32)
-    outN  = cp.zeros(total, cp.uint64); outD = cp.zeros(total, cp.uint64)
-    K = cp.full(1, K0, cp.int32); tick = cp.zeros(1, cp.int32); acked = cp.zeros(1, cp.int32)
+    a = Na.copy()
+    b = Da.copy()
+    steps = cp.zeros(total, cp.int32)
+    doneN = cp.zeros(total, cp.int32)
+    outN = cp.zeros(total, cp.uint64)
+    outD = cp.zeros(total, cp.uint64)
+    K = cp.full(1, K0, cp.int32)
+    tick = cp.zeros(1, cp.int32)
+    acked = cp.zeros(1, cp.int32)
     telem = cp.zeros(num_workers, cp.int32)
-    logK = cp.full(num_workers * T, -1, cp.int32); err = cp.zeros(1, cp.int32)
-    _kern((nblocks,), (32,),
-          (K, tick, acked, telem, Na, Da, a, b, steps, doneN, outN, outD, logK, err,
-           np.int32(num_workers), np.int32(nodes_per), np.int32(T), np.int64(maxspin)))
+    logK = cp.full(num_workers * T, -1, cp.int32)
+    err = cp.zeros(1, cp.int32)
+    _kern(
+        (nblocks,),
+        (32,),
+        (
+            K,
+            tick,
+            acked,
+            telem,
+            Na,
+            Da,
+            a,
+            b,
+            steps,
+            doneN,
+            outN,
+            outD,
+            logK,
+            err,
+            np.int32(num_workers),
+            np.int32(nodes_per),
+            np.int32(T),
+            np.int64(maxspin),
+        ),
+    )
     cp.cuda.Stream.null.synchronize()
-    return (num_workers, nodes_per, T, outN.get(), outD.get(), doneN.get(),
-            steps.get(), logK.get().reshape(num_workers, T), int(err.get()[0]))
+    return (
+        num_workers,
+        nodes_per,
+        T,
+        outN.get(),
+        outD.get(),
+        doneN.get(),
+        steps.get(),
+        logK.get().reshape(num_workers, T),
+        int(err.get()[0]),
+    )
 
 
 if __name__ == "__main__":
@@ -125,26 +171,36 @@ if __name__ == "__main__":
     exact = True
     for w in range(nw):
         for n, (N, D) in enumerate(nodes):
-            i = w * npr + n; g = gcd(N, D)
-            if (int(outN[i]), int(outD[i])) != (N // g, D // g): exact = False
+            i = w * npr + n
+            g = gcd(N, D)
+            if (int(outN[i]), int(outD[i])) != (N // g, D // g):
+                exact = False
     # 2) CONVERGENCE: all nodes done.
     converged = bool(doneN.all())
     # 3) CLOSED LOOP: K climbed in response to the measured deep-node depth.
     Ktraj = list(map(int, logK[0]))
     climbed = max(Ktraj) > Ktraj[0]
-    deep_depth = max(int(steps[i]) for i in range(npr))   # worker-0 node depths
+    deep_depth = max(int(steps[i]) for i in range(npr))  # worker-0 node depths
     depths = [int(steps[n]) for n in range(npr)]
 
     regs, per_sm, max_resident, launched = run._residency
-    print(f"increment (3): {nw} workers + 1 controller, {npr} nodes/worker, T={T}, {cp.cuda.Device().attributes['MultiProcessorCount']} SMs\n")
-    print(f"  RESIDENCY INVARIANT (measured): {regs} regs/thread => {per_sm} blocks/SM => "
-          f"{max_resident} resident >= {launched} launched : {'OK' if launched <= max_resident else 'VIOLATED'}\n")
+    print(
+        f"increment (3): {nw} workers + 1 controller, {npr} nodes/worker, T={T}, {cp.cuda.Device().attributes['MultiProcessorCount']} SMs\n"
+    )
+    print(
+        f"  RESIDENCY INVARIANT (measured): {regs} regs/thread => {per_sm} blocks/SM => "
+        f"{max_resident} resident >= {launched} launched : {'OK' if launched <= max_resident else 'VIOLATED'}\n"
+    )
     print(f"  nodes (N,D)        : {nodes}")
     print(f"  reduced (worker 0) : {[(int(outN[n]), int(outD[n])) for n in range(npr)]}")
     print(f"  measured depths    : {depths}   (deep Fibonacci node = {deep_depth} Euclid steps)")
     print(f"  K trajectory       : {Ktraj}")
-    print(f"\n  err={err}  exact-vs-Python-gcd={exact}  all-converged={converged}  K-climbed={climbed}")
-    ok = (err == 0 and exact and converged and climbed)
-    print(f"\n  INCREMENT (3) {'PASS' if ok else 'FAIL'} — full evaluator loop on-device: workers fold")
+    print(
+        f"\n  err={err}  exact-vs-Python-gcd={exact}  all-converged={converged}  K-climbed={climbed}"
+    )
+    ok = err == 0 and exact and converged and climbed
+    print(
+        f"\n  INCREMENT (3) {'PASS' if ok else 'FAIL'} — full evaluator loop on-device: workers fold"
+    )
     print(f"  real ℚ nodes in K-windows (emit converged, carry residue resident), controller grows")
     print(f"  K off the MEASURED depth to converge the deep node faster. Reductions bit-exact.")

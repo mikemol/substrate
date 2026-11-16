@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """jea_regression_gate.py — Δ-G2: the jea-regression PRE-COMMIT gate. Runs the jea modules' __main__ and asserts each
 prints PASS (and never FAIL). Fired from .githooks/pre-commit when any scripts/jea_*.py is staged -- converting "run
 the jea suite" from a discipline I must REMEMBER into a NON-SKIPPABLE gate (the G9 escalation: a recurring class --
@@ -11,32 +13,58 @@ eval_aligned_planes non-contiguous-slice bug (jea_resident W11 FAILed).
 modules. Needs the GPU (cupy); on a box without it the gate SKIPS (exit 0) -- jea can't run there anyway, and whoever
 stages jea changes has a GPU. A module is PASS iff it exits 0, prints '  PASS', and never prints '  FAIL'.
 """
+
 import os, sys, subprocess, time
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 
 # FAST: correctness-critical, no [numbers] timing loops -- the cross-path regression catchers (< ~30s total).
-FAST = ["jea_branchless", "jea_graded", "jea_divstr", "jea_carrier", "jea_dag_gen", "jea_mega_eval", "jea_eval", "jea_circuit"]
+FAST = [
+    "jea_branchless",
+    "jea_graded",
+    "jea_divstr",
+    "jea_carrier",
+    "jea_dag_gen",
+    "jea_mega_eval",
+    "jea_eval",
+    "jea_circuit",
+]
 # SLOW: timing-heavy / hardware-discovery / Agda-driving -- run under --full (or CI), not every commit.
-SLOW = ["jea_carrier_solve", "jea_resident", "jea_onegraph", "jea_bitkernel", "jea_navigator", "jea_agda_apex"]
+SLOW = [
+    "jea_carrier_solve",
+    "jea_resident",
+    "jea_onegraph",
+    "jea_bitkernel",
+    "jea_navigator",
+    "jea_agda_apex",
+]
 # SYMPY (Ξ★.0b): the exact-check strictification rung BELOW the Agda (the SymPy half of the
 # MECHANIZE-STAR tower). Pure sympy, NO GPU -- so these run unconditionally, regardless of cupy.
 # They print '[PASS]'/'[FAIL]' per check + a 'TALLY: N/N' line (a different format from the
 # cupy modules), so PASS = exit 0 with no '[FAIL]' line.
-SYMPY = ["jea_strictify_gcalc", "jea_strictify_kirchhoff", "jea_strictify_rotation",
-         "jea_parity_species_probe"]   # Ⓟ: rung-3 orbit cloud = 22 (idempotent species), fast (rung 3 only)
+SYMPY = [
+    "jea_strictify_gcalc",
+    "jea_strictify_kirchhoff",
+    "jea_strictify_rotation",
+    "jea_parity_species_probe",
+]  # Ⓟ: rung-3 orbit cloud = 22 (idempotent species), fast (rung 3 only)
 
 
 def run_one(mod, timeout=180, sympy=False):
     t0 = time.perf_counter()
     try:
-        r = subprocess.run([sys.executable, os.path.join(HERE, mod + ".py")],
-                           capture_output=True, text=True, timeout=timeout)
+        r = subprocess.run(
+            [sys.executable, os.path.join(HERE, mod + ".py")],
+            capture_output=True,
+            text=True,
+            timeout=timeout,
+        )
     except subprocess.TimeoutExpired:
         return mod, "TIMEOUT", time.perf_counter() - t0
     out = r.stdout + r.stderr
-    if sympy:                                      # strictify format: [PASS]/[FAIL] + TALLY
+    if sympy:  # strictify format: [PASS]/[FAIL] + TALLY
         ok = (r.returncode == 0) and ("[FAIL]" not in out) and ("[PASS]" in out)
-    else:                                          # cupy-module format: bare '  PASS' / '  FAIL'
+    else:  # cupy-module format: bare '  PASS' / '  FAIL'
         ok = (r.returncode == 0) and ("\n  PASS" in out) and ("\n  FAIL" not in out)
     return mod, ("PASS" if ok else "FAIL"), time.perf_counter() - t0
 
@@ -46,6 +74,7 @@ def main():
     # SymPy exact-check rung (Ξ★.0b) -- no GPU; runs always, skipped only if sympy is absent.
     try:
         import sympy  # noqa: F401
+
         for m in SYMPY:
             mod, st, dt = run_one(m, sympy=True)
             print(f"  jea-gate {m:<22} {st:<8} {dt:5.1f}s")
@@ -55,7 +84,9 @@ def main():
         print(f"jea-gate: SymPy subset SKIP (no sympy: {type(e).__name__})")
     # GPU (cupy) modules -- the cross-path regression catchers; skip if no GPU.
     try:
-        import cupy; cupy.cuda.Device(0).compute_capability                 # GPU present?
+        import cupy
+
+        cupy.cuda.Device(0).compute_capability  # GPU present?
         mods = FAST + (SLOW if "--full" in sys.argv else [])
         for m in mods:
             mod, st, dt = run_one(m)
@@ -67,7 +98,9 @@ def main():
         print(f"jea-gate: GPU modules SKIP (no GPU/cupy: {type(e).__name__})")
         tag = f"{len(SYMPY)} sympy modules (GPU skipped)"
     if fails:
-        print(f"jea-gate: FAILED -- {', '.join(f'{m}({s})' for m, s in fails)} (a jea module regressed)")
+        print(
+            f"jea-gate: FAILED -- {', '.join(f'{m}({s})' for m, s in fails)} (a jea module regressed)"
+        )
         return 1
     print(f"jea-gate: OK ({tag})")
     return 0

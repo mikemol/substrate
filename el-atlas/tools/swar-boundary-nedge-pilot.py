@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 swar-boundary-nedge-pilot.py — T-series pilot: GPU SWAR carrier boundaries as a
 nedge G-Value circuit (candidate claim SWB).

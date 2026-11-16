@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 swp-carrier-parsing-pilot.py — T-series pilot: the carrier as a parse-weight
 semiring (candidate claim SWP).

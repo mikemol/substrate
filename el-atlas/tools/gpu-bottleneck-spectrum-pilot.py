@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 gpu-bottleneck-spectrum-pilot.py — T-series pilot: the FULL bottleneck spectrum as the
 continued-fraction TRACE of the GPU conductance network (candidate claim GBS).

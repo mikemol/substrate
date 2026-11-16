@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 act-stationary-pilot.py — S16: the act-pun adjudication. "Apparent
 choice" is the stationary-phase shadow of a held ensemble of histories.

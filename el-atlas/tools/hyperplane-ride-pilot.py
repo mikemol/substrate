@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 hyperplane-ride-pilot.py — S23: ride breaker structure instead of sampling.
 

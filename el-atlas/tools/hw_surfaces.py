@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 hw_surfaces.py — the assertion, tested: ALL hardware detail is inspectable somewhere (candidate HWS).
 Opacity = a surface not yet enumerated, never an irreducible fact. So discover() can be made COMPLETE

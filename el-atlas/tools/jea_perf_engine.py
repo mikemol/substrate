@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 jea_perf_engine.py — AI-3: the ONE performance engine. Kron reduction over the discovered host
 conductance Laplacian, with the six perf pilots as orbit-VIEWS of the single solve (candidate KEN).

@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 # gen_reuse_graph.py — regenerate the structure REFINEMENT/REFERENCE graph: nodes = data/record
 # structures, edge X -> Y iff X's elaborated core REFERENCES Y (Y is a component/parent X is built
 # on). Extracted from the RAW agdai_shim cores, whose nodes carry qname references
@@ -17,8 +19,9 @@
 #                             plus the in/out-degree ranking.
 # Regenerate: scripts/gen_reuse_graph.py [path-substring-filter]  (~3min full; runs the shim raw).
 import os, sys
+
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from reuse_catalog import generate          # noqa: E402
+from reuse_catalog import generate  # noqa: E402
 
 if __name__ == "__main__":
     filt = sys.argv[1] if len(sys.argv) > 1 else ""

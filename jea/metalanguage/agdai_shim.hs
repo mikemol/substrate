@@ -1,4 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 -- agdai_shim.hs — Φ4: Agda-2.8.0 .agdai -> JSON-lines core-node schema for jea_agdai.intern_signature.
 -- Decodes an interface with Agda's OWN version-matched deserialiser (no hand-decoded tag table), walks
 -- each definition's elaborated TYPE (Agda's types ARE the segmentation), emits one node per core term:
@@ -22,6 +24,25 @@
 -- A header states intent at writing time, not the artifact's truth (D-header-is-not-a-fact).
 -- BUILD (needs the Agda-2.8.0 library in the GHC package db -- `ghc-pkg list Agda`):
 --   ghc -package Agda -O0 -o agdai_shim agdai_shim.hs
+--
+-- ⚑⚑ THAT RECIPE IS UNDER-SPECIFIED, AND THE GAP WAS MEASURED (2026-08-14). Bare
+-- `-package Agda` takes WHATEVER Agda is registered, which on this box was the Debian
+-- `Agda-2.8.0-DJrTbcOFazJDzri4fKrI2F` (built by ghc-9.10.3) while the `agda` BINARY on PATH
+-- is a cabal-store build under ghc-9.6.6. Pin the package explicitly (`-package-id` /
+-- `-package-db` naming the store the binary embeds) rather than letting resolution choose.
+--
+-- ⚑ BUT THE MISLINK WAS NOT WHAT BROKE DECODING, AND ASSUMING IT WAS COSTS A REBUILD THAT
+-- FIXES NOTHING. Cross-build decode WORKS: `currentInterfaceVersion` is a SOURCE constant of
+-- Agda 2.8.0, identical in both builds, so a 9.10.3-linked reader reads a 9.6.6-written
+-- interface. Verified on a trivial standalone module, and on the corpus (~93% of cores
+-- decoded under exactly that pairing).
+--
+-- ⚑ WHAT DOES BREAK IS THE DATA DIR, and it is a RUNTIME concern, not a link one. GHC bakes
+-- `Paths_Agda.getDataDir` in as a LITERAL (here `/usr/share/libghc-agda-dev`); removing that
+-- package left this statically-linked binary intact but dying at
+-- `Agda.Interaction.Library:116` for every core. `jea_agdai.agda_datadir` now supplies
+-- `Agda_datadir` from `agda --print-agda-data-dir` — so the SHIPPED binary keeps working
+-- with no GHC on the machine at all, which is the state this box is in as of 2026-08-14.
 -- RUN:  ./agdai_shim Foo.agdai > foo_core.jsonl     (then jea_agdai.intern_signature / core_intern_agdai)
 -- The .agdai MUST be current-toolchain (same Agda that links here); a stale/older-version interface
 -- decodes to Nothing -> rebuild it (`agda --safe Foo.agda`). VALIDATED: Emit.agdai -> 18 defs, 62 core
@@ -47,6 +68,36 @@ import Agda.Syntax.Internal
   ( Term(..), Type, Elim, Elim'(..), Abs, unAbs, unEl, unDom, ConHead(..), QName, Clause
   , clauseBody, namedClausePats, DeBruijnPattern, Pattern'(..), dbPatVarName, dbPatVarIndex
   , Sort, Sort'(..), Level'(..), getSort )
+import AgdaiReflect (genWalkers)
+
+-- ⚑ THE WALKERS ARE GENERATED FROM AGDA'S OWN TYPE DECLARATIONS. `$(genWalkers ''Term)`
+-- reifies the transitive closure from `Term` (86 types, 73 recursed) and emits one walker
+-- per type — one equation per CONSTRUCTOR, with the constructor set taken from the type, so
+-- a constructor added in a later Agda is covered on the next rebuild rather than swallowed
+-- by a catch-all.
+--
+-- ⚑ EACH WALKER TAKES A SUB-WALKER PER TYPE PARAMETER, and it needs an explicit SIGNATURE
+-- to do so. The ~73 walkers form ONE mutually-recursive binding group, and inside such a
+-- group GHC types recursive uses MONOMORPHICALLY — so `Ranged` used at `Ranged String`,
+-- `Ranged Int` and `Ranged BoundVariablePosition` (all three inside `NotationPart` alone)
+-- unified its element variable into one ambiguous type. The errors then surfaced wherever a
+-- dictionary was first demanded (`show`), never at the cause: four errors, one root.
+--
+-- ⚑ AND A SMALL FIXTURE CANNOT CATCH THAT. A 2-3 type test compiles green even with two
+-- instantiations, because GHC's dependency analysis splits the parameterized walkers into
+-- their own SCC and generalizes them. Agda's closure has real cycles through parameterized
+-- types, so it does not split. The cycle is load-bearing to the bug.
+--
+-- ⚑ ROOTED AT `Clause`, NOT `Term` — MEASURED AS A STRICT SUPERSET (99 types vs 86, with
+-- `Term` itself inside it). Generating BOTH roots would emit duplicate definitions for the
+-- ~86 shared types; one root covers everything.
+--
+-- ⚑ AND `Clause` HAS ELEVEN FIELDS WHERE THE HAND-WRITTEN `walkClause` READ TWO. Rooting
+-- here recovers `clauseTel` (the TELESCOPE — every binder's type and modality),
+-- `clauseType`, `clauseCatchall`, `clauseRecursive`, `clauseUnreachable`, `clauseEllipsis`,
+-- `clauseWhereModule`, and both `Range`s (packed as residue). Plus `PatOrigin`'s 10
+-- constructors against `walkPat`'s `_ -> "PVarOther"` catch-all, and `Pattern'`'s 7.
+$(genWalkers ''Clause)
 
 -- | The universe level of a closed sort, if it has one. `Type (Max 0 []) -> Just 0`,
 --   `Type (Max 1 []) -> Just 1`. Level-polymorphic / Prop / Inf -> Nothing.
@@ -82,6 +133,20 @@ fresh :: IORef Int -> IO Int
 fresh r = atomicModifyIORef' r (\n -> (n+1, n))
 
 -- emit one node record; return its id. children already emitted (post-order).
+--
+-- ⚑⚑⚑ ⟡locals-are-emission-order — THIS COUNTER IS THE SOURCE OF A PROPERTY THE PYTHON SIDE
+-- RECORDS ONLY AS A MEASUREMENT. `fresh` is a monotonic counter and children are emitted
+-- before their parent, so every emitted id satisfies child < parent BY CONSTRUCTION. Downstream
+-- (`sppf_db.pack_core_sql`) that is stored as `edge(clid < plid)` and verified empirically —
+-- 130,915,197 / 130,915,197 corpus-wide — as though it were a regularity that might not hold.
+-- It holds because of this line, on any corpus this shim emits.
+--
+-- ⚑⚑ AND THE ID MEANS NOTHING IN AGDA. It is not a de Bruijn index, not a name, not a position
+-- in a telescope — it is "the Nth node this walk printed, in this file, in this run". Two files
+-- containing the SAME subterm number it differently purely because the walk reached it at a
+-- different point. Everything downstream that dedups (the interner, the packing fold, the 57×
+-- collapse from 25.4M events to 443k nodes) is recovering structure this numbering obscured.
+-- A consumer must therefore never read semantics INTO the id; it is a stream address.
 emit :: IORef Int -> String -> Maybe String -> Maybe Int -> [Int] -> IO Int
 emit r ctor mq mi kids = do
   i <- fresh r
@@ -94,6 +159,19 @@ emit r ctor mq mi kids = do
 
 esc :: String -> String
 esc = concatMap (\c -> case c of '"' -> "\\\""; '\\' -> "\\\\"; _ -> [c])
+
+-- | The GENERIC emit: `(constructor, children) -> id`. The whole contract the reflected
+-- walkers need — no qname/index/lit FIELDS, because under a generic walk those are
+-- CHILDREN. A `QName` is a subtree, a de Bruijn index is a `#Int:7` leaf, a literal is
+-- `#Integer:61`. The schema gets SIMPLER: the hand-written `emit` carries four optional
+-- fields only because a flat record was the sole way to reach what its branches could not
+-- recurse into.
+emitG :: IORef Int -> String -> [Int] -> IO Int
+emitG r ctor kids = do
+  i <- fresh r
+  putStrLn $ "{\"id\":" ++ show i ++ ",\"constructor\":\"" ++ esc ctor
+           ++ "\",\"children\":[" ++ intercalate "," (map show kids) ++ "]}"
+  return i
 
 -- emit one LITERAL node record carrying its VALUE (the "lit" field). Same shape as `emit`
 -- (qname/index null, no children) plus  "lit":"<prettyShow value>"  — additive, so a consumer
@@ -202,8 +280,27 @@ main = do
       -- (the duplicate signal); the qname rides the unit marker for display only. Emitted as
       -- {"unit":qname,"root":id} after the def's nodes, so jea_pysim builds per-def units.
       mapM_ (\(qn, d) -> do
-               tr  <- walkType r (defType d)
-               cls <- clauseNodes r (theDef d)                 -- Φ7a: full clauses (LHS patterns + RHS)
+               -- ⚑ THE TYPE IS NOW WALKED GENERICALLY. `Type'' t a` needs a sub-walker per
+               -- parameter, both instantiated at `Term` here (`Type = Type'' Term Term`);
+               -- the call site is where the instantiation is concrete, so this is where the
+               -- sub-walkers are built. `walkType` (hand-written) is retained below for the
+               -- CLAUSE path, which reaches `Term` but is not reached BY it and so is not in
+               -- the generated closure.
+               tr  <- walk_Agda_Syntax_Internal_Type__
+                        (emitG r)
+                        (walk_Agda_Syntax_Internal_Term (emitG r))
+                        (walk_Agda_Syntax_Internal_Term (emitG r))
+                        (defType d)
+               -- ⚑ CLAUSES NOW WALK GENERICALLY TOO. `clauseNodes`/`walkClause`/`walkPat`
+               -- read 2 of `Clause`'s 11 fields and bucketed unmatched patterns into
+               -- `PVarOther`; the generated walker covers all 11 and all 7 `Pattern'`
+               -- constructors with no catch-all.
+               -- `funClauses` is PARTIAL (Function only); other Defns have no clauses, so
+               -- the guard stays exactly as `clauseNodes` had it.
+               cls <- case theDef d of
+                        dd@FunctionDefn{} ->
+                          mapM (walk_Agda_Syntax_Internal_Clause (emitG r)) (funClauses dd)
+                        _ -> return []
                sid <- emit r "Defn" Nothing Nothing (tr : cls)
                let mems = defMembers (theDef d)                -- Φ7b: datatype->constructors / record->fields
                    memJSON = "[" ++ intercalate "," (map (\m -> "\"" ++ esc m ++ "\"") mems) ++ "]"

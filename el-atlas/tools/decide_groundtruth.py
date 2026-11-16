@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """decide_groundtruth.py — OUTPUT-SIDE ground truth for live_dispatcher.decide()'s f* (Delta-A1).
 
 Until now NOTHING ground-truthed the EMITTED f*/bottleneck (het_validate.py tests a different hand-coded

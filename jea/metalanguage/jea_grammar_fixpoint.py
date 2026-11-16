@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """jea_grammar_fixpoint.py — grammar recognition AS the intern-fixpoint of decomposition.
 
 This is the CONSOLIDATED result of the BNF/EBNF/ABNF arc, after three corrections (overbuild → compose
@@ -39,8 +41,10 @@ O(items²)·rounds. The classic Earley chart[k] buckets are a legitimate INDEX o
 performance (an index over existing structure, not a parallel coordinate system) — reintroduce ONLY as
 an index if a real corpus needs the speed. Correctness needs only the intern-fixpoint + the grading.
 """
+
 from __future__ import annotations
 import sys, os
+
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "metalanguage"))
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from jea_pyalg import Intern, IR, PyDivStr
@@ -60,8 +64,14 @@ def recognize(grammar: dict, tokens: list, start: str, intern: Intern | None = N
     def item(lhs, rhs, dot, origin, end, kids):
         # a NORMAL interned node. The production+dot is the IDENTITY (in the KEY, op); the span
         # (origin,end) is the grading (role). kids = the consumed sub-result nodes (the retained chain).
-        return I.intern(IR(kind="it", op=f"{lhs}|{'>'.join(rhs)}|{dot}",
-                           role=f"{origin}:{end}", children=tuple(kids)))
+        return I.intern(
+            IR(
+                kind="it",
+                op=f"{lhs}|{'>'.join(rhs)}|{dot}",
+                role=f"{origin}:{end}",
+                children=tuple(kids),
+            )
+        )
 
     for rhs in grammar.get(start, []):
         item(start, rhs, 0, 0, 0, ())
@@ -69,37 +79,47 @@ def recognize(grammar: dict, tokens: list, start: str, intern: Intern | None = N
     def items():
         return [i for i in range(I.size()) if I.nodes[i].kind == "it"]
 
-    while True:                                                # FIXPOINT of intern's idempotence
+    while True:  # FIXPOINT of intern's idempotence
         before = I.size()
         for it in items():
             nd = I.nodes[it]
             lhs, rhs_s, dot_s = nd.op.split("|")
             rhs = rhs_s.split(">") if rhs_s else []
-            dot = int(dot_s); origin, end = map(int, nd.role.split(":"))
+            dot = int(dot_s)
+            origin, end = map(int, nd.role.split(":"))
             if dot < len(rhs):
                 nxt = rhs[dot]
-                if nxt in grammar:                             # PREDICT (decompose-expecting)
+                if nxt in grammar:  # PREDICT (decompose-expecting)
                     for r in grammar[nxt]:
                         item(nxt, r, 0, end, end, ())
-                elif end < n and syms[end] == nxt:             # SCAN (consume atom; lexeme retained)
+                elif end < n and syms[end] == nxt:  # SCAN (consume atom; lexeme retained)
                     leaf = I.intern(IR(kind="tok", op=nxt, children=(), payload=(toks[end][1],)))
                     item(lhs, rhs, dot + 1, origin, end + 1, nd.children + (leaf,))
-            else:                                              # COMPLETE (rebuild + reintern)
+            else:  # COMPLETE (rebuild + reintern)
                 done = I.intern(IR(kind="parse", op=lhs, children=nd.children))
                 for w in items():
                     wd = I.nodes[w]
                     wl, wrs, wds = wd.op.split("|")
                     wr = wrs.split(">") if wrs else []
-                    wdot = int(wds); worigin, wend = map(int, wd.role.split(":"))
+                    wdot = int(wds)
+                    worigin, wend = map(int, wd.role.split(":"))
                     if wend == origin and wdot < len(wr) and wr[wdot] == lhs:
                         item(wl, wr, wdot + 1, worigin, end, wd.children + (done,))
-        if I.size() == before:                                 # table stopped growing → fixpoint
+        if I.size() == before:  # table stopped growing → fixpoint
             break
 
-    roots = [i for i in items()
-             if (lambda nd: nd.op.split("|")[0] == start
-                 and int(nd.op.split("|")[2]) == len(nd.op.split("|")[1].split(">") if nd.op.split("|")[1] else [])
-                 and nd.role == f"0:{n}")(I.nodes[i])]
+    roots = [
+        i
+        for i in items()
+        if (
+            lambda nd: (
+                nd.op.split("|")[0] == start
+                and int(nd.op.split("|")[2])
+                == len(nd.op.split("|")[1].split(">") if nd.op.split("|")[1] else [])
+                and nd.role == f"0:{n}"
+            )
+        )(I.nodes[i])
+    ]
     return {"accept": bool(roots), "roots": roots, "forest_size": I.size(), "intern": I}
 
 
@@ -131,55 +151,180 @@ def stream_rhs(I: Intern, parse_node: int):
 # `rules` is an iterable of (lhs, alternation) where alternation is an iterable of parse-node ids (one
 # per concatenation) whose rhs streams via stream_rhs — so the whole emit is O(1)-state over the forest.
 _DIALECT = {
-    "abnf": {"def": "=",   "alt": " / ", "term": lambda s: f'"{s}"'},
+    "abnf": {"def": "=", "alt": " / ", "term": lambda s: f'"{s}"'},
     "ebnf": {"def": "::=", "alt": " | ", "term": lambda s: f'"{s}"'},
 }
 
 
 def emit_abnf_stream(I: Intern, rules, is_nonterminal, dialect="abnf", out=None):
     """STREAMING SPPF→ABNF/EBNF. `rules`: iterable of (lhs, [concat_parse_node, ...]); each concat's rhs
-    streams via stream_rhs. Writes each rule to `out` as reached (default: yields lines). O(1) state."""
-    import sys as _sys
+    streams via stream_rhs. Writes each rule to `out` as reached (default: yields lines).
+
+    ⚑ THE HONEST BOUND IS O(one rule), NOT O(1) — and the earlier docstring's "O(1) state" was
+    falsified by this function's own body. `" ".join` over an alternative must see that alternative's
+    symbols, so a rule's own text is held while it is built; what is NEVER held is the forest, the
+    grammar dict, or any prior rule. That is the property the 50GiB incident needed, and it is the one
+    worth stating. A promise of O(1) that the code cannot keep is worse than a true O(rule) — this is
+    the ⟡sorted-stream-carrier "declared + checked" lesson applied to the claim that motivated it.
+
+    ⚑ WHAT WAS ACTUALLY WRONG: `list(stream_rhs(...))` drained the streaming primitive into a list
+    purely to test emptiness, so the one generator in the file existed to be re-materialized by its
+    only caller. `_alt` below consumes stream_rhs ONCE, incrementally, holding one symbol at a time
+    plus the joined text — emptiness falls out of the walk instead of needing a materialization."""
     d = _DIALECT[dialect]
-    sink = (out.write if out is not None else None)
-    def sym(s): return s if is_nonterminal(s) else d["term"](s)
+    sink = out.write if out is not None else None
+
+    def sym(s):
+        return s if is_nonterminal(s) else d["term"](s)
+
+    def _alt(c):
+        # ONE pass over the rhs: no list(), emptiness observed rather than measured.
+        syms = iter(c) if isinstance(c, (list, tuple)) else stream_rhs(I, c)
+        buf, empty = [], True
+        for s in syms:
+            empty = False
+            buf.append(sym(s))
+        return '""' if empty else " ".join(buf)
+
     for lhs, concats in rules:
-        parts = []
-        for c in concats:
-            seq = list(stream_rhs(I, c)) if not isinstance(c, (list, tuple)) else list(c)
-            parts.append(" ".join(sym(s) for s in seq) if seq else '""')
-        line = f"{lhs} {d['def']} {d['alt'].join(parts)}"
-        if sink: sink(line + "\n")
-        else: yield line
+        line = f"{lhs} {d['def']} {d['alt'].join(_alt(c) for c in concats)}"
+        if sink:
+            sink(line + "\n")
+        else:
+            yield line
 
 
 def emit_grammar(grammar: dict, dialect: str = "abnf") -> str:
     """Convenience wrapper for a SMALL in-memory grammar dict (tests/fragments). For large/streamed
-    forests use emit_abnf_stream (O(1) state). EBNF↔ABNF = carrier-rename. HONEST LIMIT: terminal-vs-
+    forests use emit_abnf_stream (holds one rule, never the grammar — see its docstring; this
+    wrapper materializes the WHOLE grammar as one string, which is why it is the small-input form).
+    EBNF↔ABNF = carrier-rename. HONEST LIMIT: terminal-vs-
     nonterminal is 'is it a grammar key', so a FRAGMENT with undefined nonterminal refs can't distinguish
     them (quotes them as terminals); unambiguous for a COMPLETE grammar."""
     d = _DIALECT[dialect]
-    def sym(s): return s if s in grammar else d["term"](s)
+
+    def sym(s):
+        return s if s in grammar else d["term"](s)
+
     return "\n".join(
-        f"{lhs} {d['def']} " + d["alt"].join(
-            " ".join(sym(s) for s in conc) if conc else '""' for conc in alts)
-        for lhs, alts in grammar.items())
+        f"{lhs} {d['def']} "
+        + d["alt"].join(" ".join(sym(s) for s in conc) if conc else '""' for conc in alts)
+        for lhs, alts in grammar.items()
+    )
+
+
+def _selftest() -> int:
+    """Cases for the STREAMING readout. ⚑ This suite exists because emit_abnf_stream was a DEAD
+    CAPABILITY whose docstring promised O(1) state while its own body drained the streaming
+    primitive into two list() calls. A prose promise did not survive its own function; these cases
+    are the checked form of the same claim."""
+    cases = []
+
+    def case(name, fn):
+        try:
+            fn()
+            cases.append((name, True, ""))
+        except Exception as e:  # a case failure is data
+            cases.append((name, False, f"{type(e).__name__}: {e}"))
+
+    G = {"S": [["a", "S", "b"], ["a", "b"]], "word": [["NAME"], ["STRING"]]}
+    isnt = lambda s: s in G  # noqa: E731
+
+    def agrees():
+        # The streaming form and the whole-grammar form must produce the SAME text — otherwise
+        # "use the streaming one for large forests" is advice to get a different answer.
+        streamed = "\n".join(emit_abnf_stream(None, G.items(), isnt, "abnf"))
+        assert streamed == emit_grammar(G, "abnf"), f"\n{streamed!r}\n{emit_grammar(G, 'abnf')!r}"
+
+    case("emit_abnf_stream agrees byte-for-byte with emit_grammar", agrees)
+
+    def dialects():
+        for dia in ("abnf", "ebnf"):
+            s = "\n".join(emit_abnf_stream(None, G.items(), isnt, dia))
+            assert s == emit_grammar(G, dia), dia
+
+    case("both dialects agree (EBNF↔ABNF is a carrier-rename, not a re-derivation)", dialects)
+
+    def empty_alt():
+        Ge = {"S": [["a"], []]}
+        out = "\n".join(emit_abnf_stream(None, Ge.items(), lambda s: s in Ge, "abnf"))
+        assert '""' in out, out
+
+    case('an empty alternative emits "" (emptiness observed, not measured by list())', empty_alt)
+
+    def holds_one_rule():
+        # ⚑ THE CASE THE FIX EXISTS FOR. Rules are pulled lazily and each is written out as it is
+        # reached, so consuming the k-th line must have pulled ~k rules — never the whole grammar.
+        # An eager implementation (or a restored list()) drains the source before yielding line 1.
+        pulled = []
+
+        def rules():
+            for i in range(500):
+                pulled.append(i)
+                yield (f"r{i}", [["x"]])
+
+        it = emit_abnf_stream(None, rules(), lambda s: False, "abnf")
+        first = next(it)
+        assert first.startswith("r0 "), first
+        assert len(pulled) <= 2, f"the emit must not drain the rule source; pulled {len(pulled)}"
+        next(it)
+        assert len(pulled) <= 3, f"each line costs ~one rule; pulled {len(pulled)}"
+
+    case("emit holds ONE rule, never the grammar (500-rule source, ≤3 pulled)", holds_one_rule)
+
+    def sink_form():
+        import io
+
+        buf = io.StringIO()
+        # With out=, the function is a generator that must be DRAINED to do its work — the sink
+        # branch yields nothing, so a caller that forgets to iterate writes nothing at all.
+        assert list(emit_abnf_stream(None, G.items(), isnt, "abnf", out=buf)) == []
+        assert buf.getvalue() == emit_grammar(G, "abnf") + "\n"
+
+    case("the out= sink writes each rule as reached, same text", sink_form)
+
+    def recognizes():
+        assert recognize({"S": [["A", "B"]], "A": [["a"]], "B": [["b"]]}, ["a", "b"], "S")["accept"]
+        Gn = {"S": [["a", "S", "b"], []]}
+        assert recognize(Gn, ["a", "a", "b", "b"], "S")["accept"]
+        assert not recognize(Gn, ["a", "a", "b"], "S")["accept"]
+
+    case("recognize: a^n b^n accepts on balance, refuses off it", recognizes)
+
+    ok = sum(1 for _, p, _ in cases if p)
+    for name, passed, why in cases:
+        if not passed:
+            print(f"  FAIL  {name}\n        {why}")
+    print(f"jea_grammar_fixpoint selftest: {ok}/{len(cases)}")
+    return 0 if ok == len(cases) else 1
 
 
 if __name__ == "__main__":
+    if "--selftest" in sys.argv:
+        sys.exit(_selftest())
     print("=== jea_grammar_fixpoint: recognition AS the intern-fixpoint of decomposition ===\n")
-    print("S->A B on 'a b' :", recognize({"S": [["A", "B"]], "A": [["a"]], "B": [["b"]]},
-                                          ["a", "b"], "S")["accept"])
+    print(
+        "S->A B on 'a b' :",
+        recognize({"S": [["A", "B"]], "A": [["a"]], "B": [["b"]]}, ["a", "b"], "S")["accept"],
+    )
     G = {"S": [["a", "S", "b"], []]}
     for t in (["a", "b"], ["a", "a", "b", "b"], ["a", "a", "b"], []):
-        print(f"a^n b^n on {''.join(t) or 'ε':5}:", recognize(G, t, "S")["accept"],
-              " (no chart[k], no changed flag — intern-fixpoint + a readout)")
+        print(
+            f"a^n b^n on {''.join(t) or 'ε':5}:",
+            recognize(G, t, "S")["accept"],
+            " (no chart[k], no changed flag — intern-fixpoint + a readout)",
+        )
     r = recognize({"E": [["E", "+", "E"], ["x"]]}, ["x", "+", "x", "+", "x"], "E")
-    I = r["intern"]; xid = I.table.get(("tok", "", "x", "", ()))
-    print(f"E->E+E|x ambiguous: accept={r['accept']}  'x' fan-in={I.fanin[xid]} "
-          f"(SHARING = structural dedup; PACKING = value dedup — see jea_zsppf, not re-derived)")
+    I = r["intern"]
+    xid = I.table.get(("tok", "", "x", "", ()))
+    print(
+        f"E->E+E|x ambiguous: accept={r['accept']}  'x' fan-in={I.fanin[xid]} "
+        f"(SHARING = structural dedup; PACKING = value dedup — see jea_zsppf, not re-derived)"
+    )
 
-    print("\n--- SPPF → ABNF / EBNF readout (the unparse direction; EBNF↔ABNF a carrier-rename) ---")
+    print(
+        "\n--- SPPF → ABNF / EBNF readout (the unparse direction; EBNF↔ABNF a carrier-rename) ---"
+    )
     Gx = {"S": [["a", "S", "b"], ["a", "b"]], "word": [["NAME"], ["STRING"]]}
     print(emit_grammar(Gx, "abnf"))
     print("  --- same grammar, EBNF carrier-rename ---")

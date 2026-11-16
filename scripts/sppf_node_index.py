@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """sppf_node_index.py — lift shape-specialization to a VISIBLE artifact.
 
 Agda resolves colliding names by scope/type; a reader can't see the shape. This
@@ -10,65 +12,104 @@ member with a one-line SHAPE descriptor (kind + constructors/fields), flagging
 Writes Markdown to stdout (intended: scratch/sppf_collision_index.md), the
 visible map the entity manipulating the code consults.
 """
-import os, re, collections, hashlib
-from _agdatext import strip
-ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "agda", "Substrate"))
-decls=collections.defaultdict(list)   # name -> [(module, kind, descriptor, shapehash)]
-modre=re.compile(r"^module\s+(\S+)\s+where",re.M)
-declre=re.compile(r"^(data|record)\s+(\S+)(.*)$")
-for dp,_,fns in os.walk(ROOT):
-    for fn in fns:
-        if not fn.endswith(".agda"): continue
-        p=os.path.join(dp,fn); t=strip(open(p,encoding="utf-8").read())
-        mm=modre.search(t); mod=mm.group(1) if mm else os.path.relpath(p,ROOT)
-        lines=t.splitlines(); i=0
-        while i<len(lines):
-            m=declre.match(lines[i])
-            if m:
-                kind,name,rest=m.group(1),m.group(2),m.group(3)
-                # collect constructor/field heads for the descriptor + shape hash
-                heads=[]; body=[rest]; j=i+1
-                while j<len(lines) and (lines[j].strip()=="" or lines[j][:1] in " \t"):
-                    s=lines[j].strip()
-                    if " : " in s: heads.append(s.split(" : ",1)[0].strip()); body.append(s.split(" : ",1)[1])
-                    j+=1
-                desc=f"{kind} {{{', '.join(heads[:5])}{'…' if len(heads)>5 else ''}}}" if heads else kind
-                sh=hashlib.sha1((kind+"|"+"|".join(sorted(" ".join(b.split()) for b in body))).encode()).hexdigest()[:8]
-                decls[name].append((mod,kind,desc,sh))
-                i=j; continue
-            i+=1
 
-coll={n:v for n,v in decls.items() if len({m for m,_,_,_ in v})>1}
-genuine=[(n,v) for n,v in coll.items() if len({sh for *_,sh in v})>1]
-variant=[(n,v) for n,v in coll.items() if len({sh for *_,sh in v})==1]
-genuine.sort(key=lambda kv:-len(kv[1])); variant.sort(key=lambda kv:-len(kv[1]))
+import os
+
+# ⚑⚑ THE DECLARATION WALK + SHAPE HASH MOVED TO `_agdatext.shape_decls`, and this
+# file was one of the two copies.  It and `check_import_shape.py` computed the same
+# `sha1(kind|sorted-bodies)[:8]` byte-for-byte and still DISAGREED on the verdict —
+# this index published **11** genuinely-ambiguous names while the gate reported
+# **9**, because `ALLOW = {⊤,⊥,⊤₁}` existed only in the gate.  The gate's failure
+# message cites THIS FILE as the remedy, so the two disagreed exactly where an
+# operator was sent to look (measured 2026-08-18).
+import _agdatext
+
+ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "agda", "Substrate"))
+decls = _agdatext.shape_decls(ROOT)  # name -> [(module, kind, descriptor, shapehash)]
+
+coll = {n: v for n, v in decls.items() if len({m for m, _, _, _ in v}) > 1}
+# ⚑ THE INDEX PUBLISHES THE EXEMPT NAMES, THE GATE DOES NOT FAIL ON THEM, AND BOTH
+# ARE RIGHT.  `⊤`/`⊥` really do point at distinct shape-nodes, so a reader looking
+# them up must SEE that; they are simply not an import-time ambiguity worth
+# specializing, because the level is already the visible spec.  The split is between
+# what is SHOWN and what is ENFORCED — which is why `genuine_ambiguity` takes the
+# allow-set as an argument instead of baking it in, and why this caller passes none.
+_amb = _agdatext.genuine_ambiguity(decls)
+genuine = [(n, v) for n, v in coll.items() if n in _amb]
+variant = [(n, v) for n, v in coll.items() if len({sh for *_, sh in v}) == 1]
+genuine.sort(key=lambda kv: -len(kv[1]))
+variant.sort(key=lambda kv: -len(kv[1]))
 
 import sys
-L=[]
+
+_SNAPPED = []
+
+
+def _snapshot_once(path):
+    """Arm edit_snapshot on the FIRST write of a run; a no-op thereafter.
+
+    ⚑ This tool rewrites files it read — the shape that made 33 files
+    unrecoverable (Coxeter/Core.agda 76 lines -> 3).  The write is inside a loop,
+    so a per-file `guard` would arm only the first file AND shell out to `git
+    stash create` on every iteration; arming once per run is both correct and
+    cheap.  Recovery is per-file and MANUAL by design — edit_snapshot never
+    restores anything itself.
+    """
+    if _SNAPPED:
+        return
+    _SNAPPED.append(True)
+    try:
+        import edit_snapshot
+
+        # ⚑ `intent="apply"` IS ENTAILED BY THE BRANCH, and this tool's polarity is
+        # INVERTED from the usual one: the flagged mode (`--check`) is the READ and
+        # the BARE invocation is the WRITER (the `else` at the bottom of this file).
+        # So the sole caller of this helper is a branch that is already, and
+        # unconditionally, writing — an argv-reading guard here could only disagree
+        # with it, and would refuse the bare regeneration the hook's own comment
+        # tells an operator to run.
+        # ⚑⚑ AND `require_at_entry` AT THE TOP OF THIS FILE WOULD BREAK PRE-COMMIT.
+        # The hook invokes `sppf_node_index.py --check` (phase A, BLOCKING) and that
+        # states neither `--apply` nor `--dry-run`, so an armed entry gate exits 2
+        # and aborts every commit. Verified against `.githooks/pre-commit:247`. The
+        # entry form is the stronger contract and it is NOT available here until
+        # this tool spells its modes as the mutation pair; arming the write branch
+        # is the honest weaker one.
+        edit_snapshot.guard("sppf_node_index", [path], intent="apply")
+    except Exception as e:
+        print(f"   \u26a0 snapshot unavailable ({e}) \u2014 recover via git if needed")
+
+
+L = []
 L.append("# Name → shape-node index (collision disambiguation)\n")
 L.append("Names are vacuous; the shape is the meaning. A name in >1 module points at")
 L.append("a node *per shape*. To use a colliding name, specialize by the shape below.")
 L.append("GENERATED by `scripts/sppf_node_index.py` — do not edit by hand.\n")
 L.append(f"## GENUINE AMBIGUITY — {len(genuine)} names point at DISTINCT shape-nodes\n")
-for n,v in genuine:
+for n, v in genuine:
     L.append(f"### `{n}` — {len(v)} distinct nodes")
-    for mod,kind,desc,sh in sorted(v):
+    for mod, kind, desc, sh in sorted(v):
         L.append(f"- `⟦{sh}⟧` {desc}  ·  {mod}")
     L.append("")
-L.append(f"## VARIANTS — {len(variant)} names, same shape across modules (one node, "
-         f"level/field variants)\n")
-for n,v in variant:
-    L.append(f"- `{n}`  ⟦{v[0][3]}⟧  ·  " + ", ".join(sorted(m for m,_,_,_ in v)))
-out="\n".join(L)+"\n"
+L.append(
+    f"## VARIANTS — {len(variant)} names, same shape across modules (one node, "
+    f"level/field variants)\n"
+)
+for n, v in variant:
+    L.append(f"- `{n}`  ⟦{v[0][3]}⟧  ·  " + ", ".join(sorted(m for m, _, _, _ in v)))
+out = "\n".join(L) + "\n"
 
-DOC=os.path.join(os.path.dirname(__file__),"..","scratch","sppf_collision_index.md")
-DOC=os.path.abspath(DOC)
+DOC = os.path.join(os.path.dirname(__file__), "..", "scratch", "sppf_collision_index.md")
+DOC = os.path.abspath(DOC)
 if "--check" in sys.argv:
-    cur=open(DOC,encoding="utf-8").read() if os.path.exists(DOC) else ""
-    if cur!=out:
-        print("sppf-node-index: STALE — regenerate with scripts/sppf_node_index.py",file=sys.stderr)
+    cur = open(DOC, encoding="utf-8").read() if os.path.exists(DOC) else ""
+    if cur != out:
+        print(
+            "sppf-node-index: STALE — regenerate with scripts/sppf_node_index.py", file=sys.stderr
+        )
         sys.exit(1)
     print("sppf-node-index: current. ✓")
 else:
-    open(DOC,"w",encoding="utf-8").write(out)
-    print(f"wrote {os.path.relpath(DOC, os.path.join(os.path.dirname(__file__),'..'))}")
+    _snapshot_once(DOC)
+    open(DOC, "w", encoding="utf-8").write(out)
+    print(f"wrote {os.path.relpath(DOC, os.path.join(os.path.dirname(__file__), '..'))}")

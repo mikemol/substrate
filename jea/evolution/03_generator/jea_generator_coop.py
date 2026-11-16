@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """jea_generator_coop.py — increment (5): BRANCHLESS cooperative generators. The completion
 of role-as-data — there is no role distinction left at all.
 
@@ -21,18 +23,24 @@ There is ONE generator body; control is just part of what every generator does e
 scheduler has no distinguished node and no role switch — role dissolved, not floated.
 Verified: reductions bit-exact, all converge, K climbed via the distributed monotonic control.
 """
+
 # --- jea-evolution rung bootstrap: jea/ foundation + sibling rungs on the path (see 00_SYLLABUS.md) ---
 import os as _os, sys as _sys, glob as _glob
-_EVO = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))   # .../jea/evolution
+
+_EVO = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))  # .../jea/evolution
 _sys.path[:0] = [_os.path.dirname(_EVO), *sorted(_glob.glob(_os.path.join(_EVO, "*", "")))]
 # --- end bootstrap ---
 import os
+
 os.environ.setdefault("CUDA_PATH", "/usr")
 import numpy as np, cupy as cp
 from math import gcd
-import jea_core                                  # strict shared structure
+import jea_core  # strict shared structure
 
-_SRC = "typedef unsigned long long u64;\n" + jea_core.CTRL_CUDA + r'''
+_SRC = (
+    "typedef unsigned long long u64;\n"
+    + jea_core.CTRL_CUDA
+    + r"""
 
 extern "C" __global__
 void generator_coop(
@@ -65,7 +73,8 @@ void generator_coop(
     }
     cycles_by[w] = c;
 }
-'''
+"""
+)
 _kern = jea_core.build_kernel(_SRC, "generator_coop")
 residency = jea_core.residency
 
@@ -73,43 +82,102 @@ residency = jea_core.residency
 def run(K0=4, maxcyc=2_000_000):
     nsm = cp.cuda.Device().attributes["MultiProcessorCount"]
     nblocks = min(20, nsm)
-    deep    = [(6,4), (100,60), (6765,4181), (8,6)]    # w%4==0 holds the deep Fibonacci node
-    shallow = [(6,4), (100,60), (30,18),     (8,6)]    # else all shallow
-    npr = 4; total = nblocks * npr
+    deep = [(6, 4), (100, 60), (6765, 4181), (8, 6)]  # w%4==0 holds the deep Fibonacci node
+    shallow = [(6, 4), (100, 60), (30, 18), (8, 6)]  # else all shallow
+    npr = 4
+    total = nblocks * npr
     per_sm, max_resident, _n, regs = residency(_kern, 32)
     assert nblocks <= max_resident
 
     rows = [deep if (w % 4 == 0) else shallow for w in range(nblocks)]
-    Na = cp.asarray([N for r in rows for (N,_d) in r], cp.uint64)
-    Da = cp.asarray([D for r in rows for (_n2,D) in r], cp.uint64)
-    a = Na.copy(); b = Da.copy()
-    steps = cp.zeros(total, cp.int32); doneN = cp.zeros(total, cp.int32)
-    outN = cp.zeros(total, cp.uint64); outD = cp.zeros(total, cp.uint64)
-    Kbuf = cp.full(1, K0, cp.int32); obsmax = cp.zeros(1, cp.int32)
-    pending = cp.full(1, total, cp.int32); cyc = cp.zeros(nblocks, cp.int64); err = cp.zeros(1, cp.int32)
-    _kern((nblocks,), (32,),
-          (Kbuf, obsmax, pending, Na, Da, a, b, steps, doneN, outN, outD, cyc, err,
-           np.int32(nblocks), np.int32(npr), np.int64(maxcyc)))
+    Na = cp.asarray([N for r in rows for (N, _d) in r], cp.uint64)
+    Da = cp.asarray([D for r in rows for (_n2, D) in r], cp.uint64)
+    a = Na.copy()
+    b = Da.copy()
+    steps = cp.zeros(total, cp.int32)
+    doneN = cp.zeros(total, cp.int32)
+    outN = cp.zeros(total, cp.uint64)
+    outD = cp.zeros(total, cp.uint64)
+    Kbuf = cp.full(1, K0, cp.int32)
+    obsmax = cp.zeros(1, cp.int32)
+    pending = cp.full(1, total, cp.int32)
+    cyc = cp.zeros(nblocks, cp.int64)
+    err = cp.zeros(1, cp.int32)
+    _kern(
+        (nblocks,),
+        (32,),
+        (
+            Kbuf,
+            obsmax,
+            pending,
+            Na,
+            Da,
+            a,
+            b,
+            steps,
+            doneN,
+            outN,
+            outD,
+            cyc,
+            err,
+            np.int32(nblocks),
+            np.int32(npr),
+            np.int64(maxcyc),
+        ),
+    )
     cp.cuda.Stream.null.synchronize()
-    return dict(nblocks=nblocks, npr=npr, rows=rows, outN=outN.get(), outD=outD.get(),
-                doneN=doneN.get(), pending=int(pending.get()[0]), Kfinal=int(Kbuf.get()[0]),
-                obsmax=int(obsmax.get()[0]), cyc=cyc.get(), err=int(err.get()[0]),
-                regs=regs, per_sm=per_sm, max_resident=max_resident, launched=nblocks)
+    return dict(
+        nblocks=nblocks,
+        npr=npr,
+        rows=rows,
+        outN=outN.get(),
+        outD=outD.get(),
+        doneN=doneN.get(),
+        pending=int(pending.get()[0]),
+        Kfinal=int(Kbuf.get()[0]),
+        obsmax=int(obsmax.get()[0]),
+        cyc=cyc.get(),
+        err=int(err.get()[0]),
+        regs=regs,
+        per_sm=per_sm,
+        max_resident=max_resident,
+        launched=nblocks,
+    )
 
 
 if __name__ == "__main__":
     r = run(K0=4)
-    exact = all((int(r['outN'][w*r['npr']+n]), int(r['outD'][w*r['npr']+n])) == (N//gcd(N,D), D//gcd(N,D))
-                for w in range(r['nblocks']) for n,(N,D) in enumerate(r['rows'][w]))
-    converged = bool(r['doneN'].all()) and r['pending'] == 0
-    print(f"increment (5) BRANCHLESS cooperative generators: {r['nblocks']} symmetric blocks, NO role distinction\n")
-    print(f"  RESIDENCY (measured): {r['regs']} regs => {r['per_sm']}/SM => {r['max_resident']} >= {r['launched']} : "
-          f"{'OK' if r['launched']<=r['max_resident'] else 'VIOLATED'}")
-    print(f"  reduced (block 0=deep): {[(int(r['outN'][n]), int(r['outD'][n])) for n in range(r['npr'])]}")
-    print(f"  obsmax (max depth seen): {r['obsmax']}   K final: {r['Kfinal']}  (grown by distributed monotonic control)")
-    print(f"  cycles/block: min={int(r['cyc'].min())} max={int(r['cyc'].max())}  (every block ran the SAME body: work+control each cycle)")
+    exact = all(
+        (int(r["outN"][w * r["npr"] + n]), int(r["outD"][w * r["npr"] + n]))
+        == (N // gcd(N, D), D // gcd(N, D))
+        for w in range(r["nblocks"])
+        for n, (N, D) in enumerate(r["rows"][w])
+    )
+    converged = bool(r["doneN"].all()) and r["pending"] == 0
+    print(
+        f"increment (5) BRANCHLESS cooperative generators: {r['nblocks']} symmetric blocks, NO role distinction\n"
+    )
+    print(
+        f"  RESIDENCY (measured): {r['regs']} regs => {r['per_sm']}/SM => {r['max_resident']} >= {r['launched']} : "
+        f"{'OK' if r['launched'] <= r['max_resident'] else 'VIOLATED'}"
+    )
+    print(
+        f"  reduced (block 0=deep): {[(int(r['outN'][n]), int(r['outD'][n])) for n in range(r['npr'])]}"
+    )
+    print(
+        f"  obsmax (max depth seen): {r['obsmax']}   K final: {r['Kfinal']}  (grown by distributed monotonic control)"
+    )
+    print(
+        f"  cycles/block: min={int(r['cyc'].min())} max={int(r['cyc'].max())}  (every block ran the SAME body: work+control each cycle)"
+    )
     print(f"\n  err={r['err']}  exact-vs-Python-gcd={exact}  all-converged={converged}")
-    ok = (r['err']==0 and exact and converged)
-    print(f"\n  INCREMENT (5) {'PASS' if ok else 'FAIL'} — BRANCHLESS: no work/control branch, no token/lock.")
-    print(f"  every generator does work+control unconditionally each cycle; converged nodes are predicated")
-    print(f"  no-ops, control is monotonic (atomicMax + benign hint). Role dissolved, not floated. Bit-exact.")
+    ok = r["err"] == 0 and exact and converged
+    print(
+        f"\n  INCREMENT (5) {'PASS' if ok else 'FAIL'} — BRANCHLESS: no work/control branch, no token/lock."
+    )
+    print(
+        f"  every generator does work+control unconditionally each cycle; converged nodes are predicated"
+    )
+    print(
+        f"  no-ops, control is monotonic (atomicMax + benign hint). Role dissolved, not floated. Bit-exact."
+    )

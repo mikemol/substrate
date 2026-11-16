@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 AI-10: engine integration -- fold the AI-7 bricks + DMI into ONE combined conductance graph,
 consumed by the ONE Kron operator. The standalone pilots (dma_path, igpu_contention, thermal_gate,

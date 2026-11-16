@@ -1,106 +1,80 @@
 #!/usr/bin/env python3
-"""check_scratch_independence.py — Λ8: assert the migrated projects make NO LIVE scratch/ reference.
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2026 Mike Mol
+"""check_scratch_independence.py — Λ8: a promoted project makes NO LIVE scratch/ reference.
 
-The invariant (the G9 escalation from the 2026-06-17 scratch-dissolution arc): once a project is
-promoted out of scratch/ (jea/, el-atlas/), it must not silently re-acquire a runtime dependency on
-scratch/. Before this gate, "is jea independent of scratch?" was answered by re-grepping by hand --
-and the answer was wrong twice (the el-atlas tools coupling, then the Agda-emit-dir coupling surfaced
-serially). This makes the answer correct-by-construction: a live scratch reference blocks the commit.
+⚑⚑⚑ A SHIM. THE GATE LIVES IN THE PACKAGE NOW, IN FIVE MODULES, AND THIS FILE ONLY CALLS IT.
+The origin carried 363 per-file-gate findings and so could not be edited — not even the
+one-line repair to its own suite that started the ⟡drain-arc (gate-G376). It was drained,
+concern by concern, each into a clean module with a differential against THIS file's own
+output, and then this file was rewritten whole: the per-file gate judges NEW content, so a
+clean shim lands where a patch could not (the `bibstruct` precedent).
 
-WHAT COUNTS AS "LIVE" (vs the exempt "dated historical note" the arc agreed to keep):
-  * LIVE  = `scratch` in EXECUTABLE CODE -- a string literal used as a path (os.path.join(..,"scratch",..),
-            open("scratch/.."), sys.path inserts), or an import naming scratch. These create a runtime dep.
-  * EXEMPT = comments (`# .. scratch ..`), module/function/class DOCSTRINGS, and all .md/.agda prose.
-            Dated WAL/ledger notes ("MERGE .. scratch/el-atlas/el-atlas-repo", "Was scratch/..tar.gz")
-            are historical facts; they carry no runtime dependency and stay.
+  substrate/scratch_refs        what a reference IS — the wide scan, the narrow dependency
+                                predicate, and HARD/guarded depth              (gate-G391)
+  substrate/scratch_scope       `--scope <dir>… [--quiet] [--mentions]`, read-only (gate-G392)
+  substrate/scratch_promotion   `--promotable <dir>`, rule 2 asked of `mypy_census` (gate-G393)
+  substrate/scratch_gate        the verdict over the promoted roots            (gate-G394)
+  substrate/scratch_cli         the roster and the dispatch, exit codes verbatim (gate-G395)
 
-The comment/docstring/markdown exemption is MECHANICAL, not a denylist: we parse each .py with `ast`
-(comments are absent from the AST entirely; docstrings are the identifiable first-Expr-Constant of a
-module/def/class) and flag ONLY non-docstring string constants + imports that mention scratch.
+⚑⚑ THE ROSTER IS `substrate.promoted.ROOTS` — the authority — and it lists `substrate/`, which
+the origin's frozen `ROOTS` never did. By ruling (gate-G396) the import predicate was narrowed
+to a top-level `scratch` segment first, and the gate now runs over the whole promoted corpus:
+its failure count over `substrate/` is the TRIAGE BASELINE, not a regression.
 
-Scope: jea/ and el-atlas/ (the promoted projects). scripts/ is NOT guarded (el-atlas legitimately
-reaches repo-root scripts/, e.g. decide_groundtruth -> witness_sanity; the invariant is scratch-freedom,
-not isolation). Extend ROOTS when another project is promoted out of scratch/.
+`ROOTS` and `_dep_sites` are re-exported here because three callers still reach them by this
+module's name (`check_mypy_ratchet`, `check_scratch_runtime`, `promoted_selftest`); they retire
+with those callers' own drains.
 
-Usage: check_scratch_independence.py [--quiet]   (silent on success with --quiet; exit 1 on any live ref)
+USAGE — unchanged; the pre-commit hook spells the gate `--quiet`:
+  check_scratch_independence.py [--quiet|--check]     the gate over ROOTS; exit 1 on any ref
+  check_scratch_independence.py --promotable <dir>    would promoting <dir> hold? exit 1 on BLOCK
+  check_scratch_independence.py --scope <dir>… [--quiet] [--mentions]   read-only; always 0
+  check_scratch_independence.py --selftest            the five module suites
 """
-import ast
-import os
+
+from __future__ import annotations
+
 import sys
+from pathlib import Path
 
-ROOTS = ["jea", "el-atlas"]
+from substrate import scratch_cli, scratch_refs
+from substrate.promoted import ROOTS
 
-
-def _docstring_node_ids(tree):
-    """ids of the Constant nodes that are docstrings (module/def/class first statement) -- exempt as prose."""
-    ds = set()
-    for node in ast.walk(tree):
-        if isinstance(node, (ast.Module, ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
-            body = getattr(node, "body", None)
-            if (body and isinstance(body[0], ast.Expr)
-                    and isinstance(body[0].value, ast.Constant)
-                    and isinstance(body[0].value.value, str)):
-                ds.add(id(body[0].value))
-    return ds
+__all__ = ["ROOTS", "_dep_sites", "main"]
 
 
-def scan_file(path):
-    """Return (hits, warns). hit = (lineno, kind, snippet) for a LIVE scratch reference."""
-    hits, warns = [], []
-    try:
-        src = open(path, encoding="utf-8").read()
-        tree = ast.parse(src, filename=path)
-    except (SyntaxError, UnicodeDecodeError) as e:
-        warns.append(f"{path}: could not parse ({e.__class__.__name__}); not scanned")
-        return hits, warns
-    doc_ids = _docstring_node_ids(tree)
-    for node in ast.walk(tree):
-        if (isinstance(node, ast.Constant) and isinstance(node.value, str)
-                and "scratch" in node.value and id(node) not in doc_ids):
-            hits.append((node.lineno, "path-string", node.value.strip()[:70]))
-        elif isinstance(node, (ast.Import, ast.ImportFrom)):
-            names = [a.name for a in node.names]
-            if isinstance(node, ast.ImportFrom) and node.module:
-                names.append(node.module)
-            if any(n and "scratch" in n for n in names):
-                hits.append((node.lineno, "import", ",".join(n for n in names if n)))
-    return hits, warns
+def _dep_sites(path: str) -> set[int]:
+    """Return one file's dependency lines — the origin's spelling, for its remaining callers."""
+    return set(scratch_refs.dependency_sites(Path(path)))
 
 
-def main():
-    quiet = "--quiet" in sys.argv or "--check" in sys.argv
-    all_hits, all_warns, n_scanned = [], [], 0
-    for root in ROOTS:
-        if not os.path.isdir(root):
-            continue
-        for dirpath, _, files in os.walk(root):
-            for f in files:
-                if not f.endswith(".py"):
-                    continue
-                p = os.path.join(dirpath, f)
-                n_scanned += 1
-                hits, warns = scan_file(p)
-                all_warns += warns
-                for ln, kind, snip in hits:
-                    all_hits.append((p, ln, kind, snip))
+def _selftest() -> int:
+    """Run the five module suites that replaced the origin's own."""
+    from substrate import (  # noqa: PLC0415 - only the selftest needs the suites
+        scratch_cli_selftest,
+        scratch_gate_selftest,
+        scratch_promotion_selftest,
+        scratch_refs_selftest,
+        scratch_scope_selftest,
+    )
 
-    for w in all_warns:
-        print(f"  scratch-independence: WARN {w}", file=sys.stderr)
+    codes: list[int] = [
+        scratch_refs_selftest.selftest(),
+        scratch_scope_selftest.selftest(),
+        scratch_promotion_selftest.selftest(),
+        scratch_gate_selftest.selftest(),
+        scratch_cli_selftest.selftest(),
+    ]
+    return max(codes)
 
-    if all_hits:
-        print(f"scratch-independence (Λ8): FAILED — {len(all_hits)} LIVE scratch/ reference(s) in a "
-              f"promoted project ({'/'.join(ROOTS)}):", file=sys.stderr)
-        for p, ln, kind, snip in all_hits:
-            print(f"    {p}:{ln}  [{kind}]  {snip}", file=sys.stderr)
-        print("  A promoted project must not depend on scratch/ at runtime. Either repoint the path to "
-              "the artifact's real home, or — if this is a dated HISTORICAL note — move it into a comment "
-              "or a .md ledger (those are exempt; live code is not).", file=sys.stderr)
-        return 1
 
-    if not quiet:
-        print(f"scratch-independence (Λ8): OK ({n_scanned} .py scanned across {'/'.join(ROOTS)}, 0 live refs)")
-    return 0
+def main(argv: list[str]) -> int:
+    """Dispatch to the package, or to the suites."""
+    if "--selftest" in argv:
+        return _selftest()
+    return scratch_cli.main(argv)
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.exit(main(sys.argv[1:]))

@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 AI-11b: the ON-DEVICE actuator -- a persistent GPU megakernel steered by ASYNC host telemetry pushes.
 

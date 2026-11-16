@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 apsp-tropical-pilot.py — S17: geodesics close the loop. APSP is the
 tropical (min,+) member of the pinning family; the multiplicity the

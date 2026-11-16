@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 radzdg-witness-pilot.py — T2 discharge: {RAD, ZDG} witness-structure
 separation. The pair is unseparated IN TRUTH across three spaces (the

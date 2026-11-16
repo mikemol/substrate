@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """jea_extrude_ir.py — Ⓤ.byte: the IR→Python extruder + the orbital-identity / seam-partition readout.
 
 The handoff (HANDOFF_unparser_to_AIQ.md) asks: build an IR→Python unparser, iterate source→IR→source
@@ -31,19 +33,44 @@ values recovered from payload; uncovered kinds emit a visible #UNCOVERED marker,
 formatting/value losses byte-equality would trip on); (3) `seam_partition` — the FIXED/RESIDUE map +
 live demonstrations of losses (A)(B)(C).
 """
+
 from __future__ import annotations
 import sys, ast, os
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import jea_pyalg as J
 
 # operator-head -> source token (the BinOp/UnaryOp/BoolOp/Compare head op is kept in the IR key).
-_BIN = {"Add": "+", "Sub": "-", "Mult": "*", "Div": "/", "FloorDiv": "//", "Mod": "%", "Pow": "**",
-        "LShift": "<<", "RShift": ">>", "BitOr": "|", "BitXor": "^", "BitAnd": "&", "MatMult": "@"}
+_BIN = {
+    "Add": "+",
+    "Sub": "-",
+    "Mult": "*",
+    "Div": "/",
+    "FloorDiv": "//",
+    "Mod": "%",
+    "Pow": "**",
+    "LShift": "<<",
+    "RShift": ">>",
+    "BitOr": "|",
+    "BitXor": "^",
+    "BitAnd": "&",
+    "MatMult": "@",
+}
 _UNARY = {"UAdd": "+", "USub": "-", "Not": "not ", "Invert": "~"}
 _BOOL = {"And": " and ", "Or": " or "}
-_CMP = {"Eq": "==", "NotEq": "!=", "Lt": "<", "LtE": "<=", "Gt": ">", "GtE": ">=",
-        "Is": "is", "IsNot": "is not", "In": "in", "NotIn": "not in"}
+_CMP = {
+    "Eq": "==",
+    "NotEq": "!=",
+    "Lt": "<",
+    "LtE": "<=",
+    "Gt": ">",
+    "GtE": ">=",
+    "Is": "is",
+    "IsNot": "is not",
+    "In": "in",
+    "NotIn": "not in",
+}
 # the operator-token child kinds (BinOp etc. carry the operator BOTH in the head op AND as a child node
 # -- obstruction (C); the extruder reads the head op and SKIPS these children).
 _OP_CHILD = set(_BIN) | set(_UNARY) | set(_BOOL) | set(_CMP)
@@ -71,7 +98,9 @@ class Extruder:
         traversals diverged, which would silently corrupt reconstruction; fail LOUD instead."""
         t, v = next(self._res)
         if t != tag:
-            raise AssertionError(f"residue misalignment: extrude wants {tag!r}, residue has {t!r}={v!r}")
+            raise AssertionError(
+                f"residue misalignment: extrude wants {tag!r}, residue has {t!r}={v!r}"
+            )
         return v
 
     def _const(self, n) -> str:
@@ -139,7 +168,7 @@ class Extruder:
         if k == "keyword":
             ks = self._non_op_kids(n)
             v = self.expr(ks[0]) if ks else "_"
-            return f"{n.op}={v}" if n.op else f"**{v}"      # arg=None -> **kwargs
+            return f"{n.op}={v}" if n.op else f"**{v}"  # arg=None -> **kwargs
         if k in ("List", "Set"):
             ks = self._non_op_kids(n)
             o, c = ("[", "]") if k == "List" else ("{", "}")
@@ -157,14 +186,15 @@ class Extruder:
             parts, ki = [], 0
             for i, h in enumerate(haskey):
                 if h:
-                    parts.append(f"{self.expr(keys[ki])}: {self.expr(vals[i])}"); ki += 1
+                    parts.append(f"{self.expr(keys[ki])}: {self.expr(vals[i])}")
+                    ki += 1
                 else:
                     parts.append(f"**{self.expr(vals[i])}")
             return "{" + ", ".join(parts) + "}"
         if k == "Subscript":
             ks = self._non_op_kids(n)
             if len(ks) >= 2:
-                base = self.expr(ks[0])                # value first (matches capture's pop order)
+                base = self.expr(ks[0])  # value first (matches capture's pop order)
                 sl = self.I.nodes[ks[1]]
                 if sl.kind == "Tuple":
                     # extended slice a[i, j] / a[:, l]: NO tuple parens, bare-`:` slices are legal here.
@@ -182,23 +212,35 @@ class Extruder:
             if ks:
                 return f"*{self.expr(ks[0])}"
         if k == "IfExp":
-            ks = self._non_op_kids(n)                 # [test, body, orelse] (ast field order)
+            ks = self._non_op_kids(n)  # [test, body, orelse] (ast field order)
             if len(ks) == 3:
-                test_s = self.expr(ks[0]); body_s = self.expr(ks[1]); orelse_s = self.expr(ks[2])
+                test_s = self.expr(ks[0])
+                body_s = self.expr(ks[1])
+                orelse_s = self.expr(ks[2])
                 return f"({body_s} if {test_s} else {orelse_s})"
         if k == "Lambda":
             ch = list(n.children)
-            argsig = self._pop("argsig") if self._res is not None else ", ".join(self._params(ch[0]) if ch else [])
+            argsig = (
+                self._pop("argsig")
+                if self._res is not None
+                else ", ".join(self._params(ch[0]) if ch else [])
+            )
             body = self.expr(ch[-1])
             return f"(lambda {argsig}: {body})" if argsig else f"(lambda: {body})"
         if k in ("ListComp", "SetComp", "GeneratorExp"):
             ks = list(n.children)
-            elt = self.expr(ks[0]); gens = " ".join(self._comp(g) for g in ks[1:])
+            elt = self.expr(ks[0])
+            gens = " ".join(self._comp(g) for g in ks[1:])
             o, c = {"ListComp": ("[", "]"), "SetComp": ("{", "}"), "GeneratorExp": ("(", ")")}[k]
             return f"{o}{elt} {gens}{c}"
         if k == "DictComp":
             ks = list(n.children)
-            return "{" + f"{self.expr(ks[0])}: {self.expr(ks[1])} " + " ".join(self._comp(g) for g in ks[2:]) + "}"
+            return (
+                "{"
+                + f"{self.expr(ks[0])}: {self.expr(ks[1])} "
+                + " ".join(self._comp(g) for g in ks[2:])
+                + "}"
+            )
         if k == "JoinedStr":
             return self._pop("fstr") if self._res is not None else "f''"
         if k in ("Yield", "YieldFrom", "Await"):
@@ -209,7 +251,7 @@ class Extruder:
         return f"#UNCOVERED:{k}#"
 
     def _case(self, cid, indent) -> list:
-        c = self.I.nodes[cid]                          # match_case: [pattern, guard?, body...]
+        c = self.I.nodes[cid]  # match_case: [pattern, guard?, body...]
         pad = "    " * indent
         ch = list(c.children)
         if self._res is not None:
@@ -220,17 +262,23 @@ class Extruder:
         idx = 1
         guard = ""
         if has_guard:
-            guard = f" if {self.expr(ch[idx])}"; idx += 1
-        body = self.stmts(ch[idx:idx + nbody], indent + 1) or ["    " * (indent + 1) + "pass"]
+            guard = f" if {self.expr(ch[idx])}"
+            idx += 1
+        body = self.stmts(ch[idx : idx + nbody], indent + 1) or ["    " * (indent + 1) + "pass"]
         return [f"{pad}case {pat}{guard}:"] + body
 
     def _pattern(self, pid) -> str:
-        p = self.I.nodes[pid]; k = p.kind
+        p = self.I.nodes[pid]
+        k = p.kind
         if k == "MatchValue":
             ks = self._non_op_kids(p)
             return self.expr(ks[0]) if ks else "_"
         if k == "MatchSingleton":
-            return self._pop("msingle") if self._res is not None else (p.payload[0] if p.payload else "None")
+            return (
+                self._pop("msingle")
+                if self._res is not None
+                else (p.payload[0] if p.payload else "None")
+            )
         if k == "MatchSequence":
             nseq = self._pop("seqlen") if self._res is not None else len(p.children)
             return "[" + ", ".join(self._pattern(c) for c in p.children[:nseq]) + "]"
@@ -240,7 +288,7 @@ class Extruder:
         if k == "MatchMapping":
             rest = self._pop("maprest") if self._res is not None else None
             nk = self._pop("maplen") if self._res is not None else (len(p.children) // 2)
-            ks = self._non_op_kids(p)                  # [keys..., patterns...]
+            ks = self._non_op_kids(p)  # [keys..., patterns...]
             keys, pats = ks[:nk], ks[nk:]
             parts = [f"{self.expr(keys[i])}: {self._pattern(pats[i])}" for i in range(nk)]
             if rest:
@@ -248,18 +296,18 @@ class Extruder:
             return "{" + ", ".join(parts) + "}"
         if k == "MatchClass":
             npos = self._pop("classplit") if self._res is not None else 0
-            ks = self._non_op_kids(p)                  # [cls, pos-patterns..., kwd-patterns...]
+            ks = self._non_op_kids(p)  # [cls, pos-patterns..., kwd-patterns...]
             cls = self.expr(ks[0])
-            pos = [self._pattern(c) for c in ks[1:1 + npos]]
+            pos = [self._pattern(c) for c in ks[1 : 1 + npos]]
             kwattrs = p.op.split(",") if p.op else []
-            kwp = [f"{a}={self._pattern(c)}" for a, c in zip(kwattrs, ks[1 + npos:])]
+            kwp = [f"{a}={self._pattern(c)}" for a, c in zip(kwattrs, ks[1 + npos :])]
             return f"{cls}(" + ", ".join(pos + kwp) + ")"
         if k == "MatchAs":
             nm = self._pop("matchas") if self._res is not None else None
             ks = self._non_op_kids(p)
             if ks:
                 return f"{self._pattern(ks[0])} as {nm}" if nm else self._pattern(ks[0])
-            return nm if nm else "_"                    # bare capture / wildcard
+            return nm if nm else "_"  # bare capture / wildcard
         if k == "MatchOr":
             nor = self._pop("orlen") if self._res is not None else len(p.children)
             return " | ".join(self._pattern(c) for c in p.children[:nor])
@@ -307,7 +355,7 @@ class Extruder:
                 s += f", {self.expr(ks[1])}"
             return [s]
         if k == "Raise":
-            ks = self._non_op_kids(n)                 # 0 bare / 1 exc / 2 exc-from-cause
+            ks = self._non_op_kids(n)  # 0 bare / 1 exc / 2 exc-from-cause
             s = f"{pad}raise"
             if len(ks) >= 1:
                 s += f" {self.expr(ks[0])}"
@@ -318,25 +366,29 @@ class Extruder:
             ks = self._non_op_kids(n)
             return [f"{pad}del {', '.join(self.expr(c) for c in ks)}"]
         if k == "AnnAssign":
-            ks = self._non_op_kids(n)                 # [target, annotation, value?]
+            ks = self._non_op_kids(n)  # [target, annotation, value?]
             s = f"{pad}{self.expr(ks[0])}: {self.expr(ks[1])}"
             if len(ks) > 2:
                 s += f" = {self.expr(ks[2])}"
             return [s]
         if k == "With":
-            ch = list(n.children)                     # [withitem×ni, body×nb]
+            ch = list(n.children)  # [withitem×ni, body×nb]
             if self._res is not None:
                 ni, nb = self._pop("withsplit")
             else:
                 ni, nb = 0, len(ch)
-            item_ids = ch[:ni]; body_ids = ch[ni:ni + nb]
+            item_ids = ch[:ni]
+            body_ids = ch[ni : ni + nb]
             items = []
             for it_id in item_ids:
-                it = self.I.nodes[it_id]; ick = self._non_op_kids(it)
+                it = self.I.nodes[it_id]
+                ick = self._non_op_kids(it)
                 has_vars = self._pop("witem") if self._res is not None else (len(ick) > 1)
                 ctx = self.expr(ick[0])
                 items.append(f"{ctx} as {self.expr(ick[1])}" if has_vars and len(ick) > 1 else ctx)
-            return [f"{pad}with {', '.join(items)}:"] + (self.stmts(body_ids, indent + 1) or [pad4 + "pass"])
+            return [f"{pad}with {', '.join(items)}:"] + (
+                self.stmts(body_ids, indent + 1) or [pad4 + "pass"]
+            )
         if k in ("Import", "ImportFrom"):
             aliases = []
             for c in n.children:
@@ -344,18 +396,24 @@ class Extruder:
                 if a.kind == "alias":
                     # asname from the residue cofactor (it collapses in the shared node's payload);
                     # the name is faithful in op.
-                    asn = self._pop("asname") if self._res is not None else (a.payload[1] if len(a.payload) > 1 else None)
+                    asn = (
+                        self._pop("asname")
+                        if self._res is not None
+                        else (a.payload[1] if len(a.payload) > 1 else None)
+                    )
                     aliases.append(f"{a.op} as {asn}" if asn else a.op)
             if k == "Import":
                 return [f"{pad}import {', '.join(aliases)}"]
             level = n.payload[1] if len(n.payload) > 1 and isinstance(n.payload[1], int) else 0
             return [f"{pad}from {'.' * level}{n.op} import {', '.join(aliases)}"]
         if k in ("Global", "Nonlocal"):
-            return [f"{pad}{('global' if k == 'Global' else 'nonlocal')} {n.op}"]   # op = names (Ⓤ-fix)
+            return [
+                f"{pad}{('global' if k == 'Global' else 'nonlocal')} {n.op}"
+            ]  # op = names (Ⓤ-fix)
         if k in ("Break", "Continue"):
             return [f"{pad}{k.lower()}"]
         if k == "Match":
-            ks = list(n.children)                      # [subject, match_case...]
+            ks = list(n.children)  # [subject, match_case...]
             out = [f"{pad}match {self.expr(ks[0])}:"]
             for cid in ks[1:]:
                 out += self._case(cid, indent + 1)
@@ -381,7 +439,7 @@ class Extruder:
                 nret = 1 if has_ret else 0
                 nbody = len(rest) - ndec - nret
                 body_ids = rest[:nbody]
-                dec_ids = rest[nbody:nbody + ndec]
+                dec_ids = rest[nbody : nbody + ndec]
                 ret_id = rest[nbody + ndec] if has_ret else None
                 ret_s = self.expr(ret_id) if ret_id is not None else None
                 decs = [self.expr(d) for d in dec_ids]
@@ -395,11 +453,12 @@ class Extruder:
         if k == "ClassDef":
             ch = list(n.children)
             if self._res is not None:
-                nbk, ndec, spec = self._pop("cdef")           # nbk = #(bases+keywords), covered by spec
+                nbk, ndec, spec = self._pop("cdef")  # nbk = #(bases+keywords), covered by spec
                 name = self._pop("defname")
-                rest = ch[nbk:]                                # skip bases/keywords (in spec)
+                rest = ch[nbk:]  # skip bases/keywords (in spec)
                 nbody = len(rest) - ndec
-                body_ids = rest[:nbody]; dec_ids = rest[nbody:nbody + ndec]
+                body_ids = rest[:nbody]
+                dec_ids = rest[nbody : nbody + ndec]
                 decs = [self.expr(d) for d in dec_ids]
                 head = f"{pad}class {name}" + (f"({spec})" if spec else "") + ":"
             else:
@@ -408,31 +467,40 @@ class Extruder:
             blk = self.stmts(body_ids, indent + 1) or [pad4 + "pass"]
             return [f"{pad}@{d}" for d in decs] + [head] + blk
         if k == "Try":
-            ch = list(n.children)                             # [body, handlers, orelse, finalbody]
+            ch = list(n.children)  # [body, handlers, orelse, finalbody]
             if self._res is not None:
                 nb, nh, no, nf = self._pop("trysplit")
             else:
                 nb, nh, no, nf = len(ch), 0, 0, 0
-            body_ids = ch[:nb]; hnd = ch[nb:nb + nh]
-            else_ids = ch[nb + nh:nb + nh + no]; fin_ids = ch[nb + nh + no:nb + nh + no + nf]
+            body_ids = ch[:nb]
+            hnd = ch[nb : nb + nh]
+            else_ids = ch[nb + nh : nb + nh + no]
+            fin_ids = ch[nb + nh + no : nb + nh + no + nf]
             out = [f"{pad}try:"] + (self.stmts(body_ids, indent + 1) or [pad4 + "pass"])
             for h in hnd:
-                out += self.stmt(h, indent)                   # ExceptHandler renders its own `except:` line
+                out += self.stmt(h, indent)  # ExceptHandler renders its own `except:` line
             if else_ids:
                 out += [f"{pad}else:"] + (self.stmts(else_ids, indent + 1) or [pad4 + "pass"])
             if fin_ids:
                 out += [f"{pad}finally:"] + (self.stmts(fin_ids, indent + 1) or [pad4 + "pass"])
             return out
         if k == "ExceptHandler":
-            ch = list(n.children)                             # [type?, body...]
+            ch = list(n.children)  # [type?, body...]
             if self._res is not None:
                 has_type, name = self._pop("exc")
             else:
                 has_type, name = False, None
-            typ = None; idx = 0
+            typ = None
+            idx = 0
             if has_type and ch:
-                typ = self.expr(ch[0]); idx = 1
-            hdr = f"{pad}except" + (f" {typ}" if typ is not None else "") + (f" as {name}" if name else "") + ":"
+                typ = self.expr(ch[0])
+                idx = 1
+            hdr = (
+                f"{pad}except"
+                + (f" {typ}" if typ is not None else "")
+                + (f" as {name}" if name else "")
+                + ":"
+            )
             return [hdr] + (self.stmts(ch[idx:], indent + 1) or [pad4 + "pass"])
         if k in ("If", "For", "While"):
             ks = list(n.children)
@@ -442,24 +510,32 @@ class Extruder:
                 else:
                     nbody, norelse = len(ks) - 1, 0
                 test = self.expr(ks[0])
-                body_ids = ks[1:1 + nbody]; else_ids = ks[1 + nbody:1 + nbody + norelse]
+                body_ids = ks[1 : 1 + nbody]
+                else_ids = ks[1 + nbody : 1 + nbody + norelse]
                 out = [f"{pad}if {test}:"] + (self.stmts(body_ids, indent + 1) or [pad4 + "pass"])
             elif k == "For":
                 if self._res is not None:
                     nbody, norelse = self._pop("forsplit")
                 else:
                     nbody, norelse = len(ks) - 2, 0
-                tgt = self.expr(ks[0]); it = self.expr(ks[1])
-                body_ids = ks[2:2 + nbody]; else_ids = ks[2 + nbody:2 + nbody + norelse]
-                out = [f"{pad}for {tgt} in {it}:"] + (self.stmts(body_ids, indent + 1) or [pad4 + "pass"])
+                tgt = self.expr(ks[0])
+                it = self.expr(ks[1])
+                body_ids = ks[2 : 2 + nbody]
+                else_ids = ks[2 + nbody : 2 + nbody + norelse]
+                out = [f"{pad}for {tgt} in {it}:"] + (
+                    self.stmts(body_ids, indent + 1) or [pad4 + "pass"]
+                )
             else:  # While
                 if self._res is not None:
                     nbody, norelse = self._pop("whilesplit")
                 else:
                     nbody, norelse = len(ks) - 1, 0
                 test = self.expr(ks[0])
-                body_ids = ks[1:1 + nbody]; else_ids = ks[1 + nbody:1 + nbody + norelse]
-                out = [f"{pad}while {test}:"] + (self.stmts(body_ids, indent + 1) or [pad4 + "pass"])
+                body_ids = ks[1 : 1 + nbody]
+                else_ids = ks[1 + nbody : 1 + nbody + norelse]
+                out = [f"{pad}while {test}:"] + (
+                    self.stmts(body_ids, indent + 1) or [pad4 + "pass"]
+                )
             if else_ids:
                 out += [f"{pad}else:"] + (self.stmts(else_ids, indent + 1) or [pad4 + "pass"])
             return out
@@ -527,16 +603,28 @@ def _capture(node, out):
     elif t == "ClassDef":
         # bases + keywords (metaclass=…/**kw) rendered as a spec string; decorators via field-split.
         spec = [ast.unparse(b) for b in node.bases]
-        spec += [(f"{k.arg}={ast.unparse(k.value)}" if k.arg else f"**{ast.unparse(k.value)}")
-                 for k in node.keywords]
-        out.append(("cdef", (len(node.bases) + len(node.keywords), len(node.decorator_list), ", ".join(spec))))
+        spec += [
+            (f"{k.arg}={ast.unparse(k.value)}" if k.arg else f"**{ast.unparse(k.value)}")
+            for k in node.keywords
+        ]
+        out.append(
+            (
+                "cdef",
+                (len(node.bases) + len(node.keywords), len(node.decorator_list), ", ".join(spec)),
+            )
+        )
         out.append(("defname", node.name))
         for d in node.decorator_list:
             _capture(d, out)
         for s in node.body:
             _capture(s, out)
     elif t == "Try":
-        out.append(("trysplit", (len(node.body), len(node.handlers), len(node.orelse), len(node.finalbody))))
+        out.append(
+            (
+                "trysplit",
+                (len(node.body), len(node.handlers), len(node.orelse), len(node.finalbody)),
+            )
+        )
         for s in node.body:
             _capture(s, out)
         for h in node.handlers:
@@ -588,9 +676,10 @@ def _capture(node, out):
     elif t == "Constant":
         out.append(("const", _const_repr(node.value)))
     elif t == "Attribute":
-        _capture(node.value, out)                      # base only; .attr is referential (in the key)
+        _capture(node.value, out)  # base only; .attr is referential (in the key)
     elif t == "BinOp":
-        _capture(node.left, out); _capture(node.right, out)
+        _capture(node.left, out)
+        _capture(node.right, out)
     elif t == "UnaryOp":
         _capture(node.operand, out)
     elif t == "BoolOp":
@@ -607,26 +696,31 @@ def _capture(node, out):
         for kw in node.keywords:
             _capture(kw, out)
     elif t == "keyword":
-        _capture(node.value, out)                       # the arg name is referential (in the key)
+        _capture(node.value, out)  # the arg name is referential (in the key)
     elif t in ("List", "Set", "Tuple"):
         for e in node.elts:
             _capture(e, out)
     elif t == "Dict":
-        out.append(("dict", tuple(k is not None for k in node.keys)))   # which items have a key (vs **)
-        for k, v in zip(node.keys, node.values):        # INTERLEAVED key,value = extrude's pop order
+        out.append(
+            ("dict", tuple(k is not None for k in node.keys))
+        )  # which items have a key (vs **)
+        for k, v in zip(node.keys, node.values):  # INTERLEAVED key,value = extrude's pop order
             if k is not None:
                 _capture(k, out)
             _capture(v, out)
     elif t == "Subscript":
-        _capture(node.value, out); _capture(node.slice, out)
+        _capture(node.value, out)
+        _capture(node.slice, out)
     elif t == "Slice":
-        out.append(("slice", ast.unparse(node)))        # whole slice text (lower:upper:step)
+        out.append(("slice", ast.unparse(node)))  # whole slice text (lower:upper:step)
     elif t == "Starred":
         _capture(node.value, out)
     elif t == "IfExp":
         # push in ast FIELD order (test, body, orelse) to match the skeleton children order extrude
         # indexes -- NOT source-readability order (body if test else orelse), which scrambled the stream.
-        _capture(node.test, out); _capture(node.body, out); _capture(node.orelse, out)
+        _capture(node.test, out)
+        _capture(node.body, out)
+        _capture(node.orelse, out)
     elif t == "Lambda":
         out.append(("argsig", ast.unparse(node.args)))
         _capture(node.body, out)
@@ -635,15 +729,17 @@ def _capture(node, out):
         for g in node.generators:
             _capture(g, out)
     elif t == "DictComp":
-        _capture(node.key, out); _capture(node.value, out)
+        _capture(node.key, out)
+        _capture(node.value, out)
         for g in node.generators:
             _capture(g, out)
     elif t == "comprehension":
-        _capture(node.target, out); _capture(node.iter, out)
+        _capture(node.target, out)
+        _capture(node.iter, out)
         for c in node.ifs:
             _capture(c, out)
     elif t == "JoinedStr":
-        out.append(("fstr", ast.unparse(node)))         # whole f-string verbatim (embedded exprs included)
+        out.append(("fstr", ast.unparse(node)))  # whole f-string verbatim (embedded exprs included)
     elif t in ("Yield", "Await", "YieldFrom"):
         if getattr(node, "value", None) is not None:
             _capture(node.value, out)
@@ -659,25 +755,29 @@ def _capture(node, out):
         for s in node.body:
             _capture(s, out)
     elif t == "AugAssign":
-        _capture(node.target, out); _capture(node.value, out)
+        _capture(node.target, out)
+        _capture(node.value, out)
     elif t == "Assert":
         _capture(node.test, out)
         if node.msg is not None:
-            _capture(node.msg, out)               # has-msg recoverable from child count (no field-split)
+            _capture(node.msg, out)  # has-msg recoverable from child count (no field-split)
     elif t == "Raise":
         if node.exc is not None:
             _capture(node.exc, out)
         if node.cause is not None:
-            _capture(node.cause, out)             # 0/1/2 children: bare / exc / exc-from-cause
+            _capture(node.cause, out)  # 0/1/2 children: bare / exc / exc-from-cause
     elif t == "Delete":
         for tg in node.targets:
             _capture(tg, out)
     elif t == "AnnAssign":
-        _capture(node.target, out); _capture(node.annotation, out)
+        _capture(node.target, out)
+        _capture(node.annotation, out)
         if node.value is not None:
-            _capture(node.value, out)             # 2 vs 3 children: annotation-only vs with value
+            _capture(node.value, out)  # 2 vs 3 children: annotation-only vs with value
     elif t == "With":
-        out.append(("withsplit", (len(node.items), len(node.body))))   # items & body both vary -> field-split
+        out.append(
+            ("withsplit", (len(node.items), len(node.body)))
+        )  # items & body both vary -> field-split
         for it in node.items:
             out.append(("witem", it.optional_vars is not None))
             _capture(it.context_expr, out)
@@ -703,26 +803,28 @@ def _cap_pattern(p, out):
     if t == "MatchValue":
         _capture(p.value, out)
     elif t == "MatchSingleton":
-        out.append(("msingle", _const_repr(p.value)))         # True/False/None collapse by kind -> residue
+        out.append(("msingle", _const_repr(p.value)))  # True/False/None collapse by kind -> residue
     elif t == "MatchSequence":
         out.append(("seqlen", len(p.patterns)))
         for sp in p.patterns:
             _cap_pattern(sp, out)
     elif t == "MatchStar":
-        out.append(("starname", p.name))                      # *name  (None -> *_)
+        out.append(("starname", p.name))  # *name  (None -> *_)
     elif t == "MatchMapping":
-        out.append(("maprest", p.rest)); out.append(("maplen", len(p.keys)))
-        for k, sp in zip(p.keys, p.patterns):                 # interleaved key,pattern = extrude pop order
-            _capture(k, out); _cap_pattern(sp, out)
+        out.append(("maprest", p.rest))
+        out.append(("maplen", len(p.keys)))
+        for k, sp in zip(p.keys, p.patterns):  # interleaved key,pattern = extrude pop order
+            _capture(k, out)
+            _cap_pattern(sp, out)
     elif t == "MatchClass":
-        out.append(("classplit", len(p.patterns)))            # #positional (kwd_attrs are in op)
+        out.append(("classplit", len(p.patterns)))  # #positional (kwd_attrs are in op)
         _capture(p.cls, out)
         for sp in p.patterns:
             _cap_pattern(sp, out)
         for sp in p.kwd_patterns:
             _cap_pattern(sp, out)
     elif t == "MatchAs":
-        out.append(("matchas", p.name))                       # capture name (None -> wildcard _)
+        out.append(("matchas", p.name))  # capture name (None -> wildcard _)
         if p.pattern is not None:
             _cap_pattern(p.pattern, out)
     elif t == "MatchOr":
@@ -746,15 +848,17 @@ def full_retraction(src: str) -> dict:
     (ast.dump equality): trivia/formatting/comments are pure GAUGE -- ast.parse strips them, so two
     byte-different ast-equal sources are the SAME program; true byte-exactness would need a CST-trivia
     residue layer (noted, not built). Field structure (B) for decorators/returns is the remaining layer."""
-    I = J.Intern(); roots = J.lower_source(src, I)
-    proj, _ = extrude(I, roots)                              # projection (collapsed payloads)
-    res = capture_full(src)                                  # the full tagged cofactor
-    I2 = J.Intern(); roots2 = J.lower_source(src, I2)
+    I = J.Intern()
+    roots = J.lower_source(src, I)
+    proj, _ = extrude(I, roots)  # projection (collapsed payloads)
+    res = capture_full(src)  # the full tagged cofactor
+    I2 = J.Intern()
+    roots2 = J.lower_source(src, I2)
     # residue misalignment (the _pop tag-assert) = a NODE whose field-structure capture_full does not yet
     # carry (e.g. ast.arguments internals: defaults/annotations/*args/**kwargs/kw-only -- the next residue
     # sub-layer). Caught, not crashed: report it as a coverage boundary (ast_faithful=False), never silent.
     try:
-        faith, unc = extrude(I2, roots2, residue=res)        # retraction
+        faith, unc = extrude(I2, roots2, residue=res)  # retraction
         ast_faithful = ast.dump(ast.parse(faith)) == ast.dump(ast.parse(src))
     except (AssertionError, SyntaxError, StopIteration):
         faith, unc, ast_faithful = "", {"<residue-misalignment>"}, False
@@ -763,8 +867,13 @@ def full_retraction(src: str) -> dict:
         proj_faithful = ast.dump(ast.parse(proj)) == ast.dump(ast.parse(src))
     except SyntaxError:
         pass
-    return {"projection": proj, "retraction": faith, "ast_faithful": ast_faithful,
-            "proj_faithful": proj_faithful, "uncovered": unc}
+    return {
+        "projection": proj,
+        "retraction": faith,
+        "ast_faithful": ast_faithful,
+        "proj_faithful": proj_faithful,
+        "uncovered": unc,
+    }
 
 
 def retraction(src: str) -> dict:
@@ -772,17 +881,24 @@ def retraction(src: str) -> dict:
     payload = a lossy PROJECTION; extrude WITH the residue cofactor replays per-occurrence values =
     a RETRACTION (recon(skeleton, residue) recovers what the projection lost). Returns both readings +
     whether the residue-reading recovered every literal the projection collapsed."""
-    I = J.Intern(); roots = J.lower_source(src, I)
-    proj, _ = extrude(I, roots)                       # skeleton-only: lossy projection
-    res = capture_full(src)                           # the kept cofactor (tagged stream)
-    I2 = J.Intern(); roots2 = J.lower_source(src, I2)
-    faith, _ = extrude(I2, roots2, residue=res)       # skeleton + residue: retraction
+    I = J.Intern()
+    roots = J.lower_source(src, I)
+    proj, _ = extrude(I, roots)  # skeleton-only: lossy projection
+    res = capture_full(src)  # the kept cofactor (tagged stream)
+    I2 = J.Intern()
+    roots2 = J.lower_source(src, I2)
+    faith, _ = extrude(I2, roots2, residue=res)  # skeleton + residue: retraction
     # the original literal multiset vs each reading's literal multiset (the value axis of faithfulness)
     orig_vals = capture_residue(src)
     proj_vals = capture_residue(proj)
     faith_vals = capture_residue(faith)
-    return {"projection": proj, "retraction": faith, "residue": res,
-            "proj_lost": proj_vals != orig_vals, "retraction_faithful": faith_vals == orig_vals}
+    return {
+        "projection": proj,
+        "retraction": faith,
+        "residue": res,
+        "proj_lost": proj_vals != orig_vals,
+        "retraction_faithful": faith_vals == orig_vals,
+    }
 
 
 def orbital_identity(src: str):
@@ -792,9 +908,11 @@ def orbital_identity(src: str):
       src_fixed : S1 == S2 (extrude is byte-idempotent on its own canonical output),
       steps     : source steps to the byte fixed point,
       uncovered : node kinds the extruder did not cover (coverage, not silently skipped)."""
-    I0 = J.Intern(); r0 = J.lower_source(src, I0)
+    I0 = J.Intern()
+    r0 = J.lower_source(src, I0)
     s1, unc = extrude(I0, r0)
-    I1 = J.Intern(); r1 = J.lower_source(s1, I1)
+    I1 = J.Intern()
+    r1 = J.lower_source(s1, I1)
     # IR-level identity: the canonical skeleton of each root coincides (the orbital identity = same
     # interned shape, compared structurally since ids live in different tables).
     sk0 = [J.full_skeleton(I0, i) for i in r0]
@@ -804,13 +922,20 @@ def orbital_identity(src: str):
     seen, cur, steps = [], s1, 1
     while cur not in seen and steps < 8:
         seen.append(cur)
-        Ik = J.Intern(); rk = J.lower_source(cur, Ik)
+        Ik = J.Intern()
+        rk = J.lower_source(cur, Ik)
         nxt, _ = extrude(Ik, rk)
         if nxt == cur:
             break
-        cur = nxt; steps += 1
-    return {"ir_fixed": ir_fixed, "src_fixed": (cur == s1 or steps <= 2),
-            "steps": steps, "uncovered": unc, "canonical": s1}
+        cur = nxt
+        steps += 1
+    return {
+        "ir_fixed": ir_fixed,
+        "src_fixed": (cur == s1 or steps <= 2),
+        "steps": steps,
+        "uncovered": unc,
+        "canonical": s1,
+    }
 
 
 def byte_grade(src: str) -> dict:
@@ -823,13 +948,21 @@ def byte_grade(src: str) -> dict:
     if not getattr(J, "_HAS_CST", False):
         return {"byte_exact": None, "skipped": "libcst absent"}
     import libcst as cst, io, tokenize
-    byte_exact = (cst.parse_module(src).code == src)
+
+    byte_exact = cst.parse_module(src).code == src
     ast_canon = ast.unparse(ast.parse(src))
-    pure_gauge = ast.dump(ast.parse(ast_canon)) == ast.dump(ast.parse(src))   # the trivia delta is gauge
-    comments = sum(1 for t in tokenize.generate_tokens(io.StringIO(src).readline)
-                   if t.type == tokenize.COMMENT)
-    return {"byte_exact": byte_exact, "pure_gauge": pure_gauge,
-            "comments": comments, "gauge_bytes": len(src) - len(ast_canon)}
+    pure_gauge = ast.dump(ast.parse(ast_canon)) == ast.dump(
+        ast.parse(src)
+    )  # the trivia delta is gauge
+    comments = sum(
+        1 for t in tokenize.generate_tokens(io.StringIO(src).readline) if t.type == tokenize.COMMENT
+    )
+    return {
+        "byte_exact": byte_exact,
+        "pure_gauge": pure_gauge,
+        "comments": comments,
+        "gauge_bytes": len(src) - len(ast_canon),
+    }
 
 
 def grades(src: str) -> dict:
@@ -838,9 +971,11 @@ def grades(src: str) -> dict:
       skeleton : orbital identity (lower∘extrude∘lower == lower) -- the idempotent PROJECTION.
       ast      : recon(skeleton, structural-residue) re-parses to the IDENTICAL AST (lossless structure).
       byte     : the CST carrier -- code == src (lossless layout; trivia = the pure-gauge residue)."""
-    return {"skeleton": orbital_identity(src)["ir_fixed"],
-            "ast": full_retraction(src)["ast_faithful"],
-            "byte": byte_grade(src).get("byte_exact")}
+    return {
+        "skeleton": orbital_identity(src)["ir_fixed"],
+        "ast": full_retraction(src)["ast_faithful"],
+        "byte": byte_grade(src).get("byte_exact"),
+    }
 
 
 def templatize(units: list) -> dict:
@@ -855,7 +990,8 @@ def templatize(units: list) -> dict:
     (M skeletons for N units) + each template source + the per-instance hole fillings."""
     groups = {}
     for label, src in units:
-        I = J.Intern(); roots = J.lower_source(src, I)
+        I = J.Intern()
+        roots = J.lower_source(src, I)
         if not roots:
             continue
         key = J.full_skeleton(I, roots[0])
@@ -874,37 +1010,51 @@ def templatize(units: list) -> dict:
             tag = streams[0][i][0]
             vals = [s[i][1] for s in streams]
             if all(v == vals[0] for v in vals):
-                hres.append((tag, vals[0]))                       # constant -> baked into the template
+                hres.append((tag, vals[0]))  # constant -> baked into the template
             else:
                 marker = f"__p{hi}__"
-                hres.append((tag, marker))                        # varying -> a hole (parameter)
+                hres.append((tag, marker))  # varying -> a hole (parameter)
                 for j in range(len(members)):
                     fillings[j].append((f"p{hi}", vals[j]))
                 hi += 1
         tmpl, _ = extrude(members[0][2], [members[0][1]], residue=hres)
-        clusters.append({"labels": [m[0] for m in members], "holes": hi,
-                         "template": tmpl, "fillings": [dict(f) for f in fillings]})
-    n_units = len(units); n_skel = len(groups)
-    return {"clusters": clusters, "n_units": n_units, "n_skeletons": n_skel,
-            "compression": f"{n_units} units -> {n_skel} skeletons + residues"}
+        clusters.append(
+            {
+                "labels": [m[0] for m in members],
+                "holes": hi,
+                "template": tmpl,
+                "fillings": [dict(f) for f in fillings],
+            }
+        )
+    n_units = len(units)
+    n_skel = len(groups)
+    return {
+        "clusters": clusters,
+        "n_units": n_units,
+        "n_skeletons": n_skel,
+        "compression": f"{n_units} units -> {n_skel} skeletons + residues",
+    }
 
 
 def seam_partition() -> dict:
     """The deliverable: the FIXED (orbital-identity / a seam must preserve) vs RESIDUE (what a byte-grade
     plugin supplies) partition over the IR's content, with LIVE demonstrations of the three skeleton losses."""
+
     def pair(s1, s2):
-        I = J.Intern(); return J.lower_source(s1, I)[0], J.lower_source(s2, I)[0]
+        I = J.Intern()
+        return J.lower_source(s1, I)[0], J.lower_source(s2, I)[0]
+
     # (A) value collapse: distinct same-kind literals intern to one node (the 2nd value lost).
     a1, a2 = pair("1\n", "2\n")
-    value_collapse = (a1 == a2)
+    value_collapse = a1 == a2
     # (C) bound-name spelling: alpha-renamed bound names share one id (spelling -> the alpha class).
     c1, c2 = pair("def f(x):\n    return x\n", "def g(y):\n    return y\n")
-    bound_alpha = (c1 == c2)
+    bound_alpha = c1 == c2
     # FIXED probes: referential names + operators + structure stay DISTINCT (the orbital identity).
     f1, f2 = pair("a.foo\n", "a.bar\n")
-    fixed_attr = (f1 != f2)
+    fixed_attr = f1 != f2
     o1, o2 = pair("a + b\n", "a - b\n")
-    fixed_op = (o1 != o2)
+    fixed_op = o1 != o2
     return {
         "FIXED (orbital identity — a seam MUST preserve)": [
             "node structure (kind + child shape)",
@@ -918,14 +1068,18 @@ def seam_partition() -> dict:
             "(C) bound-name spelling — role-quotiented; the spelling is the alpha-coset residue",
             "trivia / formatting / comments — the gauge residue (never entered the skeleton)",
         ],
-        "witnessed": {"value_collapse(1≡2)": value_collapse, "bound_alpha(f≡g)": bound_alpha,
-                      "fixed: a.foo≠a.bar": fixed_attr, "fixed: a+b≠a-b": fixed_op},
+        "witnessed": {
+            "value_collapse(1≡2)": value_collapse,
+            "bound_alpha(f≡g)": bound_alpha,
+            "fixed: a.foo≠a.bar": fixed_attr,
+            "fixed: a+b≠a-b": fixed_op,
+        },
         "verdict": "the skeleton round-trip is an idempotent PROJECTION (Ⓖ★ collapsing species); the IR "
-                   "drops the per-occurrence residue at intern (key-collision). KEPT as an edge-cofactor "
-                   "and REPLAYED, that residue lifts the projection to a RETRACTION (split-idempotent: "
-                   "recon(skeleton, residue)==original) -- byte-grade is RECOVERED without inflating the "
-                   "key. The skeleton is the orbit representative; the residue is the coset position. "
-                   "never-discard-residue: the SPPF is the quotient, the edge-trace is the remainder.",
+        "drops the per-occurrence residue at intern (key-collision). KEPT as an edge-cofactor "
+        "and REPLAYED, that residue lifts the projection to a RETRACTION (split-idempotent: "
+        "recon(skeleton, residue)==original) -- byte-grade is RECOVERED without inflating the "
+        "key. The skeleton is the orbit representative; the residue is the coset position. "
+        "never-discard-residue: the SPPF is the quotient, the edge-trace is the remainder.",
     }
 
 
@@ -946,98 +1100,149 @@ if __name__ == "__main__":
         if not r["ir_fixed"]:
             allok = False
         unc = f"  uncovered={sorted(r['uncovered'])}" if r["uncovered"] else ""
-        print(f"  [{tag}] ir_fixed={r['ir_fixed']} byte_steps={r['steps']} "
-              f"src1≡{repr(src.splitlines()[0])[:32]}…{unc}")
+        print(
+            f"  [{tag}] ir_fixed={r['ir_fixed']} byte_steps={r['steps']} "
+            f"src1≡{repr(src.splitlines()[0])[:32]}…{unc}"
+        )
 
-    print("\n── a worked extrusion (canonical representative; the value/format projection, live) ──")
+    print(
+        "\n── a worked extrusion (canonical representative; the value/format projection, live) ──"
+    )
     src = "def f(x, y):\n    z = x + y\n    return z * 2\n"
-    I = J.Intern(); rts = J.lower_source(src, I)
+    I = J.Intern()
+    rts = J.lower_source(src, I)
     out, unc = extrude(I, rts)
     print("  IN :", repr(src))
     print("  OUT:", repr(out))
     print("  (faithful here — one int literal; over-parenthesised = gauge, stripped on re-lower)")
     # the collapse (A), live: TWO same-kind literals -> the 2nd takes the 1st's value.
     src2 = "a = 1\nb = 2\nc = 1.5\n"
-    I2 = J.Intern(); r2 = J.lower_source(src2, I2)
+    I2 = J.Intern()
+    r2 = J.lower_source(src2, I2)
     out2, _ = extrude(I2, r2)
     print("  IN :", repr(src2))
-    print("  OUT:", repr(out2), "  <- loss (A): b's `2` collapsed onto `1`'s node (1.5 is a distinct kind)")
+    print(
+        "  OUT:",
+        repr(out2),
+        "  <- loss (A): b's `2` collapsed onto `1`'s node (1.5 is a distinct kind)",
+    )
 
     print("\n── never-discard-residue: the projection → RETRACTION lift (the residue's USE) ──")
     rsrc = "z = f(1, 2) + 3\n"
     R = retraction(rsrc)
     print("  IN              :", repr(rsrc))
-    print("  projection (skel):", repr(R["projection"]), " <- shared node collapses ALL ints to one")
+    print(
+        "  projection (skel):", repr(R["projection"]), " <- shared node collapses ALL ints to one"
+    )
     print("  residue cofactor :", R["residue"], " <- the per-occurrence values, kept on the edge")
     print("  RETRACTION       :", repr(R["retraction"]), " <- recon(skeleton, residue) == original")
-    print(f"  proj_lost={R['proj_lost']}  retraction_faithful={R['retraction_faithful']}  "
-          f"(split-idempotent: the cofactor recovers what the projection dropped)")
+    print(
+        f"  proj_lost={R['proj_lost']}  retraction_faithful={R['retraction_faithful']}  "
+        f"(split-idempotent: the cofactor recovers what the projection dropped)"
+    )
 
     print("\n── Ⓤ.retract-full + field-tags (B): the COMPLETE (AST-faithful) retraction ──")
-    asrc = "def f(x):\n    return x\ndef g(y):\n    return y\n"     # alpha-equivalent: share ONE skeleton node
+    asrc = "def f(x):\n    return x\ndef g(y):\n    return y\n"  # alpha-equivalent: share ONE skeleton node
     F = full_retraction(asrc)
     print("  IN          :", repr(asrc))
     print("  projection  :", repr(F["projection"]), " <- g/y collapsed onto f/x (alpha-equivalent)")
     print("  RETRACTION  :", repr(F["retraction"]))
-    print(f"  proj_faithful(AST)={F['proj_faithful']}  retraction_faithful(AST)={F['ast_faithful']}  "
-          f"(recovers values (A) + names/defnames (C) even though the skeleton shares the node)")
+    print(
+        f"  proj_faithful(AST)={F['proj_faithful']}  retraction_faithful(AST)={F['ast_faithful']}  "
+        f"(recovers values (A) + names/defnames (C) even though the skeleton shares the node)"
+    )
     # (B) field-tags now CLOSED for the heterogeneous-field statements that used to hit #UNCOVERED:
-    bcases = {"@dec\ndef f() -> int:\n    return 1\n": "decorator + returns-annotation",
-              "if p < 3:\n    return p\nelse:\n    return 0\n": "if/else",
-              "for i in xs:\n    s = s + i\nelse:\n    s = 0\n": "for/else",
-              "while n > 0:\n    n = n - 1\n": "while"}
-    print("  field-tags (B) — heterogeneous-field statements now reconstruct via field-split residue:")
+    bcases = {
+        "@dec\ndef f() -> int:\n    return 1\n": "decorator + returns-annotation",
+        "if p < 3:\n    return p\nelse:\n    return 0\n": "if/else",
+        "for i in xs:\n    s = s + i\nelse:\n    s = 0\n": "for/else",
+        "while n > 0:\n    n = n - 1\n": "while",
+    }
+    print(
+        "  field-tags (B) — heterogeneous-field statements now reconstruct via field-split residue:"
+    )
     for s, lbl in bcases.items():
         print(f"      • {lbl:28} ast_faithful={full_retraction(s)['ast_faithful']}")
     print("  arguments-internals / class-bases / try -- now AST-faithful too:")
-    for s, lbl in {"def f(a, b=1, *xs, c, **kw):\n    return a\n": "full arg signature (ast.unparse)",
-                   "class C(B, metaclass=M):\n    pass\n": "class bases + metaclass",
-                   "try:\n    a\nexcept E as e:\n    b\nfinally:\n    c\n": "try/except as/finally"}.items():
+    for s, lbl in {
+        "def f(a, b=1, *xs, c, **kw):\n    return a\n": "full arg signature (ast.unparse)",
+        "class C(B, metaclass=M):\n    pass\n": "class bases + metaclass",
+        "try:\n    a\nexcept E as e:\n    b\nfinally:\n    c\n": "try/except as/finally",
+    }.items():
         print(f"      • {lbl:32} ast_faithful={full_retraction(s)['ast_faithful']}")
-    print("  expression frontier -- now AST-faithful (decomposed, sub-structure shares the skeleton):")
-    for s, lbl in {"d = {'a': 1, **e}\n": "dict + ** spread", "v = a[1:2:3]\n": "subscript + slice",
-                   "ys = [x for x in xs if x]\n": "comprehension", "g = lambda x: x + 1\n": "lambda",
-                   's = f"{x!r}"\n': "f-string"}.items():
+    print(
+        "  expression frontier -- now AST-faithful (decomposed, sub-structure shares the skeleton):"
+    )
+    for s, lbl in {
+        "d = {'a': 1, **e}\n": "dict + ** spread",
+        "v = a[1:2:3]\n": "subscript + slice",
+        "ys = [x for x in xs if x]\n": "comprehension",
+        "g = lambda x: x + 1\n": "lambda",
+        's = f"{x!r}"\n': "f-string",
+    }.items():
         print(f"      • {lbl:24} ast_faithful={full_retraction(s)['ast_faithful']}")
-    print("  full language incl. Match patterns -- AST-faithful, 133/133 real modules round-trip to the AST.")
-    print("  GRADE LADDER CLOSED (Ⓤ.byte-exact): byte-exact via the CST carrier (code==src, 133/133); the")
-    print("  trivia (comments/formatting) is the PURE-GAUGE residue (ast-equal delta) -- no residue left.")
+    print(
+        "  full language incl. Match patterns -- AST-faithful, 133/133 real modules round-trip to the AST."
+    )
+    print(
+        "  GRADE LADDER CLOSED (Ⓤ.byte-exact): byte-exact via the CST carrier (code==src, 133/133); the"
+    )
+    print(
+        "  trivia (comments/formatting) is the PURE-GAUGE residue (ast-equal delta) -- no residue left."
+    )
 
     print("\n── the full retraction GRADE LADDER (Ⓤ.byte-exact closes it) ──")
     gsrc = "# a comment\ndef f(x):\n    return x + 1  # inline\n"
-    g = grades(gsrc); bg = byte_grade(gsrc)
+    g = grades(gsrc)
+    bg = byte_grade(gsrc)
     print(f"  source with comments: {gsrc!r}")
     print(f"  skeleton (orbital identity / projection): {g['skeleton']}")
     print(f"  ast   (recon == identical AST, lossless structure): {g['ast']}")
     print(f"  byte  (CST carrier, code == src, lossless layout):   {g['byte']}")
-    print(f"  trivia gauge: {bg.get('comments')} comments + {bg.get('gauge_bytes')} format bytes; "
-          f"pure_gauge (ast-equal delta)={bg.get('pure_gauge')}")
-    print("  => byte-grade is RECOVERED: skeleton ⊕ structural-residue -> AST; ⊕ trivia-gauge (CST) -> bytes.")
+    print(
+        f"  trivia gauge: {bg.get('comments')} comments + {bg.get('gauge_bytes')} format bytes; "
+        f"pure_gauge (ast-equal delta)={bg.get('pure_gauge')}"
+    )
+    print(
+        "  => byte-grade is RECOVERED: skeleton ⊕ structural-residue -> AST; ⊕ trivia-gauge (CST) -> bytes."
+    )
 
     print("\n── Ⓤ.template: the residue's USE — same-skeleton/different-residue = a template ──")
-    tunits = [("scale2", "def scale2(v):\n    return v * 2\n"),
-              ("scale3", "def scale3(v):\n    return v * 3\n"),
-              ("h", "def h(p):\n    return p - 1\n")]
+    tunits = [
+        ("scale2", "def scale2(v):\n    return v * 2\n"),
+        ("scale3", "def scale3(v):\n    return v * 3\n"),
+        ("h", "def h(p):\n    return p - 1\n"),
+    ]
     tr = templatize(tunits)
     print(f"  {tr['compression']}")
     for c in tr["clusters"]:
         print(f"  cluster {c['labels']} ({c['holes']} holes): {c['template']!r}")
         print(f"    fillings: {c['fillings']}")
-    print("  => the skeleton is the free term with holes; each residue is a substitution (Free⊣Forgetful).")
-    print("     At scale this is duplicate-code / compression detection (a 0-hole cluster = exact dupes).")
+    print(
+        "  => the skeleton is the free term with holes; each residue is a substitution (Free⊣Forgetful)."
+    )
+    print(
+        "     At scale this is duplicate-code / compression detection (a 0-hole cluster = exact dupes)."
+    )
 
     print("\n── seam partition (THE deliverable) ──")
     P = seam_partition()
-    for k in ("FIXED (orbital identity — a seam MUST preserve)",
-              "RESIDUE (the kept COFACTOR — replayed, it makes the round-trip a RETRACTION)"):
+    for k in (
+        "FIXED (orbital identity — a seam MUST preserve)",
+        "RESIDUE (the kept COFACTOR — replayed, it makes the round-trip a RETRACTION)",
+    ):
         print(f"  {k}:")
         for line in P[k]:
             print(f"      • {line}")
     print(f"  witnessed: {P['witnessed']}")
     print(f"  VERDICT: {P['verdict']}")
 
-    ok = allok and all(P["witnessed"][x] for x in ("value_collapse(1≡2)", "bound_alpha(f≡g)",
-                                                   "fixed: a.foo≠a.bar", "fixed: a+b≠a-b"))
-    print(f"\n  {'PASS' if ok else 'FAIL'} — Ⓤ.byte: skeleton round-trip is the orbital identity; the "
-          f"FIXED/RESIDUE seam is computed, not taste.")
+    ok = allok and all(
+        P["witnessed"][x]
+        for x in ("value_collapse(1≡2)", "bound_alpha(f≡g)", "fixed: a.foo≠a.bar", "fixed: a+b≠a-b")
+    )
+    print(
+        f"\n  {'PASS' if ok else 'FAIL'} — Ⓤ.byte: skeleton round-trip is the orbital identity; the "
+        f"FIXED/RESIDUE seam is computed, not taste."
+    )
     sys.exit(0 if ok else 1)

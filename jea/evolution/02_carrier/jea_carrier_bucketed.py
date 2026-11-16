@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """jea_carrier_bucketed.py — U1: the data-driven mixed-width carrier (pack the lanes by magnitude bucket).
 
 I3 (jea_bucket_msb) PROVED the bucketing law sound on the flat-u64 carrier's values. U1 REALIZES it: values
@@ -26,18 +28,26 @@ Witnesses (each [W]):
    a flat u64, AND each combine ran at its native width (group sizes reported), not promoted to u64.
 4. ESCALATE: combines whose working width > 64 are FLAGGED (-> byte-limb carrier), never wrapped.
 """
+
 import os
+
 os.environ.setdefault("CUDA_PATH", "/usr")
 import numpy as np, cupy as cp
 from fractions import Fraction
 
 NAT = [(8, cp.uint8), (16, cp.uint16), (32, cp.uint32), (64, cp.uint64)]
 NBYTES = {8: 1, 16: 2, 32: 4, 64: 8}
-def bw(x): return int(x).bit_length()
-def native(bits):                                             # smallest native int width holding `bits`
+
+
+def bw(x):
+    return int(x).bit_length()
+
+
+def native(bits):  # smallest native int width holding `bits`
     for w, _ in NAT:
-        if bits <= w: return w
-    return 128                                                # >64 = escalate (byte-limb's job)
+        if bits <= w:
+            return w
+    return 128  # >64 = escalate (byte-limb's job)
 
 
 if __name__ == "__main__":
@@ -45,63 +55,119 @@ if __name__ == "__main__":
     rng = np.random.default_rng(0)
     # operands: bit-lengths skewed small (most narrow) with a heavy tail (some products overflow u64 -> escalate)
     blen = lambda: int(min(34, 1 + int(rng.exponential(7))))
-    an = np.empty(N, object); ad = np.empty(N, object); cn = np.empty(N, object); cd = np.empty(N, object)
-    op = rng.integers(0, 2, N)                                # 0=add, 1=mul
+    an = np.empty(N, object)
+    ad = np.empty(N, object)
+    cn = np.empty(N, object)
+    cd = np.empty(N, object)
+    op = rng.integers(0, 2, N)  # 0=add, 1=mul
     for i in range(N):
-        an[i] = int(rng.integers(1, 1 << blen())); ad[i] = int(rng.integers(1, 1 << blen()))
-        cn[i] = int(rng.integers(1, 1 << blen())); cd[i] = int(rng.integers(1, 1 << blen()))
+        an[i] = int(rng.integers(1, 1 << blen()))
+        ad[i] = int(rng.integers(1, 1 << blen()))
+        cn[i] = int(rng.integers(1, 1 << blen()))
+        cd[i] = int(rng.integers(1, 1 << blen()))
 
     # working width per combine from operand bit-widths (the I3 migration law) -> native dtype bucket
-    workbits = np.empty(N, np.int64); opbucket = np.empty(N, np.int64)
+    workbits = np.empty(N, np.int64)
+    opbucket = np.empty(N, np.int64)
     for i in range(N):
         wan, wad, wcn, wcd = bw(an[i]), bw(ad[i]), bw(cn[i]), bw(cd[i])
-        if op[i] == 1: Bn, Bd = wan + wcn, wad + wcd                          # mul
-        else:          Bn, Bd = max(wan + wcd, wcn + wad) + 1, wad + wcd      # add
-        workbits[i] = max(Bn, Bd); opbucket[i] = native(max(wan, wad, wcn, wcd))
+        if op[i] == 1:
+            Bn, Bd = wan + wcn, wad + wcd  # mul
+        else:
+            Bn, Bd = max(wan + wcd, wcn + wad) + 1, wad + wcd  # add
+        workbits[i] = max(Bn, Bd)
+        opbucket[i] = native(max(wan, wad, wcn, wcd))
     workw = np.array([native(b) for b in workbits], np.int64)
     esc = workw == 128
 
-    res_n = np.zeros(N, object); res_d = np.zeros(N, object); group_sizes = {}
-    for w, dt in NAT:                                          # one vectorized GPU pass per (width, op) group
+    res_n = np.zeros(N, object)
+    res_d = np.zeros(N, object)
+    group_sizes = {}
+    for w, dt in NAT:  # one vectorized GPU pass per (width, op) group
         for o in (0, 1):
             idx = np.where((workw == w) & (op == o))[0]
-            if idx.size == 0: continue
+            if idx.size == 0:
+                continue
             group_sizes[(w, "mul" if o else "add")] = int(idx.size)
-            gan = cp.asarray([int(an[i]) for i in idx], dt); gad = cp.asarray([int(ad[i]) for i in idx], dt)
-            gcn = cp.asarray([int(cn[i]) for i in idx], dt); gcd = cp.asarray([int(cd[i]) for i in idx], dt)
-            if o == 1: rn = gan * gcn; rd = gad * gcd          # mul, lane-parallel at native width w
-            else:      rn = gan * gcd + gcn * gad; rd = gad * gcd  # add
-            rn = rn.get(); rd = rd.get()                       # (lazy: unreduced, stays at native width on device)
-            for k, i in enumerate(idx): res_n[i] = int(rn[k]); res_d[i] = int(rd[k])
+            gan = cp.asarray([int(an[i]) for i in idx], dt)
+            gad = cp.asarray([int(ad[i]) for i in idx], dt)
+            gcn = cp.asarray([int(cn[i]) for i in idx], dt)
+            gcd = cp.asarray([int(cd[i]) for i in idx], dt)
+            if o == 1:
+                rn = gan * gcn
+                rd = gad * gcd  # mul, lane-parallel at native width w
+            else:
+                rn = gan * gcd + gcn * gad
+                rd = gad * gcd  # add
+            rn = rn.get()
+            rd = rd.get()  # (lazy: unreduced, stays at native width on device)
+            for k, i in enumerate(idx):
+                res_n[i] = int(rn[k])
+                res_d[i] = int(rd[k])
 
     # ---- witnesses ----
-    bad_exact = 0; mig_unsound = 0; migrated_up = 0; resbytes = 0; flatbytes = 0
+    bad_exact = 0
+    mig_unsound = 0
+    migrated_up = 0
+    resbytes = 0
+    flatbytes = 0
     for i in range(N):
-        if esc[i]: continue
-        lhs = (Fraction(an[i], ad[i]) * Fraction(cn[i], cd[i])) if op[i] == 1 else (Fraction(an[i], ad[i]) + Fraction(cn[i], cd[i]))
-        if Fraction(res_n[i], res_d[i]) != lhs: bad_exact += 1
+        if esc[i]:
+            continue
+        lhs = (
+            (Fraction(an[i], ad[i]) * Fraction(cn[i], cd[i]))
+            if op[i] == 1
+            else (Fraction(an[i], ad[i]) + Fraction(cn[i], cd[i]))
+        )
+        if Fraction(res_n[i], res_d[i]) != lhs:
+            bad_exact += 1
         rb = native(max(bw(res_n[i]), bw(res_d[i])))
-        if rb > workw[i]: mig_unsound += 1                     # working width must upper-bound the result
-        if rb > opbucket[i]: migrated_up += 1
-        resbytes += NBYTES[rb] * 2; flatbytes += 8 * 2
+        if rb > workw[i]:
+            mig_unsound += 1  # working width must upper-bound the result
+        if rb > opbucket[i]:
+            migrated_up += 1
+        resbytes += NBYTES[rb] * 2
+        flatbytes += 8 * 2
 
-    nesc = int(esc.sum()); nlive = N - nesc
+    nesc = int(esc.sum())
+    nlive = N - nesc
     w1 = bad_exact == 0
     w2 = mig_unsound == 0 and migrated_up > 0
     w3 = resbytes < flatbytes
     w4 = nesc > 0
-    print(f"data-driven mixed-width carrier — {N} combines, {nlive} live, {nesc} escalated (working width >64)\n")
+    print(
+        f"data-driven mixed-width carrier — {N} combines, {nlive} live, {nesc} escalated (working width >64)\n"
+    )
     print(f"  working-width groups (combines run lane-parallel at each native dtype):")
-    for k in sorted(group_sizes): print(f"      u{k[0]:<2} {k[1]}: {group_sizes[k]}")
-    print(f"  storage at native bucket vs flat u64: {resbytes} bytes vs {flatbytes} = {flatbytes/resbytes:.2f}x smaller")
-    print(f"  migration: {migrated_up}/{nlive} results migrated UP from their operands' bucket (mul widens)")
+    for k in sorted(group_sizes):
+        print(f"      u{k[0]:<2} {k[1]}: {group_sizes[k]}")
+    print(
+        f"  storage at native bucket vs flat u64: {resbytes} bytes vs {flatbytes} = {flatbytes / resbytes:.2f}x smaller"
+    )
+    print(
+        f"  migration: {migrated_up}/{nlive} results migrated UP from their operands' bucket (mul widens)"
+    )
     print(f"\n1. EXACT (packed-GPU == host Fraction, all live): {w1}  ({bad_exact} mismatches)")
-    print(f"2. MIGRATION SOUND (working width >= actual, never undersized): {w2}  ({mig_unsound} undersized)")
-    print(f"3. PAY-FOR-WHAT-YOU-USE ({flatbytes/resbytes:.2f}x smaller, ran at native width): {w3}")
+    print(
+        f"2. MIGRATION SOUND (working width >= actual, never undersized): {w2}  ({mig_unsound} undersized)"
+    )
+    print(
+        f"3. PAY-FOR-WHAT-YOU-USE ({flatbytes / resbytes:.2f}x smaller, ran at native width): {w3}"
+    )
     print(f"4. ESCALATE (working width >64 flagged, not wrapped): {w4}  ({nesc} escalated)")
     ok = w1 and w2 and w3 and w4
-    print(f"\n  {'PASS' if ok else 'FAIL'} — U1: the carrier now STORES and COMPUTES at the magnitude bucket's")
-    print(f"  native width (the data-driven mixed-width SWAR carrier), combines run lane-parallel per bucket,")
-    print(f"  results migrate by the I3 law, escalate at the u64 boundary -- exact. pay-for-what-you-use")
-    print(f"  REALIZED, not just measured. NEXT: wire as the persistent evaluator's storage (per-bucket pools,")
-    print(f"  re-bucket in the readiness gate) -- and the sub-byte SWAR floor (1/2/4-bit packed within a byte).")
+    print(
+        f"\n  {'PASS' if ok else 'FAIL'} — U1: the carrier now STORES and COMPUTES at the magnitude bucket's"
+    )
+    print(
+        f"  native width (the data-driven mixed-width SWAR carrier), combines run lane-parallel per bucket,"
+    )
+    print(
+        f"  results migrate by the I3 law, escalate at the u64 boundary -- exact. pay-for-what-you-use"
+    )
+    print(
+        f"  REALIZED, not just measured. NEXT: wire as the persistent evaluator's storage (per-bucket pools,"
+    )
+    print(
+        f"  re-bucket in the readiness gate) -- and the sub-byte SWAR floor (1/2/4-bit packed within a byte)."
+    )

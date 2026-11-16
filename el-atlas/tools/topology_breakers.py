@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 topology_breakers.py — AUTO-ENUMERATE the conductance model's symmetry-breakers at RUNTIME, on
 whatever machine you run it on. Nothing about this box is hardcoded: caches, core tiers, NUMA

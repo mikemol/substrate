@@ -1,3 +1,5 @@
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """
 cf-grace-pilot.py — S19: continued fractions over epistemological quotient
 space. Exact integer arithmetic throughout (target sqrt(2), convergents via

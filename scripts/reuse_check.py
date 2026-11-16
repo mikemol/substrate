@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """reuse_check.py — ⟡reuse-before-write-query: lower a PROPOSED def into the EXISTING corpus interner and
 report its nearest existing kin + canonical home, or "novel". This is the reuse-search DISCIPLINE
 (CLAUDE.md: "before building a new def/lemma/module/bridge, search for the structure it would reinvent")
@@ -25,6 +27,7 @@ HONEST BOUNDARY: add_agdai needs a COMPILED core, so an Agda proposal must be ty
 skeleton → `agda` it → point here at its .agdai). For the cheaper "does this RECORD already exist / how many
 instances inhabit it?" question (no compile), use scratch/set1_consolidate.py's type-head report. Read-only.
 """
+
 import os, sys, glob, argparse
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -45,9 +48,15 @@ def expand(globs):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("--propose", required=True, help="the PROPOSED def file (.py stub, or a compiled .agdai)")
-    ap.add_argument("--against", nargs="*", default=None,
-                    help="reference-corpus globs (default: tooling .py for a .py proposal; the .agdai tree for .agdai)")
+    ap.add_argument(
+        "--propose", required=True, help="the PROPOSED def file (.py stub, or a compiled .agdai)"
+    )
+    ap.add_argument(
+        "--against",
+        nargs="*",
+        default=None,
+        help="reference-corpus globs (default: tooling .py for a .py proposal; the .agdai tree for .agdai)",
+    )
     ap.add_argument("--top", type=int, default=6)
     args = ap.parse_args()
 
@@ -76,18 +85,21 @@ def main():
     if not proposal_units:
         sys.exit("reuse_check: proposal interned to 0 units (empty / unparsed / undecodable core)")
 
-    print(f"# proposal '{os.path.relpath(prop, ROOT)}' → {len(proposal_units)} def(s); "
-          f"reference corpus = {n_ref} defs\n", file=sys.stderr)
+    print(
+        f"# proposal '{os.path.relpath(prop, ROOT)}' → {len(proposal_units)} def(s); "
+        f"reference corpus = {n_ref} defs\n",
+        file=sys.stderr,
+    )
 
     for pu in proposal_units:
         P_ = pu.support
-        rel = []                                          # per candidate: the WEDGE, kept graded
+        rel = []  # per candidate: the WEDGE, kept graded
         for ru in C.units[:n_ref]:
             E = ru.support
             inter = P_ & E
             if not inter:
                 continue
-            p_only, e_only = P_ - E, E - P_               # the two residues (symmetric difference = their union)
+            p_only, e_only = P_ - E, E - P_  # the two residues (symmetric difference = their union)
             if not p_only and not e_only:
                 verdict = "IDENTICAL     reuse it verbatim"
             elif not p_only:
@@ -103,10 +115,15 @@ def main():
             print(f"■ {pu.name}   → NOVEL  (|support|={len(P_)}; ∩ with every existing def is ∅)\n")
             continue
         print(f"■ {pu.name}   (|support|={len(P_)})")
-        print(f"     {'∩':>5} {'+prop':>6} {'+exist':>7}  relation / move                                  where")
-        for ninter, np, ne, verdict, ru in rel[:args.top]:
-            loc = f"{os.path.relpath(ru.path, ROOT)}:{ru.lineno}" if ru.lineno and ru.lineno > 0 \
+        print(
+            f"     {'∩':>5} {'+prop':>6} {'+exist':>7}  relation / move                                  where"
+        )
+        for ninter, np, ne, verdict, ru in rel[: args.top]:
+            loc = (
+                f"{os.path.relpath(ru.path, ROOT)}:{ru.lineno}"
+                if ru.lineno and ru.lineno > 0
                 else os.path.relpath(ru.path, ROOT)
+            )
             print(f"     {ninter:>5} {np:>6} {ne:>7}  {verdict:48} {ru.name}  {loc}")
         print()
 
