@@ -1,0 +1,29 @@
+"""substrate on Bazel: its pre-commit gate becomes a build (substrate:W300, design mtools:W798).
+
+Copied from aeternum's shape (aeternum:W109). Each gate is a cached py_test over its declared inputs,
+so an unchanged tree costs nothing to re-verify and a change re-runs exactly the gates whose inputs it
+touched. Rows are added one gate at a time from the hook's `run "..."` stages; the hook keeps running
+the script until `bazel test //:precommit` covers every stage.
+"""
+
+module(name = "substrate", version = "0.1")
+
+bazel_dep(name = "rules_python", version = "2.3.3")
+
+bazel_dep(name = "mikemol_rules_py", version = "0.1.0")
+
+# Pinned at the mtools commit that carries tracked.bzl (mtools:W799). The remote is the local clone:
+# the pin is the commit, so a moving working tree is never read.
+git_override(
+    module_name = "mikemol_rules_py",
+    remote = "/home/mikemol/github/mtools",
+    commit = "370784d59a169494787ef04e92999f56d4483200",
+    strip_prefix = "rules_py",
+)
+
+tracked = use_repo_rule("@mikemol_rules_py//:tracked.bzl", "tracked_files")
+
+tracked(name = "tracked")
+
+python = use_extension("@rules_python//python/extensions:python.bzl", "python")
+python.toolchain(python_version = "3.14", is_default = True)

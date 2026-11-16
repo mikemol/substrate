@@ -1,0 +1,992 @@
+[project]
+name = "substrate-tooling"
+version = "0.1.0"
+description = "The instruments that decide what to edit in the Agda tree, and in what order."
+# ⚑⚑ RAISED FROM `>=3.12` FOR ⟡purge-mdstruct, AND THE OLD FLOOR WAS A CLAIM NOTHING CHECKED.
+# `mikemol-mdstruct` declares `>=3.13`, so the two manifests could not resolve together —
+# measured, not predicted: `uv` refused with "the requested Python version (>=3.12) does not
+# satisfy Python>=3.13" while the ACTIVE interpreter was already 3.13. A declaration conflict,
+# not a runtime one.
+# ⚑ SO NOTHING HERE WAS EVER EXERCISED ON 3.12. The floor asserted support for an interpreter
+# no run in this tree uses, which is the same shape as a census nobody re-derives: a number
+# that reads as a tested configuration because it appears in a manifest. Raising it makes the
+# claim match what is actually run. ⚑ WHAT IT COSTS, STATED: an adopter genuinely on 3.12
+# loses this distribution, and whether one exists is not measurable from inside this tree.
+# ⚑⚑ AND BOUNDED ABOVE, 2026-09-22 (operator ruling), BECAUSE AN OPEN CEILING IS ALSO A CLAIM.
+# `uv lock` resolves for EVERY Python the range admits, so `>=3.13` made it solve a `>=3.15`
+# split — where `cupy-cuda12x` has no wheels — and the whole lock refused: it could no longer
+# move its git pins (mikemol-mdstruct stuck behind mtools' landed `budget`) or add
+# `mikemol-hooks`, which blocked every swap of a substrate twin to its mtools wheel. The venv
+# runs 3.14; no run here uses 3.15 — or 3.13 any more, so the floor moves to what is run, too.
+# The range now states exactly what is exercised: one interpreter minor.
+requires-python = ">=3.14,<3.15"
+
+# ⚑ THE PRECONDITIONS LIVED IN INCANTATIONS, NOT IN A MANIFEST (user, 2026-08-02:
+# *"just set up the .venv properly with uv"*).  Every OTLP call this session was a
+# retyped `uv run --with opentelemetry-sdk --with opentelemetry-exporter-otlp-proto-http`,
+# `mdstruct`'s AST modes told the reader to run it under `uv run --with panflute`, and
+# a survey agent read that failure as A BROKEN TOOL rather than a missing dependency.
+# A dependency named only in a docstring is a permission slip, not a declaration: it
+# must be re-granted every time and nothing can check it.
+#
+# ⚑ AND `requirements.txt` WAS NOT THAT MANIFEST.  It is a 45-line pinned dump of an
+# unrelated environment (cupy, pyqt6, vtk, matplotlib) that names NONE of the tool
+# dependencies -- `libcst` and `networkx` are installed and undeclared, `panflute`
+# and `mypy` are declared nowhere and absent, and `mypy` backs a PRE-COMMIT GATE.
+# The venv had drifted from every written record of what it should hold.
+#
+# ⚑ AND THE DIAGNOSIS ABOVE WAS RIGHT AND INCOMPLETE — it retired `requirements.txt`
+# in prose while leaving ONE live dependency behind in it, and that omission BROKE A
+# WIRED GATE.  `SQLAlchemy` is the last line of that file; it is referenced by five
+# modules including `query_defs.py`, which the hook runs as `query cache in sync`.
+# The venv was then rebuilt from THIS file, SQLAlchemy was not in it, and the gate has
+# been failing with `ModuleNotFoundError` — a red gate that looks like a finding and
+# is a missing package.  MEASURED 2026-08-06: 9 of 12 `requirements.txt` pins are not
+# installed at all (matplotlib, scipy, sympy, cupy, vtk, pyvista, textual, rich,
+# cyclopts), so that file was a fossil of a DIFFERENT environment — except for this
+# one line, which was load-bearing.  *A record you have decided to ignore still has to
+# be read before it is deleted.*
+dependencies = [
+    # the structural readers (scratch/pycodemod.py — and the losslessness gate)
+    "libcst",
+    # the DAG authority (substrate/dagcone.py reach/rank; reinventing it was caught once)
+    "networkx",
+    # ⚑⚑⚑ `types-networkx` WAS INSTALLED HERE AND REMOVED, AND THE REASON IS THIS FILE'S OWN
+    # RULE READ CORRECTLY: **stub an untyped dep (that ADDS types); ignore a typed dep whose
+    # types contain `Any` at a boundary walled by a concrete return.** The published stubs are
+    # the second category by appearance and the first in fact — their `DiGraph` is generic over
+    # its attribute dicts, so `DiGraph[T, dict[str, Any], dict[str, Any]]` makes EVERY graph
+    # expression an `Any` under `disallow_any_expr`, and `cast()` cannot rescue it because the
+    # `Any` is flagged before the cast concretises. That is not a walled boundary; it is the
+    # interface itself. ⚑ `stubs/networkx/` declares the three methods and one function this
+    # repo calls, concretely typed over the caller's node type — a stub that ADDS types, which
+    # is exactly what the rule prescribes and what a waiver would have papered over.
+    # scratch/mdstruct.py's AST modes; its TEXT modes deliberately need neither
+    "panflute",
+    # scripts/check_mypy_ratchet.py — a wired pre-commit gate
+    "mypy",
+    # the query-compilation layer: query_defs/query_registry/sql_lift build Core
+    # statements and compile them to SQL.  `query_defs.py --check` is a PRE-COMMIT
+    # GATE, so this is not optional — it was the sole survivor of requirements.txt.
+    "SQLAlchemy",
+    # the PostgreSQL driver (cassian's managed service, socket-only).  The store is
+    # migrating off sqlite3; psycopg is what speaks to it.
+    "psycopg[binary]",
+    # ⚑ THE FOLLOWING FOUR WERE `[project.optional-dependencies]` AND ARE NOT OPTIONAL
+    # (user, 2026-08-06: *"we don't want those 'optional' dependencies treated as
+    # optional. They're load-bearing here"*).  MEASURED the moment it mattered: a
+    # plain `uv sync` — the command the project-tooling formula prescribes — UNINSTALLED
+    # 18 packages, taking numpy, the whole opentelemetry stack, persist-queue and
+    # valkey out of a working environment.  An extra is only honest when the code
+    # DEGRADES without it; these do not degrade, they break, so the grouping was
+    # describing an intention the code never implemented.
+    #
+    # `valkey` was worse than mis-grouped: it was installed and declared NOWHERE, so
+    # `uv sync` removed it with no record that anything wanted it.  It backs
+    # `scratch/shared_cache.py` — the content-keyed cache whose adoption took
+    # `items.py --selftest` from OOM-killed at 192MB to passing inside that lease.
+    "valkey",
+    # the OTLP EMIT path (membudget_otlp, run_selftests._emit_one).  `tsdbprobe` stays
+    # stdlib-only on purpose — it must run from a hook with no venv — and that
+    # remains true: it is the READ side and imports none of this.
+    "opentelemetry-sdk",
+    "opentelemetry-exporter-otlp-proto-http",
+    # store-and-forward, producer-side (scratch/spool.py).  `SQLiteAckQueue` supplies
+    # `resume_unack_tasks`, the crash-mid-drain recovery a hand-rolled queue loses
+    # silently — which is why it is a dependency and not a table we write.
+    "persist-queue",
+    # ⚑ AND SQLAlchemy WAS NOT THE ONLY SURVIVOR OF `requirements.txt` — the same class,
+    # found 2026-08-25.  The block above measured sympy as one of "9 of 12 pins not
+    # installed at all" and read that as evidence the whole file was a fossil.  It is a
+    # fossil, but sympy is the SECOND line in it that was load-bearing: five checks in
+    # `jea/metalanguage/jea_metalanguage_gate.py` — the Σ6 PRE-COMMIT GATE — import it
+    # (chk_sympy_bridge, chk_octave, chk_ir_unify, chk_omml_octave, chk_omml_render), and
+    # that gate's OWN docstring classifies sympy as a PURE dependency that "always runs",
+    # in contrast to the toolchain deps that self-SKIP.  It was FAILING with five
+    # `ModuleNotFoundError`s — a red gate that looks like a Σ regression and is a missing
+    # package, exactly the reading the SQLAlchemy note warns about.
+    # ⚑ *NOT-INSTALLED is a fact about the ENVIRONMENT; not-needed is a fact about the
+    # code.*  The measurement above established only the first and was used for the second.
+    "sympy",
+    # `jea/jea_circuit.py`'s 300-case suite runs against a numpy Laplacian-pseudoinverse
+    # oracle.  The per-suite `# selftest-requires: numpy` marker STAYS — it makes the
+    # tool self-describing for a bare clone — but the environment must be able to
+    # satisfy it rather than the call site conjuring it with `uv run --with numpy`.
+    "numpy",
+    # `scratch/vfs.py`'s `Rev` source — reading a path AS OF a git revision.  It backs
+    # the `Presence` three-valued read (PRESENT/ABSENT/BROKEN) that replaces three
+    # hand-rolled `git show` subprocess paths which each collapsed ABSENT differently.
+    #
+    # ⚑ IT IS DECLARED HERE BECAUSE IT WAS ALREADY INSTALLED AND ALREADY LOAD-BEARING,
+    # WHICH IS THE `valkey` SHAPE ONE ENTRY UP — installed by hand (`uv pip install
+    # pygit2`, 2026-08-25) and named in no manifest, so nothing recorded that anything
+    # wanted it.  MEASURED at the moment of writing: `uv sync --dry-run` reported
+    # *"Would uninstall 1 package - pygit2==1.20.0"*.  The routine reconcile the
+    # project-tooling formula prescribes would have REMOVED a live dependency, and the
+    # breakage would have surfaced later as a BROKEN read rather than as a missing
+    # package — the misreading the SQLAlchemy and sympy notes above each record.
+    #
+    # ⚑ AND `vfs` IS ON THE PRE-COMMIT PATH, not only in ad-hoc tooling: the
+    # `import-shape ratchet` gate imports `check_import_shape` → `scope_fix` →
+    # `scope_source` → `vfs` (measured: `vfs` in `sys.modules` after importing the
+    # gate).  The IMPORT is free — `vfs` imports pygit2 lazily inside `Rev.resolve`,
+    # so a gate that only reads the working tree never touches it — but that laziness
+    # is what makes the gap QUIET, not what makes it safe.
+    "pygit2",
+    # ── `sqlalchemy-views>=0.3.2` — DELETED 2026-08-12 (⟡view-purge).  MEASURED UNUSED,
+    # ── not assumed: `pycodemod --importers sqlalchemy_views` → 0 import sites in 0 of
+    # ── 788 files; `--literal sqlalchemy_views` → 0 sites.  Its ONE consumer was
+    # ── `schema_decl._view_ddl_named`, and the emitter no longer emits views.
+    #
+    # ⚑ ITS ENTRY'S ARGUMENT IS KEPT BECAUSE IT IS STILL TRUE AND STILL GOVERNING, just
+    # about a package this project no longer needs (user, 2026-08-06: *"hardcoding views
+    # runs counter to my structuralist preferences"*):
+    #
+    #     *"SQLAlchemy core has no view construct, and my first cut read that as a reason
+    #     to declare the five compat views as SQL TEXT — which is the hardcoded-DDL defect
+    #     one table over: unqueryable structurally, uncomposable, and it forced me to
+    #     hand-write the `IF NOT EXISTS` / `OR REPLACE` dialect fork that a real construct
+    #     owns.  **"The core library lacks it" is a fact about the core library, not about
+    #     what is available.**"*
+    #
+    # ⚑ AND THE PURGE VINDICATES IT RATHER THAN REVERSING IT.  Because the view bodies
+    # were CONSTRUCTS and not text, removing the views was a deletion — the `select()`
+    # objects were already the definition and every consumer now composes them.  Had they
+    # been the SQL strings of the first cut, this change would have been a rewrite of six
+    # hand-maintained statements with nothing able to check the result.
+    #
+    # ⚑ THE DEPENDENCY IS STILL INSTALLED IN THE VENV (0.3.2) and is left there: removing
+    # a package is `uv sync`'s job at the next reconcile, and this file is the declaration
+    # of what is WANTED — the distinction that `requirements.txt` losing SQLAlchemy proved
+    # is load-bearing in the other direction.
+    # ⚑⚑ THE GPU BACKEND, AND IT WAS THE REASON A GATE COULD NOT RUN.  `scripts/
+    # check_scratch_runtime.py` (Λ8b — the RUNTIME complement to Λ8's static scan) opens
+    # with an `import cupy` probe and, on ImportError, prints `SKIPPED (no cupy/GPU)` and
+    # **exits 0**.  MEASURED 2026-08-26: that made it INERT — a declared Phase A gate that
+    # always passed WITHOUT EXECUTING, so its whole coverage property (`uncovered_roots`,
+    # `--strict`) was unit-proven and never once observed in situ.
+    #
+    # ⚑ A GATE THAT SELF-SKIPS TO EXIT 0 IS WORSE THAN A RED ONE: the roster counts it
+    # green, and non-execution is indistinguishable from a clean pass — the
+    # `census-green-is-a-fact-about-the-census` shape, in a gate.  The dependency being
+    # ABSENT was doing the work an exemption would have done, with nothing recording it.
+    #
+    # ⚑ WHEEL CHOICE IS NOT COSMETIC.  cupy ships CUDA-version-specific wheels; installing
+    # the wrong one yields a package that IMPORTS and then fails at call time — which would
+    # have been a WORSE fail-open than the skip, since Λ8b would start running against a
+    # broken backend and report on it.  Was pinned to `cuda12x` against the measured host
+    # (RTX 4050, driver 580.173.02 → CUDA 12.x).  On a machine with a different CUDA major,
+    # this is the line to change, and Λ8b's skip is the symptom that says so.
+    # ⚑ AND THE MACHINE CHANGED (a-host-move-is-a-checker-change): re-measured 2026-09-22,
+    # `nvidia-smi` → RTX 3070 Ti, driver 615.71.09 → CUDA 13.x (operator: "this box runs on
+    # cuda13"). The 12x wheel was the import-then-fail case this note warns about.
+    "cupy-cuda13x",
+    # ⚑⚑ THE STORE'S CREDENTIAL SOURCE (operator, 2026-08-26: *"keyring, for now; openbao
+    # isn't up yet"*).  `jea/metalanguage/store.py` holds a credential SOURCE rather than a
+    # password — a callable read at connect time — because A197 migrates this store to
+    # OpenBao-issued SHORT-LIVED credentials, and a value captured at import expires while
+    # the process holds it.  This is the interim inhabitant of that seam.
+    #
+    # ⚑ A197 DOES NOT RETIRE THIS DEPENDENCY, WHICH IS WHY IT IS DECLARED RATHER THAN
+    # SIDE-INSTALLED.  Authenticating to a vault needs its own credential — longer-lived than
+    # the pg password, granting everything the vault holds, and by construction NOT fetchable
+    # from the vault.  The pg password becomes ephemeral; the bootstrap secret does not, and
+    # it needs exactly this home.  "Wait for OpenBao and the credential question goes away"
+    # is false: the question moves and gets sharper.
+    #
+    # ⚑ VERIFIED WORKING, NOT MERELY RESOLVABLE (2026-08-26).  `--list-backends` reports
+    # SecretService at priority 5, and `keyring get` exits 1 WITH NO MESSAGE for both "no such
+    # key" and "backend refused" — the ABSENT-vs-BROKEN collapse, in the tool itself.  A
+    # library-level round trip separated them: the read reached SecretService and returned
+    # ABSENT.  A backend that LISTS is not a backend that WORKS, and the CLI cannot tell you
+    # which you have.
+    "keyring",
+    "salt>=3008.2",
+    # ⚑⚑ THE WARRANT GRAMMAR HAS ONE OWNER AND IT IS THIS ENGINE (⟡items-n-split).
+    # `catalog/library/items.py` reads the worklist warrants through `paperkit.bib.parse`,
+    # and its own comment records why a local re-derivation is not an option: a hand-rolled
+    # regex here was a FOURTH copy of a grammar whose owner had already consolidated three
+    # disagreeing parsers, and because that copy was not the engine's, the malformations it
+    # tested for were not the ones the sandbox produces — so a gate graded itself breaking
+    # rather than anything about the bib.
+    #
+    # ⚑⚑⚑ IT IS DECLARED BECAUSE THE ALTERNATIVE WAS `sys.path` SURGERY, WHICH IS THE
+    # `pygit2` SHAPE ONE ENTRY UP WITH THE VOLUME TURNED UP (operator, 2026-08-31: *"NOO.
+    # No sys.path modification."*). The prior code searched `$PAPERKIT` then
+    # `~/github/paperkit`, inserted the hit onto `sys.path`, and imported inside a function
+    # — making the import work by rearranging the interpreter's search state instead of
+    # declaring a dependency. paperkit is a real distribution (`packages = ["paperkit",
+    # "tools"]`, two console scripts); reaching into its checkout was never the supported
+    # route, and an editable install is what its packaging exists to provide.
+    #
+    # ⚑⚑⚑ AND THE BARE NAME WAS NOT A DECLARATION — IT WAS AN INSTRUCTION NOBODY SHIPPED
+    # (Ⓝ122b ⟡the-paperkit-dependency). `paperkit` is not on PyPI, so a bare name sends the
+    # resolver to an index that has never heard of it and the install dies with
+    # `No solution found` naming the WRONG CAUSE: the package reads as nonexistent when it is
+    # merely unaddressed. The order that makes it work — install paperkit first — lived only
+    # in what the operator tells clients by hand, which is the *parked where the reader must
+    # already know to look* shape this repo records repeatedly. A precondition carried in
+    # speech is re-granted every time and nothing can check it.
+    #
+    # ⚑⚑ MEASURED, NOT ASSUMED: `paperkit` appears in NO entry of this project's `uv.lock`
+    # (109 packages, probed 2026-09-02) despite being declared here since 2026-08-31. A hard
+    # dependency the lock does not carry is a declaration the resolver never satisfied — the
+    # gap was observable in the lockfile the whole time and nothing read it.
+    #
+    # ⚑⚑⚑ SO THE FIX IS A PEP 508 DIRECT REFERENCE, AND THE SPELLING IS LOAD-BEARING RATHER
+    # THAN COSMETIC. `[tool.uv.sources]` expresses the same edge and is IGNORED BY `pip`: it is
+    # uv's own extension, read when uv resolves THIS project and dropped from the metadata of
+    # any wheel built from it. Adopters install this tree as a distribution (that is what
+    # `substrate/install_freshness.py` reads `direct_url.json` to verify), so the requirement
+    # has to survive INTO the built metadata or the adopter inherits the bare-name failure this
+    # entry exists to retire. A direct reference is `Requires-Dist` in the wheel, honored by
+    # `pip` and `uv` alike.
+    #
+    # ⚑ THE URL IS THE REMOTE'S OWN, READ FROM `git remote -v` RATHER THAN GUESSED, and the
+    # branch is pinned to the one paperkit actually publishes (`main`). ⚑ NO LOCAL PATH: an
+    # absolute `~/github/paperkit` would resolve only on this machine and break for any adopter
+    # whose checkout lives elsewhere — the same not-portable defect as the `sys.path` search,
+    # relocated into the manifest where it would look official.
+    #
+    # ⚑ WHAT THIS COSTS, STATED: resolving it requires NETWORK, and a git fetch specifically —
+    # an offline install fails here where a PyPI name might have been cached. That is a real
+    # property of depending on an unpublished distribution, not a defect of this spelling; the
+    # alternative spellings are unaddressed (bare name) or unportable (local path).
+    "paperkit @ git+https://github.com/mikemol/paperkit.git@main",
+    # ⚑⚑⚑ THE MARKDOWN READER, AND DECLARING IT IS THE FIRST STEP OF RETIRING SUBSTRATE'S OWN
+    # COPY (⟡purge-mdstruct, operator: substrate stops holding mdstruct). `scratch/mdstruct.py`
+    # and the thirteen `substrate/md_*` modules are a second implementation of a capability
+    # mtools now owns, and TWO COPIES DRIFT INDEPENDENTLY BY CONSTRUCTION — each fix lands in
+    # whichever copy its author is standing in.
+    #
+    # ⚑⚑ MEASURED, NOT ARGUED: the two `spans.py` files carry the SAME docstring paragraph and
+    # diverge at one loop. Substrate fixed heading-matching for inline MARKUP; mtools
+    # generalised it to rendered-vs-rendered, which also covers a codepoint pandoc REWRITES.
+    # Reproduced here — `mdstruct --spans` returns 0 sections for a heading containing an
+    # apostrophe while `--budget` lists that same heading, and the section before it silently
+    # swallows the one that vanished (gate-G297). Neither tree knew the other had moved; the
+    # cost landed on a THIRD repo holding both readers and never asking them one question.
+    #
+    # ⚑ THE SUBDIRECTORY IS PART OF THE REFERENCE. mtools is a monorepo and this distribution
+    # lives under `mdstruct/`; without the fragment the resolver reads the repository root and
+    # finds no project. ⚑ The URL comes from `git remote -v` and the branch from
+    # `git branch --show-current` in that tree, read rather than guessed — the same discipline
+    # the paperkit entry above records, for the same reason.
+    # ⚑⚑ `@main`, BY OPERATOR RULING (2026-09-22, relayed by linux-sources): linux-sources takes this
+    # tree as a PATH dependency, so its uv reads this line, and a sha here against its `@main`
+    # failed `uv lock --check` there with "conflicting URLs for mikemol-mdstruct". A manifest a peer
+    # resolves is a shared declaration, so the spelling follows the consumers, not this tree alone.
+    # ⚑ THE COST IS KNOWN: two `@main` subdirectory specs from one repo collapse to one resolved
+    # commit here (see mikemol-hooks below), so which commit this installs must be READ from
+    # `.venv/…/mikemol_mdstruct-*.dist-info/direct_url.json` after a sync, never assumed.
+    "mikemol-mdstruct @ git+https://github.com/mikemol/mtools.git@03749d56d55741840da13d86533e7e8d698e3be8#subdirectory=mdstruct",
+    # ⚑⚑ THE RUNNER FOR `tests/`, AND IT IS DECLARED BECAUSE THE ALTERNATIVE WAS A DOCSTRING.
+    # `unittest` is stdlib and needed no entry, which is exactly why nothing here recorded
+    # what runs the suites; the moment the runner stops being stdlib, a manifest that stays
+    # silent turns "run the tests" into an incantation the operator re-grants every time —
+    # the shape the `libcst`/`panflute`/`sympy` notes above each record from the other side.
+    #
+    # ⚑ IT BACKS A PRE-COMMIT GATE (`.githooks/pre-commit`, `run "tool unit tests"`), so it
+    # is not developer convenience: an absent pytest makes that gate a `ModuleNotFoundError`,
+    # which is the red-gate-that-is-a-missing-package misreading the SQLAlchemy entry names.
+    #
+    # ⚑ WHAT IT REPLACES IS NOT ONLY A RUNNER. `tests/__init__.py` inserted `scratch/` and
+    # `scripts/` onto `sys.path` so a bare `import agda_lex` would resolve; pytest's
+    # rootdir+conftest mechanism supplies that reach declaratively (`conftest.py`,
+    # `[tool.pytest.ini_options] pythonpath`), which is what retires the injection the
+    # operator refused outright (2026-08-31: *"NOO. No sys.path modification."*).
+    "pytest",
+    # ⚑⚑ THE FIRST TWIN SWAPPED FOR ITS mtools WHEEL (W25, 2026-09-22). substrate's
+    # `scripts/hook_*.py` are twins of this package; the operator ruled substrate defers to
+    # mtools' copies. A PEP 508 direct reference like `mikemol-mdstruct` below, NOT a
+    # `[tool.uv.sources]` entry: uv wrote that form, and it is uv-only and dropped from wheel
+    # metadata, so a downstream consumer would see a bare name no index carries.
+    # ⚑ ITS FIRST ADD FAILED, ON THE PACKAGE: `ruff==0.16.6` was an exact RUNTIME pin against our
+    # `ruff>=0.16.8`. mtools moved the exact pin to its dev group (main at 0e11722). And `@main`
+    # alone kept resolving the OLD metadata: uv reuses the commit it already locked for this repo
+    # URL (mdstruct's), so the first add was made by explicit commit, then re-spelled `@main` here.
+    # ⚑⚑ AND `@main` IS NOT A SPELLING THIS REPO CAN HOLD (2026-09-22, retired-verdict at e9f220a).
+    # `uv lock --upgrade-package` and `--refresh-package` both kept 536442d while `git ls-remote`
+    # read e9f220a; pinning the sha installed e9f220a; re-spelling `@main` then REINSTALLED
+    # 536442d — uv resolves `@main` for this repo URL to the commit mikemol-mdstruct is locked at.
+    # So the pin is the declaration: a bump is editing this sha to `git ls-remote … main`.
+    # ⚑ ONE SHA FOR EVERY mtools PACKAGE: uv resolves one commit per repo URL (above), so a second
+    # package at a different sha would fight this one. Bumped together to 45c8d35 (2026-09-25),
+    # which completes row 6: mikemol-ledger (the findings ledger's readers and CLI).
+    "mikemol-hooks @ git+https://github.com/mikemol/mtools.git@03749d56d55741840da13d86533e7e8d698e3be8#subdirectory=hooks",
+    # The runners' GIT_* scrub (`mikemol.fence.git_env.clean_env`); its decoy-repo negative control
+    # is mtools' fence/tests/test_git_env.py, which replaced substrate's manual measurement.
+    "mikemol-fence @ git+https://github.com/mikemol/mtools.git@03749d56d55741840da13d86533e7e8d698e3be8#subdirectory=fence",
+    # The transcript reader, replacing scratch/transcriptstruct.py (handed over 2026-09-23). The
+    # scratch tmi_* tools still import the old module; their port is waypoint W33.
+    "mikemol-transcriptstruct @ git+https://github.com/mikemol/mtools.git@03749d56d55741840da13d86533e7e8d698e3be8#subdirectory=transcriptstruct",
+    # corpus / tree_root / import_edges / suite_discovery / suite_pragmas, promoted from substrate/
+    # (row 2). No ROOT: every walker takes the tree as a required `root=`. `promoted` stays here.
+    "mikemol-corpus @ git+https://github.com/mikemol/mtools.git@03749d56d55741840da13d86533e7e8d698e3be8#subdirectory=corpus",
+    # witness_row / witness_family / raw_bib / warrant_integrity / warrant_bib, promoted (row 3 +
+    # the N-d witness half). The paperkit-facing half (warrant_records.records, engine_grades,
+    # engine_edges) stays here until paperkit's typed accessors land (its W38).
+    "mikemol-witness @ git+https://github.com/mikemol/mtools.git@03749d56d55741840da13d86533e7e8d698e3be8#subdirectory=witness",
+    # ratchet_render → `mikemol.ratchet.render` (row 4). A console-script gate DECLARES its program
+    # name (`Report.prog`) to keep the --list pointer; substrate's env-switch wording goes in
+    # `Report.mint_bypass` until the gates move off SUBSTRATE_RATCHET_WRITE.
+    "mikemol-ratchet @ git+https://github.com/mikemol/mtools.git@03749d56d55741840da13d86533e7e8d698e3be8#subdirectory=ratchet",
+    # substrate/finding_* → `mikemol.ledger.finding_*` (row 6). No ROOT/LEDGER: the tree, the ledger
+    # path, the bib lister and the runner are passed explicitly; the census takes OUR kind order.
+    # Our differential arms against .claude/agents/findings.py stay here and certify the readers.
+    "mikemol-ledger @ git+https://github.com/mikemol/mtools.git@03749d56d55741840da13d86533e7e8d698e3be8#subdirectory=ledger",
+    # ⚑ THE PATHS-FORWARD LOOP'S OWN READER/WRITER (nemik AdoptionShape, 2026-10-01). This repo's
+    # loop was invoked via `/home/mikemol/github/nemik/.venv/bin/mikemol-paths-forward` -- a sibling
+    # repo's venv binary, named by an absolute path nothing here declares. nemik-check flags that
+    # as the queue's writer not being this repo's OWN dependency: any adopter cloning substrate
+    # would have a queue nothing in its own tree can read or write. Pinned to the SAME sha as every
+    # other mtools package above, for the reason stated at mikemol-hooks: uv resolves one commit
+    # per repo URL, so a second sha here would fight that one.
+    "mikemol-pathsforward @ git+https://github.com/mikemol/mtools.git@03749d56d55741840da13d86533e7e8d698e3be8#subdirectory=pathsforward",
+]
+
+# ⚑⚑⚑ THE INTERPRETER IS A PER-INVOCATION FACT THAT WAS BEING RESOLVED AMBIENTLY, AND IT
+# SILENTLY VOIDED CENSUSES.  MEASURED 2026-08-26: under `/usr/bin/python3` (3.14) every
+# `pycodemod` mode reports `AttributeError — unparseable` for EVERY file in the corpus, and
+# `--source` renders that as a bare `0 definition(s)` **with no warning**.  The venv holds
+# 3.13.11, where the same commands answer correctly.  So two invocations of one tool, on one
+# machine, in one session, disagree — and the wrong one looks like a clean empty result.
+#
+# ⚑ THAT IS THE SAME CLASS AS THE WRONG-TENANT READ AND THE WRONG-ROOT `WorkingTree()`:
+# a fact about the INVOCATION, resolved by ambient discovery, whose wrong value is SILENT.
+# `uv python find` already resolved to `.venv` here — but that is ambient discovery
+# HAPPENING to work, not configuration.  Pinning it makes the resolution a declaration.
+
+# ⚑⚑ THE SHELLCHECK WAIVER TABLE THAT USED TO LIVE HERE WAS REMOVED 2026-10-02.
+# mtools carries NO WAIVERS (operator ruling 2026-09-26); the hook refuses any tree that
+# still declares [tool.mikemol-hooks.shellcheck]. The three former entries (SC2329 trap
+# handlers, SC2016 single quotes in a code generator, SC1091 a sourced-on-stdin script)
+# are reported to mtools as checker-defect candidates rather than waived here.
+
+[tool.uv]
+# The project venv is the only interpreter these tools are measured against.
+environments = ["sys_platform == 'linux'"]
+# ⚑⚑ THE PROJECT IS A PACKAGE, AND uv DID NOT KNOW IT. With no `[build-system]` table uv locks
+# the root as `source = { virtual = "." }`, so every `uv sync` UNINSTALLED `substrate-tooling`
+# — measured twice 2026-09-21/22: `from substrate import md_spans` then failed with
+# ModuleNotFoundError until a hand `uv pip install -e .`. `[tool.setuptools] packages` below
+# says what the package IS; this line says that it IS one.
+package = true
+
+# ⚑⚑⚑ THIS BLOCK IS WHAT RETIRES `tests/__init__.py`'s `sys.path` INSERT. That file
+# computed the repo root from its own `__file__` and pushed `scratch/` and `scripts/`
+# onto `sys.path` so a bare `import agda_lex` would resolve from any cwd. The reach was
+# real and still needed — `stubs/agda_lex.pyi` and `stubs/gen_build_makefiles.pyi` are
+# keyed on the BARE module name, so a `scratch.agda_lex` spelling bypasses the stub and
+# drags mypy into untyped source — but a runtime path mutation is an import that nothing
+# can check, resolved against whatever the process happens to hold.
+#
+# ⚑ `pythonpath` IS THE SAME REACH AS A DECLARATION. pytest resolves these against the
+# ROOTDIR (this file's directory, because this file declares the config), so the
+# cwd-independence `tests/__init__.py`'s docstring argued for is preserved — and it is
+# now a line a reader can check rather than code that runs.
+#
+# ⚑ `testpaths` NAMES ONLY `tests/`, AND THAT SCOPE IS DELIBERATE. The ~300
+# `*_selftest.py` suites are NOT pytest suites: four of them carry capabilities with no
+# pytest analogue (a denominator ratchet, a cross-process mutex, a membudget lease, a
+# dependency supplier), each needing a plugin written and proven first. A bare `pytest`
+# that wandered into them would collect and fail on machinery it does not implement.
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["scratch", "scripts", "tests", "."]
+
+# ⚑⚑⚑ THE BAR `hook_pycheck` ENFORCES, AND UNTIL NOW IT DID NOT EXIST. That hook reads
+# CLEAN on itself — and it did so against TOOL DEFAULTS, because this file declared no
+# `[tool.mypy]` and no `[tool.ruff]` at all. **A checker pointed at no config is a
+# checker that agrees with you**, and a gate whose bar is unstated cannot be failed by
+# anything. The hook's own docstring argues this shape is the defect; it was living
+# inside it.
+#
+# ⚑⚑ ADOPTED FROM linux-sources' MEASURED CONFIG (2026-08-28), NOT INVENTED. They run
+# it over a decomposed corpus with exactly ONE `# type: ignore` in the tree, gated by a
+# sole-holder arm. Asking them rather than writing my own is the reuse-search this repo
+# keeps failing: substrate already OWNED the hook mechanism and I asked two peers how to
+# build it. The ruleset is theirs; only the file-set scoping below is ours.
+[tool.mypy]
+strict = true
+extra_checks = true
+strict_equality = true
+disallow_any_decorated = true
+disallow_any_explicit = true
+# ⚑ `disallow_any_expr` IS THE FLAG THAT DOES THE WORK, and it is why this config bites
+# where a nominally-strict one would not. It makes every untyped-boundary result POISON
+# every downstream expression, which forces narrowing AT THE EDGE rather than carrying
+# `Any` inward. Without it a corpus can be "typed on paper and Any in fact".
+#
+# ⚑⚑ AND IT IS WHAT MAKES THE numpy EXCEPTION NECESSARY RATHER THAN OPTIONAL. numpy
+# SHIPS stubs; those stubs thread `Any` through their DTYPE generics, so an arithmetic
+# or indexing expression on an `ndarray` is flagged. `cast()` does not rescue it — the
+# `Any` in the cast's argument is flagged before the cast concretises it. THE RULE:
+# **stub an untyped dep (that ADDS types); ignore a typed dep whose types contain `Any`
+# at a boundary walled by a concrete return.** Shadowing numpy's own stubs would mean
+# maintaining a fork of its typing surface that drifts every release.
+disallow_any_expr = true
+python_version = "3.13"
+# ⚑ AN IGNORE MUST BE BOTH CODED AND STILL LOAD-BEARING. `warn_unused_ignores` makes a
+# suppression on a line the checker now types precisely into an ERROR — so the ignore
+# set is exactly the flagged lines and no more, and it self-corrects when a dependency's
+# stubs improve. Without this, a waiver outlives its reason silently, which is the
+# `[[tool.mypy.overrides]]` rot one granularity down.
+warn_unused_ignores = true
+warn_unreachable = true
+enable_error_code = ["ignore-without-code", "redundant-expr", "truthy-bool"]
+# ⚑⚑⚑ NO `[[tool.mypy.overrides]]` SECTION, DELIBERATELY — this is where a bar like this
+# rots. One module gets exempted, the exemption outlives its reason, and the next reader
+# cannot tell a carve-out from an abandonment. If something cannot be typed, that is a
+# FINDING ABOUT THE DESIGN, not a category of code. Relief lives on the ENUMERABLE side
+# (the sole-holder arm), never on the unenumerable one.
+#
+# ⚑ AND THE SCOPE IS THE MIGRATION'S FRONTIER, NOT THE TREE. `files` names what is
+# ADMITTED, so the gate quantifies over a finite growing set each member of which is
+# clean by construction — rather than over the legacy corpus, which is large, dirty and
+# unbounded. That is the whitelist-over-an-enumerable-domain move; a blacklist here
+# would be an exclusion list that goes green by accretion and never reaches DONE.
+# ⚑ `scratch/` IS ABSENT BY DESIGN: residence there IS the not-yet-promoted status.
+files = ["substrate"]
+# ⚑⚑ STUBS ARE HOW A PROMOTED MODULE REACHES AN AUTHORITY THAT IS NOT YET A PACKAGE, and
+# missing this cost a duplicated roster. `substrate/promote_agree.py` restated
+# `check_scratch_independence.ROOTS` as a hardcoded prefix tuple, justified by a comment
+# claiming the authority "cannot be imported" — true of the IMPLEMENTATION (reaching a module
+# outside a package yields `Any`, which `disallow_any_expr` then propagates) and FALSE as a
+# conclusion. A `.pyi` supplies signatures independently of packaging.
+#
+# ⚑ SEVEN SPELLINGS WERE TRIED TO LAUNDER THAT `Any` BEFORE THE RIGHT QUESTION WAS ASKED —
+# plain import, a `Callable`-returning helper, `isinstance` narrowing, the reach confined to
+# `__main__`, `importlib` + defaulted `getattr`, `vars().get`, and relocating the file into
+# `scratch/` (refused: the gate applies to every NEW file regardless of directory). Each asked
+# *how do I hide this `Any`*. The answer was to DECLARE THE TYPE — which the rule four
+# paragraphs up already states: **stub an untyped dep (that ADDS types)**. The rule was in
+# this file and the defect was written anyway.
+#
+# ⚑⚑ AND A STUB IS AN UNCHECKED CLAIM — `stubtest` is not wired, so nothing verifies a stub
+# still matches its module. That is strictly better than a copied roster (one authority, one
+# spelling) and strictly weaker than a real import. VERIFIED at adoption by a positive control
+# under `--strict`: `good: list[str] = ROOTS` types, `bad: int = ROOTS` ERRORS with the real
+# type rather than passing as `Any` — a stub that is never found is otherwise
+# indistinguishable from one that works. ⟡stub-authority is the gate this owes.
+mypy_path = "stubs"
+# ⚑⚑⚑ `scripts/hook_pycheck.py` WAS IN THIS LIST FOR ONE RUN AND HAD TO COME OUT, AND
+# THE REASON IS THE MIGRATION'S CENTRAL CONSTRAINT RATHER THAN A CONCESSION. `files`
+# does not bound what mypy CHECKS — mypy FOLLOWS IMPORTS. Naming the hook pulled in
+# `hook_shellcheck` → `hook_no_chaining` → `hook_cmdparse`, three unannotated modules,
+# and the run reported hundreds of `Expression has type "Any"` rows belonging to files
+# nobody had promoted. **A file is only checkable to this bar once its import closure
+# is**, so the admitted set must be closed under imports or it is not a set at all.
+#
+# ⚑⚑ WHICH IS WHY THE HOOK CANNOT BE THE FIRST THING GATED, THOUGH IT IS THE THING
+# DOING THE GATING. It imports the sibling to reuse `_post_edit_content` rather than
+# restate it — the right call, and it makes the hook's own admission wait on three
+# other modules. It re-enters this list when they do.
+#
+# ⚑ AND `substrate` IS EMPTY OF MODULES TODAY, SO THIS GATE CURRENTLY MEASURES NOTHING.
+# That is honest and it is the correct starting state: the frontier is empty because no
+# module has been promoted yet, not because the bar is weak. A gate over an empty
+# admitted set reports zero and asserts zero — as against the ABSENT-baseline ratchet
+# in this same repo, which reports zero while asserting PASS over 116 measured errors.
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+
+[tool.ruff.lint]
+# ⚑ EVERY RULE. A curated subset silently omits whole families and nothing says which —
+# the reader cannot distinguish "we considered EXE001 and declined it" from "we never
+# knew it existed". `ALL` makes every omission an explicit, dated entry below.
+select = ["ALL"]
+# ⚑ ruff's OWN MUTUALLY-EXCLUSIVE PAIRS, plus ONE policy rule that is not about code.
+# The pairs are not judgement calls — each cannot both be satisfied, so ruff requires
+# picking one.
+#
+# ⚑⚑ CPY001 IS THE ONE ENTRY THAT IS NOT A PAIR, AND IT IS HERE BECAUSE IT ASKS A
+# QUESTION THIS REPO HAS NOT ANSWERED. It checks for a LICENSE HEADER in every file —
+# a licensing policy, not a code property. Measured 2026-08-30: this repo has no
+# LICENSE file, no COPYING file, and no header in any of its ~840 python files, so
+# CPY001 fires on EVERY file regardless of what the code does. Satisfying it means
+# stamping a notice the operator has not chosen onto the whole tree; that is a
+# licensing decision, and a linter must not be the thing that makes it.
+#
+# ⚑ THIS IS A DEFERRAL WITH A NAMED OWNER, NOT A SUPPRESSION. The moment a LICENSE is
+# adopted, set `lint.flake8-copyright.notice-rgx` to match it and DELETE this entry —
+# at which point CPY001 becomes a real gate asserting every file carries the chosen
+# notice. Until then it would refuse every edit in the repo while proving nothing.
+ignore = ["D203", "D213", "COM812", "CPY001"]
+
+[tool.ruff.lint.per-file-ignores]
+# ⚑ `assert` IS THE SELFTEST IDIOM AND `-O` NEVER RUNS THESE. S101 bans `assert` because
+# it vanishes under `-O`; a gate invoked by the harness or a probe is never run that way.
+# ⚑⚑ AND THE EXEMPTION IS NARROWER THAN IT LOOKS BECAUSE OF WHAT gcalculus MEASURED
+# TODAY: their evidence base is 2,868 asserts across 88 import-only modules, and `-O`
+# deletes all of it. Substrate's suites happen to use explicit comparison instead — ONE
+# file verified, not the tree (⟡assert-census owed). This exemption is safe for gates
+# and would NOT be safe as a blanket, which is why it is scoped to a path.
+"scripts/*" = ["S101"]
+
+# ⚑ `jea/metalanguage/` IS A DELIBERATE NAMESPACE PACKAGE — no `__init__.py` anywhere
+# under `jea/`, and every module there resolves its siblings via `sys.path` rather than
+# dotted imports (`from schema_decl import *`, not `from jea.metalanguage import
+# schema_decl`). INP001 flags that shape on every file in the directory; it is a
+# property of the DIRECTORY's import convention, not a per-file omission, so it is
+# scoped here the same way the invocation-shaped S101 exemption above is — a glob
+# rather than a per-file list that would have to grow with every new module.
+"jea/metalanguage/*" = ["INP001"]
+
+# ⚑ `schema_modes.py` MUST IMPORT `climode` AFTER PUTTING `scripts/` ON `sys.path` —
+# the import cannot be hoisted above that `sys.path.insert` call, which is what E402
+# flags. The sibling `lifecycle.py` carries the same shape with a line `# noqa: E402`;
+# this file's own zero-tolerance bar (the per-edit gate this module was extracted to
+# satisfy) forbids a line-scoped suppression, so the relief moves here instead.
+"jea/metalanguage/schema_modes.py" = ["E402"]
+
+# ⚑ `schema_probe.py`'s `probe()` DEFERS `import store` INSIDE THE `con is None` BRANCH,
+# WHICH IS WHAT PLC0415 FLAGS — not a cycle (measured: `store` imports neither `schema_probe`
+# nor any `schema_*` sibling), but a deliberate lazy load carried over verbatim from
+# `schema.py`, where every other `store`/`reconstruct`/`lifecycle`/`query_builders` import in
+# the same dispatch-shaped code is deferred the same way. Zero-tolerance forbids a
+# line-scoped `# noqa`, so the relief moves here, same shape as the E402 entry above.
+"jea/metalanguage/schema_probe.py" = ["PLC0415"]
+
+# ⚑ `gate_status_exec.py` IS THE ONE MODULE OF THE `gate_status` FAMILY THAT STARTS A PROCESS
+# (W330, W334): every other module takes an injected `Runner`, so the suite never starts a gate or a
+# lease. S603 flags `subprocess` with a non-literal argv; here the argv is a shell fragment parsed
+# from the repo's own pre-commit hook or a vector built from a declared roster, never operator
+# input. The relief is per RESPONSIBILITY (one file), same shape as the entries above, instead of
+# the asyncio detour the first cut used to avoid it.
+"substrate/gate_status_exec.py" = ["S603"]
+
+# ⚑ `schema_establish.py` IS A CLI DISPATCH BODY, NOT A LIBRARY FUNCTION — its whole job
+# is terminal output (the plan under a dry run, the CREATED/present/ABSENT report under
+# --apply), which is exactly what T201 exists to flag everywhere else. `schema.py`'s own
+# `__main__` block prints the same way at every other dispatch site; this is the first
+# EXTRACTED arm to carry that shape into a file held to the zero-tolerance bar, so the
+# relief is scoped here rather than silencing T201 tree-wide.
+"jea/metalanguage/schema_establish.py" = ["T201"]
+
+# ⚑ THE SAME WARRANT, THIRD EXTRACTED ARM — not a new exemption. `schema_transport.py`
+# is a CLI dispatch body the same way `schema_establish.py` is: its whole job is
+# printing `transport_report()`'s key/value pairs to the terminal, which is exactly
+# what T201 exists to flag everywhere else. `schema.py`'s own `__main__` block prints
+# the same way at every other dispatch site; the relief is scoped to this file rather
+# than silencing T201 tree-wide.
+"jea/metalanguage/schema_transport.py" = ["T201"]
+
+# ⚑ THE SAME WARRANT, FOURTH EXTRACTED ARM. `schema_flush.py` is a CLI dispatch body
+# the same way `schema_establish.py` is (its own idempotent twin): its whole job is
+# printing the plan under a dry run and the RAN/step-count report under --apply, which
+# is exactly what T201 exists to flag everywhere else. The relief is scoped to this
+# file rather than silencing T201 tree-wide.
+"jea/metalanguage/schema_flush.py" = ["T201"]
+
+# ⚑ THE SAME WARRANT, FIFTH EXTRACTED ARM. `schema_reclaim.py` is a CLI dispatch body
+# the same way `schema_flush.py` is: its whole job is printing the
+# floor/obs/edge/events/why verdict lines `--reclaim` has always printed, which is
+# exactly what T201 exists to flag everywhere else. The relief is scoped to this file
+# rather than silencing T201 tree-wide.
+"jea/metalanguage/schema_reclaim.py" = ["T201"]
+
+# ⚑ THE SAME WARRANT, SIXTH EXTRACTED ARM. `schema_reclaim_core.py` is a CLI dispatch
+# body the same way `schema_reclaim.py` is (its per-core, make-driven twin): its whole
+# job is printing the licensed/obs/edge/why verdict lines `--reclaim-core` has always
+# printed, which is exactly what T201 exists to flag everywhere else. The relief is
+# scoped to this file rather than silencing T201 tree-wide.
+"jea/metalanguage/schema_reclaim_core.py" = ["T201"]
+
+# ⚑ THE SAME WARRANT, SEVENTH EXTRACTED ARM. `schema_plan.py` is a CLI dispatch body
+# the same way `schema_reclaim_core.py` is: its whole job is printing the live
+# `EXPLAIN` plan lines (or the ESTIMATES footer) `--plan` has always printed, which is
+# exactly what T201 exists to flag everywhere else. The relief is scoped to this file
+# rather than silencing T201 tree-wide.
+"jea/metalanguage/schema_plan.py" = ["T201"]
+
+# ⚑ THE SAME WARRANT, REACHING ITS SECOND POPULATION — not a new exemption. The entry
+# above turns on HOW the code is INVOKED, not on what any one file does: S101 bans
+# `assert` because `-O` deletes it, and a gate the harness runs is never run under `-O`.
+# A test suite is not either — `python3 -m pytest` is what the
+# pre-commit gate runs, and neither it nor the harness passes `-O`. That is a property
+# of the directory's invocation, which is why this is a glob rather than a per-file list:
+# a per-file spelling would have to be extended by hand for every suite added, and would
+# read as a judgement about the file when the fact is about the runner.
+#
+# ⚑⚑ AND THIS IS THE FIRST ENTRY WHOSE EXEMPTION WILL ACTUALLY BE EXERCISED AT SCALE,
+# which changes what the caveat above means here. The `scripts/*` entry is written as
+# safe-BECAUSE-CURRENTLY-UNUSED: substrate's suites happen to use explicit comparison,
+# ONE file verified rather than the tree (⟡assert-census still owed). Under a pytest
+# migration `assert` is not an accident that might appear — it is the idiom, written
+# into `tests/` deliberately and everywhere. So the "would NOT be safe as a blanket"
+# reasoning is doing real work at this path, and the thing keeping it safe is the
+# never-under-`-O` invocation, NOT the low count.
+#
+# ⚑ WHAT IT DOES NOT GRANT. Only S101, and only under `tests/`. It says nothing about
+# how a test states its expectation: PT009 (unittest-style `self.assertEqual`) stays
+# ARMED here, so the pair is resolved in exactly one direction — bare `assert` admitted,
+# `self.assertEqual` in a new file still refused. It also does not reach `substrate/` or
+# any module a suite imports; an `assert` in library code remains a finding, which is
+# the distinction the invocation warrant rests on.
+"tests/*" = ["S101"]
+
+# ⚑⚑ S603 IS SCOPED TO ONE SINGLE-RESPONSIBILITY FILE, AND THAT SCOPE IS THE WHOLE
+# POINT. `pycheck_verdict.py` exists to be the pycheck hook's SOLE subprocess caller;
+# the exemption is honest there because the file has exactly one reason to change.
+# An earlier cut of this entry read `"scripts/hook_*.py"`, which granted the exemption
+# to five hooks in order to cover one function — the blast radius the operator's rule
+# is about: *we don't do line-scoped overrides; we get per-RESPONSIBILITY overrides.*
+#
+# ⚑ THE DECOMPOSITION IS THE PRECONDITION, NOT A CONSEQUENCE. Before the split there
+# was no file this entry could name without over-granting, which is why the `noqa` sat
+# on the line for a day: with a monolith the only reachable spellings were per-line
+# (banned) or per-monolith (over-broad). Splitting created the honest target.
+#
+# ⚑⚑ AND IT ONLY REACHES THE HOOK'S OWN LINTING BECAUSE OF `--stdin-filename`. The
+# hook lints post-edit content through a TEMPFILE, so ruff would see `tmpab12cd.py`
+# and match no path pattern here — a path-keyed exemption cannot reach a temp copy.
+# `pycheck_checkers.py` passes the author's real path, which is what makes every
+# entry in this block apply to an in-flight edit as it does to a file on disk.
+#
+# ⚑ S603 IS NOT ASKING FOR `shell=True` — that is S602's subject, and it would trade a
+# lint finding for a REAL injection vector. The rule self-describes as prone to false
+# positives because it cannot see whether the argv was validated. There it is: every
+# element is a module constant or a `mkstemp` path the hook created, and the untrusted
+# payload becomes the tempfile's CONTENTS — data the checker reads — never a word in
+# the command.
+"scripts/pycheck_verdict.py" = ["S603"]
+
+# ⚑ SAME RULING, SECOND SINGLE-RESPONSIBILITY FILE. `fix_exe_bit.py` exists to run ruff
+# and reconcile a mode bit; its one subprocess call has the same argv provenance as the
+# entry above (module constants and a derived project path, no user input). It is listed
+# separately rather than as a `scripts/*` glob because the exemption is granted to a
+# RESPONSIBILITY, and a glob would grant it to every future script in the directory.
+"scripts/fix_exe_bit.py" = ["S603"]
+
+# ⚑⚑ THIRD SUBPROCESS BOUNDARY, AND THIS ONE IS ADOPTED BY THREE PEER REPOS — which
+# is what moved it off the line and into here. summit MEASURED (2026-08-30) that 3 of
+# 5 shared hooks cannot be written through their own gate: every refusal is `RUF100
+# Unused noqa directive (non-enabled: S603)`, a suppression SUBSTRATE needs, naming a
+# rule summit does not enable, in code summit does not own and cannot fix without
+# forking the shared body. The directive was correct here and broke the file there.
+#
+# ⚑ A LINE DIRECTIVE TRAVELS WITH THE CODE; A CONFIG ENTRY DOES NOT. That asymmetry is
+# the whole argument for this block. Each tree decides which rules it enables, so a
+# suppression that lives in a shared body asserts a rule set on every adopter — and an
+# adopter running a NARROWER set sees the directive itself as the violation. Moving it
+# here makes the file portable by construction: a tree that doesn't enable S603 needs
+# no entry, and one that does writes its own.
+#
+# ⚑⚑ AND THE GUARD COULD NOT SEE ITS OWN CONDITION. `hook_pycheck` — the gate doing the
+# refusing — was one of the two files that PASSED, so nothing went red, no slice failed,
+# and three armed hooks sat unwritable in an adopting tree with a green board throughout.
+# It was visible only by putting a hypothetical edit to each hook and reading the answer.
+"scripts/hook_shellcheck.py" = ["S603"]
+
+# ⚑ FORMATTING GENERATED SOURCE (W39, 2026-09-25). The operator's rule is that every .py in
+# every repo is `ruff format`-clean, generated files included, so a generator must emit what
+# ruff would. Re-deriving ruff's layout by hand drifts the day ruff changes; running ruff does
+# not. The file's one responsibility is that call: argv is `sys.executable` plus constants and a
+# display filename, and the source travels on STDIN, never as a word in the command.
+"substrate/ruff_format.py" = ["S603"]
+
+# ⚑ A SUITE WHOSE ARM IS "THE REAL ENTRY POINT, AS A PROCESS" (W39). `scratch_scope_selftest`
+# launches `scripts/check_scratch_independence.py` with the hook's spelling — the one case that
+# runs the entry point rather than the module. argv is `sys.executable`, a module-constant path
+# and fixed flags. It carried a line `# noqa: S603`, which the per-file gate refuses outright;
+# the exemption is moved here, scoped to this one file.
+"substrate/scratch_scope_selftest.py" = ["S603"]
+
+# ⚑ THE FINDINGS-LEDGER SHIM (W40, 2026-09-26). `.claude/agents/findings.py` is now a stdlib-only
+# shim: its ONE responsibility is to find the checkout (`git rev-parse --show-toplevel`, git found
+# by `shutil.which`) and run the tree's venv interpreter on `substrate.ledger_cli`. Every argv
+# element is a module constant, that git-resolved tree path, or the single mode operand, which the
+# child re-validates — never a shell word. It re-executes rather than imports because its callers
+# run it under arbitrary interpreters (`witness_resolves` uses `sys.executable`; a person types
+# `python3`), and only the venv carries `mikemol.ledger`.
+".claude/agents/findings.py" = ["S603"]
+
+# ⚑ FOURTH SUBPROCESS BOUNDARY. Four single-file entries naming one rule is a pattern
+# asking to become a rule, and it is deliberately NOT one yet: a `scripts/*` glob would
+# grant S603 to every future script in the directory, which is the blast radius the
+# per-RESPONSIBILITY framing exists to refuse. Each entry names a file whose ONE job
+# involves running a subprocess, and each was added when that file was written. If a
+# fifth arrives, the question to ask is whether these four share a responsibility that
+# wants extracting — not whether the glob has become convenient.
+"scripts/promote_frontier.py" = ["S603"]
+
+# ⚑⚑ THE FIFTH ENTRY IS AN EXTRACTION, NOT AN ADDITION — the question the comment above
+# said to ask, asked and answered. `agda_stdlib_migrator` grew a subprocess call to
+# verify its own work; rather than list a fifth file, "run the repo's Agda build" was
+# extracted into `agda_build.py` as its own responsibility. The migrator now holds NO
+# subprocess boundary and needs no entry, and any future caller wanting a verified tree
+# reuses the module instead of spawning `make` again.
+"scripts/agda_build.py" = ["S603"]
+
+# ⚑ A GIT BOUNDARY, WHICH IS A DIFFERENT RESPONSIBILITY FROM RUNNING THE BUILD — so the
+# extraction that answered the fifth entry does not answer this one. `collapse_check`
+# asks git what is STAGED; `agda_build` asks make to typecheck. Folding them into one
+# "runs a subprocess" module would merge two unrelated reasons to change, which is the
+# monolith the per-RESPONSIBILITY rule exists to prevent, wearing the uniform of reuse.
+# ⚑⚑ IF A SECOND GIT-READING TOOL APPEARS, THAT is the extraction to make: one module
+# owning "what does git say about the worktree", with this entry moving to it.
+"scripts/collapse_check.py" = ["S603"]
+
+# ⚑ AN ITERATION LOOP, NOT A BUILD — the distinction that decided this entry rather than
+# a dispatch to `make`. `migrate_to_foundation` rewrites one file, typechecks THAT file,
+# and REVERTS it on failure while returning the compiler's own text. `make -C agda -j`
+# answers "is the tree green" and can supply neither the attribution nor the rollback,
+# so replacing the invocation would delete the capability. What WAS wrong is now fixed:
+# the command routes through `scripts/membudget run`, so the per-file invocation carries
+# a cgroup cap and a budget lease. membudget wraps exactly one command, so the exit code
+# read is still that file's.
+"scripts/migrate_to_foundation.py" = ["S603"]
+"scripts/migrate_to_foundation_v2.py" = ["S603"]
+
+# ⚑ THE VICTORIALOGS INGEST BOUNDARY, extracted from `ratchet.py` as step 1 of
+# ⟡ratchet-seams. Fault telemetry is a distinct responsibility from ratcheting; it lived
+# in the gate core only by accident of where it was first needed. The argv is module
+# constants plus a URL from the environment, and the untrusted payload is JSON on STDIN.
+"scripts/ratchet_log.py" = ["S603"]
+
+# ⚑ THE SAME FILE, AT ITS PROMOTED PATH (⟡gate-island-promote). A per-file entry is keyed on
+# the PATH, so moving a module silently drops its exemption — the copy landed in `substrate/`
+# and immediately failed the gate for a subprocess call that was already sanctioned. Both
+# entries stand while the facade still points at `scripts/`; the old one is deleted with the
+# old file, and NOT before, or the pre-move path goes unexempted mid-migration.
+"substrate/ratchet_log.py" = ["S603"]
+
+# ⚑ RUNNING THE GATES IS ITS OWN RESPONSIBILITY, WHICH IS WHY IT IS ITS OWN FILE.
+# `gate_probe` invokes each ratchet gate read-only and parses its paydown line; the
+# argv is module constants plus a repo-relative path derived from `gate_census`'s own
+# roster, never operator input. Keeping the RUNNING separate from the REPORTING
+# (`paydown_census`) is what keeps this exemption off the reporting half.
+"scripts/gate_probe.py" = ["S603"]
+
+# ⚑ RUNNING THE AGDA CENSUS BUILD IS THIS MODULE'S ONE RESPONSIBILITY (⟡drain-split-census).
+# The argv is module constants plus a job width from `gen_build_makefiles.jobs_flag` — the
+# ⟡agda-jobs authority — and a root the caller names; never operator input assembled into a
+# shell word. The subprocess is the design rather than an implementation detail: the census is
+# defined as a READ of what `make -k` wrote, so producing those artifacts means invoking make.
+#
+# ⚑⚑ IT IS A SEPARATE ENTRY FROM THE MODULE THAT READS THE RESULT, and that separation is why
+# the exemption is honest. `substrate/agda_census.py` parses the logs and cores and holds NO
+# subprocess boundary, so it needs no entry; folding the two together would extend this
+# exemption over the parsing as well. Rendering the outcome is a third file again.
+"substrate/agda_census_run.py" = ["S603"]
+
+# ⚑ RUNNING MYPY IS THIS MODULE'S ONE RESPONSIBILITY. The argv is module constants plus paths
+# derived from `substrate.corpus`, never operator input. The entry is per-FILE rather than
+# per-LINE because the file does exactly one thing — which is what makes the exemption
+# honest: it cannot silently widen to cover a second responsibility that grows here later.
+"substrate/mypy_census.py" = ["S603"]
+
+# ⚑ RUNNING MYPY WITH ONE FLAG VARIED IS THIS MODULE'S ONE RESPONSIBILITY. `type_scope` asks
+# what a file's messages look like WITH and WITHOUT its import closure resolved, which is two
+# runs differing only in `--follow-imports`. The argv is `mypy_census.FLAGS` — the gate's own
+# constant, imported rather than respelled — plus one module constant and the operand path,
+# which `main` has already resolved against `corpus.ROOT` and refused if it is not a file.
+#
+# ⚑⚑ IT IS A SECOND ENTRY RATHER THAN A WIDENING OF THE ONE ABOVE, and the reason is the
+# `files` block twelve entries up: `mypy_census` owns the census the GATE reads, whose flags
+# are policy. A `follow=` parameter there would let any caller change the gate's predicate, so
+# the varying arm lives in its own file — and that separation is exactly what makes each
+# exemption name one reason to change.
+"substrate/type_scope.py" = ["S603"]
+
+# ⚑ RUNNING THE PRIOR IMPLEMENTATION AS A PROGRAM IS THIS MODULE'S ONE RESPONSIBILITY — and
+# the subprocess is the DESIGN, not an implementation detail. `scratch/` is not a package, so
+# an IMPORT of the thing being compared yields `Any` and propagates it; a subprocess boundary
+# is a `str` boundary, and text has a type. The invoked code is a module constant, never
+# assembled from input. This entry is deleted with the module when ⟡package-jea lands.
+"substrate/promote_agree.py" = ["S603"]
+
+# ⚑ RUNNING ONE SUITE IS THIS MODULE'S ONE RESPONSIBILITY (⟡last-retire). The argv is
+# `[sys.executable, <discovered path>, "--selftest"]` — the path comes from the generated
+# makefile's own roster, never operator input — and running a subprocess is the design rather
+# than an implementation detail: several suites execute at import time, so an in-process
+# runner would fire exactly what the isolation exists to prevent.
+#
+# ⚑⚑ IT REPLACES `substrate/suite_runner.py`, WHICH IS DELETED, AND IS STRICTLY NARROWER.
+# That entry named a ROSTER runner; `make` now owns the fan-out (poset order, jobserver width,
+# membudget's lease and claim gates), so the exemption covers running exactly ONE suite. A
+# stale row grants an exemption to nothing while still reading as a live decision.
+"substrate/suite_run.py" = ["S603"]
+
+# ⚑ RUNNING THE WHOLE ROSTER IS THIS MODULE'S ONE RESPONSIBILITY (⟡retire-the-runner), and it
+# is a DIFFERENT consumer from the entry above rather than a reversal of it. `substrate/
+# suite_run.py` runs exactly ONE suite for `make`, which owns the build path's fan-out; this
+# runs the roster for the CLI and the pre-commit gate, which is the question `make` does not
+# answer. The argv comes from `substrate.suite_command` — an interpreter, a discovered suite
+# path, and flags each suite declares in its OWN source — never operator input.
+#
+# ⚑⚑ THE SUBPROCESS IS THE DESIGN, NOT AN IMPLEMENTATION DETAIL. Several suites execute at
+# import time — reading `sys.argv`, an environment variable, or rewriting files from module
+# scope — so an in-process runner would fire exactly what the isolation exists to prevent.
+"scripts/selftest_pool.py" = ["S603"]
+
+# ⚑ DRIVING A HOOK THE WAY THE HARNESS DOES IS THIS MODULE'S ONE RESPONSIBILITY
+# (Ⓝ133c ⟡the-ritual-in-the-blind-spot). `hook_fire_run` feeds a PreToolUse payload to one
+# hook and reports deny/advise/allow; it holds no cases and no matrix, so the exemption
+# cannot widen onto the probe's assertions. The argv is `sys.executable` plus a path built
+# from a hook FILENAME the caller names out of `check_hook_set.HOOKS` — the declared roster,
+# never operator input assembled into a shell word.
+#
+# ⚑⚑ THE SUBPROCESS IS THE DESIGN, NOT AN IMPLEMENTATION DETAIL, AND THAT IS THE WHOLE
+# POINT OF THE PROBE. Calling `verdict()` in process would re-check the very predicate the
+# probe exists to distrust while skipping the root prelude, the payload reader and the deny
+# envelope — and a hook that raises at module load writes nothing to stdout, which the
+# harness reads as ALLOW. Only a real process can tell an armed gate from a silently inert
+# one, which is exactly the failure `check_hook_set`'s docstring records shipping.
+"scripts/hook_fire_run.py" = ["S603"]
+
+# ⚑ RUNNING `stubtest` IS THIS GATE'S ONE RESPONSIBILITY. The argv is module constants plus a
+# module NAME discovered from `stubs/*.pyi` — a filename stem, never operator input. The
+# subprocess is unavoidable: `stubtest` has no importable API, only a `__main__`.
+"scripts/check_stub_authority.py" = ["S603"]
+
+# ⚑ RUNNING PANDOC IS THIS MODULE'S ONE RESPONSIBILITY (⟡mdstruct-n-split). The argv is
+# `pandoc` plus FORMAT NAMES the caller supplies from a fixed vocabulary — the document itself
+# travels on stdin as data and never becomes a word in the command. It is the only subprocess
+# in the markdown toolkit, which is why the toolkit is file-per-mode: a module that also parsed
+# or rendered would extend this exemption over every one of those concerns.
+"substrate/md_pandoc.py" = ["S603"]
+
+# ⚑ SPAWNING THE PAPERKIT ENGINE IS THIS MODULE'S ONE RESPONSIBILITY (⟡drain-wg-cluster). The
+# argv is `sys.executable`, an entry-point FILENAME the caller names from the engine's own
+# directory, and a project PATH derived from `substrate.worklist_paths` — never operator input
+# assembled into a shell word. The subprocess is the design: paperkit is a separate program
+# this repo points at a project, with no importable API.
+#
+# ⚑⚑ THE PATH VOCABULARY WAS SPLIT OUT SO THIS EXEMPTION STAYS NARROW. `substrate/
+# worklist_paths.py` holds `ROOT`/`PROJECT`/`LIBRARY` — forty-six of the superseded module's
+# fifty-four attribute reads — and spawns nothing, so it needs no exemption at all. Draining
+# both halves into one file would have extended S603 over a pure path join, which is exactly
+# how a scoped exemption becomes a directory-wide one.
+"substrate/worklist_engine.py" = ["S603"]
+
+# ⚑ RUNNING ONE SANDBOX INGEST PER CORE IS THIS MODULE'S ONE RESPONSIBILITY (W10). The argv is
+# `sys.executable`, module constants, and a core PATH taken from the import DAG's own order over
+# files that exist under the build root — never operator input assembled into a shell word. The
+# subprocess is the design: each core runs through `store_launch` exactly as the single-core
+# command that was measured to land (t86), so the driver adds ordering and a monotone guard and
+# re-derives nothing about the store; and `sppf_db` is frozen, so it cannot be imported cleanly.
+"substrate/sandbox_ingest.py" = ["S603"]
+
+# ⚑ ASKING AGDA ITS VERSION IS PART OF THIS MODULE'S ONE RESPONSIBILITY (the build's settings, drained
+# from gen_build_makefiles, ⟡promote-path A). `build_ver` reads the version from the on-disk `_build`
+# tree and only falls back to `<agda> --numeric-version`; the argv is a resolved executable path plus a
+# constant flag, never operator input.
+"substrate/build_settings.py" = ["S603"]
+
+# ⚑ RESOLVING luthen's vmagent-http BY NAME IS THIS MODULE'S ONE RESPONSIBILITY (W49). luthen's
+# contract forbids writing the address down, and its resolver (`checks.endpoints_query`) has no
+# importable API from this tree's venv — the argv is luthen's own interpreter plus constants.
+"substrate/vmagent_address.py" = ["S603"]
+
+# ⚑ RUNNING THE BUILD IT OBSERVES IS THIS MODULE'S ONE RESPONSIBILITY (W49). The argv after `--`
+# is the operator's own build command, run without a shell, exactly as they would type it.
+"substrate/build_active.py" = ["S603"]
+
+# ⚑⚑ A LEGACY SIGNATURE IS A RESPONSIBILITY, AND THIS FILE HOLDS EXACTLY THAT ONE.
+# `ratchet_legacy.set_ratchet` takes twelve arguments because TWENTY CALL SITES ACROSS
+# SIXTEEN GATES pass twelve arguments; its whole job is to fold them into the three
+# values `ratchet_core` takes. `PLR0913`/`PLR0917`/`FBT001` are correct about the shape
+# and cannot be satisfied without changing every caller — which is the migration, not
+# this file.
+#
+# ⚑ SO THE EXEMPTION IS SCOPED TO THE ADAPTER AND NOWHERE ELSE. `ratchet_core` takes
+# three arguments and is clean; putting the legacy face in its own module is what keeps
+# the exemption honest, rather than granting it to the verdict logic as well. The entry
+# is DELETABLE: it goes when the last call site moves to `Census.of`, and its presence
+# is the reminder that the migration is unfinished.
+"scripts/ratchet_legacy.py" = ["FBT001", "FBT002", "PLR0913", "PLR0917"]
+
+# ⚑ NO `[project.optional-dependencies]`.  It held `otlp`, `spool` and `jea`, and all
+# three are now core (see the block above).  The retained REASONING for each lives at
+# its entry there; what is retired is the CLAIM that any of them is optional.
+#
+# ⚑ AND THE OBLIGATIONS `persist-queue` IMPOSES SURVIVE THE MOVE, because they are
+# facts about the buffer and not about the grouping: `clear_acked_data` must be CALLED
+# (acked rows persist otherwise, and a buffer that keeps everything is the second store
+# we explicitly do not own), and its serializer must be JSON rather than the default
+# pickle — a durable file of pickles is a deserialization surface with no upside for a
+# metrics sample.  Likewise the buffer CANNOT live on the store's host: it exists for
+# the case where cassian is unreachable, and anything running there shares that outage.
+
+[tool.setuptools]
+# ⚑⚑⚑ THIS WAS `py-modules = []` — A PROJECT THAT DECLARED NO MODULES, AND THAT EMPTY
+# LIST IS THE 556 `sys.path.insert` CALL SITES. Everything above this line is a careful
+# declaration of what the tooling DEPENDS ON; nothing declared what the tooling IS. So
+# `uv sync` installed sixteen third-party packages and left this repo's own ~85 modules
+# unreachable by name, and every tool that needs another tool mutates `sys.path` to find
+# it. MEASURED 2026-08-28 (`pycodemod --calls path.insert`): 556 sites.
+#
+# ⚑⚑ A RUNTIME PATH MUTATION IS AN IMPORT THAT CANNOT BE CHECKED. It resolves against
+# whatever the process happens to have, so a wrong root fails silently or — worse —
+# succeeds against the wrong tree. The same class as the wrong-tenant read and the
+# wrong-root WorkingTree: a fact about the INVOCATION, resolved ambiently.
+#
+# ⚑ `substrate` IS THE DESTINATION, NOT A RENAME OF `scratch`. Residence in `scratch/` IS
+# the not-yet-promoted status (`check_scratch_independence`, Λ8), so packaging that
+# directory would make the gate's invariant unstatable. Modules are promoted INTO here one
+# at a time, each admitted by the predicate that gate already owns.
+# ⚑ `scripts` IS HERE BECAUSE A CHECKER DEMANDED IT, and the demand is the migration's
+# own first proof: `hook_pycheck` imports `hook_shellcheck` to reuse the shared halves
+# rather than restate them, and mypy cannot follow a `sys.path.insert`. The hook could
+# not pass its OWN bar until the directory it lives in was importable.
+#
+# ⚑⚑ AND `scratch` IS DELIBERATELY ABSENT FROM THIS LIST. Residence there IS the
+# not-yet-promoted status (Λ8), so packaging it would cement the staging area as
+# permanent and make that gate's invariant unstatable. `scripts/` carries no such
+# meaning — Λ8 explicitly does not guard it — so making it importable renames nothing.
+#
+# ⚑⚑⚑ THE ORDER IS TYPE-THE-CALLEE, THEN NAME-IT — AND THE REVERSE IS WHAT AN EAGER
+# SWEEP DOES. Retiring an injection does not REDUCE findings; it SURFACES them, onto
+# the file doing the declaring. paperkit measured it (2026-08-30) converting three
+# suites from `sys.path.insert` + bare import to named imports:
+#
+#     boundaries_ladder       3 own findings  ->  231 with paperkit/grade.py followed
+#     boundaries_hook_index   0 own findings  ->   17 with tools/hook_index.py followed
+#     boundaries_without_k    0 own findings  ->  312 with _fixture_model.py followed
+#
+# ⚑⚑ THE INJECTION WAS HIDING THE DEBT, NOT CAUSING IT. Under a bare `import grade`
+# mypy cannot follow the edge AT ALL, so the callee's errors are unreachable and the
+# declarer reads clean. Name the module and the edge becomes followable — the declarer
+# now eats a number IT DID NOT CREATE, and under this repo's per-file gate (no partial
+# credit: an edit leaving the file dirty is refused) it cannot land. Two of paperkit's
+# three suites ended blocked on typing a dependency rather than on anything in the
+# suite itself.
+#
+# ⚑ SO EACH OF THE 556 SITES IS GATED ON ITS CALLEE, NOT ON ITSELF, and the migration
+# is a topological walk from the leaves inward rather than a sweep. Converting a site
+# whose callee is untyped converts a silent hole into a blocked edit — strictly worse
+# than leaving it, because the injection at least still RUNS. Type the callee, verify
+# it clean, then name it.
+packages = ["substrate", "scripts"]
+
+# ⚑⚑⚑ `py.typed` IS WHAT MAKES THE DECLARATION ABOVE MEAN ANYTHING TO A CONSUMER'S CHECKER
+# (Ⓝ122 ⟡substrate-must-be-importable). `packages` makes the modules IMPORTABLE; PEP 561's
+# marker is what makes their annotations VISIBLE across the distribution boundary. Without
+# it a consumer running mypy against `from substrate import md_spans` gets `import-untyped`
+# and every name it binds degrades to `Any` — so an adopter inherits the imports and loses
+# exactly the types this repo's zero-tolerance gate exists to guarantee. MEASURED as a
+# three-rung ladder: editable install -> `import-not-found`; regular install -> `import-untyped`;
+# regular install + this marker -> clean.
+#
+# ⚑⚑ AND THE MARKER IS A CLAIM, NOT A COURTESY. Shipping `py.typed` asserts that what the
+# consumer's checker reads here is authoritative — a wrong annotation stops being this
+# repo's private business and becomes a false statement in someone else's build. That claim
+# is honest for these two packages ONLY because the per-file gate already refuses any write
+# leaving a mypy finding; the marker is downstream of that gate, never a substitute for it.
+#
+# ⚑ IT MUST BE DECLARED, NOT MERELY PRESENT. `py.typed` is not a `.py` file, so setuptools'
+# module discovery does not carry it into the wheel on its own — a marker sitting in the
+# working tree and absent from the built distribution is the silent half of this failure,
+# and it reads as done from inside the checkout.
+[tool.setuptools.package-data]
+substrate = ["py.typed"]
+scripts = ["py.typed"]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.16.8",
+]

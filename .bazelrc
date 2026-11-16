@@ -1,0 +1,29 @@
+common --enable_bzlmod
+test --test_output=errors --test_summary=terse
+
+# substrate's pre-commit is becoming a bazel build (operator rule 2026-10-06, substrate:W300, design
+# mtools:W798): the gate logic lives in BUILD.bazel and BuildBuddy captures its logs and outputs. These
+# settings are the fleet's, copied from aeternum/.bazelrc; the reasons live in mtools/.bazelrc.
+
+# The hermetic sandbox is `build`, not a `--config`: its flags are not in the action key, so an opt-in
+# regime is one a cache hit silently bypasses. An action sees its declared inputs and nothing else.
+build --experimental_use_hermetic_linux_sandbox
+build --sandbox_add_mount_pair=/bin
+build --sandbox_add_mount_pair=/usr
+build --sandbox_add_mount_pair=/lib
+build --sandbox_add_mount_pair=/lib64
+build --sandbox_add_mount_pair=/etc
+
+# Output root and disk cache on the zram at /var/tmp, not md0 (operator ruling 2026-09-26, standing
+# for every bazel repo). A literal path: .bazelrc does not expand $USER.
+startup --output_user_root=/var/tmp/bazel-mikemol
+build --disk_cache=/var/tmp/bazel-disk/substrate
+build --remote_download_minimal
+
+# The shared cache and the build event stream are unconditional (an opt-in participation is not
+# participation). Services by name, never NodePorts (operator ruling 2026-09-20): the directory is
+# luthen-observability's checks/endpoints_query.py, and its answer, not this file, is the authority.
+build --remote_cache=grpc://buildbuddy-bes.buildbuddy.svc.cluster.local:1985
+build --remote_cache_async=true
+build --bes_backend=grpc://buildbuddy-bes.buildbuddy.svc.cluster.local:1985
+build --bes_results_url=http://buildbuddy-web.buildbuddy.svc.cluster.local:8080/invocation/

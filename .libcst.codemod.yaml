@@ -1,0 +1,25 @@
+# libcst codemod configuration — `python -m libcst.tool codemod <Module.Class> <paths>`
+#
+# ⚑ WHY THIS EXISTS. `pycodemod.py` deliberately does NOT implement a transform path: its
+# header records that `python -m libcst.tool codemod` already ships `-u/--unified-diff`
+# (preview), `-j` (parallelism), directory walking and stdin support, so rebuilding those
+# would be re-derived infrastructure. But the CLI cannot FIND a codemod without this file
+# — so the reuse boundary was documented and then unreachable, and the first real codemod
+# (the postgres store-read port, 101 call sites) hit that wall immediately.
+#
+# ⚑ `modules` IS AN IMPORT ROOT, NOT A FILE LIST. Anything under `scratch/` is addressable
+# as `<name>.<Class>`, so a new codemod needs no edit here.
+modules:
+  - scratch
+
+# Codemods run against files the caller names; nothing is swept implicitly.
+blacklist_patterns: []
+
+# ⚑ FORMATTER LEFT EMPTY DELIBERATELY. libcst can pipe output through black/ruff, and
+# doing so here would reformat whole files as a side effect of a targeted rewrite —
+# turning a 3-line semantic diff into a 300-line one and destroying the ⚑ commentary
+# alignment these files carry. `pycodemod --roundtrip` exists to protect exactly that.
+formatter: []
+
+# repo-relative default; codemods are invoked with explicit paths
+repo_root: "."

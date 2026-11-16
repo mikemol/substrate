@@ -1,0 +1,43 @@
+"""substrate's pre-commit gate (substrate:W300, design mtools:W798).
+
+The hook will only run `bazel test //:precommit`. Each gate sees its declared inputs and nothing else.
+
+Every input is a named file: never a glob, never a directory (operator, 2026-10-06). The names come
+from git's index through @tracked (mtools:W799), so a new tracked file joins the gate by being
+tracked, an untracked file never does, and select_tracked fails on a selector that matches nothing.
+
+One row so far: check-makefiles (build_targets.CHECKS[0], the hook's gen_build_makefiles --check).
+Further `run "..."` stages are added one at a time, each as its own py_test.
+"""
+
+load("@mikemol_rules_py//:tracked.bzl", "select_tracked")
+load("@rules_python//python:py_test.bzl", "py_test")
+load("@tracked//:manifest.bzl", "TRACKED")
+
+# gen_build_makefiles --check parses every Agda module's imports and compares the result to the
+# generated Flat.mk and root Makefile, so the whole tracked Agda tree is its input, file by file.
+MAKEFILE_INPUTS = (
+    select_tracked(TRACKED, prefix = "agda/", suffix = ".agda") +
+    select_tracked(TRACKED, prefix = "scripts/", suffix = ".py") +
+    select_tracked(TRACKED, prefix = "substrate/", suffix = ".py") +
+    [
+        "agda/Flat.mk",
+        "agda/Makefile",
+    ]
+)
+
+py_test(
+    name = "check_makefiles",
+    srcs = ["scripts/gen_build_makefiles.py"],
+    args = ["--check"],
+    data = MAKEFILE_INPUTS,
+    legacy_create_init = 0,
+    main = "scripts/gen_build_makefiles.py",
+)
+
+test_suite(
+    name = "precommit",
+    tests = [
+        ":check_makefiles",
+    ],
+)

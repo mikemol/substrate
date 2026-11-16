@@ -18,9 +18,26 @@ files*.zip
 # Agda build artefacts
 *.agdai
 agda/_build/
+# per-module build logs (gen_build_makefiles writes <mod>.agdai.log beside each
+# core so a `make -j` run never interleaves; also cover source-adjacent variants)
+*.agdai.log
+*.agda.log
+*.agda.err
 
 # Local codec state (SQLite caches, etc.)
 scratch/eliza/state/
+
+# paperkit's own derived artefacts, written beside a project it grades.
+# ⚑ THE PRODUCER ALREADY IGNORES THESE AND THIS REPO DID NOT, so `git add` over a
+# paperkit project swept them in: `paperkit/layout.py` declares
+# `DERIVED_NAMES = {".delta-cache.json"}` and paperkit's own `.gitignore` carries it.
+# ⚑⚑ AND THE CACHE IS MACHINE-SPECIFIC BY CONSTRUCTION — it embeds an absolute
+# `"root"` path and an engine content-hash, so committing it would make one
+# checkout's layout a fact about the tree. The `.txt` is a point-in-time sweep
+# whose every line reads `broken … repo is not green`, which becomes false the
+# moment the tree goes green — a stale verdict that reads as current.
+.delta-cache.json
+.delta-report.txt
 
 # Claude Code — project skills / settings / shadow-engineer cotype ARE tracked
 # (versioned repo assets); only personal-local settings stay ignored.
@@ -33,6 +50,27 @@ scratch/eliza/state/
 # uv-managed virtualenv (binary; deps tracked in requirements.txt)
 .venv/
 scratch/.venv/
+
+# setuptools' staging copy of the two DECLARED packages (`packages = ["substrate", "scripts"]`,
+# pyproject.toml) — regenerated from tracked sources by every build/editable install.
+#
+# ⚑⚑⚑ ITS ABSENCE HERE WAS A CENSUS DEFECT, NOT A COSMETIC ONE. Every module under
+# `scripts/` and `substrate/` exists TWICE in the working tree, so a census that enumerates
+# by path counts each one twice — and the copies are STALE, since a build stages whatever
+# the sources said at build time. MEASURED: `selftest-contract` refused with 531 NEW keys,
+# every one of them a `build/lib/` path, on a turn whose only change was `git add` over
+# files that already existed.
+#
+# ⚑⚑ THE GUARD EXISTS IN ONE CENSUS AND NOT THE OTHERS. `gate_population.GATE_HOMES` declares
+# its two homes rather than discovering them, and its docstring names this exact hazard —
+# "walking the whole repo would sweep in `build/lib/` copies" — so the reader that anticipated
+# the defect is the one census immune to it. A per-census exclusion would need writing N times
+# and drifting N ways; ignoring the tree fixes it once, for every reader.
+#
+# ⚑ AND A DUPLICATE MAKES A RETIREMENT HALF-LAND. Deleting `scripts/check_private_ratchet.py`
+# while `build/lib/scripts/check_private_ratchet.py` remains leaves the origin visible to every
+# path-enumerating reader — the retirement reads as done and is not.
+build/
 
 # local hardware/DMI dump (do-not-commit machine probe data)
 dmi.data
@@ -58,3 +96,53 @@ catalog/catalog.db
 # ⟡sched-batch: compiled helper (arch-specific; built from sched-batch.rs) + its build lock
 scripts/sched-batch
 scripts/sched-batch.lock
+scripts/.gate-outcomes.tsv
+scratch/.edit-snapshots/
+.selftest-last.tsv
+scratch/.cst-cache
+
+# The summit drop zone: incoming letters must not dirty this tree.
+# Ruling: ~/github/summit/proceedings/rulings/inbox-drop-zone.md
+# Ignored from HERE rather than by a file inside it, so provisioning adds nothing to git status.
+/scratch/inbox/
+
+# ⟡estate: material scraped from a RETIRING peer repo, held pending an accept/decline decision.
+# Same ruling and same reason as the drop zone above, and ignored from HERE for the same reason:
+# provisioning must add nothing to git status.  This tree already carries ~4000 uncommitted files
+# behind a red Agda gate, so a foreign repo landing in it would be indistinguishable from
+# substrate's own unfinished work.
+#
+# ⚑ A SCRAPE IS NOT AN ACCEPTANCE, and this path is deliberately OUTSIDE the promotion gate.
+# Adopting anything from here means MOVING it to a tracked path — a capability left here is one
+# nothing gates.  (Live warning: scratch/tsdbprobe.py is staged-never-committed and summit already
+# records a citation resting on it.)
+/scratch/estate/
+
+# bazel's convenience symlinks (bazel-bin, bazel-out, bazel-testlogs, bazel-substrate), created in the
+# workspace root by every `bazel test` (substrate:W300). They point into the output base, so they are
+# machine-specific, and bazel-substrate is a whole EXECROOT: a path-enumerating reader that descends
+# into it sees a second copy of the tree. MEASURED: mtools' mikemol-repin read an execroot copy of
+# pyproject.toml through bazel-substrate and reported its old 03749d5 pins as the repo's own.
+/bazel-*
+
+# Machine state and scratch that kept appearing as untracked noise in a ~400-entry status
+# (measured 2026-10-10 with `git ls-files --others --exclude-standard --directory`): build and
+# tool logs, the C compiler's default output, editor/merge leftovers, temp and spool dirs, the
+# egg-info staging dir, and the agent harness's per-user state under .claude/.
+.build.log
+a.out
+*.orig
+_build/
+_build.prev/
+agda/_build.prev/
+agda/.build-out.log
+agda/.sourced-out.log
+agda/.leaf-verify.tsv
+.paperkit-tmp/
+.spool/
+.tmp/
+*.egg-info/
+.claude/projects/
+.claude/plans/
+.claude/*.flock
+/catalog.db

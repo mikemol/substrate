@@ -135,6 +135,7 @@ bmodb
 bmul
 bneck
 bodycalls
+Bool
 borcherds
 borel
 bracketings
@@ -1439,6 +1440,7 @@ renorm
 renormalises
 reorganisation
 repointed
+repointing
 repr
 reprs
 resbytes
@@ -1695,6 +1697,7 @@ tstar
 tunits
 twoframing
 twopar
+typecheck
 typechecks
 typeclass
 typedness

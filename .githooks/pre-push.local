@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+# substrate's OWN pre-push check, run by mtools' `mikemol-githook-pre-push` after its shared check
+# (same arguments, same stdin: one `<localref> <localsha> <remoteref> <remotesha>` line per ref).
+#
+# The post-commit advisory amend must have SETTLED on each tip being pushed — its message carries
+# the marker `post-commit advisory (auto-captured)`, written only by substrate's own
+# `.githooks/post-commit`. A tip without it means the amend raced the push, or the commit was made
+# mid-rebase (the amend skips by design — re-amend before pushing). Moved here from the shared hook
+# on 2026-09-24: the marker is substrate's, so the check is too.
+set -uo pipefail
+
+fail=0
+while read -r _localref localsha _remoteref _remotesha; do
+  case "$localsha" in *[!0]*) : ;; *) continue ;; esac          # skip ref deletions
+  # skip merge commits (the post-commit hook does not amend mid-merge by design)
+  if [ "$(git show --no-patch --format=%P "$localsha" | wc -w)" -gt 1 ]; then continue; fi
+  if ! git log -1 --format=%B "$localsha" | grep -q 'post-commit advisory (auto-captured)'; then
+    echo "pre-push: BLOCKED — tip $(git rev-parse --short "$localsha") lacks the post-commit advisory amend." >&2
+    echo "          (It raced the push, or was made mid-rebase.) Wait until HEAD's message gains" >&2
+    echo "          'post-commit advisory (auto-captured)', or re-amend, then push." >&2
+    fail=1
+  fi
+done
+exit $fail
