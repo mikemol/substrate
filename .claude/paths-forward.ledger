@@ -759,3 +759,6 @@
 2026-11-16T13:02:31Z  interrupt W352 minted    -         "rebuild the commit gate on a feature branch, tracking each gate's aim"  session=ba7f487c-25c3-489f-8632-92b4da805cb9  evidence=operator
 2026-11-16T13:02:32Z  interrupt W353 minted    -         "guard main: merge only when the original gate is green on the merge commit"  session=ba7f487c-25c3-489f-8632-92b4da805cb9  evidence=operator
 2026-11-16T13:09:52Z  status W353 ready>blocked writer    "ready -> blocked"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
+2026-11-16T13:44:51Z  interrupt W354 minted    -         "sibling paths become pinned fetches: MODULE.bazel remote and SHIM_DIR"  session=ba7f487c-25c3-489f-8632-92b4da805cb9  evidence=github-cb
+2026-11-16T13:47:04Z  tick  W333 advanced  probe     "tick 4: probe REFUSED as G0 expected (blob 5081ff18); operator directive 9b009522 moved the arc to branch gate-rebuild [blocked by W352]"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
+2026-11-16T13:48:25Z  status W351 ready>blocked writer    "ready -> blocked"  session=ba7f487c-25c3-489f-8632-92b4da805cb9

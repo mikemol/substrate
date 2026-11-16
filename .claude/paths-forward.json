@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project_root": "/home/mikemol/github/substrate",
-  "counter": 353,
+  "counter": 354,
   "armed_at": "2026-09-19T00:00:00Z",
   "heartbeat": "2026-10-10T17:20:38Z",
   "job_id": "c2013646",
@@ -13,12 +13,7 @@
     "MESSAGE_SEND": "SendMessage",
     "AGENT_LIST": "ListAgents"
   },
-  "lock": {
-    "holder": "substrate-a5",
-    "taken_at": "2026-11-16T12:16:44Z",
-    "pid": 4098741,
-    "start": 35507893
-  },
+  "lock": null,
   "derive": {
     "owning_tools": [
       "env -C /home/mikemol/github/substrate uv run python .claude/agents/findings.py --pairing",
@@ -8515,16 +8510,17 @@
         "gate"
       ],
       "blocked_on": [
-        "operator: act the harness refuses git commit --no-verify (standing mtools policy, operator 2026-09-07), so the one bootstrap commit you authorized today cannot be made by the agent. Everything is staged (7018 files, 593k insertions, 47k deletions) and the message is written. Either run it yourself: git -C /home/mikemol/github/substrate commit --no-verify -F /var/tmp/claude-1000/-home-mikemol-github-substrate/ec9fd63f-74f1-4584-92b0-1d3f17f2af15/scratchpad/bootstrap-commit-message.txt   or lift the no-verify block for that one commit in your hook settings and tell me, or say you would rather pay the debt first."
+        "W352",
+        "W353"
       ],
       "blocked_kind": "human",
       "next_bounded_step": "(1) Re-measure the staged set (git diff --cached --name-only). (2) Build a mikemol-commit --stack file carrying every staged path, with the message rebuilt from the 2026-10-10 design and kept under .claude/. (3) Run it gated, in the background, and read the last line. (4) If REFUSED, attach the refusal and turn the blocker into 'operator: act <exact command>' with a push notification.",
-      "evidence": "2026-10-10: 2026-10-10 DESIGN OF THE ONE AUTHORIZED BOOTSTRAP COMMIT (operator ruling W332). Measured with git ls-files --others --exclude-standard --directory: about 410 untracked entries. WHAT HEAD LACKS is the tooling itself, not just edits: substrate/build_settings.py, the flat_*/query_*/witness_*/ledger_*/stamp_*/sandbox_* modules (about 100 substrate/*.py), stubs, scratch/gate_wall_census.py, features/, .githooks/pre-push.local, MODULE.bazel.lock, .libcst.codemod.yaml, .claude/agents/LEDGER.md and rubric.tsv, scripts/selftest_reach_baseline.tsv, my jea/metalanguage/schema_* siblings and substrate/luthen_resolver*, build_census_*; plus about 450 untracked agda entries under agda/Substrate (the one-definition-per-file split outputs of the ban-decompose arc, hundreds of directories). INCLUDE BY RULE: everything staged (A, 2907) + tracked modifications (git add -u) + untracked under substrate/, stubs/, jea/metalanguage/, features/, agda/Substrate/ (.agda and .md only), the named files above, and the queue files .claude/paths-forward.json .ledger .md (the fleet commits its queue). EXCLUDE (junk, machine state, other repos' material): .build.log, a.out, body.txt, catalog.db (root; only catalog/catalog.db is ignored), cleanroom-the-noqas.txt, probe.md, scratchpad_commit.log, tmpihejs9h3.py, scratch/tmi_status.py.orig, _build/, _build.prev/, agda/_build.prev/, agda/.build-out.log, agda/.sourced-out.log, agda/.leaf-verify.tsv, .paperkit-tmp/, .spool/, .tmp/, substrate_tooling.egg-info/, .claude/projects/, .claude/plans/, .claude/paths-forward.flock, scratch/el-openglo/, scratch/summit/, docs/retired/ (unknown, hold), inbox/*.md live letters (existing status quo is untracked drop zone, not mine to reorganize). HYGIENE IN THE SAME COMMIT: add the junk classes to .gitignore (.build.log, *.orig, a.out, _build.prev/, .paperkit-tmp/, .spool/, .tmp/, *.egg-info/, .claude/projects/, .claude/plans/, .claude/*.flock) so they stop appearing. WHAT THE MESSAGE MUST CARRY: the failing gate list from a real run (from the isolated attempts: 25 stages in attempt 3, plus Phase C: Set1 ratchet UNDECODABLE because the compiled agdai decoder helper is host state, and cap ratchet with a long list of over-cap modules against an EMPTY baseline) as the starting debt, and the finding that HEAD's own agda tree builds clean from cold (2409 modules, measured inside the snapshot). The commit instrument is the single authorized gate bypass; nothing is pushed. | 2026-10-10: 2026-10-10 STAGED: .gitignore hygiene (junk classes), git add -u, then the untracked tooling by rule (substrate, stubs, features, scripts, .githooks, .claude/agents, .claude/skills, jea/metalanguage, scratch/gate_wall_census.py), agda/Substrate (the split outputs), and the manifests and queue files. 7018 files, +593451 -47185. Remaining untracked is exactly the excluded set (root scratch files body.txt cleanroom-the-noqas.txt probe.md scratchpad_commit.log tmpihejs9h3.py, docs/retired, scratch/el-openglo, scratch/summit, live inbox letters) plus agda directories that hold only gitignored time ledgers. SECRET SCAN by name over the staged set (env, pem, p12, pfx, id_rsa, id_ed25519, secret, credential, password, token, key, keyring): only substrate/agda_tokens.py and its selftest matched (an agda tokenizer, not a secret). The commit attempt was REFUSED BY THE HARNESS hook 'no-verify' (mtools policy: never --no-verify; post-commit also refuses to push a tree whose gate did not run). I did not work around it. Neither substrate's nor mtools' pre-commit has an exemption mechanism (searched both). Commit message is in scratchpad/bootstrap-commit-message.txt, verbatim from the plan. | 2026-10-10: 2026-10-10 later: re-staged after W330 (the gate_status drain landed new modules and a shim). Index now 7024 files, +594077 -47185, and git diff --stat is empty, so the staged set equals the worktree for everything tracked or added. NOTE: every tick writes the queue files (.claude/paths-forward.json, .ledger, .md), which makes the staged copy stale again. Run git add -u before the commit if you want the newest queue in it, the message file does not change. | 2026-11-16T01:05:00Z: 2026-11-16 (substrate-a5): the commit-message file named in blocked_on (/var/tmp/claude-1000/-home-mikemol-github-substrate/ec9fd63f-74f1-4584-92b0-1d3f17f2af15/scratchpad/bootstrap-commit-message.txt) NO LONGER EXISTS (ls: No such file or directory); the scratchpad was cleared. The operator command as written cannot run. The message must be rebuilt from this card's evidence (the 2026-10-10 design) and kept durably, e.g. as a git blob, before the operator can act. Also re-measure the staged set: it was 7024 files on 2026-10-10 and this session has not measured it. Now blocks W349 (red gate: HEAD lacks pyproject.toml/uv.lock/the substrate package/regenerated makefiles). | 2026-11-16T01:06:58Z: 2026-11-16: removed W349 from blocked_on. W333 is the repair for the red gate W349, and --gate-red had added it because no --except was passed (warm-reviewer R4). The operator act is kept verbatim for now; its message-file path is dead and gets replaced once the message is rebuilt. | 2026-11-16T01:07:20Z: 2026-11-16 ruling read (W332 evidence, operator via AskUserQuestion 2026-10-10): '3 now, then 1 ... ONE explicit plain-path bootstrap commit for the tooling plus the Agda edits, with the failing gates listed in its message as the starting debt ... This authorizes exactly one gate-bypassing commit'. The ruling authorizes the bypass in principle. The harness's no-verify refusal (mtools policy, operator 2026-09-07) is a separate permission boundary that the agent may not route around. So an operator act genuinely remains: run the commit, or lift the hook for that one commit. W332 has no transcript warrant, only the prose citation 'AskUserQuestion, host session'. Message rebuild: the design is in this card, but the required 'failing gate list from a real run' cannot be reconstructed. The 2026-10-10 list was never stored, and today's queue-only run lists only 3 checks because its snapshot excluded the staged arc. A fresh gate run over the staged tree is needed for an honest list; it is not done here. | 2026-11-16T01:10:25Z: 2026-11-16 github-cb (host): the 2026-10-10 bypass authorization predates the bazel-precommit rule and the hook refusing --no-verify, and the newest word wins. Try the gate first with a normal mikemol-commit stack carrying the WHOLE staged arc, which has exactly what HEAD lacks. A refusal names the real blocker. Only if a gated path is impossible does this become 'operator: act <exact command>', as a card plus push notification with the refusal attached. Rebuild the message under .claude/ (durable), not the scratchpad. Also: github:W62 no longer waits on substrate:W344. | 2026-11-16T12:16:41Z: G0 tick 4 (written before --tick-open): advances W333 as a PROBE. Actuator: mikemol-commit --stack over every staged path of the bootstrap arc, run in the background. Sensor: its last line plus the refusal cause above it. Expected reading: REFUSED (operator 2026-11-15: gate not expected to pass; ratchets need refactor; make infra to be rebuilt as bazel, non-hermetic only for postgres ingest/query orchestration). The deliverable is the list of red gates, each becoming a refactor card blocking W333; a refusal is not an operator act. | 2026-11-16T13:16:43Z: Tick 4 probe, matching G0's expected reading. Run 1 refused at census-sync (sql and tool-mode censuses stale); both re-synced in the real tree and restaged. Run 2: 'REFUSED substrate (rc=1): the tip of a 1-commit stack was gated once and refused; nothing landed, HEAD is still 771283c; culprit: entry 1/1 (W333)'. Full log (11832 lines) is git blob 5081ff183e18135df1ff4ddac70a432793d0aff5. Per-check failure inventory: queued for the gate-oracle (next subagent) and feeds W352.",
+      "evidence": "2026-10-10: 2026-10-10 DESIGN OF THE ONE AUTHORIZED BOOTSTRAP COMMIT (operator ruling W332). Measured with git ls-files --others --exclude-standard --directory: about 410 untracked entries. WHAT HEAD LACKS is the tooling itself, not just edits: substrate/build_settings.py, the flat_*/query_*/witness_*/ledger_*/stamp_*/sandbox_* modules (about 100 substrate/*.py), stubs, scratch/gate_wall_census.py, features/, .githooks/pre-push.local, MODULE.bazel.lock, .libcst.codemod.yaml, .claude/agents/LEDGER.md and rubric.tsv, scripts/selftest_reach_baseline.tsv, my jea/metalanguage/schema_* siblings and substrate/luthen_resolver*, build_census_*; plus about 450 untracked agda entries under agda/Substrate (the one-definition-per-file split outputs of the ban-decompose arc, hundreds of directories). INCLUDE BY RULE: everything staged (A, 2907) + tracked modifications (git add -u) + untracked under substrate/, stubs/, jea/metalanguage/, features/, agda/Substrate/ (.agda and .md only), the named files above, and the queue files .claude/paths-forward.json .ledger .md (the fleet commits its queue). EXCLUDE (junk, machine state, other repos' material): .build.log, a.out, body.txt, catalog.db (root; only catalog/catalog.db is ignored), cleanroom-the-noqas.txt, probe.md, scratchpad_commit.log, tmpihejs9h3.py, scratch/tmi_status.py.orig, _build/, _build.prev/, agda/_build.prev/, agda/.build-out.log, agda/.sourced-out.log, agda/.leaf-verify.tsv, .paperkit-tmp/, .spool/, .tmp/, substrate_tooling.egg-info/, .claude/projects/, .claude/plans/, .claude/paths-forward.flock, scratch/el-openglo/, scratch/summit/, docs/retired/ (unknown, hold), inbox/*.md live letters (existing status quo is untracked drop zone, not mine to reorganize). HYGIENE IN THE SAME COMMIT: add the junk classes to .gitignore (.build.log, *.orig, a.out, _build.prev/, .paperkit-tmp/, .spool/, .tmp/, *.egg-info/, .claude/projects/, .claude/plans/, .claude/*.flock) so they stop appearing. WHAT THE MESSAGE MUST CARRY: the failing gate list from a real run (from the isolated attempts: 25 stages in attempt 3, plus Phase C: Set1 ratchet UNDECODABLE because the compiled agdai decoder helper is host state, and cap ratchet with a long list of over-cap modules against an EMPTY baseline) as the starting debt, and the finding that HEAD's own agda tree builds clean from cold (2409 modules, measured inside the snapshot). The commit instrument is the single authorized gate bypass; nothing is pushed. | 2026-10-10: 2026-10-10 STAGED: .gitignore hygiene (junk classes), git add -u, then the untracked tooling by rule (substrate, stubs, features, scripts, .githooks, .claude/agents, .claude/skills, jea/metalanguage, scratch/gate_wall_census.py), agda/Substrate (the split outputs), and the manifests and queue files. 7018 files, +593451 -47185. Remaining untracked is exactly the excluded set (root scratch files body.txt cleanroom-the-noqas.txt probe.md scratchpad_commit.log tmpihejs9h3.py, docs/retired, scratch/el-openglo, scratch/summit, live inbox letters) plus agda directories that hold only gitignored time ledgers. SECRET SCAN by name over the staged set (env, pem, p12, pfx, id_rsa, id_ed25519, secret, credential, password, token, key, keyring): only substrate/agda_tokens.py and its selftest matched (an agda tokenizer, not a secret). The commit attempt was REFUSED BY THE HARNESS hook 'no-verify' (mtools policy: never --no-verify; post-commit also refuses to push a tree whose gate did not run). I did not work around it. Neither substrate's nor mtools' pre-commit has an exemption mechanism (searched both). Commit message is in scratchpad/bootstrap-commit-message.txt, verbatim from the plan. | 2026-10-10: 2026-10-10 later: re-staged after W330 (the gate_status drain landed new modules and a shim). Index now 7024 files, +594077 -47185, and git diff --stat is empty, so the staged set equals the worktree for everything tracked or added. NOTE: every tick writes the queue files (.claude/paths-forward.json, .ledger, .md), which makes the staged copy stale again. Run git add -u before the commit if you want the newest queue in it, the message file does not change. | 2026-11-16T01:05:00Z: 2026-11-16 (substrate-a5): the commit-message file named in blocked_on (/var/tmp/claude-1000/-home-mikemol-github-substrate/ec9fd63f-74f1-4584-92b0-1d3f17f2af15/scratchpad/bootstrap-commit-message.txt) NO LONGER EXISTS (ls: No such file or directory); the scratchpad was cleared. The operator command as written cannot run. The message must be rebuilt from this card's evidence (the 2026-10-10 design) and kept durably, e.g. as a git blob, before the operator can act. Also re-measure the staged set: it was 7024 files on 2026-10-10 and this session has not measured it. Now blocks W349 (red gate: HEAD lacks pyproject.toml/uv.lock/the substrate package/regenerated makefiles). | 2026-11-16T01:06:58Z: 2026-11-16: removed W349 from blocked_on. W333 is the repair for the red gate W349, and --gate-red had added it because no --except was passed (warm-reviewer R4). The operator act is kept verbatim for now; its message-file path is dead and gets replaced once the message is rebuilt. | 2026-11-16T01:07:20Z: 2026-11-16 ruling read (W332 evidence, operator via AskUserQuestion 2026-10-10): '3 now, then 1 ... ONE explicit plain-path bootstrap commit for the tooling plus the Agda edits, with the failing gates listed in its message as the starting debt ... This authorizes exactly one gate-bypassing commit'. The ruling authorizes the bypass in principle. The harness's no-verify refusal (mtools policy, operator 2026-09-07) is a separate permission boundary that the agent may not route around. So an operator act genuinely remains: run the commit, or lift the hook for that one commit. W332 has no transcript warrant, only the prose citation 'AskUserQuestion, host session'. Message rebuild: the design is in this card, but the required 'failing gate list from a real run' cannot be reconstructed. The 2026-10-10 list was never stored, and today's queue-only run lists only 3 checks because its snapshot excluded the staged arc. A fresh gate run over the staged tree is needed for an honest list; it is not done here. | 2026-11-16T01:10:25Z: 2026-11-16 github-cb (host): the 2026-10-10 bypass authorization predates the bazel-precommit rule and the hook refusing --no-verify, and the newest word wins. Try the gate first with a normal mikemol-commit stack carrying the WHOLE staged arc, which has exactly what HEAD lacks. A refusal names the real blocker. Only if a gated path is impossible does this become 'operator: act <exact command>', as a card plus push notification with the refusal attached. Rebuild the message under .claude/ (durable), not the scratchpad. Also: github:W62 no longer waits on substrate:W344. | 2026-11-16T12:16:41Z: G0 tick 4 (written before --tick-open): advances W333 as a PROBE. Actuator: mikemol-commit --stack over every staged path of the bootstrap arc, run in the background. Sensor: its last line plus the refusal cause above it. Expected reading: REFUSED (operator 2026-11-15: gate not expected to pass; ratchets need refactor; make infra to be rebuilt as bazel, non-hermetic only for postgres ingest/query orchestration). The deliverable is the list of red gates, each becoming a refactor card blocking W333; a refusal is not an operator act. | 2026-11-16T13:16:43Z: Tick 4 probe, matching G0's expected reading. Run 1 refused at census-sync (sql and tool-mode censuses stale); both re-synced in the real tree and restaged. Run 2: 'REFUSED substrate (rc=1): the tip of a 1-commit stack was gated once and refused; nothing landed, HEAD is still 771283c; culprit: entry 1/1 (W333)'. Full log (11832 lines) is git blob 5081ff183e18135df1ff4ddac70a432793d0aff5. Per-check failure inventory: queued for the gate-oracle (next subagent) and feeds W352. | 2026-11-16T13:47:44Z: R5 finding: blocked_on rewritten to W352/W353. The old 'operator: act' text cited a dead scratchpad path, and the tick-4 probe showed a refusal is not an operator act: the arc lands on branch gate-rebuild (operator 9b009522) and reaches main only through W353's guard.",
       "issued_at": "2026-10-10T21:41:08Z",
       "minted_during": "interrupt",
       "caused_by": "W332",
-      "last_worked": "2026-11-16T13:16:43Z",
-      "ticks_blocked": 1,
+      "last_worked": "2026-11-16T13:47:44Z",
+      "ticks_blocked": 0,
       "completed": null,
       "weight": 1
     },
@@ -8657,11 +8653,11 @@
       ],
       "blocked_kind": "agent",
       "next_bounded_step": "mikemol-repin --root /home/mikemol/github/substrate --sha f04f0a2f6b93b69e8e479d341f50ac786f801995 (dry run, then read each row against the real pyproject.toml and uv.lock), then the same with --write, read the uv.lock diff, commit through mikemol-commit. Done when the repin_behind_par alert for substrate clears (par moved from a61069e to f04f0a2 in luthen 423e8b1)",
-      "evidence": "",
+      "evidence": "2026-11-16T13:44:51Z: 2026-11-16 readiness review (github-cb, .claude/unfreeze-readiness.md REV 1): the repin target is the LIVE fleet pin, read from the pinned install's direct_url.json at repin time (today: mtools 636e39b via nemik 896263e), not the older par a61069e.",
       "issued_at": "2026-10-11T20:19:33Z",
       "minted_during": "interrupt",
       "caused_by": "github:W16",
-      "last_worked": "2026-11-16T00:51:08Z",
+      "last_worked": "2026-11-16T13:44:51Z",
       "ticks_blocked": 2,
       "completed": null
     },
@@ -8976,7 +8972,7 @@
     {
       "symbol": "W351",
       "title": "drain substrate/file_write.py and scratch/vfs.py fsync writers into mikemol.atomicwrite durable.write_atomic",
-      "status": "ready",
+      "status": "blocked",
       "enables": [
         "mtools:W2486"
       ],
@@ -8988,13 +8984,13 @@
       "blocked_on": [
         "W349"
       ],
-      "blocked_kind": null,
+      "blocked_kind": "agent",
       "next_bounded_step": "after the gate is green (W349) and mtools:W2487 lands: pin mikemol-atomicwrite at the shared mtools sha, replace both writers with durable.write_atomic (stage/commit where a step sits between), tests rely on MIKEMOL_ATOMICWRITE_TEST_NO_FSYNC only",
       "evidence": "",
       "issued_at": "2026-11-16T11:23:13Z",
       "minted_during": "interrupt",
       "caused_by": "mtools:W2494",
-      "last_worked": "2026-11-16T11:23:16Z",
+      "last_worked": "2026-11-16T13:48:25Z",
       "ticks_blocked": 0,
       "manifest": [
         "substrate/file_write.py",
@@ -9002,7 +8998,8 @@
         "pyproject.toml",
         "uv.lock"
       ],
-      "size_class": "medium"
+      "size_class": "medium",
+      "completed": null
     },
     {
       "symbol": "W352",
@@ -9158,6 +9155,32 @@
           "mtools:reason": "use the warm/cold reviewer process with the GitHub session for these steps"
         }
       ]
+    },
+    {
+      "symbol": "W354",
+      "title": "sibling paths become pinned fetches: MODULE.bazel remote and SHIM_DIR",
+      "status": "ready",
+      "enables": [],
+      "touches": [
+        "file:MODULE.bazel!w",
+        "file:scripts/gen_build_makefiles.py!w"
+      ],
+      "blocked_on": [],
+      "blocked_kind": null,
+      "next_bounded_step": "replace MODULE.bazel's git_override remote=/home/mikemol/github/mtools with a pinned remote fetch at the fleet pin; make gen_build_makefiles emit SHIM_DIR relative to the checkout (not the absolute live path); regenerate agda/Makefile and agda/Flat.mk; on branch gate-rebuild",
+      "evidence": "",
+      "issued_at": "2026-11-16T13:44:51Z",
+      "minted_during": "interrupt",
+      "caused_by": "github-cb",
+      "last_worked": "2026-11-16T14:06:44Z",
+      "ticks_blocked": 0,
+      "manifest": [
+        "MODULE.bazel",
+        "scripts/gen_build_makefiles.py",
+        "agda/Makefile",
+        "agda/Flat.mk"
+      ],
+      "size_class": "medium"
     }
   ],
   "residue": [
@@ -9188,11 +9211,12 @@
   "advice": [],
   "standing": [
     "Before launching any subagent, read the reviewed-loop skill and resume the warm reviewer; at most one token spender runs at a time.",
-    "Minting or queuing a card is never an operator ask: queue it, and ask only through an `operator: decide` or `operator: act` card."
+    "Minting or queuing a card is never an operator ask: queue it, and ask only through an `operator: decide` or `operator: act` card.",
+    "An operator directive that changes the arc mid-tick closes the open tick first: --tick-close naming the card G0 advanced, --blocked-by the directive's card, and --reason quoting the operator uuid. The directive's work then runs as a '-' interrupt or as a new tick with its own G0. Never hold the tick lock across an arc change.",
+    "Before any mikemol-commit while the real index holds staged paths the commit does not carry, preserve the index as a ref (git update-ref refs/preserve/<card>-staged-<date> on a commit-tree of git write-tree) and log the sha on the card.",
+    "Each subagent launch and each return is a ledger '-' line ('spender: <agent> start' / 'return'), and the session makes no other tool calls in between, so the one-token-spender rule is checkable afterwards."
   ],
-  "tick_hooks": [
-    "/home/mikemol/.local/share/luthen-tools/live/nemik/bin/nemik-check --warnings --repo substrate"
-  ],
+  "tick_hooks": [],
   "retros": [
     {
       "card": "W346",
@@ -9442,7 +9466,79 @@
         }
       ],
       "id": "substrate:R4"
+    },
+    {
+      "card": "W333",
+      "trigger": "tick 4: G0 (pre-open) probed the bootstrap arc via mikemol-commit; run 1 refused at census-sync, run 2 REFUSED (HEAD 771283c, log blob 5081ff18); --tick-open ran >300s and re-blocked 280 cards behind W349; operator ruled mid-tick (9b009522, 46a10381): feature branch, rebuild the gate, main guarded; 57d2119 landed on gate-rebuild and reset the real index; arc preserved at refs/preserve/W333-staged-2026-11-16; tick never closed; warm reviewer lost to compaction, so cold-review and pre-reviewer records are UNKNOWN",
+      "root": "no standing rule says what happens to an open tick when an operator directive changes the arc mid-tick, so the session ran the new arc (W351-W354, the branch commit, github-cb reviews) under the tick-4 lock with no close, no G1, and no token-spender record, while the control-law reviewer was down",
+      "contributing": [
+        "--tick-open runs a fleet-wide re-block and nemik-check inside the call, so it exceeded 300s again (R4 finding 4 unmet)",
+        "W333 blocked_on still cites the dead scratchpad path; nemik-check flags 'nothing to run' and 'no warrant' (R4 finding 2 unmet)",
+        "G0's deliverable (one refactor card per red gate) was replaced by a single W352 with an empty next step",
+        "mikemol-commit on 57d2119 refreshed the real index to HEAD; only a manually made preserve ref kept ~7026 paths",
+        "W351 status=ready with blocked_on=[W349]",
+        "subagent runs (gate-oracle closure, readiness gatherer) are recorded as queued with no idle mark, so the one-token-spender rule cannot be verified",
+        "github-cb reviewed the gate-rebuild artifacts but not the session's control law; warm reviewer gap from compaction until re-seed"
+      ],
+      "precommit": "G0 tick 4 (written before --tick-open, 2026-11-16T12:16:41Z): advances W333 as a PROBE. Actuator: mikemol-commit --stack over every staged path, in the background. Sensor: its last line plus the refusal cause. Expected reading: REFUSED. Deliverable: the list of red gates, each becoming a refactor card blocking W333.",
+      "delta": "Met: expected reading REFUSED (run 2), log durable as blob 5081ff18. Not met: per-gate inventory and cards (W352 only, empty next step); --tick-open not read in the foreground; tick not closed; W333 blocked_on not rewritten. Added and unplanned: operator directive arc, W351-W354, 57d2119 on gate-rebuild, the preserve ref, mtools W2581/W2582/W2584/W2585.",
+      "sustain": [
+        "G0 written before --tick-open with an expected reading, and the reading matched",
+        "refusal log stored as a git blob, not a scratchpad path",
+        "operator rulings warranted by transcript uuid and line on W352 and W353",
+        "the staged arc preserved as a ref before it could be lost",
+        "branch pushed by name rather than by mikemol-commit's printed push line (W352 evidence)",
+        "github-cb warm reviews recorded on cards with their ruling keys"
+      ],
+      "enforcement_layer": "instructions",
+      "handoff": {
+        "instrument": "the writer ledger shows a --tick-close line for tick 4 naming W333 and blocked-by W352, then --unlock substrate-a5",
+        "channel": "writer --tick-close / --unlock",
+        "operator": "self"
+      },
+      "findings": [
+        {
+          "finding_card": "W333",
+          "finding_owner": "substrate-a5",
+          "due": "2026-11-16",
+          "finding_witness": "ledger shows tick 4 closed with advanced W333 and --blocked-by W352 plus --reason quoting operator uuid 9b009522; --show lock not held by substrate-a5"
+        },
+        {
+          "finding_card": "W333",
+          "finding_owner": "substrate-a5",
+          "due": "2026-11-17",
+          "finding_witness": "--show W333 blocked_on carries no scratchpad path and no 'operator: act' text (the probe showed a refusal is not an operator act); it names W352/W353 instead; nemik-check --warnings --repo substrate prints no 'nothing to run' row for W333"
+        },
+        {
+          "finding_card": "W352",
+          "finding_owner": "substrate-a5",
+          "due": "2026-11-17",
+          "finding_witness": "W352 evidence quotes the gate-oracle per-check failure inventory from blob 5081ff18, and one card per red check exists with caused_by W352 (or W352 carries a non-empty next_bounded_step naming that split)"
+        },
+        {
+          "finding_card": "W351",
+          "finding_owner": "substrate-a5",
+          "due": "2026-11-16",
+          "finding_witness": "--show W351 status is blocked while blocked_on is non-empty"
+        },
+        {
+          "finding_card": "W349",
+          "finding_owner": "substrate-a5",
+          "due": "2026-11-17",
+          "finding_witness": "--tick-open completes in the foreground within the call timeout (tick hook nemik-check scoped --repo substrate, or moved to a post-open background step) and G1 quotes its exit line"
+        },
+        {
+          "finding_card": "W352",
+          "finding_owner": "substrate-a5",
+          "due": "2026-11-17",
+          "finding_witness": "git -C substrate log --oneline 771283c..gate-rebuild shows the 7-entry arc stack landed, and git diff --shortstat refs/preserve/W333-staged-2026-11-16 gate-rebuild is empty except for the queue files"
+        },
+        {
+          "certify_change": "Seed provenance: this reviewer was re-seeded after compaction. Its predecessor's unreported state, the cold-review records, and the pre-reviewer records are UNKNOWN, not empty. The subtracted set R1-R4 came from --retros (mtools:W2088)."
+        }
+      ],
+      "id": "substrate:R5"
     }
   ],
-  "retro_counter": 4
+  "retro_counter": 5
 }
