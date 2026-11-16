@@ -14,7 +14,6 @@
 
 module Substrate.Groups.SemidirectProduct.S where
 
-open import Substrate.Foundation.Eq using (_≡_; sym; trans; cong)
 
 open import Substrate.Axes.Axis using (Axis; D)
 open import Substrate.Axes.ActAxis using (act-axis)
@@ -23,7 +22,20 @@ open import Substrate.Groups.Symmetric.Permutation.Compose Axis using (_·_)
 open import Substrate.Groups.V4-Embedding
   using (embed; act-axis-involutive)
 
-open import Substrate.Groups.SemidirectProduct.V
+open import Substrate.Groups.SemidirectProduct.V.NonDSends
+open import Substrate.Groups.SemidirectProduct.V.Private
+open import Substrate.Groups.SemidirectProduct.V.SelfToD
+open import Substrate.Groups.SemidirectProduct.V.VFor
+open import Substrate.Groups.SemidirectProduct.V.VForAnchor
+open import Substrate.Groups.SemidirectProduct.V.VForAnchorSends
+open import Substrate.Groups.SemidirectProduct.V.VOfAxisAnchor
+open import Substrate.Groups.SemidirectProduct.V.VOfAxisAnchorSends
+open import Substrate.Groups.SemidirectProduct.V.VOfAxisUnique
+open import Substrate.Groups.SemidirectProduct.V.VSendsD
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- D-anchored residue. (X=D specialisation of s-for-anchor.)

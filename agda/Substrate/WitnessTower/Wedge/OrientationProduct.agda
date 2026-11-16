@@ -25,14 +25,15 @@
 
 module Substrate.WitnessTower.Wedge.OrientationProduct where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _*_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Times
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Combine using (combine)
 open import Substrate.Foundation.Fin.RemQuot using (remQuot)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; lookup; tabulate)
 open import Substrate.Foundation.Product using (proj₁; proj₂)
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.WitnessTower.Enumerate using (Perm)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. THE GRADED PRODUCT. A grade-shifting map Perm m → Perm n → Perm (m * n):

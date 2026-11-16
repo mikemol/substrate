@@ -13,12 +13,10 @@
 
 module Substrate.TokiPona.QFragment where
 
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Vec using (Vec; []; _∷_)
-open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Nat.Nat
 
-open import Substrate.Algebra.Z using (ℤ; +_; -suc_)
-open import Substrate.Algebra.Q using (ℚ; mkℚ; 0ℚ; 1ℚ)
+open import Substrate.Algebra.Z.Int
+open import Substrate.Algebra.Q.Rat
 open import Substrate.TokiPona.Nimi
   using (Nimi; jan; soweli; lili; pona; wawa; nimi-count)
 open import Substrate.TokiPona.QSemanticSpace using (QSemVec; basis-ℚ)
@@ -27,6 +25,7 @@ open import Substrate.TokiPona.QModifierBilinear
   using (modify-Q-sum; modify-Q-prod; _·ℚⱽ_)
 open import Substrate.TokiPona.QTokiSentence
   using (QTokiSentence; Q-intransitive; interpret-sum)
+open import Substrate.Algebra.Q.Vector
 
 ------------------------------------------------------------------------
 -- 1. Named rationals for demos.

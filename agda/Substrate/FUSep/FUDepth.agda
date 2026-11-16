@@ -26,10 +26,13 @@
 
 module Substrate.FUSep.FUDepth where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Foundation.List using (List; []; _∷_; _++_)
 import Substrate.FUSep.ConversionCongruence as ConversionCongruence
 open ConversionCongruence using (ARS)
+open import Substrate.Foundation.Eq
+open import Substrate.Category.UniversalProperty.DiagonalDoFComputable
+open import Substrate.FUSep.FUSepConvEtaWitness
+open import Substrate.Category.PresentedUniversalProperty.CyclicZ2
 
 -- local equality helpers ----------------------------------------------
 

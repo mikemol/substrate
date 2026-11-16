@@ -51,9 +51,9 @@
 
 module Substrate.WitnessTower.SnVersusTwoPowTowers where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Bool using (Bool)
+open import Substrate.Foundation.Bool.Bool
 open import Substrate.Foundation.Vec using (Vec)
 open import Substrate.Algebra.Wedge.Graded using (GradedDivStr)
 
@@ -68,8 +68,8 @@ open import Substrate.WitnessTower.SnVersusTwoPow
          complement-8-reappears)
 open import Substrate.WitnessTower.VecBoolCardinality using (allVB; card-VecBool)
 open import Substrate.WitnessTower.Enumerate using (lengthL)
-open import Substrate.Foundation.Eq using (_≡_)
-open import Substrate.Foundation.Nat using (_^_)
+open import Substrate.Foundation.Nat.Pow
+open import Substrate.Foundation.Eq
 Ⓣ₁-graded : GradedDivStr Perm (λ n → Fin (suc n))
 Ⓣ₁-graded = tower-graded
 

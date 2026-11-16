@@ -11,8 +11,9 @@ module Substrate.Algebra.F2.HodgeDim3.MetricGauge.CoxeterRelations.HasOrderS1S2 
 
 open import Substrate.Foundation.Product using (_,_)
 open import Substrate.Foundation.Fin.Cover using (fin-cover)
-open import Substrate.Foundation.Eq  using (_≡_)
-open import Substrate.Algebra.F2.Linear using (apply; id-L; _∘L_)
+open import Substrate.Algebra.F2.Linear.CompL
+open import Substrate.Algebra.F2.Linear.IdL
+open import Substrate.Algebra.F2.Linear.Linear
 open import Substrate.Algebra.F2.Linear.Universal using (linear-extensionality)
 open import Substrate.Category.Coalgebra.FiniteOrder using (HasOrder)
 open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.Stabiliser using (s₁; s₂)
@@ -20,6 +21,7 @@ open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.CoxeterRelations.S1S2Endo
 open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.CoxeterRelations.S1S2CubedOnE0 using (s₁∘s₂-cubed-on-e₀)
 open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.CoxeterRelations.S1S2CubedOnE1 using (s₁∘s₂-cubed-on-e₁)
 open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.CoxeterRelations.S1S2CubedOnE2 using (s₁∘s₂-cubed-on-e₂)
+open import Substrate.Foundation.Eq
 
 HasOrder-s₁∘s₂ : HasOrder s₁∘s₂-endo 3
 HasOrder-s₁∘s₂ = linear-extensionality

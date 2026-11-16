@@ -12,8 +12,8 @@
 
 module Substrate.Category.UniversalProperty.ConstantSheaf where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Category.UniversalProperty.Presheaf using (UPPresheaf)
+open import Substrate.Foundation.Eq
 
 module _ (O : Set) (Hom : O → O → Set) where
 

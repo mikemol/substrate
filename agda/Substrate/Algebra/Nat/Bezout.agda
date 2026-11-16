@@ -1,11 +1,11 @@
 ------------------------------------------------------------------------
 -- Substrate.Algebra.Nat.Bezout
 --
--- Bezout's identity at ℕ: gcd(a, b) = s · a + t · b at ℤ; at ℕ
+-- Bezout's identity at ℕ: gcd(a, b) = s · a ℕ+ t · b at ℤ; at ℕ
 -- (without negatives), we reformulate as a balanced equation with
 -- the sign captured via a sum type.
 --
--- BezoutWitness a b g := Σ[ s, t : ℕ ] (s · a ≡ t · b + g  ⊎  t · b ≡ s · a + g)
+-- BezoutWitness a b g := Σ[ s, t : ℕ ] (s · a ≡ t · b ℕ+ g  ⊎  t · b ≡ s · a ℕ+ g)
 --
 -- The two sides of the sum capture which way the +g goes.
 --
@@ -28,19 +28,21 @@
 
 module Substrate.Algebra.Nat.Bezout where
 
-open import Substrate.Foundation.Nat using (ℕ; _+_; _*_)
-open import Substrate.Foundation.Sum using (_⊎_)
-open import Substrate.Foundation.Eq using (_≡_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Times
+open import Substrate.Foundation.Sum.Sum
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- N-1: BezoutWitness — the Bezout identity at ℕ.
 --
 -- Captures the "balanced" Bezout equation:
---   s · a ≡ t · b + g          (left case: s·a is the "bigger side")
+--   s · a ≡ t · b ℕ+ g          (left case: s·a is the "bigger side")
 --   OR
---   t · b ≡ s · a + g          (right case: t·b is the "bigger side")
+--   t · b ≡ s · a ℕ+ g          (right case: t·b is the "bigger side")
 --
--- At ℤ, these merge into s · a + t · b = g via signed coefficients.
+-- At ℤ, these merge into s · a ℕ+ t · b = g via signed coefficients.
 -- At ℕ, the sign is captured by which inj of the sum type.
 ------------------------------------------------------------------------
 
@@ -48,6 +50,6 @@ record BezoutWitness (a b g : ℕ) : Set where
   field
     s : ℕ
     t : ℕ
-    eq : (s * a ≡ t * b + g) ⊎ (t * b ≡ s * a + g)
+    eq : (s * a ≡ t * b ℕ+ g) ⊎ (t * b ≡ s * a ℕ+ g)
 
 open BezoutWitness public

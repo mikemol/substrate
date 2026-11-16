@@ -34,17 +34,48 @@ open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.CongruenceAct using (cong
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Literals using (₀; ₁; ₂; ₃; ₄; ₅)
 open import Substrate.Foundation.Vec using ([]; _∷_; lookup)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; trans; cong)
 
-open import Substrate.Algebra.F2
+open import Substrate.Algebra.F2.AbsorbL
+open import Substrate.Algebra.F2.AbsorbR
+open import Substrate.Algebra.F2.Assoc
+open import Substrate.Algebra.F2.Comm
+open import Substrate.Algebra.F2.Dec
+open import Substrate.Algebra.F2.DistribLPlus
+open import Substrate.Algebra.F2.DistribRPlus
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.F2Cases
+open import Substrate.Algebra.F2.Idempotent
+open import Substrate.Algebra.F2.IdentityL
+open import Substrate.Algebra.F2.IdentityR
+open import Substrate.Algebra.F2.InvOfOne
+open import Substrate.Algebra.F2.OneNeqZero
+open import Substrate.Algebra.F2.Op
+open import Substrate.Algebra.F2.Op2
+open import Substrate.Algebra.F2.PlusAssoc
+open import Substrate.Algebra.F2.PlusComm
+open import Substrate.Algebra.F2.PlusF
+open import Substrate.Algebra.F2.PlusIdentityL
+open import Substrate.Algebra.F2.PlusIdentityR
+open import Substrate.Algebra.F2.PlusInverseL
+open import Substrate.Algebra.F2.PlusInverseR
+open import Substrate.Algebra.F2.PlusSelfInverse
+open import Substrate.Algebra.F2.ZeroNeqOne
 open import Substrate.Algebra.F2.Vector
-open import Substrate.Algebra.F2.Linear
+open import Substrate.Algebra.F2.Linear.CompL
+open import Substrate.Algebra.F2.Linear.CompLAssoc
+open import Substrate.Algebra.F2.Linear.CompLIdentityL
+open import Substrate.Algebra.F2.Linear.CompLIdentityR
+open import Substrate.Algebra.F2.Linear.IdL
+open import Substrate.Algebra.F2.Linear.Linear
+open import Substrate.Algebra.F2.Linear.Preserves
 open import Substrate.Algebra.F2.Linear.FromImages
   using (linear-from-images; apply-linear-from-images-basis)
 open import Substrate.Algebra.F2.HodgeDim3.MetricGauge
 open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.BilinearFormSteps
   using (diag-bf-step; off-diag-bf-step)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- N-1: T-id-to-fully-coupled.
@@ -90,7 +121,7 @@ T-fc-on-e₂ = apply-linear-from-images-basis T-id-to-fully-coupled-images ₂
 --
 -- Mechanically follows the template from
 -- `congruence-id-to-mixed` in MetricGauge.agda: ≡-from-lookup on the 6
--- entries, each closing by `cong` over the T-fc-on-eᵢ helpers + F₂-
+-- entries, each closing by `cong` over the T-fc-on-eᵢ helpers +F F₂-
 -- arithmetic evaluation by Agda.
 ------------------------------------------------------------------------
 
@@ -129,7 +160,7 @@ congruence-id-to-fully-coupled = ≡-from-lookup _ _ goal
 -- Deferred (coalgebraic-unfolding follow-on slices):
 --
 --   * M-11.metric-gauge.orbit-equivalence-relation: define
---     Reach / Orbit-Equiv as a relation type; refl + trans
+--     Reach / Orbit-Equiv as a relation type; refl +F trans
 --     achievable here, sym requires the GL inverse machinery.
 --
 --   * M-11.metric-gauge.congruence-compose: the structural lemma
@@ -141,8 +172,8 @@ congruence-id-to-fully-coupled = ≡-from-lookup _ _ goal
 --     normalisation showing EVERY non-degenerate symmetric form
 --     reduces to metric-id via some T ∈ GL(3, F₂). The structural
 --     single-orbit theorem for ALL 28 forms. This is the "main theorem"
---     of the metric-gauge program; the present slice + the existing
---     MetricGauge.agda + the deferred follow-ons compose into it.
+--     of the metric-gauge program; the present slice +F the existing
+--     MetricGauge.agda +F the deferred follow-ons compose into it.
 --
 -- See M-11.metric-gauge.exemplar-orbits.DBE.md for slice scoping; the
 -- parent M-11.metric-gauge.DBE.md catalogs the full set of deferred

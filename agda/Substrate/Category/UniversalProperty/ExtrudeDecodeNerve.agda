@@ -25,17 +25,20 @@
 
 module Substrate.Category.UniversalProperty.ExtrudeDecodeNerve where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; cong; sym; trans)
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _≤_; z≤n; s≤s)
+open import Substrate.Foundation.Nat.Le
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.List using (List; []; _∷_; _++_)
-open import Substrate.Algebra.R.Trace.SKIShedDuality using (S; K; I; _∙_) renaming (Tm to Tm⟦533ef80d⟧)
-open import Substrate.WitnessTower.SimplicialBoundary using (delAt; simplicial)
+open import Substrate.Algebra.R.Trace.SKIShedDuality.Tm
+open import Substrate.WitnessTower.SimplicialBoundary.DelAt
+open import Substrate.WitnessTower.SimplicialBoundary.Simplicial
+open import Substrate.Foundation.Eq
+open import Substrate.Algebra.R.Trace.SKIShedDuality.Tm
 
 ------------------------------------------------------------------------
 -- ① THE ORDERED-VERTEX SIMPLEX of a term is its LEFT-SPINE: a left-nested application h ∙ a₁ ∙ … ∙ aₙ is
 --    the simplex [h, a₁, …, aₙ] (head vertex + argument vertices). This is the term as a face of the nerve.
 ------------------------------------------------------------------------
-spine : Tm⟦533ef80d⟧ → List Tm⟦533ef80d⟧
+spine : Tm → List Tm
 spine (f ∙ x) = spine f ++ (x ∷ [])
 spine S = S ∷ []
 spine K = K ∷ []
@@ -46,20 +49,20 @@ spine I = I ∷ []
 --    head (delAt 0); the K face drops the head-pair {K, y} (delAt 1 ∘ delAt 0, a codim-2 = ∂² descent).
 ------------------------------------------------------------------------
 -- β-I: I drops the HEAD vertex — delAt 0. On the 2-vertex spine [I, x]: delAt 0 [I,x] = [x] = the reduct x.
-βI-is-delAt0 : (x : Tm⟦533ef80d⟧) → delAt 0 (I ∷ x ∷ []) ≡ x ∷ []
+βI-is-delAt0 : (x : Tm) → delAt 0 (I ∷ x ∷ []) ≡ x ∷ []
 βI-is-delAt0 x = refl
 
 -- the actual β-I reduct's spine: (I ∙ x) ⇒ x, and delAt 0 (spine (I ∙ x)) ≡ spine' of the reduct's head-arg.
 -- spine (I ∙ x) = [I, x]; dropping the head vertex I (delAt 0) leaves [x] — the argument promoted to root.
-spine-βI : (x : Tm⟦533ef80d⟧) → delAt 0 (spine (I ∙ x)) ≡ x ∷ []
+spine-βI : (x : Tm) → delAt 0 (spine (I ∙ x)) ≡ x ∷ []
 spine-βI x = refl
 
 -- β-K: K drops the pair {K (head), y (2nd arg)} — delAt 1 ∘ delAt 0, keeping x. On [K, x, y]: delAt 0 = [x,y],
 -- delAt 1 = [x] = the reduct x. This is a codim-2 face — exactly the ∂∘∂ pair-drop.
-βK-is-delAt10 : (x y : Tm⟦533ef80d⟧) → delAt 1 (delAt 0 (K ∷ x ∷ y ∷ [])) ≡ x ∷ []
+βK-is-delAt10 : (x y : Tm) → delAt 1 (delAt 0 (K ∷ x ∷ y ∷ [])) ≡ x ∷ []
 βK-is-delAt10 x y = refl
 
-spine-βK : (x y : Tm⟦533ef80d⟧) → delAt 1 (delAt 0 (spine ((K ∙ x) ∙ y))) ≡ x ∷ []
+spine-βK : (x y : Tm) → delAt 1 (delAt 0 (spine ((K ∙ x) ∙ y))) ≡ x ∷ []
 spine-βK x y = refl
 
 ------------------------------------------------------------------------
@@ -67,12 +70,12 @@ spine-βK x y = refl
 --    SimplicialBoundary.simplicial. So the codim-2 K-drop (delAt 1 ∘ delAt 0) is a well-defined nerve face,
 --    and the order of dropping the pair {K, y} is coherent — the reduction descent respects the nerve.
 ------------------------------------------------------------------------
-face-coherence : (i j : ℕ) → i ≤ j → (xs : List Tm⟦533ef80d⟧) →
+face-coherence : (i j : ℕ) → i ≤ j → (xs : List Tm) →
                  delAt i (delAt (suc j) xs) ≡ delAt j (delAt i xs)
 face-coherence = simplicial
 
 -- the K-drop's two faces commute coherently (the ∂² pair {head, arg} is order-independent up to the identity):
-K-pair-coherent : (xs : List Tm⟦533ef80d⟧) → delAt 0 (delAt 1 xs) ≡ delAt 0 (delAt 0 xs)
+K-pair-coherent : (xs : List Tm) → delAt 0 (delAt 1 xs) ≡ delAt 0 (delAt 0 xs)
 K-pair-coherent xs = simplicial 0 0 z≤n xs
 
 ------------------------------------------------------------------------

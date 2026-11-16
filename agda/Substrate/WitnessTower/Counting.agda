@@ -17,12 +17,18 @@
 
 module Substrate.WitnessTower.Counting where
 
-open import Substrate.Foundation.Nat  using (ℕ; zero; suc; _*_; _∸_; _≤_; s≤s)
-open import Substrate.Foundation.Eq   using (_≡_; refl; cong; trans; sym)
+open import Substrate.Foundation.Nat.Le
+open import Substrate.Foundation.Nat.Monus
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Times
 open import Substrate.Foundation.Nat.Properties.Mul   using (*-comm; *-assoc; *-identityˡ)
 open import Substrate.Foundation.Nat.Properties.Sub   using (∸-suc-l)
 open import Substrate.Foundation.Nat.Properties.Order using (≤-suc-r)
 open import Substrate.WitnessTower.Enumerate using (factorial)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Sym
 
 -- P(n,k): k rungs, each rung places one of the (n ∸ i) symbols not yet used.
 falling : ℕ → ℕ → ℕ

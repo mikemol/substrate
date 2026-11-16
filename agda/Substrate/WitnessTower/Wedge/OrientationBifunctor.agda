@@ -9,7 +9,7 @@
 -- needed the laws PROVEN (a build, not a pure lift — the char lemmas ⊕map-inject/raise,
 -- ⊗map-combine already existed, the id/∘ laws did not).
 --
---   ⊕-bifunctor : GradedBifunctor _+_    (the ⊎-split bifunctor, splitAt/[inject+,raise])
+--   ⊕-bifunctor : GradedBifunctor _ℕ+_    (the ⊎-split bifunctor, splitAt/[inject+,raise])
 --   ⊗-bifunctor : GradedBifunctor _*_    (the ×-split bifunctor, remQuot/combine)
 --
 -- With this the arc's four decomposition-free invariants are complete: GradedProductOver
@@ -23,32 +23,37 @@
 
 module Substrate.WitnessTower.Wedge.OrientationBifunctor where
 
-open import Substrate.Foundation.Nat using (ℕ; _+_; _*_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Times
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.RemQuot using (remQuot)
 open import Substrate.Foundation.Fin.Combine.CombineRemQuotInverse using (combine-remQuot)
 open import Substrate.Foundation.Fin.SplitAt.View using (splitAt-view; fromₗ; fromᵣ)
 open import Substrate.Foundation.Product using (proj₁; proj₂)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
 open import Substrate.WitnessTower.Wedge.OrientationHexagon
   using (_⊕map_; ⊕map-inject; ⊕map-raise)
 open import Substrate.WitnessTower.Wedge.OrientationDistributorCoherence
   using (_⊗map_; ⊗map-combine)
 open import Substrate.WitnessTower.Wedge.OrientationBimonoidal using (GradedBifunctor)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
--- 1. ⊕map functoriality (over +, the ⊎-split). id/∘ by cases on which block x is in
+-- 1. ⊕map functoriality (over ℕ+, the ⊎-split). id/∘ by cases on which block x is in
 --    (splitAt-view), each closed by the block-characterization ⊕map-inject / ⊕map-raise.
 ------------------------------------------------------------------------
 
-⊕map-id : ∀ {m n} (x : Fin (m + n)) → _⊕map_ {m} {n} {m} {n} (λ i → i) (λ j → j) x ≡ x
+⊕map-id : ∀ {m n} (x : Fin (m ℕ+ n)) → _⊕map_ {m} {n} {m} {n} (λ i → i) (λ j → j) x ≡ x
 ⊕map-id {m} {n} x with splitAt-view m x
 ... | fromₗ j = ⊕map-inject {m} {n} {m} {n} (λ i → i) (λ j → j) j
 ... | fromᵣ i = ⊕map-raise  {m} {n} {m} {n} (λ i → i) (λ j → j) i
 
 ⊕map-∘ : ∀ {m n m' n' m'' n''}
          (f : Fin m' → Fin m'') (f' : Fin m → Fin m')
-         (g : Fin n' → Fin n'') (g' : Fin n → Fin n') (x : Fin (m + n)) →
+         (g : Fin n' → Fin n'') (g' : Fin n → Fin n') (x : Fin (m ℕ+ n)) →
          _⊕map_ {m} {n} {m''} {n''} (λ i → f (f' i)) (λ j → g (g' j)) x
            ≡ (f ⊕map g) ((f' ⊕map g') x)
 ⊕map-∘ {m} {n} {m'} {n'} {m''} {n''} f f' g g' x with splitAt-view m x
@@ -81,7 +86,7 @@ open import Substrate.WitnessTower.Wedge.OrientationBimonoidal using (GradedBifu
 -- 3. THE INSTANCES: both functorial index-maps package as GradedBifunctor.
 ------------------------------------------------------------------------
 
-⊕-bifunctor : GradedBifunctor _+_
+⊕-bifunctor : GradedBifunctor _ℕ+_
 ⊕-bifunctor = record
   { gmap    = λ {m} {n} {m'} {n'} f g → _⊕map_ {m} {n} {m'} {n'} f g
   ; gmap-id = λ {m} {n} k → ⊕map-id {m} {n} k

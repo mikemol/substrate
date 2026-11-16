@@ -11,7 +11,6 @@
 
 module Substrate.TokiPona.Fragment.Example3ModifierChain where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Groups.Coxeter.Word using ([]; _∷_)
 open import Substrate.TokiPona.SemanticSpace
 open import Substrate.TokiPona.Nimi
@@ -19,6 +18,7 @@ open import Substrate.TokiPona.NimiSpace using (nimi-as-vector)
 open import Substrate.TokiPona.ModifierBilinear using (modify; modifier-chain)
 open import Substrate.TokiPona.TokiSentence
 open import Substrate.TokiPona.LinearAlgebra
+open import Substrate.Foundation.Eq
 
 subject-jan-pona : SemVec nimi-count
 subject-jan-pona = modify (nimi-as-vector jan) (nimi-as-vector pona)

@@ -7,7 +7,7 @@
 --
 -- Establishes:
 --   * degree-ε  : length [] ≡ 0
---   * degree-·  : length (a ++ b) ≡ length a + length b
+--   * degree-·  : length (a ++ b) ≡ length a ℕ+ length b
 --
 -- The first is refl; the second by induction on the first word.
 --
@@ -25,27 +25,28 @@
 module Substrate.Groups.FreeCyclic-Coxeter-GradedMonoid where
 open import Substrate.Groups.Coxeter.Word using (++-assoc)
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; cong)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
 
 import Substrate.Groups.FreeCyclic-Coxeter as F
 import Substrate.Groups.FreeCyclic-Coxeter-Length as F-Len
 open import Substrate.Groups.Coxeter.Word
   using (Word; []; _∷_; _++_; ++-identity-left; ++-identity-right)
 open import Substrate.Category.GradedMonoid
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- N-1: The degree homomorphism.
 --
 -- length-of-word distributes over ++:
---   length (a ++ b) ≡ length a + length b
+--   length (a ++ b) ≡ length a ℕ+ length b
 -- Proof by induction on a.
 ------------------------------------------------------------------------
 
 length-distrib :
   (a b : Word F.Gen) →
-  F-Len.length-of-word (a ++ b) ≡ F-Len.length-of-word a + F-Len.length-of-word b
+  F-Len.length-of-word (a ++ b) ≡ F-Len.length-of-word a ℕ+ F-Len.length-of-word b
 length-distrib []      b = refl
 length-distrib (x ∷ a) b = cong suc (length-distrib a b)
 

@@ -18,14 +18,15 @@
 
 module Substrate.Category.FreeLinearizationR.FromImages where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; trans; sym)
 
 open import Substrate.Category.LinearAlgebra using (LinearAlgebra)
 open import Substrate.Category.FreeLinearizationR
   using (FreeLinearizationR)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Sym
 
 ------------------------------------------------------------------------
 -- 1. FreeLinearBuilder record.

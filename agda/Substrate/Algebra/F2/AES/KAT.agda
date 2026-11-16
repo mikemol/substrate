@@ -6,7 +6,7 @@
 -- Pins the Agda AES to the FIPS-197 test vectors by COMPUTATION.  The verified
 -- cipher is FIPS-correct component-by-component:
 --   * S-box  = the canonical AES table      — `SBoxTable.sbox-is-aes` (AI-7s, proof)
---   * MixColumns = the FIPS circulant       — `MixColumns` (AI-9, round-trip + coeffs)
+--   * MixColumns = the FIPS circulant       — `MixColumns` (AI-9, round-trip +F coeffs)
 --   * ShiftRows  = the explicit FIPS perm    — `Round.ShiftRows`
 --   * KeySchedule = the FIPS-197 §5.2 schedule — pinned HERE:
 --
@@ -17,26 +17,27 @@
 --
 -- The full encrypt KAT (`encrypt-key key-C1 pt-C1 ≡ ct-C1`) is DISCHARGED in
 -- `KAT.Full.encrypt-kat-C1` (was deferred — the monolithic refl blew up; see the
--- per-round/per-key decomposition + parameterized-module assembly there). The Octave
+-- per-round/per-key decomposition +F parameterized-module assembly there). The Octave
 -- oracle (`run_aes_oracle.py`) remains as an independent cross-check.
 -- --safe --without-K, 0 postulates.
 ------------------------------------------------------------------------
 
 module Substrate.Algebra.F2.AES.KAT where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; head)
 open import Substrate.Foundation.Product using (proj₁; proj₂)
-open import Substrate.Foundation.Eq using (_≡_; refl)
-import Substrate.Algebra.F2 as F2
+open import Substrate.Algebra.F2.F2
 open import Substrate.Algebra.F2.AES.Round using (Byte; Col; State)
 open import Substrate.Algebra.F2.AES.KeySchedule using (keyExpansion; nextRoundKey)
 open import Substrate.Algebra.F2.MixColumns.Fast using (mix-fast)
+open import Substrate.Foundation.Eq
+open import Substrate.FUSep.FUSepQHexagon.Private
 
 -- ℕ → byte (8 bits, LSB-first) and Vec ℕ 16 → State (column-major).
-odd : ℕ → F2.F₂
-odd zero          = F2.𝟘
-odd (suc zero)    = F2.𝟙
+odd : ℕ → F₂
+odd zero          = 𝟘
+odd (suc zero)    = 𝟙
 odd (suc (suc n)) = odd n
 half : ℕ → ℕ
 half zero          = 0

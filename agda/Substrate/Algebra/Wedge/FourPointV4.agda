@@ -27,9 +27,9 @@
 
 module Substrate.Algebra.Wedge.FourPointV4 where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Foundation.Product using (_×_; _,_)
 open import Substrate.Category.Lawvere using (CommutingInvolutions)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. The four points, as a 2×2 arrangement over any carrier C.

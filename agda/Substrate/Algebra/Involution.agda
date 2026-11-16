@@ -19,7 +19,10 @@
 module Substrate.Algebra.Involution where
 
 open import Agda.Primitive using (Level)
-open import Substrate.Foundation.Eq using (_≡_; sym; trans; cong)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 -- THE apex: an involution is injective (the parametric structure the 34 instances
 -- all witness). f x ≡ f y  →  f (f x) ≡ f (f y)  →  x ≡ y. The involution hypothesis

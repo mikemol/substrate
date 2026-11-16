@@ -25,13 +25,13 @@
 
 module Substrate.Logic.Evidence.Atlas where
 
-open import Substrate.Foundation.Bool    using (Bool)
+open import Substrate.Foundation.Bool.Bool
 open import Substrate.Foundation.Product using (_×_)
-open import Substrate.Foundation.Eq      using (_≡_)
 
 open import Substrate.Logic.Evidence.Verdict using (Evidence)
 open import Substrate.Logic.Evidence.Verdict.NedgeShadow
   using (recode; unrecode; recode-unrecode; unrecode-recode)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- An Atlas: one value space under two charts, with a lossless exp ⊣ log

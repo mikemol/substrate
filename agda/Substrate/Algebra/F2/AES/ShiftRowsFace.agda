@@ -27,16 +27,21 @@
 
 module Substrate.Algebra.F2.AES.ShiftRowsFace where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.To
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; lookup; tabulate)
-open import Substrate.Foundation.Vec.Properties
-  using (lookup∘tabulate; tabulate∘lookup; tabulate-cong)
-open import Substrate.Foundation.Eq using (_≡_; refl; trans; cong)
+open import Substrate.Foundation.Vec.Properties.LookupComptabulate
+open import Substrate.Foundation.Vec.Properties.TabulateComplookup
+open import Substrate.Foundation.Vec.Properties.TabulateCong
 open import Substrate.Algebra.Nat.CyclicSuc using (cyclic-suc)
 open import Substrate.Foundation.Fin.Iterate using (σ-iterate)
 open import Substrate.Algebra.F2.AES.Round using (State; ShiftRows)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Algebra.F2.Polynomial.Wedge.SBoxTable.Properties
+open import Substrate.Algebra.F2.MixColumns.Base
 
 private
   variable

@@ -11,7 +11,7 @@
 module Substrate.Cocycles.V4Signature.Codeword.Subtypes where
 
 open import Substrate.Foundation.Product using (Σ)
-open import Substrate.Foundation.Negation using (¬_)
+open import Substrate.Foundation.Negation.Not
 open import Substrate.Cocycles.V4Signature.Codeword.Type using (Codeword)
 open import Substrate.Cocycles.V4Signature.Codeword.IsReserved using (IsReserved)
 

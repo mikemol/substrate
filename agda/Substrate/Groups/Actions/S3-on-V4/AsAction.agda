@@ -23,7 +23,7 @@
 
 module Substrate.Groups.Actions.S3-on-V4.AsAction where
 
-open import Substrate.Groups.V4.Bijection using (V₄)
+open import Substrate.Groups.V4.Bijection.V4
 import Substrate.Groups.S3 as S₃
 open import Substrate.Algebra.SetoidGroup.Action using (Action)
 

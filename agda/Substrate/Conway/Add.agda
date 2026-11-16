@@ -5,9 +5,9 @@
 --
 -- Conway's surreal addition:
 --
---   x + y = ⟨ x_L + y, x + y_L ∣ x_R + y, x + y_R ⟩
+--   x ℕ+ y = ⟨ x_L ℕ+ y, x ℕ+ y_L ∣ x_R ℕ+ y, x ℕ+ y_R ⟩
 --
--- where x_L + y is shorthand for "the Word of x' + y for each
+-- where x_L ℕ+ y is shorthand for "the Word of x' ℕ+ y for each
 -- x' ∈ x_L" (similar for the other components).
 --
 -- The full general recursive definition requires careful index
@@ -17,7 +17,7 @@
 -- Both are tractable but exceed the 1-slice scope.
 --
 -- Per [[feedback-comments-dont-overclaim]]: S7 lands the API
--- TYPE for addition + the simplest worked instance (Zero + Zero
+-- TYPE for addition ℕ+ the simplest worked instance (Zero ℕ+ Zero
 -- = Zero); the general recursive definition is deferred per
 -- [[feedback-coalgebraic-not-consumer-driven]] until a consumer
 -- requires it. The substrate-internal Cone interpretation (S10)
@@ -29,29 +29,30 @@
 
 module Substrate.Conway.Add where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
-open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
 open import Substrate.Groups.Coxeter.Word using (Word; []; _∷_)
 open import Substrate.Conway.SurrealFinite using (SurrealFinite; ⟨_∣_⟩)
 open import Substrate.Conway.Examples using (Zero)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. Addition for empty-L/empty-R surreals.
 --
 -- The simplest case: adding two ⟨ [] ∣ [] ⟩ surreals at any
 -- birthday gives ⟨ [] ∣ [] ⟩ at the combined birthday. This is
--- the Zero + Zero case and similar.
+-- the Zero ℕ+ Zero case and similar.
 ------------------------------------------------------------------------
 
 add-empties :
-  (m n : ℕ) → SurrealFinite (suc (m + n))
+  (m n : ℕ) → SurrealFinite (suc (m ℕ+ n))
 add-empties m n = ⟨ [] ∣ [] ⟩
 
 ------------------------------------------------------------------------
--- 2. Zero + Zero = Zero (computationally).
+-- 2. Zero ℕ+ Zero = Zero (computationally).
 --
 -- Zero is the SurrealFinite 1 surreal ⟨ [] ∣ [] ⟩. Adding it to
--- itself: the result type SurrealFinite (suc (0 + 0)) = SurrealFinite 1.
+-- itself: the result type SurrealFinite (suc (0 ℕ+ 0)) = SurrealFinite 1.
 -- The "result" matches Zero structurally.
 ------------------------------------------------------------------------
 
@@ -67,7 +68,7 @@ Zero+Zero-≡-Zero = refl
 -- The full
 --
 --   _+ⁿ_ : SurrealFinite (suc m) → SurrealFinite (suc n) →
---          SurrealFinite (suc (m + n))
+--          SurrealFinite (suc (m ℕ+ n))
 --
 -- requires the recursive Conway definition with simultaneous
 -- induction on both arguments and absurd-pattern handling at the

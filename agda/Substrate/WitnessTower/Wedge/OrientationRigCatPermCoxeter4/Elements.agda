@@ -19,9 +19,9 @@ module Substrate.WitnessTower.Wedge.OrientationRigCatPermCoxeter4.Elements where
 
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using (Vec; []; _∷_)
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.WitnessTower.Enumerate using (Perm)
 open import Substrate.WitnessTower.FirstAppearance using (id-perm; compose)
+open import Substrate.Foundation.Eq
 
 -- the 24 orbit elements (e0 = id, BFS order):
 e0 e1 e2 e3 e4 e5 e6 e7 e8 e9 e10 e11 e12 e13 e14 e15 e16 e17 e18 e19 e20 e21 e22 e23 : Perm 4

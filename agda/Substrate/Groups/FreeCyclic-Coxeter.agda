@@ -33,16 +33,18 @@
 module Substrate.Groups.FreeCyclic-Coxeter where
 
 open import Substrate.Groups.Coxeter.Word
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Negation.Not
 open import Substrate.Foundation.Eq
-  using (_≡_; refl; cong; trans; sym)
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Negation using (¬_)
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Sym
 
 ------------------------------------------------------------------------
 -- 1. FreeCyclic-specific data.
 ------------------------------------------------------------------------
 
-data Gen : Set where
+data Gen : Set where      -- ⟦shape:d42c6364 a⟧
   a : Gen
 
 -- Every word is canonical (no relations to satisfy).

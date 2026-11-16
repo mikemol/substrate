@@ -44,10 +44,14 @@
 
 module Substrate.Algebra.F2.HodgeDim3.MetricGauge.StabiliserClosure where
 
-open import Substrate.Foundation.Eq
-  using (_≡_; trans; cong; cong-trans)
 
-open import Substrate.Algebra.F2.Linear
+open import Substrate.Algebra.F2.Linear.CompL
+open import Substrate.Algebra.F2.Linear.CompLAssoc
+open import Substrate.Algebra.F2.Linear.CompLIdentityL
+open import Substrate.Algebra.F2.Linear.CompLIdentityR
+open import Substrate.Algebra.F2.Linear.IdL
+open import Substrate.Algebra.F2.Linear.Linear
+open import Substrate.Algebra.F2.Linear.Preserves
 open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.CongruenceAct using (congruence-act)
 open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.MetricId using (metric-id)
 open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.Stabiliser
@@ -56,6 +60,10 @@ open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.CongruenceBridge
   using (congruence-compose-3)
 open import Substrate.Category.Coalgebra
   using (FixedPoint)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.CongTrans
 
 ------------------------------------------------------------------------
 -- N-0: compose-stabilises — the parametric primitive that names the

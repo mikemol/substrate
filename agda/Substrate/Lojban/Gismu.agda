@@ -30,7 +30,7 @@
 
 module Substrate.Lojban.Gismu where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Vec using (Vec)
 
 ------------------------------------------------------------------------
@@ -115,7 +115,7 @@ module WithDenotation
   (denote : (g : Gismu) → Vec Sumti (arity g) → Sem)
   where
 
-  open import Substrate.Lojban.PlaceStructure using (Selbri; mkSelbri)
+  open import Substrate.Lojban.PlaceStructure.Selbri
 
   gismu-to-selbri : (g : Gismu) → Selbri (arity g) Sumti Sem
   gismu-to-selbri g = mkSelbri (denote g)

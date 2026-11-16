@@ -11,7 +11,7 @@
 -- SelfDual, ReservedBridge — implicitly used `_·F_` against without
 -- naming the metric-id-4 gauge choice).
 --
--- Per `feedback_expose_generator_not_orbit` + `feedback_coalgebraic_not_
+-- Per `feedback_expose_generator_not_orbit` +F `feedback_coalgebraic_not_
 -- consumer_driven`: this slice exposes the dim-4 gauge structure via
 -- the INFERENCE RULE (`NonDegenerate-4` via the kernel-free predicate)
 -- and the GENERATOR (the GL(4, F₂) congruence action), NOT via
@@ -31,7 +31,7 @@
 --   the "anisotropic" 168-element orbit. The full picture is a
 --   coalgebraic-unfolding follow-on.
 --
--- The 4-dim determinant is more complex than 3-dim's `abc + af + cd + eb`
+-- The 4-dim determinant is more complex than 3-dim's `abc +F af +F cd +F eb`
 -- formula. Rather than encode the 4×4 determinant directly, we use the
 -- kernel-free characterisation:
 --   `NonDegenerate-4 M = ∀ v → (∀ w → bilinear-form-of-4 M v w ≡ 𝟘) → v ≡ 𝟎ⱽ`
@@ -58,15 +58,46 @@ module Substrate.Algebra.F2.HodgeDim4.MetricGauge where
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Literals using (₀; ₁; ₂; ₃; ₄; ₅; ₆; ₇; ₈; ₉)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; lookup)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; trans; cong)
 
-open import Substrate.Algebra.F2
+open import Substrate.Algebra.F2.AbsorbL
+open import Substrate.Algebra.F2.AbsorbR
+open import Substrate.Algebra.F2.Assoc
+open import Substrate.Algebra.F2.Comm
+open import Substrate.Algebra.F2.Dec
+open import Substrate.Algebra.F2.DistribLPlus
+open import Substrate.Algebra.F2.DistribRPlus
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.F2Cases
+open import Substrate.Algebra.F2.Idempotent
+open import Substrate.Algebra.F2.IdentityL
+open import Substrate.Algebra.F2.IdentityR
+open import Substrate.Algebra.F2.InvOfOne
+open import Substrate.Algebra.F2.OneNeqZero
+open import Substrate.Algebra.F2.Op
+open import Substrate.Algebra.F2.Op2
+open import Substrate.Algebra.F2.PlusAssoc
+open import Substrate.Algebra.F2.PlusComm
+open import Substrate.Algebra.F2.PlusF
+open import Substrate.Algebra.F2.PlusIdentityL
+open import Substrate.Algebra.F2.PlusIdentityR
+open import Substrate.Algebra.F2.PlusInverseL
+open import Substrate.Algebra.F2.PlusInverseR
+open import Substrate.Algebra.F2.PlusSelfInverse
+open import Substrate.Algebra.F2.ZeroNeqOne
 open import Substrate.Algebra.F2.Vector
-open import Substrate.Algebra.F2.Linear
+open import Substrate.Algebra.F2.Linear.CompL
+open import Substrate.Algebra.F2.Linear.CompLAssoc
+open import Substrate.Algebra.F2.Linear.CompLIdentityL
+open import Substrate.Algebra.F2.Linear.CompLIdentityR
+open import Substrate.Algebra.F2.Linear.IdL
+open import Substrate.Algebra.F2.Linear.Linear
+open import Substrate.Algebra.F2.Linear.Preserves
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
--- N-1: SymBilinForm-4 type + 10 named accessors.
+-- N-1: SymBilinForm-4 type +F 10 named accessors.
 --
 -- A symmetric 4×4 matrix over F₂ has 10 independent entries:
 --
@@ -108,10 +139,10 @@ entry-j m = lookup m ₉
 -- bilinear-form-of-4 M v w = v^T M w over F₂. For symmetric M with
 -- entries (a, b, c, d, e, f, g, h, i, j) as above:
 --
---   v^T M w = v₀(a·w₀ + e·w₁ + f·w₂ + g·w₃)
---           + v₁(e·w₀ + b·w₁ + h·w₂ + i·w₃)
---           + v₂(f·w₀ + h·w₁ + c·w₂ + j·w₃)
---           + v₃(g·w₀ + i·w₁ + j·w₂ + d·w₃)
+--   v^T M w = v₀(a·w₀ +F e·w₁ +F f·w₂ +F g·w₃)
+--           +F v₁(e·w₀ +F b·w₁ +F h·w₂ +F i·w₃)
+--           +F v₂(f·w₀ +F h·w₁ +F c·w₂ +F j·w₃)
+--           +F v₃(g·w₀ +F i·w₁ +F j·w₂ +F d·w₃)
 --
 -- 16 multiplication terms across 4 rows. Left-associated in each row
 -- and across rows (matching dim 3's style).
@@ -121,10 +152,10 @@ bilinear-form-of-4 : SymBilinForm-4 → Vector 4 → Vector 4 → F₂
 bilinear-form-of-4 (a ∷ b ∷ c ∷ d ∷ e ∷ f ∷ g ∷ h ∷ i ∷ j ∷ [])
                    (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ [])
                    (w₀ ∷ w₁ ∷ w₂ ∷ w₃ ∷ []) =
-  v₀ · (a · w₀ + e · w₁ + f · w₂ + g · w₃) +
-  v₁ · (e · w₀ + b · w₁ + h · w₂ + i · w₃) +
-  v₂ · (f · w₀ + h · w₁ + c · w₂ + j · w₃) +
-  v₃ · (g · w₀ + i · w₁ + j · w₂ + d · w₃)
+  v₀ · (a · w₀ +F e · w₁ +F f · w₂ +F g · w₃) +F
+  v₁ · (e · w₀ +F b · w₁ +F h · w₂ +F i · w₃) +F
+  v₂ · (f · w₀ +F h · w₁ +F c · w₂ +F j · w₃) +F
+  v₃ · (g · w₀ +F i · w₁ +F j · w₂ +F d · w₃)
 
 ------------------------------------------------------------------------
 -- N-3: NonDegenerate-4 — kernel-free predicate.
@@ -159,7 +190,7 @@ NonDegenerate-4 M =
 -- the 16-term expansion collapses (after F₂ arithmetic — 𝟙·x=x, 𝟘·x=𝟘,
 -- 𝟘+y=y) to:
 --
---   v₀·w₀ + v₁·w₁ + v₂·w₂ + v₃·w₃
+--   v₀·w₀ +F v₁·w₁ +F v₂·w₂ +F v₃·w₃
 --
 -- (= the standard 4-dim dot product).
 ------------------------------------------------------------------------
@@ -188,7 +219,7 @@ e₀-perp-e₁-metric-id-4 = refl
 -- entry is bilinear-form-of-4 M (T e_i) (T e_j). This IS the
 -- T^T M T congruence action expressed in bilinear-form interpretation.
 --
--- 10 entries to fill: 4 diagonals + 6 off-diagonals (lex order).
+-- 10 entries to fill: 4 diagonals +F 6 off-diagonals (lex order).
 ------------------------------------------------------------------------
 
 congruence-act-4 : Linear 4 4 → SymBilinForm-4 → SymBilinForm-4
@@ -232,7 +263,7 @@ congruence-act-4 T M =
 --          |stabiliser| = 72 (O(4,F₂) split case)
 --
 --   Witt classification at dim 4 over F₂ splits the orbits by Arf
---   invariant + Witt class — anisotropic + split. The "split" case
+--   invariant +F Witt class — anisotropic +F split. The "split" case
 --   (which contains metric-id-4) gives the 280-element orbit.
 --   The anisotropic case gives a separate orbit; cardinality and
 --   stabiliser deferred.

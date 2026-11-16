@@ -11,7 +11,7 @@
 -- noncommutativity the commutative exhibits could not show.
 --
 --   * IDEMPOTENT species: e₁₁, e₂₂ — orthogonal idempotents (e₁₁·e₂₂ = 0,
---     eᵢᵢ² = eᵢᵢ), complete (e₁₁ + e₂₂ = I). IdempotentSpecies via Ⓖ★.
+--     eᵢᵢ² = eᵢᵢ), complete (e₁₁ +F e₂₂ = I). IdempotentSpecies via Ⓖ★.
 --   * NILPOTENT species:  e₁₂, e₂₁ — the corners, e₁₂² = 0. NilpotentSpecies via Ⓖ★.
 --   * THE CORNER (Peirce): e₁₂ lives in e₁₁·R·e₂₂ (e₁₁·e₁₂·e₂₂ = e₁₂); the corners
 --     multiply back to idempotents: e₁₂·e₂₁ = e₁₁, e₂₁·e₁₂ = e₂₂.
@@ -27,14 +27,18 @@
 module Substrate.Algebra.Wedge.Wedderburn where
 
 open import Substrate.Foundation.Vec using (Vec; _∷_; [])
-open import Substrate.Foundation.Eq using (_≡_; refl; cong)
-open import Substrate.Foundation.Empty using (⊥)
+open import Substrate.Foundation.Empty.Bot
 open import Substrate.Foundation.Product using (Σ; _,_; _×_)
-open import Substrate.Algebra.F2 using (F₂; 𝟘; 𝟙; _+_; _·_; 𝟙≢𝟘)
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.OneNeqZero
+open import Substrate.Algebra.F2.Op
+open import Substrate.Algebra.F2.PlusF
 open import Substrate.Algebra.Wedge using (DivStr)
 open import Substrate.Algebra.Wedge.Mul using (MulDivStr; base; mul; pow; Nilpotent; Annihilator)
 open import Substrate.Algebra.Wedge.Species
   using (Stable; IdempotentSpecies; NilpotentSpecies; species-disjoint)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- M₂(F₂) as a MulDivStr. A matrix [[a,b],[c,d]] is the vector a∷b∷c∷d∷[].
@@ -45,10 +49,10 @@ M2 = Vec F₂ 4
 
 M2-mul : M2 → M2 → M2
 M2-mul (a ∷ b ∷ c ∷ d ∷ []) (e ∷ f ∷ g ∷ h ∷ []) =
-  (a · e + b · g) ∷ (a · f + b · h) ∷ (c · e + d · g) ∷ (c · f + d · h) ∷ []
+  (a · e +F b · g) ∷ (a · f +F b · h) ∷ (c · e +F d · g) ∷ (c · f +F d · h) ∷ []
 
 M2-add : M2 → M2 → M2
-M2-add (a ∷ b ∷ c ∷ d ∷ []) (e ∷ f ∷ g ∷ h ∷ []) = (a + e) ∷ (b + f) ∷ (c + g) ∷ (d + h) ∷ []
+M2-add (a ∷ b ∷ c ∷ d ∷ []) (e ∷ f ∷ g ∷ h ∷ []) = (a +F e) ∷ (b +F f) ∷ (c +F g) ∷ (d +F h) ∷ []
 
 𝟎 I e₁₁ e₁₂ e₂₁ e₂₂ : M2
 𝟎   = 𝟘 ∷ 𝟘 ∷ 𝟘 ∷ 𝟘 ∷ []
@@ -108,11 +112,11 @@ noncommutative eq with cong head eq            -- head e₁₁ = 𝟙, head e₂
 -- BOTH species of the genus Ⓖ★, in this ONE noncommutative ring.
 ------------------------------------------------------------------------
 
--- idempotent species: (e₁₁, e₂₂) — orthogonal cross (0) + stable diagonal.
+-- idempotent species: (e₁₁, e₂₂) — orthogonal cross (0) +F stable diagonal.
 m2-idempotent-species : IdempotentSpecies M2-mul-str e₁₁ e₂₂
 m2-idempotent-species = (0 , refl) , refl
 
--- nilpotent species: e₁₂ — cross e₁₂·e₁₂ = 0 (Ortho) + e₁₂ nilpotent (e₁₂² = 0).
+-- nilpotent species: e₁₂ — cross e₁₂·e₁₂ = 0 (Ortho) +F e₁₂ nilpotent (e₁₂² = 0).
 m2-nilpotent-species : NilpotentSpecies M2-mul-str e₁₂ e₁₂
 m2-nilpotent-species = (0 , refl) , (1 , refl)
 

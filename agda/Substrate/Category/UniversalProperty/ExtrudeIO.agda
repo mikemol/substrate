@@ -21,8 +21,10 @@
 -- generic machinery; no funext/Set₁; parametrized') is (prose: Category.Monad/Functor/CategoryOf + Delooping).
 ------------------------------------------------------------------------
 
-open import Substrate.Foundation.Eq using (_≡_; refl; cong)
-open import Substrate.Category.CategoryOf using (CategoryOf)
+open import Substrate.Category.CategoryOf.CategoryOf
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Algebra.R.Trace.DetValSign
 
 -- MODULE PARAMETER: the output type O the caller supplies (a concrete Set — no quantifying over all types):
 module Substrate.Category.UniversalProperty.ExtrudeIO (O : Set) where

@@ -29,7 +29,6 @@
 
 module Substrate.Algebra.Q.RegistryHetQBridges where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Foundation.Product using (Σ; _,_; _×_)
 open import Substrate.Algebra.Wedge using (DivStr; ℕ-div)
 open import Substrate.Algebra.Z.Wedge using (ℤ-div)
@@ -38,6 +37,7 @@ open import Substrate.Algebra.Wedge.InclusionBridge using (include-ℕℤ)
 open import Substrate.Algebra.Wedge.CrossMul using (CrossMix; embA; embB)
 open import Substrate.Algebra.Wedge.Registry using (bridges)
 open import Substrate.Algebra.Q.HetCrossMix using (ℚ-crossmix; ℤ-mul)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. The two codec legs of the HetQ cospan are the foundational bridges.

@@ -12,16 +12,21 @@
 
 module Substrate.Algebra.Q.Vector where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; replicate; lookup; zipWith; map)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; cong; cong₂)
 
-open import Substrate.Algebra.Q
-  using (ℚ; 0ℚ; 1ℚ)
+open import Substrate.Algebra.Q.OneRat
+open import Substrate.Algebra.Q.Rat
+open import Substrate.Algebra.Q.ZeroRat
 open import Substrate.Algebra.Q.Arithmetic
   using (_+ℚ_; _*ℚ_; -ℚ_)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.Algebra.Q.Neg
+open import Substrate.Algebra.Q.Mul
+open import Substrate.Algebra.Q.Add
 
 ------------------------------------------------------------------------
 -- 1. Vector type and zero.

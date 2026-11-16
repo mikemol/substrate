@@ -3,7 +3,8 @@
 --
 -- V_4 ⊳ S_4 — the V_4 image inside S_4 is a normal subgroup.
 --
--- This module is now a thin re-export shim. The proof is structural:
+-- `V₄-normal` is a thin delegating definition (see the `public`-retired note
+-- below for why this module no longer re-exports its imports): the proof is structural:
 -- V_4 is the N-component of S_4 ≅ V_4 ⋊ S_3, and so its normality in
 -- S_4 is licensed by the SP combinator's `N-normal-in-SP` in
 -- Substrate.Groups.Coxeter.SemidirectProductGroup, transported through
@@ -31,7 +32,11 @@
 
 module Substrate.Groups.V4-Normality where
 
-open import Substrate.Groups.S4-Iso using (V₄-normal-compositional) public
+-- ⚑ `public` RETIRED (Ⓑ2c).  Sole consumer `Groups.Subgroup` now binds
+-- `S4-Iso` itself.  Both modules are blocked behind unrelated failures
+-- (`S4-Iso`, `Symmetric.Permutation`), so this is verified by inspection of the
+-- edge census rather than by a green compile — stated, not implied.
+open import Substrate.Groups.S4-Iso using (V₄-normal-compositional)
 
 -- V₄-normal: V₄ image is closed under conjugation by any S₄ element.
 -- Defined as the structural-compositional construction; the predicate-
@@ -41,7 +46,7 @@ open import Substrate.Axes.Axis using (Axis)
 open import Substrate.Groups.Symmetric.Permutation Axis
 open import Substrate.Groups.Symmetric.Permutation.Compose Axis using (_·_)
 open import Substrate.Groups.Symmetric.Permutation.Inverse Axis using (_⁻¹)
-open import Substrate.Groups.V4.Bijection using (V₄)
+open import Substrate.Groups.V4.Bijection.V4
 open import Substrate.Groups.V4-Embedding using (embed)
 open import Substrate.Groups.S4-Iso.V4Normal
 

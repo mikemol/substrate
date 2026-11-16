@@ -12,10 +12,8 @@
 
 module Substrate.Cocycles.V4Signature.S4Iso.Roundtrips where
 
-open import Substrate.Foundation.Empty using (⊥-elim)
+open import Substrate.Foundation.Empty.BotElim
 open import Substrate.Foundation.Product using (_,_; proj₁; proj₂)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; trans; cong; cong₂; trans-sym)
 
 open import Substrate.Axes.Axis using (Axis; D; C; S; W)
 open import Substrate.Axes.ActAxis using (act-axis)
@@ -33,8 +31,24 @@ open import Substrate.Cocycles.V4Signature.S4Iso.Classify
 open import Substrate.Cocycles.V4Signature.S4Iso.Cases
 open import Substrate.Groups.SemidirectProduct.Stab
 open import Substrate.Cocycles.V4Signature.S4Iso.Anchor
-open import Substrate.Groups.SemidirectProduct.V
+open import Substrate.Groups.SemidirectProduct.V.NonDSends
+open import Substrate.Groups.SemidirectProduct.V.Private
+open import Substrate.Groups.SemidirectProduct.V.SelfToD
+open import Substrate.Groups.SemidirectProduct.V.VFor
+open import Substrate.Groups.SemidirectProduct.V.VForAnchor
+open import Substrate.Groups.SemidirectProduct.V.VForAnchorSends
+open import Substrate.Groups.SemidirectProduct.V.VOfAxisAnchor
+open import Substrate.Groups.SemidirectProduct.V.VOfAxisAnchorSends
+open import Substrate.Groups.SemidirectProduct.V.VOfAxisUnique
+open import Substrate.Groups.SemidirectProduct.V.VSendsD
 open import Substrate.Groups.SemidirectProduct.S
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.Foundation.Eq.TransSym
+open import Substrate.Axes.VOfAxis
 
 ------------------------------------------------------------------------
 -- Stab(D)-side round-trip.

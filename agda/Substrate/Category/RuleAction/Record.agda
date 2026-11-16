@@ -10,7 +10,14 @@
 
 module Substrate.Category.RuleAction.Record where
 
-open import Substrate.Category.RuleAction.V4 using (V₄; e)
+open import Substrate.Groups.V4.Bijection.FromC
+open import Substrate.Groups.V4.Bijection.FromCCanonical
+open import Substrate.Groups.V4.Bijection.FromTo
+open import Substrate.Groups.V4.Bijection.Private
+open import Substrate.Groups.V4.Bijection.ToC
+open import Substrate.Groups.V4.Bijection.ToCCanonical
+open import Substrate.Groups.V4.Bijection.ToFromCanonical
+open import Substrate.Groups.V4.Bijection.V4
 open import Substrate.Category.RuleAction.AffineProjection
   using (AffineProjection; identity-affine)
 open import Substrate.Category.RuleAction.F2Patch

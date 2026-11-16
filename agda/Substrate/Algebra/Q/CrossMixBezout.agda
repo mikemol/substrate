@@ -25,12 +25,13 @@
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.Algebra.Q.CrossMixBezout where
+open import Substrate.Algebra.Z.Add
+open import Substrate.Algebra.Z.Mul
 
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Product using (Σ; _,_)
-open import Substrate.Algebra.Z using (ℤ; +_)
-open import Substrate.Algebra.Z.Arithmetic using (_*ℤ_; _+ℤ_)
+open import Substrate.Algebra.Z.Int
+
 open import Substrate.Algebra.Nat.GCD.EEATrace using (EEATrace)
 open import Substrate.Algebra.Nat.GCD.GcdN using (gcd-ℕ)
 open import Substrate.Algebra.Nat.GCD.GcdTrace using (coprime-trace)
@@ -39,6 +40,7 @@ open import Substrate.Algebra.Z.Bezout using (BezoutℤWitness; bezout-ℤ)
 
 -- The two halves, brought in unrestricted (re-exported for downstream wiring).
 open import Substrate.Algebra.Q.HetCrossMix using (ℤ-mul; ℚ-crossmix)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. The cross-term of the ℚ cospan IS a Bézout summand (definitional).

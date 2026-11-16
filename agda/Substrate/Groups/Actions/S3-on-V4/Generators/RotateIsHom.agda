@@ -13,10 +13,10 @@
 module Substrate.Groups.Actions.S3-on-V4.Generators.RotateIsHom where
 
 open import Substrate.Groups.V4.Operations using (v4×v4-cover)
-open import Substrate.Foundation.Eq using (refl)
 open import Substrate.Foundation.Product using (_,_)
 open import Substrate.Groups.V4.IsHomomorphism using (IsHomomorphism)
 open import Substrate.Groups.Actions.S3-on-V4.Generators.Rotate using (rotate)
+open import Substrate.Foundation.Eq
 
 rotate-IsHom : IsHomomorphism rotate
 rotate-IsHom = v4×v4-cover _

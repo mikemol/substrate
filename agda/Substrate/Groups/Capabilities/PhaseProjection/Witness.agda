@@ -14,11 +14,10 @@
 
 {-# OPTIONS --safe --without-K #-}
 
-open import Substrate.Foundation.Nat using (ℕ)
 
-open import Substrate.Groups.Coxeter.Word using (Word)
 import Substrate.Groups.FreeCyclic-Coxeter as F   -- the SECOND carrier (a definer, not a conduit)
 open import Substrate.Groups.Capabilities.PhaseProjection using (from-coxeter-data)
+open import Substrate.Groups.Coxeter.ListPresentation
 module Substrate.Groups.Capabilities.PhaseProjection.Witness (n : ℕ) where
 
 open import Substrate.Groups.Coxeter.Cyclic.Base n using (Gen; insert)

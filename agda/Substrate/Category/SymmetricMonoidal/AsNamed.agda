@@ -26,6 +26,7 @@
 open import Substrate.Foundation.Level using (Level)
 
 open import Substrate.Category.SymmetricMonoidal using (SymmetricMonoidal)
+open import Substrate.Probability.MarkovCategory
 
 module Substrate.Category.SymmetricMonoidal.AsNamed
   {ℓO ℓM : Level}

@@ -11,10 +11,10 @@
 
 module Substrate.Groups.SemidirectProduct.Stab where
 
-open import Substrate.Foundation.Eq using (_≡_)
 
 open import Substrate.Axes.Axis using (Axis)
 open import Substrate.Groups.Symmetric.Permutation Axis
+open import Substrate.Foundation.Eq
 
 Stab : Axis → Permutation → Set
 Stab X σ = apply σ X ≡ X

@@ -14,11 +14,11 @@
 
 module Substrate.Probability.Simplex.Sites.QSimplex where
 
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Level using (Level; 0ℓ)
+open import Substrate.Foundation.Nat.Nat
 
-open import Substrate.Algebra.Q using (ℚ; mkℚ)
-open import Substrate.Algebra.Z using (ℤ; 0ℤ; 1ℤ; +_)
+open import Substrate.Algebra.Q.Rat
+open import Substrate.Algebra.Z.OneInt
+open import Substrate.Algebra.Z.ZeroInt
 
 open import Substrate.Probability.Simplex
 

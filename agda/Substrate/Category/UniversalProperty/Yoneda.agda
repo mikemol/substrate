@@ -22,8 +22,6 @@
 
 module Substrate.Category.UniversalProperty.Yoneda where
 
-open import Substrate.Foundation.Eq
-  using (_≡_; refl)
 
 open import Substrate.Category.UniversalProperty.Term
   using (UPTerm; _++ᵤ_)
@@ -31,6 +29,8 @@ open import Substrate.Category.UniversalProperty.Category
   using (++ᵤ-assoc)
 open import Substrate.Category.UniversalProperty.Presheaf
   using (UPPresheaf)
+open import Substrate.Foundation.Eq
+open import Substrate.Probability.MarkovCategory
 
 module _ (O : Set) (Hom : O → O → Set) where
 

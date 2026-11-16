@@ -2,7 +2,7 @@
 -- Substrate.Algebra.F2.HodgeDim3.MetricGauge.GenericBridge
 --
 -- Bridges the dim-3 specific SymBilinForm-3 (Vector 6 packing) to the
--- generic SymBilinForm at n=3 (Fin 3 → Fin 3 → F₂ + symmetry).
+-- generic SymBilinForm at n=3 (Fin 3 → Fin 3 → F₂ +F symmetry).
 --
 -- After this slice:
 --
@@ -20,11 +20,11 @@
 -- Enables downstream demotions:
 --
 --   * `·F-eq-metric-id-bilin` in HodgeDim3.MetricGauge.HodgeRecast
---     becomes a corollary of generic recast + this bridge at metric-id.
+--     becomes a corollary of generic recast +F this bridge at metric-id.
 --
 --   * Eventually, StabiliserClosure's 3-cycle proof becomes a
---     corollary of FixedPoint-of-compose + congruence-compose-pointwise
---     + a congruence-act bridge (separate follow-on slice).
+--     corollary of FixedPoint-of-compose +F congruence-compose-pointwise
+--     +F a congruence-act bridge (separate follow-on slice).
 --
 -- Per `feedback_categorical_name_first`: this is the bridge between
 -- the dim-3-specific representation (Vector 6 packing — the
@@ -41,10 +41,32 @@ open import Substrate.Foundation.Fin.Literals using (₀; ₁; ₂)
 open import Substrate.Foundation.Fin.Cover using (fin×fin-cover)
 open import Substrate.Foundation.Product using (_,_)
 open import Substrate.Foundation.Vec using ([]; _∷_)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; trans; cong; cong₂)
 
-open import Substrate.Algebra.F2
+open import Substrate.Algebra.F2.AbsorbL
+open import Substrate.Algebra.F2.AbsorbR
+open import Substrate.Algebra.F2.Assoc
+open import Substrate.Algebra.F2.Comm
+open import Substrate.Algebra.F2.Dec
+open import Substrate.Algebra.F2.DistribLPlus
+open import Substrate.Algebra.F2.DistribRPlus
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.F2Cases
+open import Substrate.Algebra.F2.Idempotent
+open import Substrate.Algebra.F2.IdentityL
+open import Substrate.Algebra.F2.IdentityR
+open import Substrate.Algebra.F2.InvOfOne
+open import Substrate.Algebra.F2.OneNeqZero
+open import Substrate.Algebra.F2.Op
+open import Substrate.Algebra.F2.Op2
+open import Substrate.Algebra.F2.PlusAssoc
+open import Substrate.Algebra.F2.PlusComm
+open import Substrate.Algebra.F2.PlusF
+open import Substrate.Algebra.F2.PlusIdentityL
+open import Substrate.Algebra.F2.PlusIdentityR
+open import Substrate.Algebra.F2.PlusInverseL
+open import Substrate.Algebra.F2.PlusInverseR
+open import Substrate.Algebra.F2.PlusSelfInverse
+open import Substrate.Algebra.F2.ZeroNeqOne
 open import Substrate.Algebra.F2.Vector
 open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.BilinearFormOf using (bilinear-form-of)
 open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.MetricId using (metric-id)
@@ -68,6 +90,11 @@ open import Substrate.Algebra.F2.SymBilinForm.MetricId using () renaming (metric
 
 open import Substrate.Algebra.F2.Vector.Universal using (sum-F₂; sum-F₂-cong)
 open import Substrate.Foundation.Vec using (lookup)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
 SymBilinForm-3-to-generic : SymBilinForm-3 → BilinForm-generic 3
 SymBilinForm-3-to-generic M zero             zero             = entry-a M
 SymBilinForm-3-to-generic M zero             ₁       = entry-d M
@@ -102,8 +129,8 @@ is-symmetric-bridged-3 M =
 -- Dim-3 specific bilinear-form-of M v w (with M = (a, b, c, d, e, f),
 -- v = (v₀, v₁, v₂), w = (w₀, w₁, w₂)) expands as:
 --
---   ((v₀ · ((a·w₀ + d·w₁) + e·w₂) + v₁ · ((d·w₀ + b·w₁) + f·w₂))
---     + v₂ · ((e·w₀ + f·w₁) + c·w₂))
+--   ((v₀ · ((a·w₀ +F d·w₁) +F e·w₂) +F v₁ · ((d·w₀ +F b·w₁) +F f·w₂))
+--     +F v₂ · ((e·w₀ +F f·w₁) +F c·w₂))
 --
 -- left-associated (since `_+_` is infixl).
 --
@@ -111,13 +138,13 @@ is-symmetric-bridged-3 M =
 -- as a double sum-F₂; with bridged M-entries substituted, each row
 -- is right-associated with a trailing 𝟘:
 --
---   v₀ · (a·w₀ + (d·w₁ + (e·w₂ + 𝟘))) +
---   (v₁ · (d·w₀ + (b·w₁ + (f·w₂ + 𝟘))) +
---   (v₂ · (e·w₀ + (f·w₁ + (c·w₂ + 𝟘))) + 𝟘))
+--   v₀ · (a·w₀ +F (d·w₁ +F (e·w₂ +F 𝟘))) +F
+--   (v₁ · (d·w₀ +F (b·w₁ +F (f·w₂ +F 𝟘))) +F
+--   (v₂ · (e·w₀ +F (f·w₁ +F (c·w₂ +F 𝟘))) +F 𝟘))
 --
 -- Bridge: each row's inner expression and the outer expression
--- need to be left-associated + trailing-𝟘-cleaned. Per row: 2 steps
--- (kill 𝟘 + reassoc). Outer: 2 steps (kill 𝟘 + reassoc). 4 rows
+-- need to be left-associated +F trailing-𝟘-cleaned. Per row: 2 steps
+-- (kill 𝟘 +F reassoc). Outer: 2 steps (kill 𝟘 +F reassoc). 4 rows
 -- worth of conversions.
 ------------------------------------------------------------------------
 
@@ -136,42 +163,42 @@ bilinear-form-of-bridge-3
   where
     -- Canonical row form (right-assoc with trailing 𝟘 — matches RHS).
     row-canonical : (x y z : F₂) → F₂
-    row-canonical x y z = x + (y + (z + 𝟘))
+    row-canonical x y z = x +F (y +F (z +F 𝟘))
 
     -- Per-row bridge LHS-row→canonical.
-    -- LHS row: (x + y) + z; canonical: x + (y + (z + 𝟘)).
+    -- LHS row: (x +F y) +F z; canonical: x +F (y +F (z +F 𝟘)).
     row-LHS→canonical :
-      (x y z : F₂) → (x + y) + z ≡ x + (y + (z + 𝟘))
+      (x y z : F₂) → (x +F y) +F z ≡ x +F (y +F (z +F 𝟘))
     row-LHS→canonical x y z =
       trans (+-assoc x y z)
-            (cong (x +_) (cong (y +_) (sym (+-identityʳ z))))
+            (cong (x +F_) (cong (y +F_) (sym (+-identityʳ z))))
 
-    -- Each row LHS shape: v · ((p + q) + r). Bring to v · canonical
-    -- via cong (v ·_) + row-LHS→canonical.
+    -- Each row LHS shape: v · ((p +F q) +F r). Bring to v · canonical
+    -- via cong (v ·_) +F row-LHS→canonical.
     row-bridge :
-      (v p q r : F₂) → v · ((p + q) + r) ≡ v · row-canonical p q r
+      (v p q r : F₂) → v · ((p +F q) +F r) ≡ v · row-canonical p q r
     row-bridge v p q r = cong (v ·_) (row-LHS→canonical p q r)
 
-    -- LHS overall (left-assoc): ((row0 + row1) + row2)
-    -- → ((row0' + row1') + row2') where row-i' = row-bridge applied
+    -- LHS overall (left-assoc): ((row0 +F row1) +F row2)
+    -- → ((row0' +F row1') +F row2') where row-i' = row-bridge applied
     LHS→canonical :
-      (v₀ · ((a · w₀ + d · w₁) + e · w₂)
-        + v₁ · ((d · w₀ + b · w₁) + f · w₂))
-        + v₂ · ((e · w₀ + f · w₁) + c · w₂)
+      (v₀ · ((a · w₀ +F d · w₁) +F e · w₂)
+        +F v₁ · ((d · w₀ +F b · w₁) +F f · w₂))
+        +F v₂ · ((e · w₀ +F f · w₁) +F c · w₂)
       ≡
       (v₀ · row-canonical (a · w₀) (d · w₁) (e · w₂)
-        + v₁ · row-canonical (d · w₀) (b · w₁) (f · w₂))
-        + v₂ · row-canonical (e · w₀) (f · w₁) (c · w₂)
+        +F v₁ · row-canonical (d · w₀) (b · w₁) (f · w₂))
+        +F v₂ · row-canonical (e · w₀) (f · w₁) (c · w₂)
     LHS→canonical =
-      cong₂ _+_
-        (cong₂ _+_ (row-bridge v₀ (a · w₀) (d · w₁) (e · w₂))
+      cong₂ _+F_
+        (cong₂ _+F_ (row-bridge v₀ (a · w₀) (d · w₁) (e · w₂))
                    (row-bridge v₁ (d · w₀) (b · w₁) (f · w₂)))
         (row-bridge v₂ (e · w₀) (f · w₁) (c · w₂))
 
     -- RHS bridge: outer is right-assoc with trailing 𝟘:
-    --   row0 + (row1 + (row2 + 𝟘))
+    --   row0 +F (row1 +F (row2 +F 𝟘))
     -- Convert to canonical LHS shape:
-    --   (row0 + row1) + row2
+    --   (row0 +F row1) +F row2
     -- Row abbreviations to keep the proof readable.
     row₀ row₁ row₂ : F₂
     row₀ = v₀ · row-canonical (a · w₀) (d · w₁) (e · w₂)
@@ -179,9 +206,9 @@ bilinear-form-of-bridge-3
     row₂ = v₂ · row-canonical (e · w₀) (f · w₁) (c · w₂)
 
     RHS←canonical :
-      row₀ + (row₁ + (row₂ + 𝟘)) ≡ (row₀ + row₁) + row₂
+      row₀ +F (row₁ +F (row₂ +F 𝟘)) ≡ (row₀ +F row₁) +F row₂
     RHS←canonical =
-      trans (cong (row₀ +_) (cong (row₁ +_) (+-identityʳ row₂)))
+      trans (cong (row₀ +F_) (cong (row₁ +F_) (+-identityʳ row₂)))
             (sym (+-assoc row₀ row₁ row₂))
 
 ------------------------------------------------------------------------
@@ -256,7 +283,7 @@ bilinear-form-of-metric-id-bridge v w =
 --                                         (sym (bilinear-form-of-metric-id-bridge v w))
 --
 --   * Eventually demote StabiliserClosure's 3-cycle proof via
---     FixedPoint-of-compose + congruence-compose-pointwise + a
+--     FixedPoint-of-compose +F congruence-compose-pointwise +F a
 --     congruence-act bridge (separate slice).
 --
 -- The reverse bridge (SymBilinForm 3 → SymBilinForm-3) is also

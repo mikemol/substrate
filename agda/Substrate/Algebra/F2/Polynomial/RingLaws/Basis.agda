@@ -11,19 +11,28 @@
 
 module Substrate.Algebra.F2.Polynomial.RingLaws.Basis where
 
-open import Substrate.Algebra.F2 using (F₂; 𝟘; 𝟙; _+_; _·_; +-identityˡ; +-identityʳ;
-  ·-absorbˡ; ·-identityˡ)
+open import Substrate.Algebra.F2.AbsorbL
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.IdentityL
+open import Substrate.Algebra.F2.Op
+open import Substrate.Algebra.F2.PlusF
+open import Substrate.Algebra.F2.PlusIdentityL
+open import Substrate.Algebra.F2.PlusIdentityR
 open import Substrate.Algebra.F2.Vector using (basis; 𝟎ⱽ)
 open import Substrate.Algebra.F2.Polynomial using (Polynomial)
 open import Substrate.Algebra.F2.Polynomial.Wedge.XPower using (x-power)
-open import Substrate.Foundation.Nat using (ℕ; zero; suc) renaming (_+_ to _ℕ+_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.To
-open import Substrate.Foundation.Negation using (¬_)
-open import Substrate.Foundation.Empty using (⊥-elim)
-open import Substrate.Foundation.Eq using (_≡_; refl; trans; cong; cong₂)
+open import Substrate.Foundation.Negation.Not
+open import Substrate.Foundation.Empty.BotElim
 open import Substrate.Algebra.F2.Polynomial.RingLaws.Nth using (nth)
 open import Substrate.Algebra.F2.Polynomial.RingLaws.Conv using (convCoeff)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
 
 nth-𝟎ⱽ : ∀ {n} (k : ℕ) → nth (𝟎ⱽ {n}) k ≡ 𝟘
 nth-𝟎ⱽ {zero}  k       = refl
@@ -45,13 +54,13 @@ convCoeff-𝟎ⱽ : ∀ {n m} (q : Polynomial m) (k : ℕ) → convCoeff (𝟎�
 convCoeff-𝟎ⱽ {zero}  q k       = refl
 convCoeff-𝟎ⱽ {suc n} q zero    = ·-absorbˡ (nth q zero)
 convCoeff-𝟎ⱽ {suc n} q (suc k) =
-  trans (cong₂ _+_ (·-absorbˡ (nth q (suc k))) (convCoeff-𝟎ⱽ {n} q k)) (+-identityˡ 𝟘)
+  trans (cong₂ _+F_ (·-absorbˡ (nth q (suc k))) (convCoeff-𝟎ⱽ {n} q k)) (+-identityˡ 𝟘)
 
 -- basis fzero = the polynomial 1 (x⁰): left-multiplication is the identity. (= AI-7d core)
 convCoeff-basis-fz : ∀ {n m} (q : Polynomial m) (k : ℕ) → convCoeff (basis {suc n} fzero) q k ≡ nth q k
 convCoeff-basis-fz q zero    = ·-identityˡ (nth q zero)
 convCoeff-basis-fz {n} q (suc k) =
-  trans (cong₂ _+_ (·-identityˡ (nth q (suc k))) (convCoeff-𝟎ⱽ {n} q k)) (+-identityʳ (nth q (suc k)))
+  trans (cong₂ _+F_ (·-identityˡ (nth q (suc k))) (convCoeff-𝟎ⱽ {n} q k)) (+-identityʳ (nth q (suc k)))
 
 -- the additive shift: coefficient at d+k of (xᵈ·q) is q's coefficient at k.
 nth-xpower-add : ∀ d {m} (q : Polynomial m) (k : ℕ) → nth (x-power d q) (d ℕ+ k) ≡ nth q k
@@ -64,5 +73,5 @@ convCoeff-basis-xpower : ∀ {n m} (i : Fin n) (q : Polynomial m) (k : ℕ)
 convCoeff-basis-xpower {suc n} fzero     q k       = convCoeff-basis-fz q k
 convCoeff-basis-xpower (fsuc i)         q zero    = ·-absorbˡ (nth q zero)
 convCoeff-basis-xpower (fsuc i)         q (suc k) =
-  trans (cong₂ _+_ (·-absorbˡ (nth q (suc k))) (convCoeff-basis-xpower i q k))
+  trans (cong₂ _+F_ (·-absorbˡ (nth q (suc k))) (convCoeff-basis-xpower i q k))
         (+-identityˡ (nth (x-power (toℕ i) q) k))

@@ -36,14 +36,16 @@ module Substrate.Category.PrimeFactoredGauge.FromPresented where
 open import Substrate.Foundation.Level using (Level)
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.List using (List)
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Product using (Σ; _,_)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; subst)
 
 open import Substrate.Category.SylowDecomposition using (InGenerated)
 open import Substrate.Category.SylowDecomposition.FromWord
   using (evaluate-word; word-to-InGenerated)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Subst
+open import Substrate.Algebra.GL3F2
+open import Substrate.Algebra.GL3F2.AsPresented
 
 private
   variable

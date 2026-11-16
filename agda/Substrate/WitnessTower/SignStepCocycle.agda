@@ -30,16 +30,18 @@
 
 module Substrate.WitnessTower.SignStepCocycle where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; map)
-open import Substrate.Foundation.Bool using (Bool; _xor_)
-open import Substrate.Foundation.Eq using (_≡_; refl; cong; cong₂)
+open import Substrate.Foundation.Bool.Xor
 open import Substrate.Foundation.Fin.Punctured using (punchIn)
 open import Substrate.WitnessTower.Enumerate using (Perm; insert-at)
 open import Substrate.WitnessTower.Wedge.Graded using (tower-graded)
 open import Substrate.Algebra.Wedge.Graded using (recon)
 open import Substrate.WitnessTower.Wedge.OrientationRigCatPermSign using (sign; parityLess; finLt)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
 
 ------------------------------------------------------------------------
 -- 1. punchIn is strictly monotone: it preserves order comparisons.

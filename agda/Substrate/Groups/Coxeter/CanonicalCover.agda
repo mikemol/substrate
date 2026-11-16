@@ -16,9 +16,9 @@
 
 module Substrate.Groups.Coxeter.CanonicalCover where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Product using (_×_; _,_)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- Pow A n = A × A × ... × A (n copies, right-associated). For n ≥ 1.

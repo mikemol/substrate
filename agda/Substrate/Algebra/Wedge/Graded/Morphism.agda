@@ -21,8 +21,9 @@
 
 module Substrate.Algebra.Wedge.Graded.Morphism where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_)
-open import Substrate.Foundation.Eq using (_≡_; refl; trans; cong)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Times
 open import Substrate.Foundation.Product using (Σ; _,_)
 -- ⟡set1-paydown: GradedDivStr's carrier/remainder families are now its params, so
 -- the old projections `C G` / `R G` become the module params C… / R… threaded here.
@@ -32,9 +33,12 @@ open import Substrate.Algebra.Wedge.Bridge using (Bridge)
 -- so the old `Cᵖ P` becomes the module params Cᴾ / Cᴽ threaded on the connectors.
 open import Substrate.Algebra.Wedge.Product
   using (GradedProduct; graded-of-product; flatten; flatten-recon; gpower)
-  renaming (u to uᵖ; _∧_ to _∧ᵖ_)
+  renaming ( _∧_ to _∧ᵖ_)
 open import Substrate.Algebra.Wedge.Product.Hom
   using (GradedHom; map₀; map-u; map-∧; flatten-map)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- 1. The graded-divstr morphism (parallel to Bridge / GradedHom).
@@ -107,7 +111,7 @@ gradedHom→bridge {P = P} {Q = Q} h = record
   { translate = flatten-map h
   ; respects  = λ where
       (qn , _) (i , bb) (j , rr) →
-        cong ((qn * i) + j ,_)
+        cong ((qn * i) ℕ+ j ,_)
           (trans (map-∧ h (gpower P bb qn) rr)
                  (cong (λ z → _∧ᵖ_ Q z (map₀ h rr)) (map-gpower h bb qn)))
   ; z-pres    = cong (0 ,_) (map-u h)

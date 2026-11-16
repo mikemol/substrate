@@ -29,10 +29,9 @@
 
 module Substrate.Logic.Evidence.ElAtlas where
 
-open import Substrate.Foundation.Bool    using (Bool)
-open import Substrate.Foundation.Empty   using (⊥)
-open import Substrate.Foundation.Eq      using (_≡_)
-open import Substrate.Foundation.Nat     using (ℕ)
+open import Substrate.Foundation.Bool.Bool
+open import Substrate.Foundation.Empty.Bot
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Product using (_×_; Σ; proj₁)
 
 open import Substrate.Logic.Evidence.Verdict
@@ -52,6 +51,7 @@ open import Substrate.Algebra.Z.Bezout         using (BezoutℤWitness)
 -- rail; the positive rail is the probability section. Statement references the folds.
 open import Substrate.Algebra.Semiring.SPPF using (SPPF)
 open import Substrate.Logic.Evidence.SWP    using (insideC; insideDR)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- The structured-edition claim atoms currently ON the substrate's Agda rung

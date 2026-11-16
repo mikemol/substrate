@@ -27,15 +27,25 @@
 
 module Substrate.Algebra.CayleyDickson.Grade where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
-open import Substrate.Foundation.Nat.Properties.Add using (+-assoc; +-comm)
-open import Substrate.Foundation.Eq using (_≡_; refl; cong; cong₂; trans; sym)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Properties.Add.PlusAssoc
+open import Substrate.Foundation.Nat.Properties.Add.PlusComm
 open import Substrate.Foundation.Iff using (_⇔_; ⇔-refl)
-open import Substrate.Foundation.Bool using (Bool; true; false; _xor_; _∧_; _∨_; boolToℕ)  -- ⟡A4: single source
-open import Substrate.Foundation.Bool.Properties using (or-xor-and)  -- ⟡A5: single source
+open import Substrate.Foundation.Bool.And
+open import Substrate.Foundation.Bool.Bool
+open import Substrate.Foundation.Bool.BoolToNat
+open import Substrate.Foundation.Bool.Or
+open import Substrate.Foundation.Bool.Xor   -- ⟡A4: single source
+open import Substrate.Foundation.Bool.Properties.OrXorAnd   -- ⟡A5: single source
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; zipWith)
 open import Substrate.Algebra.Wedge.Graded using (GradedDivStr)
 open import Substrate.Algebra.Wedge.VecGraded using (vec-graded)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Sym
 
 ------------------------------------------------------------------------
 -- C4 — the index-product bridge: OR = XOR ⊕ AND.
@@ -61,35 +71,35 @@ bit = boolToℕ                                  -- ⟡A4: single source (Founda
 
 popcount : {n : ℕ} → Vec Bool n → ℕ
 popcount []       = zero
-popcount (b ∷ bs) = bit b + popcount bs
+popcount (b ∷ bs) = bit b ℕ+ popcount bs
 
--- a 4-term commutative-monoid shuffle: (a+b)+(c+d) ≡ (a+c)+(b+d).
-shuffle : (a b c d : ℕ) → (a + b) + (c + d) ≡ (a + c) + (b + d)
+-- a 4-term commutative-monoid shuffle: (a+b)ℕ+(c+d) ≡ (a+c)ℕ+(b+d).
+shuffle : (a b c d : ℕ) → (a ℕ+ b) ℕ+ (c ℕ+ d) ≡ (a ℕ+ c) ℕ+ (b ℕ+ d)
 shuffle a b c d =
-  trans (+-assoc a b (c + d))
-  (trans (cong (a +_) (sym (+-assoc b c d)))
-  (trans (cong (λ z → a + (z + d)) (+-comm b c))
-  (trans (cong (a +_) (+-assoc c b d))
-         (sym (+-assoc a c (b + d))))))
+  trans (+ℕ-assoc a b (c ℕ+ d))
+  (trans (cong (a ℕ+_) (sym (+ℕ-assoc b c d)))
+  (trans (cong (λ z → a ℕ+ (z ℕ+ d)) (+ℕ-comm b c))
+  (trans (cong (a ℕ+_) (+ℕ-assoc c b d))
+         (sym (+ℕ-assoc a c (b ℕ+ d))))))
 
--- inclusion-exclusion at one bit: |a∨b| + |a∧b| = |a| + |b|.
-bit-or-and : (a b : Bool) → bit (a ∨ b) + bit (a ∧ b) ≡ bit a + bit b
+-- inclusion-exclusion at one bit: |a∨b| ℕ+ |a∧b| = |a| ℕ+ |b|.
+bit-or-and : (a b : Bool) → bit (a ∨ b) ℕ+ bit (a ∧ b) ≡ bit a ℕ+ bit b
 bit-or-and true  true  = refl
 bit-or-and true  false = refl
 bit-or-and false true  = refl
 bit-or-and false false = refl
 
--- C2 + C4 (degree level): popcount(i∨j) + popcount(i∧j) ≡ popcount i + popcount j.
+-- C2 ℕ+ C4 (degree level): popcount(i∨j) ℕ+ popcount(i∧j) ≡ popcount i ℕ+ popcount j.
 -- The defect popcount(i∧j) is the cancellation; it is 0 iff i,j have disjoint
 -- supports — exactly when the degree grading is additive (non-cancelling).
 popcount-or-and : (n : ℕ) (i j : Vec Bool n) →
-                  popcount (zipWith _∨_ i j) + popcount (zipWith _∧_ i j)
-                  ≡ popcount i + popcount j
+                  popcount (zipWith _∨_ i j) ℕ+ popcount (zipWith _∧_ i j)
+                  ≡ popcount i ℕ+ popcount j
 popcount-or-and zero    []       []       = refl
 popcount-or-and (suc n) (a ∷ is) (b ∷ js) =
   trans (shuffle (bit (a ∨ b)) (popcount (zipWith _∨_ is js))
                  (bit (a ∧ b)) (popcount (zipWith _∧_ is js)))
-  (trans (cong₂ _+_ (bit-or-and a b) (popcount-or-and n is js))
+  (trans (cong₂ _ℕ+_ (bit-or-and a b) (popcount-or-and n is js))
          (shuffle (bit a) (bit b) (popcount is) (popcount js)))
 
 ------------------------------------------------------------------------

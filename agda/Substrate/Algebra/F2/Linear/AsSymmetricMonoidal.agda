@@ -33,6 +33,7 @@ open import Substrate.Foundation.Level using (Level)
 open import Substrate.Algebra.F2.Linear.CategoryStructures
   using (F2LinearCategoryStructures)
 open import Substrate.Category.SymmetricMonoidal using (SymmetricMonoidal)
+open import Substrate.Probability.MarkovCategory
 
 module Substrate.Algebra.F2.Linear.AsSymmetricMonoidal
   {ℓO ℓM : Level}

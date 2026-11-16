@@ -33,10 +33,15 @@
 
 module Substrate.Algebra.Q.AsField where
 
-open import Substrate.Foundation.Eq using (_≡_)
-open import Substrate.Algebra.Q using (ℚ; 0ℚ; 1ℚ)
+open import Substrate.Algebra.Q.OneRat
+open import Substrate.Algebra.Q.Rat
+open import Substrate.Algebra.Q.ZeroRat
 open import Substrate.Algebra.Q.Arithmetic using (_+ℚ_; _*ℚ_; -ℚ_)
 open import Substrate.Algebra.Magma using (Magma)
+open import Substrate.Foundation.Eq
+open import Substrate.Algebra.Q.Mul
+open import Substrate.Algebra.Q.Add
+open import Substrate.Algebra.Q.Neg
 
 ------------------------------------------------------------------------
 -- 1. ℚ-Magma (additive).

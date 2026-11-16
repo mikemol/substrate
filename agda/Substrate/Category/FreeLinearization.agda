@@ -27,11 +27,11 @@
 module Substrate.Category.FreeLinearization where
 
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Eq using (_≡_)
+open import Substrate.Foundation.Nat.Nat
 
 open import Substrate.Algebra.F2.Vector using (Vector; basis)
-open import Substrate.Algebra.F2.Linear using (Linear; apply)
+open import Substrate.Algebra.F2.Linear.Linear
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- The FreeLinearization record.

@@ -30,25 +30,30 @@
 
 module Substrate.Logic.Evidence.GValueLSpace.Primes where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
-open import Substrate.Foundation.Nat.Properties.Add using (+-suc)
-open import Substrate.Foundation.Eq using (_≡_; refl; cong; sym)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Properties.Add.PlusSuc
 open import Substrate.Foundation.List using (List; []; _∷_)
 open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂)
-open import Substrate.Algebra.Q using (ℚ; 1ℚ)
+open import Substrate.Algebra.Q.OneRat
+open import Substrate.Algebra.Q.Rat
 open import Substrate.Algebra.Q.Mul using (_*ℚ_)
 open import Substrate.Algebra.Q.Equiv using (_≈ℚ_; ≈ℚ-refl; ≈ℚ-sym; ≈ℚ-trans)
 open import Substrate.Algebra.Q.Properties.Field using (*ℚ-assoc; *ℚ-comm; *ℚ-identityˡ; *ℚ-identityʳ)
 open import Substrate.Algebra.Q.Properties.Congruence using (*ℚ-cong)
-open import Substrate.Algebra.Z using (ℤ; +_; -suc_)
+open import Substrate.Algebra.Z.Int
 open import Substrate.Algebra.Z.Add using (_+ℤ_; _⊖_)
 open import Substrate.Logic.Evidence.GValueLSpace using (powℚ; ExpLogCodec; ExpLogCodecℚ)
 open import Substrate.Logic.Evidence.GValueLSpace.Properties using (pow-+; codec-antipode; ≡→≈ℚ)
 open import Substrate.Logic.Evidence.GValueAsQ using (gvalue; antipode-of; gvalue-antipode)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Algebra.ExpLogCodec
 
 ------------------------------------------------------------------------
 -- The 4-term multiplicative interchange: (a·b)·(c·d) ≈ (a·c)·(b·d).
--- (Pure *ℚ assoc + comm; the abelian-monoid rearrange the cancellation needs.)
+-- (Pure *ℚ assoc ℕ+ comm; the abelian-monoid rearrange the cancellation needs.)
 ------------------------------------------------------------------------
 
 swap4 : (a b c d : ℚ) → ((a *ℚ b) *ℚ (c *ℚ d)) ≈ℚ ((a *ℚ c) *ℚ (b *ℚ d))
@@ -117,7 +122,7 @@ prodH []       = 1ℚ
 prodH (p ∷ ps) = proj₁ (proj₂ p) *ℚ prodH ps
 
 -- The rank-n cancellation: (∏ gᵢ)·(∏ hᵢ) ≈ 1.  Same shape as the rank-1
--- balanced cancellation (swap4 + cancel head + recurse), now over an
+-- balanced cancellation (swap4 ℕ+ cancel head ℕ+ recurse), now over an
 -- ARBITRARY family of independent canceling pairs.
 prod-cancel : (ps : List CancelPair) → (prodG ps *ℚ prodH ps) ≈ℚ 1ℚ
 prod-cancel []       = *ℚ-identityˡ 1ℚ
@@ -200,12 +205,12 @@ module ZPow (g h : ℚ) (gh : (g *ℚ h) ≈ℚ 1ℚ) where
              {powℚ h (suc m) *ℚ powℚ g n}
       (mix n (suc m)) (*ℚ-comm (powℚ g n) (powℚ h (suc m)))
   exp-⊕ℤ (-suc m) (-suc n) =
-    -- (-suc m)+ℤ(-suc n) = -suc suc (m+n); pow-+'s index suc m + suc n
-    -- = suc (m + suc n) needs +-suc to meet suc (suc (m + n)).
-    ≈ℚ-trans {powℚ h (suc (suc (m + n)))} {powℚ h (suc m + suc n)}
+    -- (-suc m)+ℤ(-suc n) = -suc suc (m+n); pow-+'s index suc m ℕ+ suc n
+    -- = suc (m ℕ+ suc n) needs +ℕ-suc to meet suc (suc (m ℕ+ n)).
+    ≈ℚ-trans {powℚ h (suc (suc (m ℕ+ n)))} {powℚ h (suc m ℕ+ suc n)}
              {powℚ h (suc m) *ℚ powℚ h (suc n)}
-      (≡→≈ℚ {powℚ h (suc (suc (m + n)))} {powℚ h (suc m + suc n)}
-         (cong (powℚ h) (cong suc (sym (+-suc m n)))))
+      (≡→≈ℚ {powℚ h (suc (suc (m ℕ+ n)))} {powℚ h (suc m ℕ+ suc n)}
+         (cong (powℚ h) (cong suc (sym (+ℕ-suc m n)))))
       (pow-+ h (suc m) (suc n))
 
   ℤ-power-codec : ExpLogCodecℚ ℤ

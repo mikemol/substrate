@@ -21,12 +21,26 @@
 
 module Substrate.Algebra.Quotient.ModN where
 
-open import Substrate.Foundation.Nat using (ℕ; suc)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
+open import Substrate.Foundation.Nat.Nat
 
+-- ⚑ `_mod-suc_` WAS REACHED THROUGH `ModEquiv`'s `public` RE-EXPORT (Ⓑ2c),
+-- which this one `using` list mixed with ModEquiv's OWN four `≡[m]` names —
+-- one clause, two providers, and no way to see from here that the canonical
+-- form comes from `Nat.Mod`.  Binding it at its real home is the PRECONDITION
+-- for retiring that re-export, not a separate cleanup.
+open import Substrate.Foundation.Nat.Nat.ModSuc
+open import Substrate.Algebra.Nat.Mod.ModSucBound
+open import Substrate.Algebra.Nat.Mod.ModSucId
+open import Substrate.Algebra.Nat.Mod.ModSucPeriodic
+open import Substrate.Algebra.Nat.Mod.ModSucSuc
+open import Substrate.Algebra.Nat.Mod.SucModSucLt
+open import Substrate.Algebra.Nat.Mod.SucModSucSelf
 open import Substrate.Algebra.Nat.ModEquiv
-  using (_≡[_]_; _mod-suc_; ≡[m]-refl; ≡[m]-sym; ≡[m]-trans)
-open import Substrate.Algebra.Quotient using (Quotient)
+open import Substrate.Algebra.Quotient.Quotient
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- 1. Per-modulus Quotient instance.

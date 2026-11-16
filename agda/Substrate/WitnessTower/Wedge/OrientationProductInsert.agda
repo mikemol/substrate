@@ -32,7 +32,8 @@
 
 module Substrate.WitnessTower.Wedge.OrientationProductInsert where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _*_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Times
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Combine using (combine)
 open import Substrate.Foundation.Fin.RemQuot using (remQuot)
@@ -40,14 +41,20 @@ open import Substrate.Foundation.Fin.Combine.RemQuotInverse using (remQuot-combi
 open import Substrate.Foundation.Fin.Punctured using (punchIn)
 open import Substrate.Foundation.Vec using (lookup)
 open import Substrate.Foundation.Product using (proj₁; proj₂)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
 open import Substrate.WitnessTower.Enumerate using (Perm; insert-at)
 open import Substrate.WitnessTower.IsPermutation using (lookup-map)
-open import Substrate.WitnessTower.LehmerPath
-  using (LehmerPath; decode; encode; decode-is-perm; decode-encode)
+open import Substrate.WitnessTower.LehmerPath.Decode
+open import Substrate.WitnessTower.LehmerPath.DecodeEncode
+open import Substrate.WitnessTower.LehmerPath.DecodeIsPerm
+open import Substrate.WitnessTower.LehmerPath.Encode
+open import Substrate.WitnessTower.LehmerPath.LehmerPath
 open import Substrate.WitnessTower.Wedge.OrientationProduct using (_⊗_)
 open import Substrate.WitnessTower.Wedge.OrientationProductLaws using (⊗-combine)
 open import Substrate.WitnessTower.Wedge.OrientationProductPerm using (⊗-is-perm)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- 1. blockPunchIn: punch a slot into the QUOTIENT digit of a flat Fin (m*n),

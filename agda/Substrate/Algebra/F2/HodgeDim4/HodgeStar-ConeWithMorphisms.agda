@@ -32,13 +32,13 @@ module Substrate.Algebra.F2.HodgeDim4.HodgeStar-ConeWithMorphisms where
 
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Literals using (₁)
-open import Substrate.Foundation.Eq using (_≡_; refl)
 
 open import Substrate.Algebra.F2.Vector using (Vector)
-open import Substrate.Algebra.F2.Linear using (apply)
+open import Substrate.Algebra.F2.Linear.Linear
 open import Substrate.Algebra.F2.HodgeDim4.Bivector using (Bivector)
 open import Substrate.Algebra.F2.HodgeDim4.HodgeStar using (hodge-star)
 open import Substrate.Category.Cone.WithMorphisms
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- N-1: Base diagram — 2 copies of Bivector with ★ as the morphism.
@@ -73,7 +73,7 @@ star-apply star = apply hodge-star
 ------------------------------------------------------------------------
 
 open import Substrate.Algebra.F2.Vector using (𝟎ⱽ)
-open import Substrate.Algebra.F2.Linear using (preserves-𝟎)
+open import Substrate.Algebra.F2.Linear.Preserves
 
 -- The cone: apex is Bivector (the "slot" for a self-dual element);
 -- legs both project to 𝟎ⱽ (= the canonical self-dual point); the

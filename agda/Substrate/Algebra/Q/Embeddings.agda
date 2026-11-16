@@ -15,11 +15,16 @@
 
 module Substrate.Algebra.Q.Embeddings where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Nat.Nat
 
-open import Substrate.Algebra.Z using (ℤ; +_; -suc_; 0ℤ; 1ℤ)
-open import Substrate.Algebra.Q using (ℚ; mkℚ; 0ℚ; 1ℚ; -1ℚ)
+open import Substrate.Algebra.Z.Int
+open import Substrate.Algebra.Z.OneInt
+open import Substrate.Algebra.Z.ZeroInt
+open import Substrate.Algebra.Q.OneRat
+open import Substrate.Algebra.Q.OneRat2
+open import Substrate.Algebra.Q.Rat
+open import Substrate.Algebra.Q.ZeroRat
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. ℕ → ℚ.
@@ -66,7 +71,7 @@ open import Substrate.Algebra.Q using (ℚ; mkℚ; 0ℚ; 1ℚ; -1ℚ)
 ℚ-as-ℤ-when-d=1 :
   (q : ℚ) → ℚ.den-1 q ≡ 0 → ℤ
 ℚ-as-ℤ-when-d=1 q _ = ℚ.num q
-  where open import Substrate.Algebra.Q using (module ℚ)
+  where open import Substrate.Algebra.Q.Rat
 
 ------------------------------------------------------------------------
 -- 5. Capstone for Q7.

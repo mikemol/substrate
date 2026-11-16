@@ -19,13 +19,17 @@
 
 module Substrate.Algebra.Q.JacobianEncodingHom where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
 open import Substrate.Foundation.List using (List; []; _∷_; _++_)
-open import Substrate.Algebra.Z using (ℤ; +_; -suc_; 1ℤ; -ℤ_)
+open import Substrate.Algebra.Z.Int
+open import Substrate.Algebra.Z.Int2
+open import Substrate.Algebra.Z.OneInt
 open import Substrate.Algebra.Z.Mul using (_*ℤ_)
 open import Substrate.Algebra.Z.Properties.Mul using (neg-*-left)
-open import Substrate.Algebra.Q using (ℚ; mkℚ; num; den-1; 0ℚ; 1ℚ)
+open import Substrate.Algebra.Q.OneRat
+open import Substrate.Algebra.Q.Rat
+open import Substrate.Algebra.Q.ZeroRat
 open import Substrate.Algebra.Q.Add using (_+ℚ_)
 open import Substrate.Algebra.Q.Mul using (_*ℚ_)
 open import Substrate.Algebra.Q.Neg using (-ℚ_)
@@ -48,6 +52,10 @@ open import Substrate.Algebra.Q.JacobianExpr
 
 -- The minimal generator layer (E / _≋_ / gen-*), opened per point below.
 open import Substrate.Algebra.Q.JacobianEncodingGen
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 ----------------------------------------------------------------------
 -- 0. Generic ℚ rearrangements (point-free; pinned; no reasoning combinator).
@@ -93,13 +101,13 @@ swap6 p p′ q q′ r r′ =
 -- 1. `powℚ` and ℤ→ℚ / negation bridge lemmas (point-free; pinned).
 ----------------------------------------------------------------------
 
-powℚ-+ : (w : ℚ) (a b : ℕ) → powℚ w (a + b) ≋ (powℚ w a) *ℚ (powℚ w b)
+powℚ-+ : (w : ℚ) (a b : ℕ) → powℚ w (a ℕ+ b) ≋ (powℚ w a) *ℚ (powℚ w b)
 powℚ-+ w zero    b = ≈ℚ-sym {1ℚ *ℚ (powℚ w b)} {powℚ w b} (*ℚ-identityˡ (powℚ w b))
 powℚ-+ w (suc a) b =
-  ≈ℚ-trans {w *ℚ powℚ w (a + b)}
+  ≈ℚ-trans {w *ℚ powℚ w (a ℕ+ b)}
            {w *ℚ ((powℚ w a) *ℚ (powℚ w b))}
            {(w *ℚ powℚ w a) *ℚ (powℚ w b)}
-    (*ℚ-cong {w} {w} {powℚ w (a + b)} {(powℚ w a) *ℚ (powℚ w b)}
+    (*ℚ-cong {w} {w} {powℚ w (a ℕ+ b)} {(powℚ w a) *ℚ (powℚ w b)}
              (≈ℚ-refl w) (powℚ-+ w a b))
     (≈ℚ-sym {(w *ℚ powℚ w a) *ℚ (powℚ w b)} {w *ℚ ((powℚ w a) *ℚ (powℚ w b))}
       (*ℚ-assoc w (powℚ w a) (powℚ w b)))
@@ -129,14 +137,14 @@ module Point2 (x y z : ℚ) where
 
   monoval-hom : (m n : Mono) → mv (addM m n) ≋ (mv m) *ℚ (mv n)
   monoval-hom (mono a b c) (mono a′ b′ c′) =
-    ≈ℚ-trans {powℚ x (a + a′) *ℚ (powℚ y (b + b′) *ℚ powℚ z (c + c′))}
+    ≈ℚ-trans {powℚ x (a ℕ+ a′) *ℚ (powℚ y (b ℕ+ b′) *ℚ powℚ z (c ℕ+ c′))}
              {((powℚ x a) *ℚ (powℚ x a′)) *ℚ (((powℚ y b) *ℚ (powℚ y b′)) *ℚ ((powℚ z c) *ℚ (powℚ z c′)))}
              {((powℚ x a) *ℚ ((powℚ y b) *ℚ (powℚ z c))) *ℚ ((powℚ x a′) *ℚ ((powℚ y b′) *ℚ (powℚ z c′)))}
-      (*ℚ-cong {powℚ x (a + a′)} {(powℚ x a) *ℚ (powℚ x a′)}
-               {powℚ y (b + b′) *ℚ powℚ z (c + c′)} {((powℚ y b) *ℚ (powℚ y b′)) *ℚ ((powℚ z c) *ℚ (powℚ z c′))}
+      (*ℚ-cong {powℚ x (a ℕ+ a′)} {(powℚ x a) *ℚ (powℚ x a′)}
+               {powℚ y (b ℕ+ b′) *ℚ powℚ z (c ℕ+ c′)} {((powℚ y b) *ℚ (powℚ y b′)) *ℚ ((powℚ z c) *ℚ (powℚ z c′))}
                (powℚ-+ x a a′)
-               (*ℚ-cong {powℚ y (b + b′)} {(powℚ y b) *ℚ (powℚ y b′)}
-                        {powℚ z (c + c′)} {(powℚ z c) *ℚ (powℚ z c′)}
+               (*ℚ-cong {powℚ y (b ℕ+ b′)} {(powℚ y b) *ℚ (powℚ y b′)}
+                        {powℚ z (c ℕ+ c′)} {(powℚ z c) *ℚ (powℚ z c′)}
                         (powℚ-+ y b b′) (powℚ-+ z c c′)))
       (swap6 (powℚ x a) (powℚ x a′) (powℚ y b) (powℚ y b′) (powℚ z c) (powℚ z c′))
 

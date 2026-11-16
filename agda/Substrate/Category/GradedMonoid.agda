@@ -5,11 +5,11 @@
 -- ℕ-graded monoid: a monoid M with a degree function to ℕ that's a
 -- monoid homomorphism.
 --
--- Formally: GradedMonoid = Monoid + (degree : M → ℕ) such that
+-- Formally: GradedMonoid = Monoid ℕ+ (degree : M → ℕ) such that
 --   * degree ε ≡ 0
---   * degree (a · b) ≡ degree a + degree b
+--   * degree (a · b) ≡ degree a ℕ+ degree b
 --
--- The grading function turns M into a monoid HOM to (ℕ, +, 0).
+-- The grading function turns M into a monoid HOM to (ℕ, ℕ+, 0).
 -- Equivalent to a monoid homomorphism M → ℕ; this record packages
 -- the data.
 --
@@ -29,9 +29,10 @@
 
 module Substrate.Category.GradedMonoid where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
-open import Substrate.Foundation.Level using (Level; _⊔_) renaming (suc to lsuc)
-open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Level using (Level; _⊔_)
+open import Substrate.Foundation.Eq
 
 private
   variable
@@ -56,7 +57,7 @@ record GradedMonoid {ℓ : Level} (M : Set ℓ) : Set ℓ where
     -- Degree function (= ℕ-grading).
     degree       : M → ℕ
     degree-ε     : degree ε ≡ 0
-    degree-·     : (a b : M) → degree (a · b) ≡ degree a + degree b
+    degree-·     : (a b : M) → degree (a · b) ≡ degree a ℕ+ degree b
 
 ------------------------------------------------------------------------
 -- Capstone.

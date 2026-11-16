@@ -14,32 +14,36 @@
 --
 -- COMMENT HYGIENE (agda_comment_hygiene): the MACHINE-CHECKED content is EXACTLY: cw (the count via the cone
 -- recursion), cw-cone (its Pascal step, the build bijection), and fvector-bisim (cw (suc n)(suc k) ≡
--- faces n k) + cw-vertices (cw m 1 counts the vertices). The framing ('bisimilar observation of the build')
+-- faces n k) ℕ+ cw-vertices (cw m 1 counts the vertices). The framing ('bisimilar observation of the build')
 -- is (prose: 261's coalgebra point; the full list-enumeration grounding of cw-as-a-literal-count is scoped —
 -- cw is the build's own count recursion, justified by the cone-split bijection).
 ------------------------------------------------------------------------
 
 module Substrate.Category.UniversalProperty.ExtrudeSKIFVector where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; cong; sym; trans)
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
-open import Substrate.Foundation.Nat.Properties.Add using (+-comm)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Properties.Add.PlusComm
 open import Substrate.WitnessTower.FaceCount using (faces)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
 
 ------------------------------------------------------------------------
 -- ① THE f-VECTOR COUNT via the CONE (bisimilar with the build). cw m w counts length-m weight-w vectors.
 --    The cone-split (a length-(suc m) vector = apex-bit ∷ base) splits a weight-(suc w) vector into
---    𝟙∷(weight-w base) [apex present] + 𝟘∷(weight-(suc w) base) [apex absent] — Pascal, by the build.
+--    𝟙∷(weight-w base) [apex present] ℕ+ 𝟘∷(weight-(suc w) base) [apex absent] — Pascal, by the build.
 --    Base: length 0 has ONE vector (the empty, weight 0) and none of positive weight.
 ------------------------------------------------------------------------
 cw : ℕ → ℕ → ℕ
 cw zero    zero    = suc zero               -- the empty vector: one, of weight 0
 cw zero    (suc w) = zero                    -- no positive-weight vector of length 0
 cw (suc m) zero    = cw m zero               -- weight 0 ⟹ apex bit 𝟘 forced; base weight 0
-cw (suc m) (suc w) = cw m (suc w) + cw m w    -- 𝟘∷(weight suc w) [away] + 𝟙∷(weight w) [over apex] = PASCAL
+cw (suc m) (suc w) = cw m (suc w) ℕ+ cw m w    -- 𝟘∷(weight suc w) [away] ℕ+ 𝟙∷(weight w) [over apex] = PASCAL
 
 -- the cone/Pascal step, as a named law (the build bijection at the count level):
-cw-cone : (m w : ℕ) → cw (suc m) (suc w) ≡ cw m (suc w) + cw m w
+cw-cone : (m w : ℕ) → cw (suc m) (suc w) ≡ cw m (suc w) ℕ+ cw m w
 cw-cone m w = refl
 
 cong₂ : {A B C : Set} (f : A → B → C) {a a′ : A} {b b′ : B} → a ≡ a′ → b ≡ b′ → f a b ≡ f a′ b′
@@ -58,15 +62,15 @@ cw-zero (suc m) = cw-zero m
 -- base: cw (suc n) 1 counts the vertices (weight-1 vectors over suc n positions) = suc n = faces n 0.
 cw-vertices : (n : ℕ) → cw (suc n) (suc zero) ≡ suc n
 cw-vertices zero    = refl
-cw-vertices (suc n) =                            -- cw (suc(suc n)) 1 = cw (suc n) 1 + cw (suc n) 0 = suc n + 1
-  trans (cong₂ _+_ (cw-vertices n) (cw-zero (suc n))) (+-comm (suc n) (suc zero))
+cw-vertices (suc n) =                            -- cw (suc(suc n)) 1 = cw (suc n) 1 ℕ+ cw (suc n) 0 = suc n ℕ+ 1
+  trans (cong₂ _ℕ+_ (cw-vertices n) (cw-zero (suc n))) (+ℕ-comm (suc n) (suc zero))
 
 fvector-bisim : (n k : ℕ) → cw (suc n) (suc k) ≡ faces n k
 fvector-bisim n       zero    = trans (cw-vertices n) refl        -- faces n 0 = suc n = cw (suc n) 1
 fvector-bisim zero    (suc k) = refl                              -- cw 1 (suc (suc k)) = 0 = faces 0 (suc k)
 fvector-bisim (suc n) (suc k) =                                    -- both Pascal: cw-cone / FaceCount.cone-step
   trans (cw-cone (suc n) (suc k))
-        (cong₂ _+_ (fvector-bisim n (suc k)) (fvector-bisim n k))
+        (cong₂ _ℕ+_ (fvector-bisim n (suc k)) (fvector-bisim n k))
 
 ------------------------------------------------------------------------
 -- THE INVARIANT (bottoming out — the f-vector COUNT is a bisimilar observation of the tower's build,

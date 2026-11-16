@@ -14,9 +14,8 @@ module Substrate.Pedagogy.RosettaPage where
 
 open import Substrate.Groups.Coxeter.Word using (Word; []; _∷_; _++_)
 
-open import Substrate.Linguistic.Roster
-  using (Lang; lojban; tokipona; solresol; kelen; lambda-lang; lie-lang)
-open import Substrate.Linguistic.RosettaTable using (pair-entry)
+open import Substrate.Linguistic.Roster.Lang
+open import Substrate.Linguistic.RosettaTable.PairEntry
 
 open import Substrate.Pedagogy.MarkdownToken using (txt-rosetta-table)
 open import Substrate.Pedagogy.Section using (Section)

@@ -20,9 +20,9 @@
 --                 registered as morphisms; the distinction is forced by type.
 --
 -- The whole carries a COHERENT MONOIDAL structure: the tensor `_⊗ᴰ_`, the
--- unit `⊤-div`, the associator/unitors as natural isos, and the pentagon +
+-- unit `⊤-div`, the associator/unitors as natural isos, and the pentagon +F
 -- triangle coherence (Algebra.Wedge.Monoidal). That is the sphere: roots as
--- vertices, isos + bridges as edges, coherence closing it — the foundational
+-- vertices, isos +F bridges as edges, coherence closing it — the foundational
 -- quotient algebra everything else rests on.
 ------------------------------------------------------------------------
 
@@ -33,10 +33,10 @@ module Substrate.Algebra.Wedge.Registry where
 open import Substrate.Foundation.List using (List)
 open import Substrate.Foundation.Unit using (⊤)
 open import Substrate.Foundation.Product using (_,_; _×_)
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Algebra.F2 using (F₂)
-open import Substrate.Algebra.Z using (ℤ)
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.Z.Int
 open import Substrate.Algebra.Wedge using (DivStr; ℕ-div)
 open import Substrate.Algebra.Wedge.Mul using (Two; two-div)
 open import Substrate.Algebra.Wedge.Cross using (_⊗ᴰ_)
@@ -47,6 +47,9 @@ open import Substrate.Algebra.F2.Wedge using (F₂-div)
 open import Substrate.Algebra.Z.Wedge using (ℤ-div)
 open import Substrate.Algebra.List.Wedge using (List-div)
 open import Substrate.Algebra.Fin.Wedge using (Cyc-div)
+-- ⚑ `parity`/`parity-+` WERE REACHED THROUGH `ParityBridge`'s `public`
+-- RE-EXPORT (Ⓑ2c); the home is `Algebra.N-to-F2-Parity`.
+open import Substrate.Algebra.N-to-F2-Parity
 open import Substrate.Algebra.Wedge.ParityBridge using (parity-bridge)
 open import Substrate.Algebra.Wedge.InclusionBridge using (include-ℕℤ)
 open import Substrate.Algebra.Fin.Wedge.ModBridge using (modn-bridge)

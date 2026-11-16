@@ -17,14 +17,22 @@
 
 module Substrate.Algebra.CayleyDickson.Coboundary where
 
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Eq using (_≡_; refl; cong; cong₂; trans; sym)
-open import Substrate.Foundation.Bool using (Bool; false; _xor_)
-open import Substrate.Foundation.Bool.Properties
-  using (xor-assoc; xor-comm; xor-same; xor-identityˡ; xor-identityʳ)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Bool.Bool
+open import Substrate.Foundation.Bool.Xor
+open import Substrate.Foundation.Bool.Properties.XorAssoc
+open import Substrate.Foundation.Bool.Properties.XorComm
+open import Substrate.Foundation.Bool.Properties.XorIdentityL
+open import Substrate.Foundation.Bool.Properties.XorIdentityR
+open import Substrate.Foundation.Bool.Properties.XorSame
 open import Substrate.Foundation.List using (List; []; _∷_; _++_)
 open import Substrate.Foundation.Vec using (Vec; zipWith)
 open import Substrate.Algebra.CayleyDickson.Cocycle using (δ²; δ³; ⊕-assoc)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Sym
 
 ------------------------------------------------------------------------
 -- 1. The XOR-parity framework.

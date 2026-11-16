@@ -8,8 +8,8 @@
 
 module Substrate.Groups.Symmetric.Eq (A : Set) where
 
-open import Substrate.Foundation.Eq using (_≡_)
 open import Substrate.Groups.Symmetric.Permutation A
+open import Substrate.Foundation.Eq
 
 infix 4 _≈_
 

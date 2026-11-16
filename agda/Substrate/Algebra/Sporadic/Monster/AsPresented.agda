@@ -26,12 +26,11 @@
 
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.List using (List)
-open import Substrate.Foundation.Nat using (ℕ)
 open import Substrate.Foundation.Product using (Σ; _,_)
-open import Substrate.Foundation.Eq using (_≡_)
 
 open import Substrate.Category.SylowDecomposition.FromWord
   using (evaluate-word)
+open import Substrate.Foundation.Eq
 
 module Substrate.Algebra.Sporadic.Monster.AsPresented
   -- The Monster carrier + group ops.
@@ -66,13 +65,6 @@ module Substrate.Algebra.Sporadic.Monster.AsPresented
 
 -- Thin instance of [[JointGenWrapper]] at (nSylow = 15, nGen = 16);
 -- the Y₅₅₅+spider presentation supplies the deltas.
-open import Substrate.Category.PrimeFactoredGauge.JointGenWrapper
-  M _·M_ εM
-  15 Sylow-pred-M
-  16 gen-M gen-M-sylow
-  represent-M represent-M-correct
-  public
-  renaming (joint-gen to Monster-joint-gen)
 
 ------------------------------------------------------------------------
 -- Capstone — Monster joint-gen dischargeable from presentation.

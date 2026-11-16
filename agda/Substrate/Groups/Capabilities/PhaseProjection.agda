@@ -25,6 +25,7 @@ import Substrate.Groups.FreeCyclic-Coxeter as F
 -- As module parameters the record lands in Set; consumers write
 -- `PhaseProjectionCapability Zn-Word F-Word`.
 open import Substrate.Groups.Coxeter.Word using ([])
+open import Substrate.Groups.Coxeter.ListPresentation
 module _ (Zn-Word F-Word : Set) where
 
   record PhaseProjectionCapability : Set where

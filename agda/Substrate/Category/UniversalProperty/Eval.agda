@@ -23,13 +23,25 @@
 
 module Substrate.Category.UniversalProperty.Eval where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂)
 
-open import Substrate.Algebra.Quotient
+open import Substrate.Algebra.Quotient.ApproxcanonicalEq
+open import Substrate.Algebra.Quotient.Canonical
+open import Substrate.Algebra.Quotient.CanonicalEqApprox
+open import Substrate.Algebra.Quotient.IdemCanonical
+open import Substrate.Algebra.Quotient.KerQuotient
+open import Substrate.Algebra.Quotient.KerRel
+open import Substrate.Algebra.Quotient.Quotient
+open import Substrate.Algebra.Quotient.SplitCanonical
 open import Substrate.Category.UniversalProperty.Term
   using (UPGen; lift; UPTerm; []; _∷_; _++ᵤ_)
 open import Substrate.Category.UniversalProperty.Category
   using (UPCategory)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.Probability.MarkovCategory
 
 -- The whole bridge lives over an object-alphabet O, a Hom family, and a target
 -- category C. `open UPCategory C` names id-hom / compose-hom / the three laws.

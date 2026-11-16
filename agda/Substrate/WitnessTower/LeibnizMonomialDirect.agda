@@ -37,16 +37,23 @@
 
 module Substrate.WitnessTower.LeibnizMonomialDirect where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _*_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Times
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Combine using (combine)
 open import Substrate.Foundation.Fin.Combine.RemQuotInverse using (remQuot-combine)
 open import Substrate.Foundation.Fin.Punctured using (punchIn)
 open import Substrate.Foundation.Vec using (Vec; _∷_; lookup; map)
 open import Substrate.Foundation.Product using (proj₁; proj₂)
-open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym; cong; cong₂)
-open import Substrate.WitnessTower.LehmerPath using (LehmerPath; start; _◂_; decode)
+open import Substrate.WitnessTower.LehmerPath.Decode
+open import Substrate.WitnessTower.LehmerPath.LehmerPath
 import Substrate.WitnessTower.LeibnizMonomial as LM
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.Category.DiscreteFourierTransform
 
 module Direct (A : Set) (_*A_ : A → A → A) (1A : A) where
 

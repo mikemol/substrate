@@ -14,8 +14,7 @@
 
 module Substrate.Algebra.Wedge.NilpotentLogMFinLaws where
 
-open import Substrate.Foundation.Eq  using (_≡_; refl; sym; trans; cong)
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.To
 open import Substrate.Foundation.Maybe using (Maybe; just; nothing)
@@ -23,6 +22,11 @@ open import Substrate.Algebra.Wedge.NilpotentFaithfulLogChart using (LogM; mulM)
 open import Substrate.Algebra.Wedge.NilpotentLogMMonoid using (mulM-comm)
 open import Substrate.Algebra.Wedge.NilpotentLogMAssoc  using (mulM-assoc)
 open import Substrate.Algebra.Wedge.NilpotentLogMFin using (LogF; mulF; ι; ι-hom)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Algebra.Wedge.ResidueAtom
 
 ------------------------------------------------------------------------
 -- toℕ injective on Fin (not in Foundation.Fin — derived inline), then ι injective.

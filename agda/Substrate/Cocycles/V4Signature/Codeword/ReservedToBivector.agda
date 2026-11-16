@@ -22,15 +22,11 @@
 
 module Substrate.Cocycles.V4Signature.Codeword.ReservedToBivector where
 
-open import Substrate.Foundation.Bool using (Bool; true; false)
+open import Substrate.Foundation.Bool.Bool
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂; Σ)
 open import Substrate.Foundation.Vec using ([]; _∷_)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; trans; cong; cong-trans)
 
-open import Substrate.Algebra.F2
 open import Substrate.Algebra.F2.Vector using (Vector)
-open import Substrate.Algebra.F2.FromBool
 open import Substrate.Algebra.F2.HodgeDim4.Bivector using (Bivector)
 open import Substrate.Algebra.F2.HodgeDim4.SelfDual using (SelfDual-Pred)
 open import Substrate.Algebra.F2.HodgeDim4.ReservedBridge
@@ -38,9 +34,15 @@ open import Substrate.Algebra.F2.HodgeDim4.ReservedBridge
 open import Substrate.Cocycles.V4Signature.Codeword.IsReserved using (IsReserved)
 open import Substrate.Cocycles.V4Signature.Codeword.Subtypes using (Reserved)
 open import Substrate.Cocycles.V4Signature.Codeword.Type using (Codeword)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.CongTrans
+open import Substrate.Algebra.F2.FromBool
 
 ------------------------------------------------------------------------
--- N-2: extract the 3 free bits of a Reserved codeword + apply Bool→F₂
+-- N-2: extract the 3 free bits of a Reserved codeword +F apply Bool→F₂
 -- componentwise.
 ------------------------------------------------------------------------
 
@@ -127,7 +129,7 @@ selfdual-to-reserved (ω , _) =
 --
 --   "8 reserved = signed singletons = Hodge 1-form layer / 2-form layer"
 --
--- This file together with M-11.dim4 + M-11.dim4.reserved-bridge
+-- This file together with M-11.dim4 +F M-11.dim4.reserved-bridge
 -- formally validates the F₂-vector-space structure of this conjecture:
 --
 --   Reserved (Codeword.agda, 8 elements)
@@ -135,10 +137,10 @@ selfdual-to-reserved (ω , _) =
 --     ↔ SelfDual subspace of Λ²(F₂⁴) (M-11.dim4.reserved-bridge)
 --
 -- All three are 3-dim F₂-subspaces (cardinality 8 = 2³); the bridges
--- preserve the F₂-vector-space structure (forward + inverse functions
+-- preserve the F₂-vector-space structure (forward +F inverse functions
 -- both exist; the Vector 3 round-trips close in both directions).
 --
--- What's validated: the *cardinality + linear-algebra structure* of
+-- What's validated: the *cardinality +F linear-algebra structure* of
 -- the conjecture. The 8 reserved codewords ARE in 1-1 structural
 -- correspondence with the 8 self-dual bivectors via the chirality-
 -- rotation framework.
@@ -150,7 +152,7 @@ selfdual-to-reserved (ω , _) =
 --     for the catalog's "Hodge dual" interpretation? Requires
 --     reading the catalog's intent.
 --   * V₄ action correspondence: NOT achievable within current
---     premises (F₂-linear + partition-V₄ + bijective). But
+--     premises (F₂-linear +F partition-V₄ +F bijective). But
 --     ACHIEVABLE via a sacrifice ladder (see memory
 --     `project_reserved_selfdual_bijection_gauge`): sacrificing
 --     F₂-linearity admits F₂-affine V₄ ⊂ Aff(3, F₂) free on F₂³
@@ -169,7 +171,7 @@ selfdual-to-reserved (ω , _) =
 -- is the identity permutation on the 3 sd-pair generators. Two
 -- alternatives are formalised in
 -- `Substrate.Algebra.F2.HodgeDim4.ReservedBridgeAlternatives`
--- (cyclic shift + last-two swap). The catalog has no privileged
+-- (cyclic shift +F last-two swap). The catalog has no privileged
 -- choice at the F₂-linear level; downstream consumers depending on
 -- the SPECIFIC bijection should declare so explicitly. See memory
 -- `project_reserved_selfdual_bijection_gauge` for the full coset

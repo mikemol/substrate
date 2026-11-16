@@ -12,9 +12,9 @@
 
 module Substrate.Category.ComposedReference.ActionAlgebra where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Maybe using (Maybe; nothing)
-open import Substrate.Category.ComposedReference.V4 using (V₄; e)
+open import Substrate.Groups.V4.Bijection.V4
 
 record ActionAlgebra : Set where
   field

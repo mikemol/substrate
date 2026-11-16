@@ -12,11 +12,11 @@
 module Substrate.Algebra.F2.SymBilinForm.NonDegenerate.BasisRowEqMetricId where
 
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Eq using (_≡_; refl)
 
 open import Substrate.Algebra.F2.Vector using (basis; lookup-𝟎)
 open import Substrate.Algebra.F2.SymBilinForm.MetricId using (metric-id)
 open import Substrate.Foundation.Vec using (lookup)
+open import Substrate.Foundation.Eq
 
 basis-row-eq-metric-id :
   ∀ {n} (i j : Fin n) → lookup (basis i) j ≡ metric-id i j

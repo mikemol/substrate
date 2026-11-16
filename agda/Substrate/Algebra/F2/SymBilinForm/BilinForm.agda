@@ -10,8 +10,8 @@
 module Substrate.Algebra.F2.SymBilinForm.BilinForm where
 
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Algebra.F2 using (F₂)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Algebra.F2.F2
 
 BilinForm : ℕ → Set
 BilinForm n = Fin n → Fin n → F₂

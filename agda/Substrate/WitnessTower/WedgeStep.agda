@@ -26,7 +26,7 @@
 -- the orbit instantiates — `wedge-step a f = a ∷ f` (lead a ∧ rung-below f) is
 -- the canonical form, and:
 --   • LehmerPath  `insert-at p σ = p ∷ map (punchIn p) σ`  — lead p ∧ punctured rung.
---   • EEATower    `a = q·b + r` (recon)                     — lead q ∧ residual r.
+--   • EEATower    `a = q·b +F r` (recon)                     — lead q ∧ residual r.
 --   • AlgebraLadder rung ≡ ⟨below , increment⟩ (record-η)   — rung-below ∧ law.
 -- All "retain both sides, graded." ★-within applies in the graded-self-dual
 -- case (faces); the others share the wedge, not the self-duality. No new
@@ -38,15 +38,15 @@
 
 module Substrate.WitnessTower.WedgeStep where
 
-open import Substrate.Foundation.Nat using (ℕ; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Vec using (_∷_)
-open import Substrate.Foundation.Eq using (_≡_)
-open import Substrate.Algebra.F2 using (F₂; 𝟘; 𝟙)
+open import Substrate.Algebra.F2.F2
 open import Substrate.Algebra.F2.Vector using (_+ⱽ_)
 
 open import Substrate.WitnessTower.FaceSet
   using ( Face; with-apex; without-apex; apex-bit; base-face; cone-split
         ; universe; ★; ★-cons; wedge-recon; ★-involution )
+open import Substrate.Foundation.Eq
 
 private variable n : ℕ
 

@@ -11,7 +11,6 @@ module Substrate.Algebra.F2.HodgeDim4.ReservedBridgeAlternatives.Swap.RoundTrip 
 
 open import Substrate.Foundation.Fin.Literals using (₀; ₁; ₂)
 open import Substrate.Foundation.Vec using ([]; _∷_; lookup)
-open import Substrate.Foundation.Eq  using (_≡_; trans; cong)
 open import Substrate.Algebra.F2.Vector using (Vector)
 open import Substrate.Algebra.F2.HodgeDim4.ReservedBridgeAlternatives.Swap.Forward
   using (vector3-to-selfdual-swap)
@@ -23,6 +22,9 @@ open import Substrate.Algebra.F2.HodgeDim4.ReservedBridgeAlternatives.Swap.Looku
   using (lookup-2-swap)
 open import Substrate.Algebra.F2.HodgeDim4.ReservedBridgeAlternatives.Swap.Lookup1
   using (lookup-1-swap)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 selfdual-coefficients-swap-roundtrip :
   (v : Vector 3) →

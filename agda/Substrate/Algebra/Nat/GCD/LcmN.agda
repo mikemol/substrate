@@ -10,7 +10,8 @@
 
 module Substrate.Algebra.Nat.GCD.LcmN where
 
-open import Substrate.Foundation.Nat using (ℕ; _*_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Times
 
 lcm-ℕ : ℕ → ℕ → ℕ
 lcm-ℕ a b = a * b

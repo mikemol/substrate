@@ -33,7 +33,7 @@
 
 open import Substrate.Foundation.Level using (Level)
 
-open import Substrate.Category.CategoryOf using (CategoryOf)
+open import Substrate.Category.CategoryOf.CategoryOf
 open import Substrate.Category.Functor using (Functor)
 
 module Substrate.Category.Coxeter.AsCartanType.Functor
@@ -51,7 +51,6 @@ module Substrate.Category.Coxeter.AsCartanType.Functor
 
 open import Substrate.Category.Functor.AsNamed
   CoxeterCat CartanCat Coxeter→Cartan public
-  renaming (named-Functor to Coxeter-AsCartan-Functor)
 ------------------------------------------------------------------------
 -- 2. Capstone — L13 lifted to a functor.
 --

@@ -35,12 +35,15 @@
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.Logic.Evidence.ElAtlas.CenterWitness where
+open import Substrate.Algebra.Z.Add
+open import Substrate.Algebra.Z.Mul
 
-open import Substrate.Algebra.Z using (ℤ; +_; -ℤ_)
-open import Substrate.Algebra.Z.Arithmetic using (_+ℤ_; _*ℤ_)
+open import Substrate.Algebra.Z.Int
+open import Substrate.Algebra.Z.Int2
+
 open import Substrate.Foundation.Vec using (Vec; []; _∷_)
 open import Substrate.Foundation.Product using (_×_; _,_)
-open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- Cycle space at rung 3 = ℤ³, with the dot product.

@@ -17,12 +17,12 @@
 module Substrate.Category.UniversalProperty.X8aSkiBackedGraded where
 
 open import Substrate.Foundation.Product using (_,_)
-open import Substrate.Foundation.Eq using (_≡_)
-open import Substrate.Foundation.Negation using (¬_)
-open import Substrate.FUSep.FUSepQReduce using (atom; app; stop; shed; Reduce) renaming (Tm to Tm⟦533ef80d⟧)
+open import Substrate.Foundation.Negation.Not
+open import Substrate.FUSep.FUSepQReduce using (atom; app; stop; shed; Reduce) renaming (Tm-QReduce to Tm⟦533ef80d⟧)
 open import Substrate.Category.UniversalProperty.X8aSkiExistence using (module SkiExistence)
 open import Substrate.Category.UPArrowGraded using (UPArrowᴳ; mkUP)
 open import Substrate.Category.UniversalProperty.BackedGraded using (BackedUPᴳ)
+open import Substrate.Foundation.Eq
 
 -- the concrete all-stop classifier (every term is its own nf; fpf vacuous).
 ⇒₀ : Reduce

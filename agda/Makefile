@@ -10,10 +10,16 @@ SHIM_DIR := /home/mikemol/github/substrate/scripts/agda-shim
 ifeq (,$(findstring $(SHIM_DIR),$(PATH)))
 export PATH := $(SHIM_DIR):$(PATH)
 endif
+MEMBUDGET := /home/mikemol/github/substrate/scripts/membudget
+export MEMBUDGET
 
-.PHONY: all clean shim catalog check check-makefiles check-defproof check-vacuity check-index check-import check-decltag check-carrier check-sumtype check-public check-cap check-apex advise
+.PHONY: all clean shim catalog sourced promote drain reconcile check check-makefiles check-defproof check-vacuity check-index check-import check-decltag check-carrier check-sumtype check-public check-cap check-apex advise
 all:
+	@$(MAKE) -f Flat.mk reconcile
 	@$(MAKE) -f Flat.mk all
+# Delete every ingest stamp the store's own `core_fp` token does not back (ONE query).
+reconcile:
+	@$(MAKE) -f Flat.mk reconcile
 clean:
 	@$(MAKE) -f Flat.mk clean
 # ⟡gqs-catalog-engine: (re)build the .agdai shim (iff agdai_shim.hs changed) + catalog.db from the
@@ -25,7 +31,13 @@ clean:
 shim:
 	@$(MAKE) -C ../jea/metalanguage shim
 catalog: shim
-	@python3 ../scripts/sppf_db.py "" --argperm
+	@$(MEMBUDGET) run 1024 catalog -- python3 ../scripts/sppf_db.py "" --argperm
+sourced:
+	@$(MAKE) -f Flat.mk sourced
+promote:
+	@$(MAKE) -f Flat.mk promote
+drain:
+	@$(MAKE) -f Flat.mk drain
 # Aggregate invariant GATE (same checks the pre-commit hook runs):
 # def/proof separation + makefile-tree sync + UP non-vacuity + shape index. Blocking.
 check: check-defproof check-makefiles check-vacuity check-index check-import check-decltag check-carrier check-sumtype check-public check-cap check-apex

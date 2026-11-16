@@ -19,7 +19,8 @@
 
 module Substrate.Linguistic.HomFunctor where
 
-open import Substrate.Linguistic.Roster using (Lang; witness-of)
+open import Substrate.Linguistic.Roster.Lang
+open import Substrate.Linguistic.Roster.WitnessOf
 open import Substrate.Linguistic.Morphism using (LanguageMorphism)
 open import Substrate.Linguistic.Compose using (_∘L_)
 
@@ -72,7 +73,7 @@ Hom-contra-map f h = h ∘L f
 -- Hom-set is realised at the type level.
 ------------------------------------------------------------------------
 
-open import Substrate.Linguistic.Roster using (lojban; tokipona)
+open import Substrate.Linguistic.Roster.Lang
 
 -- Hom-set from Lojban to Toki Pona.
 Hom-Lojban-TokiPona : Set

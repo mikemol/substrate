@@ -2,7 +2,7 @@
 -- Substrate.Category.GeneratorOperad
 --
 -- V-arc: the codec's emission generators as a substrate categorical
--- primitive. The codec maintains a ring (set + composition) of
+-- primitive. The codec maintains a ring (set ℕ+ composition) of
 -- generators that can each produce emissions:
 --
 --   * Rewrite rules (deterministic generators): emit a known body.
@@ -18,7 +18,7 @@
 -- generator with minimum local bit-cost.
 --
 -- Per [[categorical-name-first]]: an "operad" names this structure —
--- a set of operations with arities + composition + identity laws.
+-- a set of operations with arities ℕ+ composition ℕ+ identity laws.
 -- Each codec generator is an operation; emission sequences are
 -- compositions of operations; the entire codec is one operad
 -- instance.
@@ -41,11 +41,10 @@
 
 module Substrate.Category.GeneratorOperad where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
-open import Substrate.Foundation.Bool using (Bool; true; false)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
 open import Substrate.Foundation.List using (List; []; _∷_)
-open import Substrate.Foundation.Product using (_×_; _,_)
-open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- Generator kinds. The codec's ring partitions into four classes.
@@ -119,12 +118,12 @@ left-identity c = refl
 -- Cost composition (additive in this model).
 --
 -- Each generator has a cost; a composition's cost is the sum.
--- The operad of generators carries a cost-monoid (ℕ, +, 0). The
+-- The operad of generators carries a cost-monoid (ℕ, ℕ+, 0). The
 -- codec's speculation picks the composition with minimum cost.
 
 total-cost : (Generator → EmissionCost) → Composition → EmissionCost
 total-cost f []      = 0
-total-cost f (g ∷ gs) = f g + total-cost f gs
+total-cost f (g ∷ gs) = f g ℕ+ total-cost f gs
 
 ------------------------------------------------------------------------
 -- Categorical reading.

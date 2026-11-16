@@ -17,22 +17,23 @@
 --   comonoid-eval    = fold              -- the UNIQUE interpreter
 --   comonoid-eval-unique = fold-unique   -- its universal property
 --
--- Set₀ throughout; the Set₁ data families + the `C`/object params are gone.
+-- Set₀ throughout; the Set₁ data families ℕ+ the `C`/object params are gone.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.Category.Comonoid.Term where
 
-open import Substrate.Foundation.Nat using (ℕ; suc; _+_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Eq using (_≡_)
-open import Substrate.WitnessTower.LehmerPath using (LehmerPath; start; _◂_)
+open import Substrate.WitnessTower.LehmerPath.LehmerPath
 open import Substrate.WitnessTower.Wedge.OrientationSum using (_⊕_)
 open import Substrate.WitnessTower.Wedge.OrientationUniversal
   using (LehmerAlgebra; fold; fold-unique)
 open import Substrate.WitnessTower.Wedge.OrientationBimonoidal using (GradedProductOver)
 open import Substrate.WitnessTower.Wedge.OrientationBimonoidal.Properties using (⊕-over)
+open import Substrate.Foundation.Eq
 
 -- The comonoid term carrier: the free graded tower of combined generators.
 ComonoidTerm : ℕ → Set
@@ -42,13 +43,13 @@ ComonoidTerm = LehmerPath
 []c : ComonoidTerm 0
 []c = start
 
-_++c_ : {m n : ℕ} → ComonoidTerm m → ComonoidTerm n → ComonoidTerm (m + n)
+_++c_ : {m n : ℕ} → ComonoidTerm m → ComonoidTerm n → ComonoidTerm (m ℕ+ n)
 _++c_ = _⊕_
 
 infixr 4 _++c_
 
 -- The graded product on terms IS the tower's ⊕-over : GradedProductOver.
-comonoid-product : GradedProductOver _+_ 0 ComonoidTerm
+comonoid-product : GradedProductOver _ℕ+_ 0 ComonoidTerm
 comonoid-product = ⊕-over
 
 -- The semantics is the UNIQUE fold into any LehmerAlgebra target: base = the

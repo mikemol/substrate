@@ -31,7 +31,7 @@
 -- k-d depth keeps, and the wedge quotient are one number, and the equation
 -- that says so (`mult-of-power`) IS the patch. (quote = quotient = grade.)
 --
--- This slice founds the lossless carrier + the multiplicity residue + the
+-- This slice founds the lossless carrier ℕ+ the multiplicity residue ℕ+ the
 -- quotient=multiplicity patch. The reorder/sign cocycle (the OTHER residue,
 -- the one exterior keeps and the k-d tree forgets) is the next brick.
 --
@@ -42,7 +42,7 @@
 -- two layers are bridged by a grade homomorphism whose kernel is exactly the
 -- retained-but-non-distinguishing content (e.g. self-pairings). `count` is a
 -- carrier multiplicity (it records), NOT the detector grade (which measures);
--- the detector grade map + its injectivity-on-distinctions (faithfulness, A2)
+-- the detector grade map ℕ+ its injectivity-on-distinctions (faithfulness, A2)
 -- is the next brick, and needs the alphabet to carry the discriminator.
 --
 -- Zero postulates, --safe --without-K.
@@ -52,15 +52,18 @@
 
 module Substrate.Algebra.Wedge.AxisWord where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Op
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; _++_; replicate)
-open import Substrate.Foundation.Eq using (_≡_; refl; cong; trans)
-open import Substrate.Foundation.Negation using (Dec; yes; no)
-open import Substrate.Foundation.Empty using (⊥-elim)
+open import Substrate.Foundation.Negation.Dec
+open import Substrate.Foundation.Empty.BotElim
 open import Substrate.Algebra.Wedge.Product
   using (GradedProduct; vec-product; power; power-replicate; _∧_)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Trans
 
 ------------------------------------------------------------------------
 -- 1. The carrier: words over k axes, with concatenation as the wedge.
@@ -87,15 +90,15 @@ self-wedge i = refl
 
 count : {k n : ℕ} → Fin k → Vec (Fin k) n → ℕ
 count i []       = zero
-count i (x ∷ xs) with i ≟ x
+count i (x ∷ xs) with i ≟ᶠ x
 ... | yes _ = suc (count i xs)
 ... | no  _ = count i xs
 
 -- DEGREES ADD, per axis: the wedge (concatenation) adds multiplicities.
 count-++ : {k m n : ℕ} (i : Fin k) (v : Vec (Fin k) m) (w : Vec (Fin k) n) →
-           count i (v ++ w) ≡ count i v + count i w
+           count i (v ++ w) ≡ count i v ℕ+ count i w
 count-++ i []       w = refl
-count-++ i (x ∷ xs) w with i ≟ x
+count-++ i (x ∷ xs) w with i ≟ᶠ x
 ... | yes _ = cong suc (count-++ i xs w)
 ... | no  _ = count-++ i xs w
 
@@ -109,7 +112,7 @@ count-++ i (x ∷ xs) w with i ≟ x
 count-replicate-self : {k : ℕ} (i : Fin k) (q : ℕ) →
                        count i (replicate q i) ≡ q
 count-replicate-self i zero    = refl
-count-replicate-self i (suc q) with i ≟ i
+count-replicate-self i (suc q) with i ≟ᶠ i
 ... | yes _  = cong suc (count-replicate-self i q)
 ... | no  ¬p = ⊥-elim (¬p refl)
 

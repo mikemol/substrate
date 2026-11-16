@@ -27,15 +27,16 @@
 
 module Substrate.Probability.ConjugateMonad.Term where
 
-open import Substrate.Foundation.Nat using (ℕ; suc; _+_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Eq using (_≡_)
-open import Substrate.WitnessTower.LehmerPath using (LehmerPath; start; _◂_)
+open import Substrate.WitnessTower.LehmerPath.LehmerPath
 open import Substrate.WitnessTower.Wedge.OrientationSum using (_⊕_)
 open import Substrate.WitnessTower.Wedge.OrientationUniversal
   using (LehmerAlgebra; fold; fold-unique)
 open import Substrate.WitnessTower.Wedge.OrientationBimonoidal using (GradedProductOver)
 open import Substrate.WitnessTower.Wedge.OrientationBimonoidal.Properties using (⊕-over)
+open import Substrate.Foundation.Eq
 
 -- The conjugate-update term carrier: the free graded tower of combined
 -- generators. `ConjTerm n` = an n-update Bayesian-update sequence, up to
@@ -47,14 +48,14 @@ ConjTerm = LehmerPath
 []ᶜ : ConjTerm 0
 []ᶜ = start
 
-_++ᶜ_ : {m n : ℕ} → ConjTerm m → ConjTerm n → ConjTerm (m + n)
+_++ᶜ_ : {m n : ℕ} → ConjTerm m → ConjTerm n → ConjTerm (m ℕ+ n)
 _++ᶜ_ = _⊕_
 
 infixr 4 _++ᶜ_
 
 -- The graded product on terms IS the tower's own ⊕-over : GradedProductOver
 -- (the graded stencil), so its associativity/unit come from the tower (.Category).
-conj-product : GradedProductOver _+_ 0 ConjTerm
+conj-product : GradedProductOver _ℕ+_ 0 ConjTerm
 conj-product = ⊕-over
 
 -- The semantics of a term is the UNIQUE fold into any LehmerAlgebra target:

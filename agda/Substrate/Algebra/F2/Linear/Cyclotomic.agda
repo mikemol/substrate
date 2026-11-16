@@ -10,7 +10,7 @@
 -- p-orbit, the eigenvalue-1 / kernel relation x·Φ_p = Φ_p.
 --
 -- WHAT IS PROVED (no overclaim — these two, not the dimension count):
---   • ΦL-factor      : 𝟙 + T·Φ_p(T)  ≡  Φ_p(T) + Tᵖ   (pointwise on v;
+--   • ΦL-factor      : 𝟙 +F T·Φ_p(T)  ≡  Φ_p(T) +F Tᵖ   (pointwise on v;
 --                       the subtraction-free (x−𝟙)·Φ_p = xᵖ−𝟙)
 --   • ΦL-orbit-fixed : if Tᵖ v ≡ v then T(Φ_p(T) v) ≡ Φ_p(T) v
 --                       (im Φ_p(T) ⊆ fix T — the kernel relation f090_2 counts)
@@ -28,23 +28,57 @@
 -- data-≡) that instantiates `Over` verbatim is the deferred alternative.
 --
 -- NEXT BRICK (NOT here): dim (ker Φ_p(T)) ≡ mult2 p n / 2 — the isotypic
--- dimension count. Needs kernel-as-subspace + dimension.
+-- dimension count. Needs kernel-as-subspace +F dimension.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.Algebra.F2.Linear.Cyclotomic where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂)
+open import Substrate.Foundation.Nat.Nat
 
-open import Substrate.Algebra.F2
+open import Substrate.Algebra.F2.AbsorbL
+open import Substrate.Algebra.F2.AbsorbR
+open import Substrate.Algebra.F2.Assoc
+open import Substrate.Algebra.F2.Comm
+open import Substrate.Algebra.F2.Dec
+open import Substrate.Algebra.F2.DistribLPlus
+open import Substrate.Algebra.F2.DistribRPlus
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.F2Cases
+open import Substrate.Algebra.F2.Idempotent
+open import Substrate.Algebra.F2.IdentityL
+open import Substrate.Algebra.F2.IdentityR
+open import Substrate.Algebra.F2.InvOfOne
+open import Substrate.Algebra.F2.OneNeqZero
+open import Substrate.Algebra.F2.Op
+open import Substrate.Algebra.F2.Op2
+open import Substrate.Algebra.F2.PlusAssoc
+open import Substrate.Algebra.F2.PlusComm
+open import Substrate.Algebra.F2.PlusF
+open import Substrate.Algebra.F2.PlusIdentityL
+open import Substrate.Algebra.F2.PlusIdentityR
+open import Substrate.Algebra.F2.PlusInverseL
+open import Substrate.Algebra.F2.PlusInverseR
+open import Substrate.Algebra.F2.PlusSelfInverse
+open import Substrate.Algebra.F2.ZeroNeqOne
 open import Substrate.Algebra.F2.Vector
-open import Substrate.Algebra.F2.Linear
+open import Substrate.Algebra.F2.Linear.CompL
+open import Substrate.Algebra.F2.Linear.CompLAssoc
+open import Substrate.Algebra.F2.Linear.CompLIdentityL
+open import Substrate.Algebra.F2.Linear.CompLIdentityR
+open import Substrate.Algebra.F2.Linear.IdL
+open import Substrate.Algebra.F2.Linear.Linear
+open import Substrate.Algebra.F2.Linear.Preserves
 -- *ₛ-zeroʳ (c *ₛ 𝟎ⱽ ≡ 𝟎ⱽ) already lives in FromImages — reuse, don't redefine.
 -- (Its carrier-locality home is F2.Vector; collapsing the FromImages/GF256 copies
 --  there is a separate cleanup, out of scope here.)
 open import Substrate.Algebra.F2.Linear.FromImages using (*ₛ-zeroʳ)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
 
 ------------------------------------------------------------------------
 -- One small vector lemma not in F2.Vector.
@@ -109,7 +143,7 @@ geomSumL T (suc k) = geomSumL T k +L powL k T
 ΦL T p = geomSumL T p
 
 ------------------------------------------------------------------------
--- The factor identity, pointwise: 𝟙 + T·Φ_p(T) ≡ Φ_p(T) + Tᵖ.
+-- The factor identity, pointwise: 𝟙 +F T·Φ_p(T) ≡ Φ_p(T) +F Tᵖ.
 -- Mirrors Cyclotomic.geom-factor; base uses preserves-𝟎, step uses
 -- preserves-+ (the ⊗-distribˡ that holds because T is linear).
 ------------------------------------------------------------------------

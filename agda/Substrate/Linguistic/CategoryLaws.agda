@@ -15,7 +15,6 @@
 
 module Substrate.Linguistic.CategoryLaws where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
 
 open import Substrate.Category.FreeOverBasis
   using (LanguageWitness)
@@ -23,6 +22,7 @@ open import Substrate.Linguistic.Morphism
   using (LanguageMorphism; basis-map; carrier-map)
 open import Substrate.Linguistic.IdMorphism using (id-morphism)
 open import Substrate.Linguistic.Compose using (_∘L_)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. Pointwise extensional equality on LanguageMorphism.

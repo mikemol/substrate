@@ -25,14 +25,37 @@
 
 module Substrate.Algebra.Wedge.ParityBridge where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_)
-open import Substrate.Foundation.Eq using (_≡_; refl; trans; cong; sym)
-open import Substrate.Algebra.F2 using (F₂; 𝟘; 𝟙; +-assoc; ·-distribʳ-+; ·-identityˡ)
-  renaming (_+_ to _+₂_; _·_ to _·₂_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Times
+open import Substrate.Algebra.F2.DistribRPlus
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.IdentityL
+-- ⚑ THE OPERATORS THEMSELVES WERE NEVER BOUND (Ⓕ-ALIAS-RESTORE).  This file
+-- reached F₂'s `_·_`/`_+F_` through `open import Substrate.Algebra.F2 …
+-- renaming (_+_ to _+₂_; _·_ to _·₂_)` — a barrel alias introduced in 97e567f2.
+-- The barrel was decomposed into per-lemma siblings and the ban paydown replaced
+-- that line with the plain sibling opens above, DROPPING the renaming without
+-- rewriting the eight use sites; `·₂`/`+₂` then named nothing anywhere in the
+-- tree.  The laws already imported here (`·-distribʳ-+`, `·-identityˡ`) are
+-- stated in `·`/`+F`, so those are the spellings, and `F₂-div`'s own
+-- `recon = λ q b r → q · b +F r` (F2/Wedge.agda:52) fixes them as the only ones
+-- that discharge the `respects` obligation below.
+open import Substrate.Algebra.F2.Op
+open import Substrate.Algebra.F2.PlusF
+open import Substrate.Algebra.F2.PlusAssoc
 open import Substrate.Algebra.F2.Wedge using (F₂-div)
 open import Substrate.Algebra.Wedge using (DivStr; ℕ-div; Trace)
 open import Substrate.Algebra.Wedge.Bridge using (Bridge; transport-trace)
-open import Substrate.Algebra.N-to-F2-Parity using (parity; parity-+) public  -- ⟡A2: single source, re-exported (IntParityBridge/Registry consume parity via this bridge)
+-- ⚑ `public` RETIRED (Ⓑ2c).  The removed trailing comment read *"⟡A2: single
+-- source, re-exported (IntParityBridge/Registry consume parity via this
+-- bridge)"* — it named the two consumers the forward existed for, and both now
+-- bind `N-to-F2-Parity` themselves.  "Single source" is preserved by the HOME,
+-- not by a second route to it; the re-export was the second route.
+open import Substrate.Algebra.N-to-F2-Parity using (parity; parity-+)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Sym
 
 ------------------------------------------------------------------------
 -- 1. Parity: the mod-2 reduction ℕ → F₂.
@@ -49,26 +72,26 @@ open import Substrate.Algebra.N-to-F2-Parity using (parity; parity-+) public  --
 
 -- (parity-+ : the additive ring-hom leg is imported from N-to-F2-Parity — ⟡A2)
 
--- parity is multiplicative: parity (x·y) = parity x ·₂ parity y (the ℕ→F₂ ring
+-- parity is multiplicative: parity (x·y) = parity x · parity y (the ℕ→F₂ ring
 -- hom's multiplicative leg). suc-case = distribute, then 𝟙·=id.
-parity-* : (x y : ℕ) → parity (x * y) ≡ parity x ·₂ parity y
+parity-* : (x y : ℕ) → parity (x * y) ≡ parity x · parity y
 parity-* zero    y = refl
 parity-* (suc n) y =
   trans (parity-+ y (n * y))
-  (trans (cong (parity y +₂_) (parity-* n y))
+  (trans (cong (parity y +F_) (parity-* n y))
          (sym (trans (·-distribʳ-+ (parity y) 𝟙 (parity n))
-                     (cong (_+₂ (parity n ·₂ parity y)) (·-identityˡ (parity y))))))
+                     (cong (_+F (parity n · parity y)) (·-identityˡ (parity y))))))
 
 ------------------------------------------------------------------------
 -- 3. The bridge: parity respects recon, so it carries the wedge structure.
---    recon ℕ-div q b r = q·b + r ;  recon F₂-div q b r = (parity q)·(parity b) +₂ r.
+--    recon ℕ-div q b r = q·b + r ;  recon F₂-div q b r = (parity q)·(parity b) +F r.
 ------------------------------------------------------------------------
 
 parity-bridge : Bridge ℕ-div F₂-div
 parity-bridge = record
   { translate = parity
   ; respects  = λ q b r →
-      trans (parity-+ (q * b) r) (cong (_+₂ parity r) (parity-* q b))
+      trans (parity-+ (q * b) r) (cong (_+F parity r) (parity-* q b))
   ; z-pres    = refl
   }
 

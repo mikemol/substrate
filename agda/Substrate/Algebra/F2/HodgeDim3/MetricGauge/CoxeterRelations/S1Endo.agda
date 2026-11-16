@@ -9,7 +9,7 @@
 module Substrate.Algebra.F2.HodgeDim3.MetricGauge.CoxeterRelations.S1Endo where
 
 open import Substrate.Algebra.F2.Vector using (Vector)
-open import Substrate.Algebra.F2.Linear using (apply)
+open import Substrate.Algebra.F2.Linear.Linear
 open import Substrate.Category.Coalgebra using (Endomap)
 open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.Stabiliser using (s₁)
 

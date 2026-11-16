@@ -18,7 +18,8 @@ open import Substrate.Category.FreeOverBasis
          Lojban; TokiPona; Solresol; Kelen; Lambda; LieFrag;
          Free-monoid; Free-F2-module; Free-cyclic;
          Free-relation; Free-CCC; Free-Lie; Free-other)
-open import Substrate.Linguistic.Roster using (Lang; witness-of)
+open import Substrate.Linguistic.Roster.Lang
+open import Substrate.Linguistic.Roster.WitnessOf
 open import Substrate.Pedagogy.MarkdownToken
   using (MarkdownToken; TextSymbol;
          txt-Lojban; txt-TokiPona; txt-Solresol; txt-Kelen;

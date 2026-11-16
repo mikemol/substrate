@@ -15,14 +15,25 @@
 
 module Substrate.Algebra.Nat.Units where
 
-open import Substrate.Foundation.Nat using (ℕ; suc; _*_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Times
 open import Substrate.Foundation.Nat.Properties.Mul using (*-assoc; *-comm)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂)
 open import Substrate.Foundation.Product using (Σ; _,_)
-open import Substrate.Algebra.Nat.Mod using (_mod-suc_)
+open import Substrate.Foundation.Nat.Nat.ModSuc
+open import Substrate.Algebra.Nat.Mod.ModSucBound
+open import Substrate.Algebra.Nat.Mod.ModSucId
+open import Substrate.Algebra.Nat.Mod.ModSucPeriodic
+open import Substrate.Algebra.Nat.Mod.ModSucSuc
+open import Substrate.Algebra.Nat.Mod.SucModSucLt
+open import Substrate.Algebra.Nat.Mod.SucModSucSelf
 open import Substrate.Algebra.Nat.Mod.Homomorphism using (mod-mult-hom)
 open import Substrate.Algebra.Nat.GCD.EEATrace using (EEATrace)
 open import Substrate.Algebra.Quotient.CRT.FromTrace using (inverse-from-trace)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
 
 ------------------------------------------------------------------------
 -- 1. A unit mod (suc m): an element carrying a right inverse.

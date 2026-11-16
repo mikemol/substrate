@@ -21,11 +21,11 @@
 
 module Substrate.Algebra.Wedge.VecGraded where
 
-open import Substrate.Foundation.Nat using (ℕ; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Vec using (Vec; _∷_; tail)
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Algebra.Wedge.Graded
   using (GradedDivStr; GradedWedge; recon; gforget; gcell)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. Vec A as a graded wedge-carrier: C = Vec A, R = const A, recon = cons.

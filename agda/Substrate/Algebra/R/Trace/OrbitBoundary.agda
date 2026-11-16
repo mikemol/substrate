@@ -25,13 +25,13 @@
 
 module Substrate.Algebra.R.Trace.OrbitBoundary where
 
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Product using (_×_; _,_)
 open import Substrate.Algebra.R.Trace using (RealTrace; head; tail)
-open import Substrate.Algebra.R.Trace.Bisim using (_~_; head~; tail~)
+open import Substrate.Algebra.R.Trace.Bisim.Op
 open import Substrate.Algebra.R.Trace.OrbitUniversality using (module OrbitCover)
 open import Substrate.Algebra.R.Trace.OrbitComplete using (module ClosedControls)
+open import Substrate.Foundation.Eq
 
 module Boundary
   (S : Set) (next : S → S) (obs : S → ℕ)

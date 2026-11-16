@@ -31,12 +31,12 @@
 
 module Substrate.Algebra.Wedge.CrossMul where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Foundation.Product using (Σ; _,_)
 open import Substrate.Algebra.Wedge using (DivStr)
 open import Substrate.Algebra.Wedge.Bridge using (Bridge; translate; id-bridge)
 open import Substrate.Algebra.Wedge.Mul
   using (MulDivStr; base; mul; Nilpotent; pow; two-div; two-mul; Two)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. The cospan: two carriers meeting in a common multiplicative carrier.

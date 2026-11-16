@@ -12,10 +12,10 @@
 
 module Substrate.TokiPona.Fragment.Example5ParticleStacking where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.TokiPona.Particles
 open import Substrate.TokiPona.Fragment.Example2Transitive
   using (example-mi-moku-e-kili)
+open import Substrate.Foundation.Eq
 
 -- A sentence with both `e` and `la` particles active:
 example-5-stacked : MarkedSentence _

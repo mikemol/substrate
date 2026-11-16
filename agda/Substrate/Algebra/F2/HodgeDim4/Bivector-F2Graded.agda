@@ -23,16 +23,43 @@
 
 module Substrate.Algebra.F2.HodgeDim4.Bivector-F2Graded where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; zipWith)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; trans; cong; cong₂; cong-trans)
 
-open import Substrate.Algebra.F2
+open import Substrate.Algebra.F2.AbsorbL
+open import Substrate.Algebra.F2.AbsorbR
+open import Substrate.Algebra.F2.Assoc
+open import Substrate.Algebra.F2.Comm
+open import Substrate.Algebra.F2.Dec
+open import Substrate.Algebra.F2.DistribLPlus
+open import Substrate.Algebra.F2.DistribRPlus
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.F2Cases
+open import Substrate.Algebra.F2.Idempotent
+open import Substrate.Algebra.F2.IdentityL
+open import Substrate.Algebra.F2.IdentityR
+open import Substrate.Algebra.F2.InvOfOne
+open import Substrate.Algebra.F2.OneNeqZero
+open import Substrate.Algebra.F2.Op
+open import Substrate.Algebra.F2.Op2
+open import Substrate.Algebra.F2.PlusAssoc
+open import Substrate.Algebra.F2.PlusComm
+open import Substrate.Algebra.F2.PlusF
+open import Substrate.Algebra.F2.PlusIdentityL
+open import Substrate.Algebra.F2.PlusIdentityR
+open import Substrate.Algebra.F2.PlusInverseL
+open import Substrate.Algebra.F2.PlusInverseR
+open import Substrate.Algebra.F2.PlusSelfInverse
+open import Substrate.Algebra.F2.ZeroNeqOne
 open import Substrate.Algebra.F2.Vector
 open import Substrate.Algebra.F2.HodgeDim4.Bivector using (Bivector)
 open import Substrate.Algebra.F2-CommutativeMonoid using (F₂-CommMonoid)
 open import Substrate.Category.RGradedMonoid
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.Foundation.Eq.CongTrans
 
 ------------------------------------------------------------------------
 -- N-1: weight-parity — XOR of all entries.
@@ -40,35 +67,35 @@ open import Substrate.Category.RGradedMonoid
 
 weight-parity : ∀ {n} → Vector n → F₂
 weight-parity []      = 𝟘
-weight-parity (x ∷ v) = x + weight-parity v
+weight-parity (x ∷ v) = x +F weight-parity v
 
 ------------------------------------------------------------------------
 -- N-2: weight-parity is additive over +ⱽ.
 --
--- weight-parity (u +ⱽ v) ≡ weight-parity u + weight-parity v
+-- weight-parity (u +ⱽ v) ≡ weight-parity u +F weight-parity v
 --
--- Proof: structural induction on Vec, plus F₂ +-assoc + +-comm
+-- Proof: structural induction on Vec, plus F₂ +-assoc +F +-comm
 -- shuffle.
 ------------------------------------------------------------------------
 
 shuffle :
   (x y a b : F₂) →
-  (x + y) + (a + b) ≡ (x + a) + (y + b)
+  (x +F y) +F (a +F b) ≡ (x +F a) +F (y +F b)
 shuffle x y a b =
-  trans (+-assoc x y (a + b))
-  (cong-trans (x +_) (sym (+-assoc y a b))
-  (cong-trans (λ z → x + (z + b)) (+-comm y a)
-  (cong-trans (x +_) (+-assoc a y b)
-         (sym (+-assoc x a (y + b))))))
+  trans (+-assoc x y (a +F b))
+  (cong-trans (x +F_) (sym (+-assoc y a b))
+  (cong-trans (λ z → x +F (z +F b)) (+-comm y a)
+  (cong-trans (x +F_) (+-assoc a y b)
+         (sym (+-assoc x a (y +F b))))))
   where
-    open import Substrate.Foundation.Eq using (sym)
+    open import Substrate.Foundation.Eq.Sym
 
 weight-parity-+ⱽ :
   ∀ {n} (u v : Vector n) →
-  weight-parity (u +ⱽ v) ≡ weight-parity u + weight-parity v
+  weight-parity (u +ⱽ v) ≡ weight-parity u +F weight-parity v
 weight-parity-+ⱽ []      []      = refl
 weight-parity-+ⱽ (x ∷ u) (y ∷ v) =
-  cong-trans ((x + y) +_) (weight-parity-+ⱽ u v)
+  cong-trans ((x +F y) +F_) (weight-parity-+ⱽ u v)
              (shuffle x y (weight-parity u) (weight-parity v))
 
 ------------------------------------------------------------------------

@@ -24,7 +24,13 @@
 
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
 open import Substrate.Foundation.Eq
-  using (_≡_; refl; trans; sym; cong; cong₂)
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.Groups.Z2.CanonicalEx
+open import Substrate.Groups.Z2.NormalizeCanonical
+open import Substrate.Groups.Z2.Normalize
 
 module Substrate.Groups.Coxeter.DirectProduct
   -- First component's Core inputs.

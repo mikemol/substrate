@@ -13,7 +13,7 @@
 --   decode-⊕-raise  : lookup (decode (l₁⊕l₂)) (raise m j)   ≡ raise m  (lookup (decode l₂) j)
 -- proven by induction on l₁ (insert-at = p ∷ map (punchIn p)) through two clean punchIn
 -- commutations (punchIn-inject+, punchIn-inject+-raise). Then the naturality closes by
--- cases on which block k is in (splitAt-view + blockSwap-L/R): each side reduces to the
+-- cases on which block k is in (splitAt-view ℕ+ blockSwap-L/R): each side reduces to the
 -- SAME raise/inject+ of a looked-up value.
 --
 -- This is the σ of Category.SymmetricMonoidal made natural over the ⊕ orderings — the
@@ -26,20 +26,25 @@
 
 module Substrate.WitnessTower.Wedge.OrientationSumNaturality where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Inject using (inject+)
 open import Substrate.Foundation.Fin.Raise using (raise)
 open import Substrate.Foundation.Fin.Punctured using (punchIn)
 open import Substrate.Foundation.Fin.SplitAt.View using (splitAt-view; fromₗ; fromᵣ)
 open import Substrate.Foundation.Vec using (lookup; map)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
 open import Substrate.WitnessTower.Enumerate using (Perm; insert-at)
 open import Substrate.WitnessTower.IsPermutation using (lookup-map)
-open import Substrate.WitnessTower.LehmerPath using (LehmerPath; start; _◂_; decode)
+open import Substrate.WitnessTower.LehmerPath.Decode
+open import Substrate.WitnessTower.LehmerPath.LehmerPath
 open import Substrate.WitnessTower.Wedge.OrientationSum using (_⊕_)
 open import Substrate.WitnessTower.Wedge.OrientationSumComm
   using (blockSwap; blockSwap-L; blockSwap-R)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- 1. lookup of insert-at at a successor is punchIn of the tail lookup.
@@ -89,10 +94,10 @@ decode-⊕-raise {suc m} {n} (l₁ ◂ x) l₂ j =
 
 ------------------------------------------------------------------------
 -- 4. THE NATURALITY. Cases on which block k is in; each side reduces to the same
---    raise/inject+ of a looked-up value via decode-⊕-inject/raise + blockSwap-L/R.
+--    raise/inject+ of a looked-up value via decode-⊕-inject/raise ℕ+ blockSwap-L/R.
 ------------------------------------------------------------------------
 
-⊕-comm-nat : ∀ {m n} (l₁ : LehmerPath m) (l₂ : LehmerPath n) (k : Fin (m + n)) →
+⊕-comm-nat : ∀ {m n} (l₁ : LehmerPath m) (l₂ : LehmerPath n) (k : Fin (m ℕ+ n)) →
              lookup (decode (l₂ ⊕ l₁)) (blockSwap m n k)
                ≡ blockSwap m n (lookup (decode (l₁ ⊕ l₂)) k)
 ⊕-comm-nat {m} {n} l₁ l₂ k with splitAt-view m {n} k

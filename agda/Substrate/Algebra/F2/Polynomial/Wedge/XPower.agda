@@ -10,7 +10,8 @@
 
 module Substrate.Algebra.F2.Polynomial.Wedge.XPower where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc) renaming (_+_ to _ℕ+_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
 open import Substrate.Algebra.F2.Polynomial using (Polynomial; x-shift)
 
 x-power : ∀ {n} (d : ℕ) → Polynomial n → Polynomial (d ℕ+ n)

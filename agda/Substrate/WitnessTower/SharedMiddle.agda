@@ -7,7 +7,7 @@
 -- The V₂ links are left-translations by the three V₄ involutions
 -- α, β, γ (the double-transpositions of V₄ = Substrate.Groups.V4). Each
 -- is an order-2 endomap of V₄:
---   (g ·_) ∘ (g ·_) = (g · g) ·_ = ε ·_ = id        (V₄ is exponent-2)
+--   (g ·₄_) ∘ (g ·₄_) = (g ·₄ g) ·_ = ε ·_ = id        (V₄ is exponent-2)
 -- proved from the substrate's own inv-left / ·-assoc / ε-left
 -- (V4.Axioms), with inv g = g (V4.Operations: every element self-inverse).
 --
@@ -27,34 +27,37 @@
 module Substrate.WitnessTower.SharedMiddle where
 
 import Substrate.Groups.V4.Operations as V4
-open import Substrate.Groups.V4.Bijection using (V₄; e; α; β; γ)
-open import Substrate.Groups.V4.Operations using (_·_; inv)
+open import Substrate.Groups.V4.Bijection.V4
+open import Substrate.Groups.V4.Operations using (_·₄_; inv)
 open import Substrate.Groups.V4.Axioms.Assoc using (·-assoc)
 open import Substrate.Groups.V4.Axioms.EpsilonLeft using (ε-left)
 open import Substrate.Groups.V4.Axioms.InvLeft using (inv-left)
 open import Substrate.Groups.V4.Axioms.Comm using (·-comm)
-open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym; cong)
 
 open import Substrate.Category.Coalgebra using (Endomap; _∘E_)
 open import Substrate.Category.Coalgebra.FiniteOrder using (HasOrder)
 open import Substrate.Category.Coalgebra.StructuralGCD using (Commute)
 open import Substrate.Category.Coalgebra.StructuralGCD.Properties
   using (HasOrder-compose-commute)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- 1. Left-translation by a V₄ element, as an endomap.
 ------------------------------------------------------------------------
 
 trans-by : V₄ → Endomap V₄
-trans-by g x = g · x
+trans-by g x = g ·₄ x
 
 ------------------------------------------------------------------------
 -- 2. Generic: left-translation by any g is a V₂.
 --
---   iterate 2 (g·_) x = g · (g · x)
---                     ≡ (g · g) · x      [·-assoc, sym]
---                     ≡ (inv g · g) · x  [inv g = g, refl — exponent-2]
---                     ≡ ε · x            [inv-left g]
+--   iterate 2 (g·_) x = g ·₄ (g ·₄ x)
+--                     ≡ (g ·₄ g) ·₄ x      [·-assoc, sym]
+--                     ≡ (inv g ·₄ g) ·₄ x  [inv g = g, refl — exponent-2]
+--                     ≡ ε ·₄ x            [inv-left g]
 --                     ≡ x                [ε-left]
 -- (inv g ≡ g definitionally: V4.Operations inv x = x.)
 ------------------------------------------------------------------------
@@ -62,8 +65,8 @@ trans-by g x = g · x
 trans-by-V₂ : (g : V₄) → HasOrder (trans-by g) 2
 trans-by-V₂ g x =
   trans (sym (·-assoc g g x))
-        (trans (cong (λ z → (z · g) · x) (refl {x = g}))  -- inv g ≡ g
-        (trans (cong (_· x) (inv-left g))                  -- (inv g · g) ≡ ε
+        (trans (cong (λ z → (z ·₄ g) ·₄ x) (refl {x = g}))  -- inv g ≡ g
+        (trans (cong (_·₄ x) (inv-left g))                  -- (inv g ·₄ g) ≡ ε
                (ε-left x)))
 
 ------------------------------------------------------------------------
@@ -92,7 +95,7 @@ Lγ-V₂ = trans-by-V₂ γ
 trans-commute : (g h : V₄) → Commute (trans-by g) (trans-by h)
 trans-commute g h = record { commute = λ x →
   trans (sym (·-assoc g h x))
-        (trans (cong (_· x) (·-comm g h)) (·-assoc h g x)) }
+        (trans (cong (_·₄ x) (·-comm g h)) (·-assoc h g x)) }
 
 V₄-lower : HasOrder (Lα ∘E Lβ) 4     -- ⟨α-link, β-link⟩
 V₄-lower = HasOrder-compose-commute {γ₁ = Lα} {γ₂ = Lβ} {k₁ = 2} {k₂ = 2}

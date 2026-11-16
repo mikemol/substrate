@@ -21,11 +21,11 @@
 
 module Substrate.Category.UniversalProperty.BackedGraded where
 
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Eq using (_≡_)
-open import Substrate.Foundation.Negation using (¬_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Negation.Not
 open import Substrate.Foundation.Product using (Σ; _,_)
 open import Substrate.Category.UPArrowGraded using (UPArrowᴳ; solve; mkUP)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. Graded non-vacuity: some grade n has a spec s and a candidate t that is NOT its solution.

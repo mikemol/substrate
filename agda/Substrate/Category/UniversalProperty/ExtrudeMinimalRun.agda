@@ -20,20 +20,20 @@
 
 module Substrate.Category.UniversalProperty.ExtrudeMinimalRun where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; cong)
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂)
 open import Substrate.Foundation.Function.Iterate using (iterate)
-open import Substrate.Algebra.R.Trace.SKIShedDuality using (S; K; I; _∙_) renaming (Tm to Tm⟦533ef80d⟧)
+open import Substrate.Algebra.R.Trace.SKIShedDuality.Tm
 import Substrate.Algebra.R.Trace.SKIReductionToList as R
 open R using (_⇒_; β-I; β-K; β-S; cong-l)
 open import Substrate.Foundation.RewriteConfluence (R._⇒_) using (_⇒*_; done; _◅_; _++*_)
+open import Substrate.Algebra.R.Trace.SKIShedDuality.Tm
 
 ------------------------------------------------------------------------
 -- ① cong-l lifted to ⇒* : a reduction on the left spine lifts to the application (reused pattern — map
 --    cong-l over the ◅-chain). The left-descent congruence the step needs.
 ------------------------------------------------------------------------
-cong-l* : {f f' : Tm⟦533ef80d⟧} (g : Tm⟦533ef80d⟧) → f ⇒* f' → (f ∙ g) ⇒* (f' ∙ g)
+cong-l* : {f f' : Tm} (g : Tm) → f ⇒* f' → (f ∙ g) ⇒* (f' ∙ g)
 cong-l* g done        = done
 cong-l* g (s ◅ rest) = cong-l g s ◅ cong-l* g rest
 
@@ -43,7 +43,7 @@ cong-l* g (s ◅ rest) = cong-l g s ◅ cong-l* g rest
 --    general application case is Agda's clause-ordering (the SPPF's sharing/overlap bookkeeping); all we owe
 --    is that each emitted (reduct, witness) is COHERENT. One general app clause — never stuck.
 ------------------------------------------------------------------------
-step′ : (t : Tm⟦533ef80d⟧) → Σ Tm⟦533ef80d⟧ (λ t' → t ⇒* t')
+step′ : (t : Tm) → Σ Tm (λ t' → t ⇒* t')
 step′ (I ∙ x)             = x                     , (β-I x ◅ done)
 step′ ((K ∙ x) ∙ y)       = x                     , (β-K x y ◅ done)
 step′ (((S ∙ x) ∙ y) ∙ z) = ((x ∙ z) ∙ (y ∙ z))  , (β-S x y z ◅ done)
@@ -53,17 +53,17 @@ step′ K                   = K                     , done
 step′ I                   = I                     , done
 
 -- the reducer and its soundness are just the two projections — no clause-mirroring, no coverage gymnastics:
-step : Tm⟦533ef80d⟧ → Tm⟦533ef80d⟧
+step : Tm → Tm
 step t = proj₁ (step′ t)
 
-step-sound : (t : Tm⟦533ef80d⟧) → t ⇒* step t
+step-sound : (t : Tm) → t ⇒* step t
 step-sound t = proj₂ (step′ t)
 
 ------------------------------------------------------------------------
 -- ④ THE RUN IS A VALID MULTI-STEP REDUCTION: iterating step k times is reachable by ⇒* — the μ reduction
 --    stream. (Halt: at a normal form, step fixes it, so iterate stays — 275b's fixed-preserved.)
 ------------------------------------------------------------------------
-run-sound : (k : ℕ) (t : Tm⟦533ef80d⟧) → t ⇒* iterate k step t
+run-sound : (k : ℕ) (t : Tm) → t ⇒* iterate k step t
 run-sound zero    t = done
 run-sound (suc k) t = run-sound k t ++* step-sound (iterate k step t)
 -- iterate (suc k) step t = step (iterate k step t); but iterate applies OUTSIDE-IN: iterate (suc k) f t =

@@ -30,15 +30,15 @@
 
 module Substrate.Cocycles.V4Signature.SRecovers where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; trans; cong; subst)
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
 open import Substrate.Axes.Axis using (Axis)
 open import Substrate.Axes.ActAxis using (act-axis)
-open import Substrate.Groups.V4.Bijection using (V₄)
+open import Substrate.Groups.V4.Bijection.V4
 import Substrate.Groups.S3 as S₃
 open import Substrate.Groups.V4-Embedding using (embed; act-axis-involutive)
 open import Substrate.Groups.SemidirectProduct using (s-for)
-open import Substrate.Groups.S4-Iso.Embedding using (embed-S₃; compositional-to-perm)
+open import Substrate.Groups.S4-Iso.Embedding.CompositionalToPerm
+open import Substrate.Groups.S4-Iso.Embedding.EmbedS3
 open import Substrate.Groups.S4-Iso.Extract using (extract-s; perm-to-compositional)
 open import Substrate.Groups.S4-Iso.EmbedS3Faithful using (extract-embed-roundtrip; extract-s-cong)
 open import Substrate.Cocycles.V4Signature.VRecovers using (v-recovers)
@@ -47,6 +47,10 @@ open import Substrate.Groups.SemidirectProduct.S
 open import Substrate.Groups.Symmetric.Eq Axis
 open import Substrate.Groups.Symmetric.Permutation Axis
 open import Substrate.Groups.Symmetric.Permutation.Compose Axis
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Subst
 
 ------------------------------------------------------------------------
 -- (A) the Stab-side residue collapses: s-for (embed v · embed-S₃ s) ≈ embed-S₃ s.

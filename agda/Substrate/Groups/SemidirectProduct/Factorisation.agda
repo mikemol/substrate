@@ -19,14 +19,12 @@
 
 module Substrate.Groups.SemidirectProduct.Factorisation where
 
-open import Substrate.Foundation.Eq using (_≡_; sym; trans; cong)
 
 open import Substrate.Axes.Axis using (Axis)
 open import Substrate.Axes.VOfAxis using (v-of-axis)
 open import Substrate.Axes.V4Roundtrip using (v-of-axis-axis-of-v)
 open import Substrate.Axes.ActAxis using (act-axis)
-open import Substrate.Groups.V4.Bijection using (V₄; e)
-import Substrate.Groups.V4.Operations as V4
+open import Substrate.Groups.V4.Bijection.V4
 open import Substrate.Groups.V4.Axioms.RightCancelEpsilon using (·-right-cancel-ε)
 open import Substrate.Groups.Symmetric.Permutation Axis
 open import Substrate.Groups.Symmetric.Eq Axis using (_≈_)
@@ -35,8 +33,14 @@ open import Substrate.Groups.V4-Embedding
   using (embed; act-axis-involutive; act-axis-as-V₄-mult;
          v-of-axis; v-of-axis-axis-of-v)
 
-open import Substrate.Groups.SemidirectProduct.V using (v-for)
+open import Substrate.Groups.SemidirectProduct.V.VFor
 open import Substrate.Groups.SemidirectProduct.S using (s-for)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Category.Comonoid.Sites.V4
+import Substrate.Groups.V4.Operations as V4
 
 ------------------------------------------------------------------------
 -- The factorisation: σ ≈ embed (v-for σ) · s-for σ.

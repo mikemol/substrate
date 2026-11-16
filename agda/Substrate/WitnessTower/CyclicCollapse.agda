@@ -25,14 +25,17 @@
 
 module Substrate.WitnessTower.CyclicCollapse where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Eq  using (_≡_; refl; sym; trans; cong)
 open import Substrate.WitnessTower.Enumerate using (Perm)
 open import Substrate.WitnessTower.FirstAppearance using (id-perm)
 open import Substrate.WitnessTower.SnGroup using (apply; apply-compose; apply-id; apply-injective)
 open import Substrate.WitnessTower.CyclicGrounding using (pow)
 open import Substrate.Foundation.Fin.Iterate using (σ-iterate; HasOrderPerm)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- ① The bridge: the tower's `pow` ACTS AS F2.Linear's `σ-iterate`. A k-fold composition of a permutation

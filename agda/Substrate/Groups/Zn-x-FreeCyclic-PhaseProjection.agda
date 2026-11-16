@@ -20,7 +20,8 @@
 {-# OPTIONS --safe --without-K #-}
 
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
-open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Eq
+open import Substrate.Groups.Capabilities.PhaseProjection
 
 module Substrate.Groups.Zn-x-FreeCyclic-PhaseProjection
   -- The Zₙ carrier + raw ++ + normalize. The Coxeter Core's `_·_`

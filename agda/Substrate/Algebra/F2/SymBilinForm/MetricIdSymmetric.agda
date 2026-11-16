@@ -10,9 +10,9 @@
 module Substrate.Algebra.F2.SymBilinForm.MetricIdSymmetric where
 
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Eq using (refl)
 open import Substrate.Algebra.F2.SymBilinForm.IsSymmetric using (IsSymmetric)
 open import Substrate.Algebra.F2.SymBilinForm.MetricId using (metric-id)
+open import Substrate.Foundation.Eq
 
 is-symmetric-metric-id : ∀ {n} → IsSymmetric (metric-id {n})
 is-symmetric-metric-id zero    zero    = refl

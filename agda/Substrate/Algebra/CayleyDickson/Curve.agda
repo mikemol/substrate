@@ -20,13 +20,20 @@
 
 module Substrate.Algebra.CayleyDickson.Curve where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
-open import Substrate.Foundation.Eq using (_≡_; refl; cong; trans; sym)
-open import Substrate.Foundation.Bool using (Bool; true; false; _xor_)
-open import Substrate.Foundation.Bool.Properties using (xor-assoc; xor-same; xor-identityˡ)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Bool.Bool
+open import Substrate.Foundation.Bool.Xor
+open import Substrate.Foundation.Bool.Properties.XorAssoc
+open import Substrate.Foundation.Bool.Properties.XorIdentityL
+open import Substrate.Foundation.Bool.Properties.XorSame
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; zipWith)
 open import Substrate.Algebra.Semiring.NatInf using (ℕ∞; fin; ∞; _⊓_)
 open import Substrate.Algebra.CayleyDickson.Grade using (bit; popcount)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Sym
 
 ------------------------------------------------------------------------
 -- 1. The Morton / Z-order linearization: the F₂ⁿ index → its rank (LSB-first
@@ -36,9 +43,9 @@ open import Substrate.Algebra.CayleyDickson.Grade using (bit; popcount)
 
 morton : {n : ℕ} → Vec Bool n → ℕ
 morton []       = zero
-morton (b ∷ bs) = bit b + (morton bs + morton bs)
+morton (b ∷ bs) = bit b ℕ+ (morton bs ℕ+ morton bs)
 
--- e.g. the index 1·2⁰ + 0·2¹ + 1·2² has Morton rank 5.
+-- e.g. the index 1·2⁰ ℕ+ 0·2¹ ℕ+ 1·2² has Morton rank 5.
 _ : morton (true ∷ false ∷ true ∷ []) ≡ 5
 _ = refl
 

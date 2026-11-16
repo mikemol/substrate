@@ -18,7 +18,9 @@
 
 module Substrate.Algebra.Q.AsLinearAlgebra where
 
-open import Substrate.Algebra.Q using (ℚ; 0ℚ; 1ℚ)
+open import Substrate.Algebra.Q.OneRat
+open import Substrate.Algebra.Q.Rat
+open import Substrate.Algebra.Q.ZeroRat
 open import Substrate.Algebra.Q.Vector
   using (Vector; 𝟎ℚⱽ; _+ℚⱽ_; _*ℚₛ_; basis-ℚ)
 open import Substrate.Algebra.Q.Linear using (Linearℚ; apply)

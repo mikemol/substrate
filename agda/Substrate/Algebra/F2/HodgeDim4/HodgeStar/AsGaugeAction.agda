@@ -42,10 +42,9 @@
 
 module Substrate.Algebra.F2.HodgeDim4.HodgeStar.AsGaugeAction where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
 
 open import Substrate.Algebra.F2.Vector using (Vector)
-open import Substrate.Algebra.F2.Linear using (apply)
+open import Substrate.Algebra.F2.Linear.Linear
 open import Substrate.Algebra.F2.HodgeDim4.Bivector using (Bivector)
 open import Substrate.Algebra.F2.HodgeDim4.HodgeStar using (hodge-star)
 open import Substrate.Algebra.F2.HodgeDim4.SelfDual using (SelfDual-Pred)
@@ -54,6 +53,7 @@ open import Substrate.Algebra.F2.HodgeDim4.ReservedBridge
 open import Substrate.Algebra.GL3F2 using (GL3F2; id-GL; applyG)
 open import Substrate.Algebra.F2.HodgeDim4.ReservedBridge.GaugeTorsor
   using (bridge-of)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. The action of Hodge ★ on a bridge.

@@ -33,13 +33,15 @@
 
 module Substrate.Category.StratifiedSequence where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
 open import Substrate.Foundation.List using (List; []; _∷_; foldl; foldr)
 open import Substrate.Foundation.Product using (_×_; _,_)
-open import Substrate.Foundation.Level using (Level) renaming (suc to lsuc)
-open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Level using (Level)
 
 open import Substrate.Category.BoundaryEvent
+open import Substrate.Foundation.Eq
+open import Substrate.Pedagogy.Section
 
 private
   variable
@@ -48,7 +50,7 @@ private
 ------------------------------------------------------------------------
 -- The stratified sequence record.
 --
--- A list of (section label, length) tuples + a list of boundary
+-- A list of (section label, length) tuples ℕ+ a list of boundary
 -- events marking transitions between adjacent sections. The
 -- consistency obligation states that boundary events align with
 -- the section breakdown.
@@ -72,7 +74,7 @@ open StratifiedSequence public
 total-length : {Section : Set ℓ} {Signature : Set ℓ} →
                StratifiedSequence Section Signature →
                ℕ
-total-length seq = foldr _+_ 0 (sec-lengths (sections seq))
+total-length seq = foldr _ℕ+_ 0 (sec-lengths (sections seq))
   where
     sec-lengths : ∀ {A : Set _} → List (A × ℕ) → List ℕ
     sec-lengths []             = []
@@ -102,7 +104,7 @@ total-length seq = foldr _+_ 0 (sec-lengths (sections seq))
 -- are the cohomology cocycles attached to the homology boundaries.
 --
 -- Per [[3plus1-parity-universal]]: at every boundary, the (before
--- section + after section + boundary signature) triple plus the
+-- section ℕ+ after section ℕ+ boundary signature) triple plus the
 -- "boundary chirality" (left vs right orientation) carries a 3+1
 -- universal at the section-transition level.
 --

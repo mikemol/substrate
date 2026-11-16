@@ -18,7 +18,7 @@
 
 module Substrate.Conway.OrderAntisym where
 
-open import Substrate.Foundation.Nat using (ℕ; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Conway.SurrealFinite using (SurrealFinite)
 open import Substrate.Conway.Order using (_≤ⁿ_)
 open import Substrate.Conway.Equivalence using (_≈ⁿ_)

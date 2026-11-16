@@ -8,7 +8,13 @@
 
 module Substrate.Groups.Symmetric.Permutation (A : Set) where
 
-open import Substrate.Foundation.Eq using (_≡_)
+-- ⚑ THE SWEEP LEFT THIS FILE WITH NO IMPORTS AT ALL, and the record below uses
+-- `_≡_` in two fields — so `≡` was unbound at :16. Same casualty class as the
+-- dropped `_+F_` and `ℕ≤` bindings: an import removed without checking what the
+-- body still needed. A parameterized module with zero imports whose body names an
+-- operator is the tell.
+open import Substrate.Foundation.Eq
+
 
 record Permutation : Set where
   field

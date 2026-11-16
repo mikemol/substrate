@@ -21,14 +21,15 @@
 
 module Substrate.Linguistic.NaturalPresheafMorphism where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
 
-open import Substrate.Linguistic.Roster using (Lang; witness-of)
+open import Substrate.Linguistic.Roster.Lang
+open import Substrate.Linguistic.Roster.WitnessOf
 open import Substrate.Linguistic.Morphism using (LanguageMorphism)
 open import Substrate.Linguistic.Compose using (_∘L_)
 open import Substrate.Linguistic.CategoryLaws using (_≈M_)
 open import Substrate.Linguistic.HomFunctor using (Hom-contra)
 open import Substrate.Linguistic.YonedaEmbedding using (よ; PresheafMorphism)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. Naturality predicate.

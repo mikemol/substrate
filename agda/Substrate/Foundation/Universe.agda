@@ -21,7 +21,7 @@
 module Substrate.Foundation.Universe where
 
 open import Substrate.Foundation.Unit    using (⊤)
-open import Substrate.Foundation.Bool    using (Bool)
+open import Substrate.Foundation.Bool.Bool
 open import Substrate.Foundation.Product using (_×_)
 
 infixr 7 _⌜×⌝_

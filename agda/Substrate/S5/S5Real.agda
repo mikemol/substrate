@@ -20,6 +20,11 @@ module Substrate.S5.S5Real where
 
 open import Substrate.S5.S5Verdict using (_≡_; refl; sym; trans; cong; ℕ; zero; suc)
 open import Substrate.Foundation.List using (List; []; _∷_) public
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
 
 -- the coinductive productive CF trace over a carrier A (RealTrace generalized).
 record CoTrace (A : Set) : Set where

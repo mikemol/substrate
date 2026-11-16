@@ -30,7 +30,7 @@
 module Substrate.Probability.MarkovCategory.Sites.FinStoch where
 
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Nat using (ℕ; suc; zero)
+open import Substrate.Foundation.Nat.Nat
 
 ------------------------------------------------------------------------
 -- FinStoch object: a finite set of size n.

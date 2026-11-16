@@ -16,7 +16,16 @@ open import Substrate.Groups.Z2.A
 open import Substrate.Groups.Z3.A
 open import Substrate.Groups.Coxeter.Word using ([]; _∷_)
 open import Substrate.Groups.Symmetric.Permutation Axis
-open import Substrate.Groups.SemidirectProduct.V
+open import Substrate.Groups.SemidirectProduct.V.NonDSends
+open import Substrate.Groups.SemidirectProduct.V.Private
+open import Substrate.Groups.SemidirectProduct.V.SelfToD
+open import Substrate.Groups.SemidirectProduct.V.VFor
+open import Substrate.Groups.SemidirectProduct.V.VForAnchor
+open import Substrate.Groups.SemidirectProduct.V.VForAnchorSends
+open import Substrate.Groups.SemidirectProduct.V.VOfAxisAnchor
+open import Substrate.Groups.SemidirectProduct.V.VOfAxisAnchorSends
+open import Substrate.Groups.SemidirectProduct.V.VOfAxisUnique
+open import Substrate.Groups.SemidirectProduct.V.VSendsD
 open import Substrate.Groups.SemidirectProduct.S
 open import Substrate.Foundation.Product using (_,_)
 

@@ -31,8 +31,8 @@
 
 module Substrate.Algebra.Nat.GCD.LcmCoprime where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _*_)
-open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym; cong)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Times
 open import Substrate.Foundation.Product using (_×_; _,_)
 open import Substrate.Foundation.Nat.Properties.Mul using (*-comm; *-assoc)
 open import Substrate.Algebra.Nat.Divides.Type using (_∣_; divides)
@@ -41,6 +41,10 @@ open import Substrate.Algebra.Nat.GCD.LcmN using (lcm-ℕ)
 open import Substrate.Algebra.Nat.GCD.ADividesLcm using (a-divides-lcm)
 open import Substrate.Algebra.Nat.GCD.BDividesLcm using (b-divides-lcm)
 open import Substrate.Algebra.Z.Euclid using (euclid)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- 1. a·b is the LEAST common multiple when a, b are coprime: the cross-block

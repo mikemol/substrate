@@ -19,8 +19,13 @@
 
 module Substrate.Foundation.Function.Iterate where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_)
-open import Substrate.Foundation.Eq using (_≡_; refl; trans; cong)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Times
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Lifecycle.Fragment
 
 -- iterate k f = f ∘ f ∘ ⋯ ∘ f  (k times).
 iterate : {A : Set} → ℕ → (A → A) → (A → A)
@@ -29,7 +34,7 @@ iterate (suc k) f = λ x → f (iterate k f x)
 
 -- additivity of iteration in the count.
 iterate-add : {A : Set} (f : A → A) (a b : ℕ) (x : A) →
-              iterate (a + b) f x ≡ iterate a f (iterate b f x)
+              iterate (a ℕ+ b) f x ≡ iterate a f (iterate b f x)
 iterate-add f zero    b x = refl
 iterate-add f (suc a) b x = cong f (iterate-add f a b x)
 

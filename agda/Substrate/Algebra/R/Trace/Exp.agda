@@ -8,9 +8,9 @@
 -- windows — n (input precision) and m (series terms) — both STRUCTURAL, no fuel
 -- ([[feedback_finite_window_constructive_lem]]; [[project_substrate_real_arc]] B4).
 --
--- The partial sum is a Horner fold over ℕ — exp_m(x) = 1 + (x/1)(1 + (x/2)(1 +
+-- The partial sum is a Horner fold over ℕ — exp_m(x) = 1 ℕ+ (x/1)(1 ℕ+ (x/2)(1 ℕ+
 -- … (x/m)·1 …)) — carried as a rational (N,D). exp of a non-negative real (CF
--- digits ℕ ⟹ x ≥ 0); exp : ℝ≥0 → ℝ≥1. (log, the inverse chart, + the exp⊣log
+-- digits ℕ ⟹ x ≥ 0); exp : ℝ≥0 → ℝ≥1. (log, the inverse chart, ℕ+ the exp⊣log
 -- Atlas instance are B5.)
 ------------------------------------------------------------------------
 
@@ -18,24 +18,26 @@
 
 module Substrate.Algebra.R.Trace.Exp where
 
-open import Substrate.Foundation.Nat     using (ℕ; zero; suc; _+_; _*_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Times
 open import Substrate.Foundation.List    using (List; []; _∷_)
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
-open import Substrate.Foundation.Eq      using (_≡_; refl)
 
 open import Substrate.Algebra.Nat.GCD.ComputeTrace using (compute-trace)
 open import Substrate.Algebra.R.Trace using (RealTrace; digits-of-EEA; sqrt2)
 open import Substrate.Algebra.R.Trace.Windowed using (windowed-cf)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- The m-term Taylor partial sum of exp at the rational p/q, as a rational (N,D).
--- Horner: process divisors j = m … 1, each B ↦ 1 + (p/(q·j))·B, i.e.
--- (Bn,Bd) ↦ (q·j·Bd + p·Bn , q·j·Bd). Structural recursion on the term count.
+-- Horner: process divisors j = m … 1, each B ↦ 1 ℕ+ (p/(q·j))·B, i.e.
+-- (Bn,Bd) ↦ (q·j·Bd ℕ+ p·Bn , q·j·Bd). Structural recursion on the term count.
 ------------------------------------------------------------------------
 
 horner : ℕ → ℕ → ℕ → ℕ → ℕ → ℕ × ℕ
 horner zero    p q Bn Bd = (Bn , Bd)
-horner (suc j) p q Bn Bd = horner j p q (q * suc j * Bd + p * Bn) (q * suc j * Bd)
+horner (suc j) p q Bn Bd = horner j p q (q * suc j * Bd ℕ+ p * Bn) (q * suc j * Bd)
 
 ------------------------------------------------------------------------
 -- exp(x) to a window: x ≈ its n-th convergent p/q; exp via `terms`-term Taylor;
@@ -49,7 +51,7 @@ exp-cf terms = windowed-cf (λ p q → horner terms p q 1 1)
 
 ------------------------------------------------------------------------
 -- Worked (small window — a machinery check, not precision): at √2's 1st
--- convergent (= 1), 2-term Taylor gives exp_2(1) = 1 + 1 + 1/2 = 5/2 = [2;2].
+-- convergent (= 1), 2-term Taylor gives exp_2(1) = 1 ℕ+ 1 ℕ+ 1/2 = 5/2 = [2;2].
 -- Larger (terms, n) ⟹ closer to exp(√2) on a growing CF prefix.
 ------------------------------------------------------------------------
 

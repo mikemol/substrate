@@ -24,9 +24,12 @@
 
 module Substrate.Algebra.Wedge.Shape.Transport where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; cong; subst)
 open import Substrate.Foundation.List using (List; []; _∷_)
 open import Substrate.Algebra.Wedge using (DivStr; Trace; done; more; quot)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Subst
 
 -- list map (Foundation.List is minimal — no map); used to carry the quotient
 -- sequence pointwise through a bridge's `translate`.

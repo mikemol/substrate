@@ -14,10 +14,11 @@
 
 {-# OPTIONS --safe --without-K #-}
 
-open import Substrate.Foundation.Nat using (ℕ)
 
 open import Substrate.Groups.Coxeter.Word using (++-assoc; Word)
 open import Substrate.Groups.Capabilities.Strict2Monoid using (from-coxeter-data)
+open import Substrate.Groups.Coxeter.Cyclic.Base.Gen
+open import Substrate.Groups.Coxeter.Cyclic.Base.Insert
 module Substrate.Groups.Capabilities.Strict2Monoid.Witness (n : ℕ) where
 
 open import Substrate.Groups.Coxeter.Cyclic.Base n using (Gen; insert)

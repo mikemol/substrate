@@ -23,10 +23,12 @@ module Substrate.Category.UniversalProperty.DiagonalFeedback where
 -- illuminating framing, NOT a theorem of this slice; not enforced by the typechecker).
 -- Promoting the framing to a theorem would require a formal information-flow / game-semantics model (not developed here).
 
-open import Substrate.Foundation.Bool using (Bool; true; false; not)
-open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.Foundation.Negation using (¬_)
+open import Substrate.Foundation.Bool.Bool
+open import Substrate.Foundation.Bool.Not
+open import Substrate.Foundation.Negation.Not
 open import Substrate.Foundation.Product using (Σ; _,_)
+open import Substrate.Foundation.Eq
+open import Substrate.Category.UniversalProperty.DiagonalDoFComputable
 
 ------------------------------------------------------------------------
 -- ① CLOSED LOOP (wire 2 present): the adversary feeds back `not d` on the observer's output d.

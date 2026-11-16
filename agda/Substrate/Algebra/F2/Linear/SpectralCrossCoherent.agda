@@ -12,7 +12,7 @@
 -- residue into a richer carrier. This is PARACONSISTENCY for symbolic logic: a
 -- local contradiction (here MODULAR vs NON-MODULAR — over F₂ doubling is 0, over
 -- ℚ it is invertible) does NOT explode (trivialise / refuse the bridge); it is
--- localised as a graded residue and carried. A `Bridge` respects recon + z, NOT
+-- localised as a graded residue and carried. A `Bridge` respects recon +F z, NOT
 -- units/inverses, so the ring-level "2≡0 vs 2 invertible" never blocks the
 -- CrossMix — it only GRADES it.
 --
@@ -38,18 +38,22 @@
 
 module Substrate.Algebra.F2.Linear.SpectralCrossCoherent where
 
-open import Substrate.Foundation.Nat using (ℕ; suc; _∸_; _*_)
-open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.Foundation.Negation using (¬_)
-open import Substrate.Algebra.F2 using (F₂; 𝟘; 𝟙; _+_)
-open import Substrate.Algebra.Q using (ℚ; 0ℚ; 1ℚ)
+open import Substrate.Foundation.Nat.Monus
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Times
+open import Substrate.Foundation.Negation.Not
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.PlusF
+open import Substrate.Algebra.Q.OneRat
+open import Substrate.Algebra.Q.ZeroRat
 open import Substrate.Algebra.Q.Add using (_+ℚ_)
 open import Substrate.Algebra.Q.Equiv using (_≈ℚ_)
 open import Substrate.Algebra.F2.Linear.KernelSpan using (KernelDim)
 open import Substrate.Algebra.F2.Linear.SpectralCycle using (Φσ)
-open import Substrate.Algebra.F2.Linear.SpectralCycleDim using (dim-ker-Φσ)
+open import Substrate.Algebra.F2.Linear.SpectralCycleDim.DimKer
 open import Substrate.WitnessTower.PhiMultiplicity using (mult2; nullity2)
 open import Substrate.Algebra.F2.Linear.SpectralTower using (nullity2-factored)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. The RESIDUE: the doubling map separates the carriers (modular vs non-
@@ -58,7 +62,7 @@ open import Substrate.Algebra.F2.Linear.SpectralTower using (nullity2-factored)
 --    F₂: x+x≡𝟘 (doubling is 0);  ℚ: 1+1≉0 (doubling is invertible).
 ------------------------------------------------------------------------
 
-double-F₂ : (x : F₂) → (x + x) ≡ 𝟘
+double-F₂ : (x : F₂) → (x +F x) ≡ 𝟘
 double-F₂ 𝟘 = refl
 double-F₂ 𝟙 = refl
 

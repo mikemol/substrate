@@ -19,10 +19,10 @@
 
 module Substrate.Category.UniversalProperty.Presheaf where
 
-open import Substrate.Foundation.Eq using (_≡_)
 
 open import Substrate.Category.UniversalProperty.Term
   using (UPTerm; []; _++ᵤ_)
+open import Substrate.Foundation.Eq
 
 module _ (O : Set) (Hom : O → O → Set) where
 

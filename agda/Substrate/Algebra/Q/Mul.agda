@@ -10,10 +10,13 @@
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.Algebra.Q.Mul where
+open import Substrate.Algebra.Z.Mul
 
-open import Substrate.Foundation.Nat using (suc; _*_; _∸_)
-open import Substrate.Algebra.Z.Arithmetic using (_*ℤ_)
-open import Substrate.Algebra.Q using (ℚ; mkℚ; num; den-1)
+open import Substrate.Foundation.Nat.Monus
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Times
+
+open import Substrate.Algebra.Q.Rat
 
 _*ℚ_ : ℚ → ℚ → ℚ
 p *ℚ q =

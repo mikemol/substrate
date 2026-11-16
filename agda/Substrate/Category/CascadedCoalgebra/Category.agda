@@ -12,7 +12,7 @@
 
 module Substrate.Category.CascadedCoalgebra.Category where
 
-open import Substrate.Foundation.Nat.Properties.Add using (+-assoc)
+open import Substrate.Foundation.Nat.Properties.Add.PlusAssoc
 open import Substrate.WitnessTower.Wedge.OrientationBimonoidal using (GradedAssocOver)
 open import Substrate.WitnessTower.Wedge.OrientationBimonoidal.Properties using (⊕-assoc-over)
 
@@ -20,5 +20,5 @@ open import Substrate.Category.CascadedCoalgebra.Term using (cascade-product)
 
 -- Associativity of composition = the tower's GradedAssocOver on the graded
 -- product. Unit laws are OrientationSum.⊕-unit-left / OrientationSumLaws.⊕-unit-right.
-cascade-assoc : GradedAssocOver +-assoc cascade-product
+cascade-assoc : GradedAssocOver +ℕ-assoc cascade-product
 cascade-assoc = ⊕-assoc-over

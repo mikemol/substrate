@@ -25,13 +25,16 @@
 
 module Substrate.Algebra.F2.Linear.Bijection where
 
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; trans; cong)
+open import Substrate.Foundation.Nat.Nat
 
 open import Substrate.Algebra.F2.Vector using (Vector)
-open import Substrate.Algebra.F2.Linear
-  using (Linear; id-L; _∘L_; apply)
+open import Substrate.Algebra.F2.Linear.CompL
+open import Substrate.Algebra.F2.Linear.IdL
+open import Substrate.Algebra.F2.Linear.Linear
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- 1. The bijection record.

@@ -42,7 +42,14 @@
 module Substrate.S5.S5Matrix where
 
 open import Substrate.S5.S5Verdict using (_≡_; refl; sym; trans; cong; ℕ; zero; suc)
-open import Substrate.Foundation.Nat using (_+_; _*_)
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Times
+open import Substrate.Algebra.Z.Int
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
 
 -- a 2×2 matrix [[a,b],[c,d]] over ℕ.
 record Mat : Set where

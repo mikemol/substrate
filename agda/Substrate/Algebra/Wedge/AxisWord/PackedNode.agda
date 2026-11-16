@@ -39,15 +39,19 @@
 
 module Substrate.Algebra.Wedge.AxisWord.PackedNode where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Op
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
-open import Substrate.Foundation.Negation using (¬_; Dec; yes; no)
-open import Substrate.Foundation.Empty using (⊥-elim)
+open import Substrate.Foundation.Negation.Dec
+open import Substrate.Foundation.Negation.Not
+open import Substrate.Foundation.Empty.BotElim
 open import Substrate.Foundation.Product using (_×_; _,_)
-open import Substrate.Algebra.F2 using (F₂; 𝟘; 𝟙)
+open import Substrate.Algebra.F2.F2
 open import Substrate.Algebra.Wedge.AxisWord.Detector using (module Detector)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 module PackedNode {A : Set} (_≟A_ : (a b : A) → Dec (a ≡ b)) where
 
@@ -122,4 +126,4 @@ module PackedNode {A : Set} (_≟A_ : (a b : A) → Dec (a ≡ b)) where
 -- 4. Instantiated at the bare axis alphabet (Fin k), as AxisWord uses.
 ------------------------------------------------------------------------
 
-module PNFin (k : ℕ) = PackedNode {Fin k} (λ a b → a ≟ b)
+module PNFin (k : ℕ) = PackedNode {Fin k} (λ a b → a ≟ᶠ b)

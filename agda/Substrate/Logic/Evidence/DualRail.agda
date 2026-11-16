@@ -40,16 +40,21 @@
 
 module Substrate.Logic.Evidence.DualRail where
 
-open import Substrate.Foundation.Nat     using (ℕ; suc)
-open import Substrate.Foundation.Bool    using (Bool; true; false; not; _∧_; _∨_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Bool.And
+open import Substrate.Foundation.Bool.Bool
+open import Substrate.Foundation.Bool.Not
+open import Substrate.Foundation.Bool.Or
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
-open import Substrate.Foundation.Eq      using (_≡_; refl; cong; cong₂)
 open import Substrate.Foundation.Iff using (_⇔_; ⇔-refl)
 
 open import Substrate.Algebra.CayleyDickson using (Carrier)
-open import Substrate.Algebra.Q     using (ℚ)
 open import Substrate.Algebra.Q.Add using (_+ℚ_)
 open import Substrate.Algebra.Q.Mul using (_*ℚ_)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.Logic.Evidence.Verdict
 
 ------------------------------------------------------------------------
 -- The dual-rail carrier, parametric in the underlying carrier C.

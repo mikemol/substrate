@@ -12,13 +12,13 @@
 
 module Substrate.Algebra.Ring where
 
-open import Substrate.Foundation.Eq using (_≡_)
 open import Substrate.Algebra.Magma using (Magma)
 open import Substrate.Algebra.Semigroup using (Semigroup; magma)
 open import Substrate.Algebra.Monoid using (Monoid; semigroup; ε)
 open import Substrate.Algebra.Group using (Group; monoid)
 open import Substrate.Algebra.AbelianGroup using (AbelianGroup; group)
 open import Substrate.Algebra.Semiring using (Semiring; +-monoid; *-monoid)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. The Ring record.

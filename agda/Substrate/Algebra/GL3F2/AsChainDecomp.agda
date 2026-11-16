@@ -33,11 +33,8 @@
 module Substrate.Algebra.GL3F2.AsChainDecomp where
 
 open import Substrate.Foundation.Level using (Level; _⊔_)
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Vec using (Vec; []; _∷_)
+open import Substrate.Algebra.Abelian.Z6-AsChainDecomp
 
-open import Substrate.Category.ChainDecomposition
-  using (ChainDecomposition; mkChain; reconstruct-chain)
 
 ------------------------------------------------------------------------
 -- 1. The chain-decomposition SHAPE at GL(3, F₂).

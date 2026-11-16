@@ -27,12 +27,16 @@
 
 module Substrate.WitnessTower.Wedge.OrientationUniversal where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Inject using (inject+)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
-open import Substrate.WitnessTower.LehmerPath using (LehmerPath; start; _◂_)
+open import Substrate.WitnessTower.LehmerPath.LehmerPath
 open import Substrate.WitnessTower.Wedge.OrientationSum using (_⊕_)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- 1. A LehmerAlgebra: a graded target (C : ℕ → Set, each grade Set₀) carrying the tower
@@ -114,7 +118,7 @@ fold-unique alg =
 ------------------------------------------------------------------------
 
 fold-⊕ : ∀ {C} (alg : LehmerAlgebra C)
-         (_⊕ᶜ_ : ∀ {i j} → C i → C j → C (i + j))
+         (_⊕ᶜ_ : ∀ {i j} → C i → C j → C (i ℕ+ j))
          (⊕ᶜ-base : ∀ {n} (y : C n) → (base alg ⊕ᶜ y) ≡ y)
          (⊕ᶜ-step : ∀ {m n} (x : C m) (p : Fin (suc m)) (y : C n) →
                     (step alg x p ⊕ᶜ y) ≡ step alg (x ⊕ᶜ y) (inject+ n p)) →

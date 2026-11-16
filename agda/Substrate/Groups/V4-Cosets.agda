@@ -42,12 +42,10 @@ module Substrate.Groups.V4-Cosets where
 
 open import Substrate.Foundation.Level using (0ℓ)
 open import Substrate.Foundation.Product using (∃; Σ; Σ-syntax; _,_; proj₁; proj₂; _×_)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; trans; cong; cong₂)
 
 open import Substrate.Axes.Axis using (Axis; D; C; S; W)
 open import Substrate.Axes.ActAxis using (act-axis)
-open import Substrate.Groups.V4.Bijection using (V₄; e; α; β; γ)
+open import Substrate.Groups.V4.Bijection.V4
 import Substrate.Groups.V4.Operations as V4
 
 open import Substrate.Groups.V4-Embedding
@@ -71,8 +69,22 @@ open import Substrate.Groups.Symmetric.InverseCong Axis
 open import Substrate.Groups.Symmetric.Permutation Axis
 open import Substrate.Groups.SemidirectProduct.Stab
 open import Substrate.Groups.SemidirectProduct.S
-open import Substrate.Groups.SemidirectProduct.V
+open import Substrate.Groups.SemidirectProduct.V.NonDSends
+open import Substrate.Groups.SemidirectProduct.V.Private
+open import Substrate.Groups.SemidirectProduct.V.SelfToD
+open import Substrate.Groups.SemidirectProduct.V.VFor
+open import Substrate.Groups.SemidirectProduct.V.VForAnchor
+open import Substrate.Groups.SemidirectProduct.V.VForAnchorSends
+open import Substrate.Groups.SemidirectProduct.V.VOfAxisAnchor
+open import Substrate.Groups.SemidirectProduct.V.VOfAxisAnchorSends
+open import Substrate.Groups.SemidirectProduct.V.VOfAxisUnique
+open import Substrate.Groups.SemidirectProduct.V.VSendsD
 open import Substrate.Groups.SemidirectProduct.Factorisation
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
 
 ------------------------------------------------------------------------
 -- The V_4-coset equivalence (anchor-independent).

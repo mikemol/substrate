@@ -11,12 +11,12 @@
 module Substrate.Cocycles.V4Signature.V4IsTorsor where
 
 open import Substrate.Cocycle using (IsTorsor)
-open import Substrate.Groups.V4.Bijection using (V₄)
-open import Substrate.Foundation.Eq using (_≡_)
+open import Substrate.Groups.V4.Bijection.V4
 open import Substrate.Cocycles.V4Signature.V4GroupSetoid  using (V₄-Group-Setoid)
 open import Substrate.Cocycles.V4Signature.V4ActsOnItself using (V4-acts-on-itself)
 open import Substrate.Cocycles.V4Signature.V4LeftCancel   using (V4-left-cancel)
 open import Substrate.Cocycles.V4Signature.V4Transitive   using (V4-transitive)
+open import Substrate.Foundation.Eq
 
 V4-is-torsor : IsTorsor V₄ _≡_ V₄-Group-Setoid V₄
 V4-is-torsor = record

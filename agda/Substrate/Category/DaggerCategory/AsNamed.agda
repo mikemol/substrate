@@ -30,6 +30,7 @@
 open import Substrate.Foundation.Level using (Level)
 
 open import Substrate.Category.DaggerCategory using (DaggerCategory)
+open import Substrate.Probability.MarkovCategory
 
 module Substrate.Category.DaggerCategory.AsNamed
   {ℓO ℓM : Level}

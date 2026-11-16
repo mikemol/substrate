@@ -34,10 +34,32 @@ open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.MetricId using (metric-id
 open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.BilinearFormOf using (bilinear-form-of)
 
 open import Substrate.Foundation.Vec using ([]; _∷_)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; trans; cong; cong₂)
 
-open import Substrate.Algebra.F2
+open import Substrate.Algebra.F2.AbsorbL
+open import Substrate.Algebra.F2.AbsorbR
+open import Substrate.Algebra.F2.Assoc
+open import Substrate.Algebra.F2.Comm
+open import Substrate.Algebra.F2.Dec
+open import Substrate.Algebra.F2.DistribLPlus
+open import Substrate.Algebra.F2.DistribRPlus
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.F2Cases
+open import Substrate.Algebra.F2.Idempotent
+open import Substrate.Algebra.F2.IdentityL
+open import Substrate.Algebra.F2.IdentityR
+open import Substrate.Algebra.F2.InvOfOne
+open import Substrate.Algebra.F2.OneNeqZero
+open import Substrate.Algebra.F2.Op
+open import Substrate.Algebra.F2.Op2
+open import Substrate.Algebra.F2.PlusAssoc
+open import Substrate.Algebra.F2.PlusComm
+open import Substrate.Algebra.F2.PlusF
+open import Substrate.Algebra.F2.PlusIdentityL
+open import Substrate.Algebra.F2.PlusIdentityR
+open import Substrate.Algebra.F2.PlusInverseL
+open import Substrate.Algebra.F2.PlusInverseR
+open import Substrate.Algebra.F2.PlusSelfInverse
+open import Substrate.Algebra.F2.ZeroNeqOne
 open import Substrate.Algebra.F2.Vector
 open import Substrate.Algebra.F2.Vector.DotProduct using (_·F_)
 open import Substrate.Algebra.F2.HodgeDim3.MetricGauge
@@ -48,7 +70,7 @@ open import Substrate.Algebra.F2.HodgeDim3.MetricGauge
 -- At n=3, the standard dot product `_·F_` equals
 -- `bilinear-form-of metric-id`.
 --
--- Proof: both sides unfold to v₀·w₀ + v₁·w₁ + v₂·w₂ after F₂
+-- Proof: both sides unfold to v₀·w₀ +F v₁·w₁ +F v₂·w₂ after F₂
 -- arithmetic. The LHS comes from sum-F₂ over Fin 3; the RHS comes
 -- from the bilinear-form-of formula instantiated at metric-id's
 -- diagonal entries.
@@ -67,6 +89,11 @@ open import Substrate.Algebra.F2.SymBilinForm.HodgeRecast
   using (·F-eq-metric-id-bilin-generic)
 open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.GenericBridge
   using (bilinear-form-of-metric-id-bridge)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
 
 ·F-eq-metric-id-bilin :
   (v w : Vector 3) → v ·F w ≡ bilinear-form-of metric-id v w

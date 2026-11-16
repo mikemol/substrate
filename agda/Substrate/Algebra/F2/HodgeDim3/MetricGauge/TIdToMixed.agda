@@ -15,12 +15,12 @@ module Substrate.Algebra.F2.HodgeDim3.MetricGauge.TIdToMixed where
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Literals using (₀; ₁; ₂)
 open import Substrate.Foundation.Vec using ([]; _∷_)
-open import Substrate.Foundation.Eq  using (_≡_)
-open import Substrate.Algebra.F2 using (𝟘; 𝟙)
+open import Substrate.Algebra.F2.F2
 open import Substrate.Algebra.F2.Vector using (Vector; basis)
-open import Substrate.Algebra.F2.Linear using (Linear; apply)
+open import Substrate.Algebra.F2.Linear.Linear
 open import Substrate.Algebra.F2.Linear.FromImages
   using (linear-from-images; apply-linear-from-images-basis)
+open import Substrate.Foundation.Eq
 
 T-id-to-mixed-images : Fin 3 → Vector 3
 T-id-to-mixed-images zero          = 𝟙 ∷ 𝟙 ∷ 𝟘 ∷ []

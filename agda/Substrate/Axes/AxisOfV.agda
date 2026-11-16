@@ -8,7 +8,7 @@
 
 module Substrate.Axes.AxisOfV where
 
-open import Substrate.Groups.V4.Bijection using (V₄; e; α; β; γ)
+open import Substrate.Groups.V4.Bijection.V4
 open import Substrate.Axes.Axis using (Axis; D; C; S; W)
 
 axis-of-v : V₄ → Axis

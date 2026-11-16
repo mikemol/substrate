@@ -21,48 +21,55 @@
 
 module Substrate.FUSep.FUSepQSKI where
 
-open import Substrate.Foundation.Eq          using (_≡_; refl)
-open import Substrate.Foundation.Nat         using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.WellFounded using (Acc; acc)
-open import Substrate.FUSep.FUSepQBridge      using (FinTrace; base; step; reconstruct; fintrace-unit)
+-- ⚑ `FUSepQBridge` (the parent) NO LONGER EXISTS — dissolved into four leaves.
+-- `rewire_to_leaves` rewired all but one of its importers and refused this one, honestly:
+-- with no `using` clause it can key on, it derives the name set from the provision
+-- index, and `reconstruct`/`FinTrace` are multiply-homed tree-wide. All five names
+-- resolve to `.Anon` (`--provides` confirms), and the alias-scoping rule from
+-- ⓉQUAL-REPAIR applies: the dead parent NAMES the subtree, so the sibling leaf is
+-- the home. The `using` clause goes with it — banned on Substrate imports.
+open import Substrate.FUSep.FUSepQBridge.Anon
 import Substrate.FUSep.FUSepQHalts as FUSepQHalts
 open FUSepQHalts using (Progress; isVal; stepsD; HaltSystem)
+open import Substrate.Foundation.Eq
 
 -- minimal SKI term structure: atoms (S/K/I/vars = the base) and application
 -- (the wedge node). This is the Böhm-tree / normal-form STRUCTURE, not reduction.
-data Tm : Set where      -- ⟦shape:27e68fcc atom,app⟧
-  atom : ℕ → Tm
-  app  : Tm → Tm → Tm
+data Tm-QSKI : Set where      -- ⟦shape:27e68fcc atom,app⟧
+  atom : ℕ → Tm-QSKI
+  app  : Tm-QSKI → Tm-QSKI → Tm-QSKI
 
 -- the WEDGE order: `f ◁ app f a` — the function part is the strictly-smaller next
 -- state, the argument a is the retained residue. Structural, hence well-founded.
-data _◁_ : Tm → Tm → Set where
+data _◁_ : Tm-QSKI → Tm-QSKI → Set where
   ◁-fun : ∀ {f a} → f ◁ (app f a)
 
--- Acc for the wedge order, by STRUCTURAL INDUCTION on Tm (no numeric measure —
+-- Acc for the wedge order, by STRUCTURAL INDUCTION on Tm-QSKI (no numeric measure —
 -- the peel is structurally decreasing, exactly like EEA's remainder shrinks).
-tm-acc : (t : Tm) → Acc _◁_ t
+tm-acc : (t : Tm-QSKI) → Acc _◁_ t
 tm-acc (atom n)  = acc (λ y ())
 tm-acc (app f a) = acc (λ { _ ◁-fun → tm-acc f })
 
 -- the LOCAL INVERSE (the reversibility witness at work): rebuild the parent from
 -- the residue argument and the function. INVERTIBLE by construction.
-rcn : Tm → Tm → Tm
+rcn : Tm-QSKI → Tm-QSKI → Tm-QSKI
 rcn a f = app f a
 
 -- the step: peel to the function (atoms are values, held fixed).
-nxt : Tm → Tm
+nxt : Tm-QSKI → Tm-QSKI
 nxt (atom n)  = atom n
 nxt (app f a) = f
 
 -- the value-or-step decision: atom → base; app → step carrying the RESIDUE a, the
 -- reconstruction equation (refl! — the wedge is exactly invertible), and the
 -- structural decrease. Contrast reduction, where the equation would NOT be refl.
-prog : (s : Tm) → Progress rcn nxt (λ s' → (nxt s') ◁ s') s
+prog : (s : Tm-QSKI) → Progress rcn nxt (λ s' → (nxt s') ◁ s') s
 prog (atom n)  = isVal (base (atom n))
 prog (app f a) = stepsD a refl ◁-fun
 
-ski-halts : HaltSystem Tm Tm Tm _◁_
+ski-halts : HaltSystem Tm-QSKI Tm-QSKI Tm-QSKI _◁_
 ski-halts = record
   { mu = λ x → x
   ; nxt = nxt ; rcn = rcn ; prog = prog }
@@ -73,10 +80,10 @@ ski-halts = record
 -- recovers it EXACTLY (halts-unit). The reversibility is REAL — carried by the
 -- residue witness, not conjured from lossy reduction.
 ------------------------------------------------------------------------
-ski-retract : (t : Tm) → Tm
+ski-retract : (t : Tm-QSKI) → Tm-QSKI
 ski-retract t = FUSepQHalts.halts-retract ski-halts t (tm-acc t)
 
-ski-unit : (t : Tm) → ski-retract t ≡ t
+ski-unit : (t : Tm-QSKI) → ski-retract t ≡ t
 ski-unit t = FUSepQHalts.halts-unit ski-halts t (tm-acc t)
 
 -- concrete witness: S K I  =  app (app (atom 0) (atom 1)) (atom 2) round-trips.

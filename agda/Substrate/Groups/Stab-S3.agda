@@ -41,27 +41,19 @@
 
 module Substrate.Groups.Stab-S3 where
 
-open import Substrate.Foundation.Level using (0ℓ)
 open import Substrate.Foundation.Fin.Literals using (₁; ₂)
-open import Substrate.Foundation.Empty using (⊥; ⊥-elim)
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Empty.BotElim
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; lookup)
 open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂; _×_)
-open import Substrate.Foundation.Eq
-  using (_≡_; _≢_; refl; sym; trans; cong; sym-trans; trans-sym; cong-trans)
 
 open import Substrate.Axes.Axis using (Axis; D; C; S; W)
 open import Substrate.Axes.Cover using (axis-cover)
 open import Substrate.Axes.PairCover using (axis×axis-cover)
 open import Substrate.Foundation.Fin.Cover using (fin-cover)
 open import Substrate.Groups.Symmetric.Permutation Axis
-open import Substrate.Groups.Symmetric.Eq Axis using (_≈_)
-open import Substrate.Groups.Symmetric.Permutation.Compose Axis using (_·_)
 open import Substrate.Groups.Symmetric.Permutation.Inverse Axis using (_⁻¹)
-open import Substrate.Groups.Symmetric.Identity Axis using (ε)
-open import Substrate.Groups.Symmetric.EqRefl Axis using (≈-refl)
-open import Substrate.Groups.Symmetric.EqSym Axis using (≈-sym)
 
 ------------------------------------------------------------------------
 -- The parametric Stab predicate.
@@ -85,6 +77,11 @@ open import Substrate.Groups.SemidirectProduct.Stab using (Stab) public
 -- Symmetric at Axis and re-exports it); imported + re-exported here (the local
 -- proof was byte-identical). stab-preserves-≢ below uses it.
 open import Substrate.Groups.Symmetric.Injective Axis using (σ-injective)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Neq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.SymTrans
+open import Substrate.Foundation.Eq.TransSym
 
 stab-preserves-≢ :
   (anchor : Axis) (σ : Permutation) → Stab anchor σ →

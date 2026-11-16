@@ -23,15 +23,19 @@
 
 module Substrate.WitnessTower.Wedge.OrientationRigFreeUP where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Times
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Inject using (inject+)
 open import Substrate.Foundation.Vec using (Vec; map)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
 open import Substrate.WitnessTower.Enumerate using (Perm)
 open import Substrate.WitnessTower.IsPermutation using (IsPerm; lookup-map)
-open import Substrate.WitnessTower.LehmerPath
-  using (LehmerPath; start; _◂_; decode; encode; decode-is-perm; decode-encode)
+open import Substrate.WitnessTower.LehmerPath.Decode
+open import Substrate.WitnessTower.LehmerPath.DecodeEncode
+open import Substrate.WitnessTower.LehmerPath.DecodeIsPerm
+open import Substrate.WitnessTower.LehmerPath.Encode
+open import Substrate.WitnessTower.LehmerPath.LehmerPath
 open import Substrate.WitnessTower.Wedge.OrientationFixedPoint using (decode-injective)
 open import Substrate.WitnessTower.Wedge.OrientationRigFree
   using (ρ; ρ-injective; decode-◂-rot; X)
@@ -40,6 +44,10 @@ open import Substrate.WitnessTower.Wedge.OrientationProductStructural using (_�
 open import Substrate.WitnessTower.Wedge.OrientationUniversal
   using (LehmerAlgebra; base; step; fold; fold-unique; fold-⊕)
 open import Substrate.WitnessTower.Wedge.OrientationRigUniversal using (replayᶜ; fold-⊗)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- S1 — THE CRUX. The path-level rotation rotᴸ p and the dissolution of ◂ into it.
@@ -91,7 +99,7 @@ record FreeRigAlgebra (C : ℕ → Set) : Set where
   field
     zeroᶜ : C 0
     oneᶜ  : C 1
-    _⊕ᶜ_  : ∀ {i j} → C i → C j → C (i + j)
+    _⊕ᶜ_  : ∀ {i j} → C i → C j → C (i ℕ+ j)
     _⊗ᶜ_  : ∀ {i j} → C i → C j → C (i * j)
     rotᶜ  : ∀ {n} → Fin (suc n) → C (suc n) → C (suc n)
 
@@ -103,12 +111,12 @@ record FreeRigAlgebra (C : ℕ → Set) : Set where
   algᶜ = record { base = zeroᶜ ; step = stepᶜ }
 
   field
-    -- ⊕ coherence: absorbing base + the rotation-compat additive step law
+    -- ⊕ coherence: absorbing base ℕ+ the rotation-compat additive step law
     -- (fold-⊕'s ⊕ᶜ-base / ⊕ᶜ-step with step = stepᶜ).
     ⊕ᶜ-base : ∀ {n} (y : C n) → (zeroᶜ ⊕ᶜ y) ≡ y
     ⊕ᶜ-step : ∀ {m n} (x : C m) (p : Fin (suc m)) (y : C n) →
               (stepᶜ x p ⊕ᶜ y) ≡ stepᶜ (x ⊕ᶜ y) (inject+ n p)
-    -- ⊗ coherence: absorbing base + the rotation-compat multiplicative block-step
+    -- ⊗ coherence: absorbing base ℕ+ the rotation-compat multiplicative block-step
     -- law (fold-⊗'s ⊗ᶜ-absorb / ⊗ᶜ-step with step = stepᶜ, through replayᶜ).
     ⊗ᶜ-absorb : ∀ {n} (y : C n) → (zeroᶜ ⊗ᶜ y) ≡ zeroᶜ
     ⊗ᶜ-step   : ∀ {m n} (x : C m) (p : Fin (suc m)) (l₂ : LehmerPath n) →

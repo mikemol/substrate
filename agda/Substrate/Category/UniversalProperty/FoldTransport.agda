@@ -17,8 +17,12 @@
 
 module Substrate.Category.UniversalProperty.FoldTransport where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
-open import Substrate.Algebra.Wedge using (DivStr; z; rem; Trace; done; more; trace-fold; trace-fold-unique; collapse-fold) renaming (Wedge to Wedge⟦478f66a6⟧)
+open import Substrate.Algebra.Wedge using (DivStr; z; rem; Trace; done; more; trace-fold; trace-fold-unique; collapse-fold) renaming (Wedge to Wedge)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Algebra.Wedge
 module _ {C : Set} {D : DivStr C} where
 
   -- an algebra over the (done/more) signature into a target family T.
@@ -32,12 +36,12 @@ module _ {C : Set} {D : DivStr C} where
   trace-fold-transport :
     {T₁ T₂ : C → C → C → Set}
     (bi₁ : (a : C) → T₁ a (z D) a)
-    (si₁ : {a g : C} (b : C) (w : Wedge⟦478f66a6⟧ D a b) → T₁ b (rem w) g → T₁ a b g)
+    (si₁ : {a g : C} (b : C) (w : Wedge D a b) → T₁ b (rem w) g → T₁ a b g)
     (bi₂ : (a : C) → T₂ a (z D) a)
-    (si₂ : {a g : C} (b : C) (w : Wedge⟦478f66a6⟧ D a b) → T₂ b (rem w) g → T₂ a b g)
+    (si₂ : {a g : C} (b : C) (w : Wedge D a b) → T₂ b (rem w) g → T₂ a b g)
     (φ  : {a b g : C} → T₁ a b g → T₂ a b g)
     (φ-base : (a : C) → φ (bi₁ a) ≡ bi₂ a)
-    (φ-step : {a g : C} (b : C) (w : Wedge⟦478f66a6⟧ D a b) (x : T₁ b (rem w) g) →
+    (φ-step : {a g : C} (b : C) (w : Wedge D a b) (x : T₁ b (rem w) g) →
               φ (si₁ b w x) ≡ si₂ b w (φ x)) →
     {a b g : C} (t : Trace D a b g) →
     φ (trace-fold bi₁ si₁ t) ≡ trace-fold bi₂ si₂ t

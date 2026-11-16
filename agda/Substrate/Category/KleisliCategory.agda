@@ -19,8 +19,9 @@
 
 open import Substrate.Foundation.Level using (Level)
 
-open import Substrate.Category.CategoryOf using (CategoryOf)
+open import Substrate.Category.CategoryOf.CategoryOf
 open import Substrate.Category.Monad using (Monad)
+open import Substrate.Category.UniversalProperty.ExtrudeIO
 
 module Substrate.Category.KleisliCategory
   {ℓO ℓM : Level}
@@ -34,5 +35,4 @@ module Substrate.Category.KleisliCategory
   where
 
 open import Substrate.Category.Monad.DerivedCategoryOf C M Kleisli
-  renaming (monad-derived-Category to KleisliCategory)
 

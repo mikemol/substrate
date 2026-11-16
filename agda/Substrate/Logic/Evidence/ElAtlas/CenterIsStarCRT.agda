@@ -21,14 +21,22 @@
 
 module Substrate.Logic.Evidence.ElAtlas.CenterIsStarCRT where
 
-open import Substrate.Foundation.Nat using (ℕ; _*_; _+_)
-open import Substrate.Algebra.Nat.Mod using (_mod-suc_)
-open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Times
+open import Substrate.Foundation.Nat.Nat.ModSuc
+open import Substrate.Algebra.Nat.Mod.ModSucBound
+open import Substrate.Algebra.Nat.Mod.ModSucId
+open import Substrate.Algebra.Nat.Mod.ModSucPeriodic
+open import Substrate.Algebra.Nat.Mod.ModSucSuc
+open import Substrate.Algebra.Nat.Mod.SucModSucLt
+open import Substrate.Algebra.Nat.Mod.SucModSucSelf
 open import Substrate.Foundation.Product using (_×_; _,_)
 open import Substrate.Algebra.Wedge using (DivStr)
 open import Substrate.Algebra.Wedge.Mul using (MulDivStr; pow; Nilpotent)
 open import Substrate.Algebra.Wedge.Bridge using (id-bridge)
 open import Substrate.Algebra.Wedge.CrossMul using (CrossMix; cross; Coherent)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- R = ℤ/6 = ℤ/2 × ℤ/3 as a MulDivStr (carrier ℕ, product mod 6); CRT idempotents.
@@ -60,7 +68,7 @@ e₁-idempotent = refl
 e₂-idempotent : (e₂ * e₂) mod-suc 5 ≡ e₂          -- 4² = 16 ≡ 4 (mod 6)
 e₂-idempotent = refl
 
-idempotents-complete : (e₁ + e₂) mod-suc 5 ≡ 1    -- e₁ + e₂ = 7 ≡ 1 (mod 6)
+idempotents-complete : (e₁ ℕ+ e₂) mod-suc 5 ≡ 1    -- e₁ ℕ+ e₂ = 7 ≡ 1 (mod 6)
 idempotents-complete = refl
 
 idempotents-orthogonal : (e₁ * e₂) mod-suc 5 ≡ 0  -- e₁·e₂ = 12 ≡ 0 : ORTHOGONAL

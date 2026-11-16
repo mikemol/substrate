@@ -26,14 +26,16 @@
 
 module Substrate.WitnessTower.Wedge.OrientationProductComm where
 
-open import Substrate.Foundation.Nat using (ℕ; _*_)
+open import Substrate.Foundation.Nat.Times
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Combine using (combine)
 open import Substrate.Foundation.Fin.RemQuot using (remQuot)
 open import Substrate.Foundation.Fin.Combine.RemQuotInverse using (remQuot-combine)
 open import Substrate.Foundation.Fin.Combine.CombineRemQuotInverse using (combine-remQuot)
 open import Substrate.Foundation.Product using (_,_; proj₁; proj₂)
-open import Substrate.Foundation.Eq using (_≡_; refl; trans; cong)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- 1. THE MULTIPLICATIVE-COMMUTATIVITY ISO r = factorSwap: the factor-transposition.

@@ -14,8 +14,17 @@
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.Groups.Coxeter.Word where
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+-- ⚑⚑ `Substrate.Foundation.List` WAS IMPORTED HERE (unstaged) AND IS NOT. This module defines
+-- its own `_++_` at :38 for Words; the bare import brought `Foundation.List`'s `_++_` into the
+-- same scope and produced [ClashingDefinition] — blocking every module downstream of Coxeter.
+-- ⚑ THE STAGED HALF OF THAT EDIT IS CORRECT AND IS KEPT: replacing `Eq using (_≡_; refl; cong)`
+-- with bare `Eq` + `Eq.Cong` is the ban-decompose repair, and necessary since `cong` moved.
+-- Only the `List` line overshot — nothing here uses a list. Verified by typecheck, not by
+-- census: `--unused-imports` KEEPS it (the name `_++_` IS mentioned, and the predicate cannot
+-- tell the mention is this file's own definition) and `--grep` cannot see a local at all.
 
-open import Substrate.Foundation.Eq using (_≡_; refl; cong)
 
 ------------------------------------------------------------------------
 -- 1. The Word type (cons-list of generators).

@@ -25,11 +25,15 @@
 module Substrate.Algebra.Wedge.ShapeParity where
 
 open import Substrate.Foundation.List using (List; []; _∷_; _++_)
-open import Substrate.Foundation.Bool using (Bool; true; false; not; _xor_)
-open import Substrate.Foundation.Eq   using (_≡_; refl; cong; trans)
+open import Substrate.Foundation.Bool.Bool
+open import Substrate.Foundation.Bool.Not
+open import Substrate.Foundation.Bool.Xor
 
 open import Substrate.Algebra.Wedge       using (DivStr; Trace)
 open import Substrate.Algebra.Wedge.Shape using (shape)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Trans
 
 ------------------------------------------------------------------------
 -- The universal ℤ/2 length-parity cocycle on words.

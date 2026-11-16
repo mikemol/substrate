@@ -37,9 +37,10 @@
 
 module Substrate.WitnessTower.HodgeGradeInvolution where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _*_; _∸_)
+open import Substrate.Foundation.Nat.Monus
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Times
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym)
 
 -- Half (4): the grade-label Hodge ★ involution.
 open import Substrate.WitnessTower.Hodge
@@ -50,6 +51,9 @@ open import Substrate.Algebra.F2.Linear.SpectralCrossCoherent
   using (degΦ; nullity-as-mult×degΦ)
 open import Substrate.WitnessTower.PhiMultiplicity
   using (mult2; nullity2; mult2-c2)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Sym
 
 ------------------------------------------------------------------------
 -- 1. RE-EXPORT the two halves verbatim (the connection holds the existing

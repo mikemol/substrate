@@ -36,7 +36,16 @@
 module Substrate.Groups.SemidirectProduct where
 
 open import Substrate.Groups.SemidirectProduct.Stab
-open import Substrate.Groups.SemidirectProduct.V
+open import Substrate.Groups.SemidirectProduct.V.NonDSends
+open import Substrate.Groups.SemidirectProduct.V.Private
+open import Substrate.Groups.SemidirectProduct.V.SelfToD
+open import Substrate.Groups.SemidirectProduct.V.VFor
+open import Substrate.Groups.SemidirectProduct.V.VForAnchor
+open import Substrate.Groups.SemidirectProduct.V.VForAnchorSends
+open import Substrate.Groups.SemidirectProduct.V.VOfAxisAnchor
+open import Substrate.Groups.SemidirectProduct.V.VOfAxisAnchorSends
+open import Substrate.Groups.SemidirectProduct.V.VOfAxisUnique
+open import Substrate.Groups.SemidirectProduct.V.VSendsD
 open import Substrate.Groups.SemidirectProduct.S
 open import Substrate.Groups.SemidirectProduct.Factorisation
 -- Historic re-export of V4-Embedding names that downstream modules
@@ -44,3 +53,7 @@ open import Substrate.Groups.SemidirectProduct.Factorisation
 open import Substrate.Groups.V4-Embedding
   using (v-of-axis; axis-of-v; act-axis-as-V₄-mult;
          axis-of-v-v-of-axis; v-of-axis-axis-of-v)
+open import Substrate.Axes.AxisOfV
+open import Substrate.Axes.AxisRoundtrip
+open import Substrate.Axes.VOfAxis
+open import Substrate.Axes.V4Roundtrip

@@ -18,12 +18,12 @@
 
 module Substrate.Category.UniversalProperty.ExtrudePackageInstance where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.Algebra.R.Trace.SKIShedDuality using (S; K; I; _∙_) renaming (Tm to Tm⟦533ef80d⟧)
+open import Substrate.Algebra.R.Trace.SKIShedDuality.Tm
 import Substrate.Algebra.R.Trace.SKIReductionToList as R
 open R using (_⇒_; β-I; β-K; β-S)
 open import Substrate.Foundation.RewriteConfluence (R._⇒_) using (_⇒*_; done; _◅_)
 open import Substrate.Category.UniversalProperty.DiagonalYCombinator using (Y-of; Y-fix)
+open import Substrate.Algebra.R.Trace.SKIShedDuality.Tm
 
 ------------------------------------------------------------------------
 -- ① THE SHARED RECORD (reduction-level): a carrier with application, S/K/I, the combinator laws AT ⇒*
@@ -47,7 +47,7 @@ module _ (Ċ : Set) (_↠_ : Ċ → Ċ → Set) where
 --    is Y-of (265), its fixed point Y-fix. So the whole arc (μ/265, self-interp/266, reversal/268, nerve/269-
 --    275) lives on THIS instance, and cites ExtruderFix/CombinatorAlgebra as the ≡-quotient.
 ------------------------------------------------------------------------
-ski-extruder : ReductionExtruder Tm⟦533ef80d⟧ _⇒*_
+ski-extruder : ReductionExtruder Tm _⇒*_
 ski-extruder = record
   { _⊙_ = _∙_ ; Ṡ = S ; Ḱ = K ; İ = I
   ; K-law = λ x y → β-K x y ◅ done

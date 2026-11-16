@@ -20,10 +20,32 @@ module Substrate.Geometry.HodgeDim3.Orthogonality where
 
 open import Substrate.Foundation.Product using (_,_)
 open import Substrate.Foundation.Vec using ([]; _∷_)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; trans; cong; cong-trans)
 
-open import Substrate.Algebra.F2
+open import Substrate.Algebra.F2.AbsorbL
+open import Substrate.Algebra.F2.AbsorbR
+open import Substrate.Algebra.F2.Assoc
+open import Substrate.Algebra.F2.Comm
+open import Substrate.Algebra.F2.Dec
+open import Substrate.Algebra.F2.DistribLPlus
+open import Substrate.Algebra.F2.DistribRPlus
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.F2Cases
+open import Substrate.Algebra.F2.Idempotent
+open import Substrate.Algebra.F2.IdentityL
+open import Substrate.Algebra.F2.IdentityR
+open import Substrate.Algebra.F2.InvOfOne
+open import Substrate.Algebra.F2.OneNeqZero
+open import Substrate.Algebra.F2.Op
+open import Substrate.Algebra.F2.Op2
+open import Substrate.Algebra.F2.PlusAssoc
+open import Substrate.Algebra.F2.PlusComm
+open import Substrate.Algebra.F2.PlusF
+open import Substrate.Algebra.F2.PlusIdentityL
+open import Substrate.Algebra.F2.PlusIdentityR
+open import Substrate.Algebra.F2.PlusInverseL
+open import Substrate.Algebra.F2.PlusInverseR
+open import Substrate.Algebra.F2.PlusSelfInverse
+open import Substrate.Algebra.F2.ZeroNeqOne
 open import Substrate.Algebra.F2.Vector
 open import Substrate.Algebra.F2.Vector.DotProduct
 open import Substrate.Algebra.F2.Code
@@ -32,6 +54,10 @@ open import Substrate.Geometry.HodgeDim3.V4Plane
 open import Substrate.Geometry.HodgeDim3.ChiralityAxis
   using (ChiralityAxis; ChiralityAxis-Pred)
   renaming (kernel→pred to chir-kernel→pred)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.CongTrans
 
 ------------------------------------------------------------------------
 -- Orthogonality at the predicate level.
@@ -39,7 +65,7 @@ open import Substrate.Geometry.HodgeDim3.ChiralityAxis
 -- Given v with lookup v 2 ≡ 𝟘 and w with lookup w 0 ≡ 𝟘 ∧ lookup w 1 ≡ 𝟘,
 -- the F₂-valued dot product v ·F w equals 𝟘.
 --
--- Proof: expand v ·F w = a·x + (b·y + (c·z + 𝟘)); rewrite using the
+-- Proof: expand v ·F w = a·x +F (b·y +F (c·z +F 𝟘)); rewrite using the
 -- three bit constraints; F₂ axioms collapse each summand to 𝟘.
 ------------------------------------------------------------------------
 
@@ -49,14 +75,14 @@ v4-chir-orthogonal-pred :
   ChiralityAxis-Pred w →
   v ·F w ≡ 𝟘
 v4-chir-orthogonal-pred (a ∷ b ∷ c ∷ []) (x ∷ y ∷ z ∷ []) v∈ (w∈0 , w∈1) =
-  -- Goal: a · x + (b · y + (c · z + 𝟘)) ≡ 𝟘
-  cong-trans (λ k → a · k + (b · y + (c · z + 𝟘))) w∈0
-  (cong-trans (_+ (b · y + (c · z + 𝟘))) (·-absorbʳ a)
+  -- Goal: a · x +F (b · y +F (c · z +F 𝟘)) ≡ 𝟘
+  cong-trans (λ k → a · k +F (b · y +F (c · z +F 𝟘))) w∈0
+  (cong-trans (_+ (b · y +F (c · z +F 𝟘))) (·-absorbʳ a)
   (trans (+-identityˡ _)
-  (cong-trans (λ k → b · k + (c · z + 𝟘)) w∈1
-  (cong-trans (_+ (c · z + 𝟘)) (·-absorbʳ b)
+  (cong-trans (λ k → b · k +F (c · z +F 𝟘)) w∈1
+  (cong-trans (_+ (c · z +F 𝟘)) (·-absorbʳ b)
   (trans (+-identityˡ _)
-  (cong-trans (λ k → k · z + 𝟘) v∈
+  (cong-trans (λ k → k · z +F 𝟘) v∈
   (cong-trans (_+ 𝟘) (·-absorbˡ z)
          (+-identityˡ 𝟘))))))))
 

@@ -8,7 +8,7 @@
 -- hypotheses, not a parameterized module: a module application COPIES, so a
 -- `module G-Head (…)` would re-elaborate this term inside `.Proof.G` as well.
 module Substrate.Algebra.F2.MixColumns.Proof.G.Head where
-open import Substrate.Algebra.F2.GF256.Mul
+open import Substrate.Algebra.F2.GF256.Mul.Gmul
 open import Substrate.Algebra.F2.MixColumns.Base
 open import Substrate.Algebra.F2.MixColumns.Proof.G.Air
 open import Substrate.Algebra.F2.MixColumns.Proof.G.Equiv

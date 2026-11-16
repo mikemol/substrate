@@ -29,12 +29,13 @@
 
 module Substrate.Algebra.Z.MonoCommMonoid where
 
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.Foundation.Nat.Properties.Add
-  using (+-assoc; +-identityʳ; +-comm)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Properties.Add.PlusAssoc
+open import Substrate.Foundation.Nat.Properties.Add.PlusComm
+open import Substrate.Foundation.Nat.Properties.Add.PlusIdentityR
 open import Substrate.Category.CommutativeMonoid using (CommutativeMonoid)
 open import Substrate.Algebra.Z.JacobianResidue using (Mono; mono; addM)
+open import Substrate.Foundation.Eq
 
 -- congruence in three arguments (for the 3-generator monomial).
 cong₃ : {A B C D : Set} (f : A → B → C → D)
@@ -49,7 +50,7 @@ cong₃ f refl refl refl = refl
 
 addM-assoc : (m n o : Mono) → addM (addM m n) o ≡ addM m (addM n o)
 addM-assoc (mono a b c) (mono d e f) (mono g h i) =
-  cong₃ mono (+-assoc a d g) (+-assoc b e h) (+-assoc c f i)
+  cong₃ mono (+ℕ-assoc a d g) (+ℕ-assoc b e h) (+ℕ-assoc c f i)
 
 -- 0 + x reduces (ℕ +-identityˡ is refl), so the left unit is definitional.
 addM-idˡ : (m : Mono) → addM (mono 0 0 0) m ≡ m
@@ -57,11 +58,11 @@ addM-idˡ (mono a b c) = refl
 
 addM-idʳ : (m : Mono) → addM m (mono 0 0 0) ≡ m
 addM-idʳ (mono a b c) =
-  cong₃ mono (+-identityʳ a) (+-identityʳ b) (+-identityʳ c)
+  cong₃ mono (+ℕ-identityʳ a) (+ℕ-identityʳ b) (+ℕ-identityʳ c)
 
 addM-comm : (m n : Mono) → addM m n ≡ addM n m
 addM-comm (mono a b c) (mono d e f) =
-  cong₃ mono (+-comm a d) (+-comm b e) (+-comm c f)
+  cong₃ mono (+ℕ-comm a d) (+ℕ-comm b e) (+ℕ-comm c f)
 
 Mono-CommMonoid : CommutativeMonoid Mono addM (mono 0 0 0)
 Mono-CommMonoid = record

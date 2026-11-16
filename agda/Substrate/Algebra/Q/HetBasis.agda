@@ -31,15 +31,20 @@
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.Algebra.Q.HetBasis where
+open import Substrate.Algebra.Z.Mul
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Times
 open import Substrate.Foundation.List using (List; []; _∷_)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym)
 open import Substrate.Foundation.Iff using (_⇔_; ⇔-refl)
-open import Substrate.Algebra.Z using (ℤ; +_)
-open import Substrate.Algebra.Z.Arithmetic using (_*ℤ_)
-open import Substrate.Algebra.Q using (ℚ; mkℚ; num; den-1)
+open import Substrate.Algebra.Z.Int
+
+open import Substrate.Algebra.Q.Rat
 open import Substrate.Algebra.Q.Equiv using (_≈ℚ_)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Algebra.Q.Properties.AddMonoid
 
 ------------------------------------------------------------------------
 -- 1. The heterogeneous quotient: numerator in basis A, denominator in basis B.
@@ -126,7 +131,7 @@ open CrossEq _⊗ℚ_ _≡_ refl sym renaming (_≈H_ to _≈Hℚ_)
 
 radix-value : ℕ → List ℕ → ℕ              -- base → digits (LSB first) → value
 radix-value b []       = 0
-radix-value b (d ∷ ds) = d + b * radix-value b ds
+radix-value b (d ∷ ds) = d ℕ+ b * radix-value b ds
 
 _⊗r_ : List ℕ → List ℕ → ℕ           -- num radix-valued base 2, den radix-valued base 3
 a ⊗r d = radix-value 2 a * radix-value 3 d

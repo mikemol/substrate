@@ -37,9 +37,7 @@
 {-# OPTIONS --safe --without-K #-}
 
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Level using (Level; 0ℓ)
-open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Nat.Nat
 
 open import Substrate.Category.ConjugationCoalgebra
   using (ConjugationCoalgebra)
@@ -47,6 +45,7 @@ open import Substrate.Category.CentralizerDescent
   using (CentralizerDescent)
 open import Substrate.Category.CentralizerDescent.Tree
   using (DescentTree; mkDescentTree)
+open import Substrate.Foundation.Eq
 
 module Substrate.Algebra.Sporadic.HappyFamily.AsTree
   -- The 20 Happy Family CCAs, supplied per-node.

@@ -35,16 +35,22 @@
 
 module Substrate.WitnessTower.Wedge.PyAstRig where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂)
 open import Substrate.Algebra.Semiring using (Semiring)
 open import Substrate.Algebra.Semiring.SPPF using (SPPF; gen; one; _⊗_; _⊕_; inside)
 open import Substrate.WitnessTower.Enumerate using (Perm; insert-at)
 open import Substrate.WitnessTower.FirstAppearance using (id-perm; compose)
 open import Substrate.WitnessTower.SnGroup using (apply; apply-id; apply-compose; apply-injective)
-open import Substrate.WitnessTower.LehmerPath using (LehmerPath; decode)
+open import Substrate.WitnessTower.LehmerPath.Decode
+open import Substrate.WitnessTower.LehmerPath.LehmerPath
 open import Substrate.WitnessTower.Wedge.OrientationFixedPoint using (decode-injective)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.Groups.V4-Cosets
 
 -- SPPF is the FREE rig functor; its action on generator maps IS the free
 -- extension: a relabelling G → H lifts to a rig-endomorphism SPPF G → SPPF H.

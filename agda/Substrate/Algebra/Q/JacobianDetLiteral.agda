@@ -33,10 +33,9 @@
 
 module Substrate.Algebra.Q.JacobianDetLiteral where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; cong)
-open import Substrate.Algebra.Z using (-suc_)
+open import Substrate.Algebra.Z.Int
 open import Substrate.Algebra.Z.MPolyNormalize using (normalize)
-open import Substrate.Algebra.Q using (ℚ)
+open import Substrate.Algebra.Q.Rat
 open import Substrate.Algebra.Q.Equiv using (_≈ℚ_; ≈ℚ-trans)
 open import Substrate.Algebra.Q.Embeddings using (ℤ→ℚ)
 
@@ -45,6 +44,8 @@ import Substrate.Algebra.Q.JacobianEvalNormalize as β
 
 -- The MINIMAL generator layer — take ONLY gen-kP, NOT E (see the memory note).
 open import Substrate.Algebra.Q.JacobianEncodingGen
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
 
 module _ (x y z : ℚ) where
 

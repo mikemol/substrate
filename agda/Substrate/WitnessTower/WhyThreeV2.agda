@@ -33,9 +33,8 @@ module Substrate.WitnessTower.WhyThreeV2 where
 
 import Substrate.Groups.V4.Operations as V4
 open import Substrate.Groups.V4.Axioms.Comm using (·-comm)
-open import Substrate.Groups.V4.Bijection using (V₄; e; α; β; γ)
-open import Substrate.Groups.V4.Operations using (_·_)
-open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym; cong)
+open import Substrate.Groups.V4.Bijection.V4
+open import Substrate.Groups.V4.Operations using (_·₄_)
 open import Substrate.Groups.V4.Axioms.Assoc using (·-assoc)
 open import Substrate.Groups.V4.Axioms.EpsilonLeft using (ε-left)
 open import Substrate.Groups.V4.Axioms.InvLeft using (inv-left)
@@ -45,25 +44,29 @@ open import Substrate.Groups.Actions.S3-on-V4.Generators.SwapAB using (swap-αβ
 open import Substrate.Groups.Actions.S3-on-V4.Generators.RotateCubeId using (rotate³-id)
 open import Substrate.Groups.Actions.S3-on-V4.Generators.RotateIsHom using (rotate-IsHom)
 open import Substrate.Groups.Actions.S3-on-V4.Generators.SwapABIsHom using (swap-αβ-IsHom)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
--- (1) Internal conjugation in V₄ is trivial: g · x · g ≡ x  (inv = id,
+-- (1) Internal conjugation in V₄ is trivial: g ·₄ x ·₄ g ≡ x  (inv = id,
 --     so g·x·g⁻¹ = g·x·g). The three V₂'s are NOT V₄-internally
 --     conjugate. Proved from ·-comm + ·-assoc + self-inverse.
 --
---   g · x · g  ≡ g · (g · x)   [·-comm on (x · g)]   wait: do it directly
---   we show g · (x · g) ≡ x:
---     g · (x · g) ≡ g · (g · x)   [cong, ·-comm x g]
---                 ≡ (g · g) · x    [·-assoc, sym]
+--   g ·₄ x ·₄ g  ≡ g ·₄ (g ·₄ x)   [·-comm on (x ·₄ g)]   wait: do it directly
+--   we show g ·₄ (x ·₄ g) ≡ x:
+--     g ·₄ (x ·₄ g) ≡ g ·₄ (g ·₄ x)   [cong, ·-comm x g]
+--                 ≡ (g ·₄ g) ·₄ x    [·-assoc, sym]
 --                 ≡ x              [g·g = e (self-inv), ε-left]
 ------------------------------------------------------------------------
 
--- g · (x · g) ≡ x. inv g = g definitionally, so inv-left g : (g · g) ≡ ε.
-conj-trivial : (g x : V₄) → (g · (x · g)) ≡ x
+-- g ·₄ (x ·₄ g) ≡ x. inv g = g definitionally, so inv-left g : (g ·₄ g) ≡ ε.
+conj-trivial : (g x : V₄) → (g ·₄ (x ·₄ g)) ≡ x
 conj-trivial g x =
-  trans (cong (g ·_) (·-comm x g))   -- g · (x · g) ≡ g · (g · x)
-  (trans (sym (·-assoc g g x))        -- ≡ (g · g) · x
-  (trans (cong (_· x) (inv-left g))   -- ≡ ε · x        [g·g = ε]
+  trans (cong (g ·₄_) (·-comm x g))   -- g ·₄ (x ·₄ g) ≡ g ·₄ (g ·₄ x)
+  (trans (sym (·-assoc g g x))        -- ≡ (g ·₄ g) ·₄ x
+  (trans (cong (_·₄ x) (inv-left g))   -- ≡ ε ·₄ x        [g·g = ε]
          (ε-left x)))                 -- ≡ x
 
 ------------------------------------------------------------------------

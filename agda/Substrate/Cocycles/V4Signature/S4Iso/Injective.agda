@@ -9,11 +9,11 @@
 
 module Substrate.Cocycles.V4Signature.S4Iso.Injective where
 
-open import Substrate.Foundation.Empty using (⊥)
-open import Substrate.Foundation.Eq using (_≡_)
+open import Substrate.Foundation.Empty.Bot
 
 open import Substrate.Axes.Axis using (Axis; D; C; S; W)
 open import Substrate.Groups.Symmetric.Injective Axis
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- apply σ is injective.

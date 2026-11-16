@@ -19,16 +19,20 @@
 
 module Substrate.Category.FreeUniversalProperty.FreeMonoid where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; cong; cong₂; sym; trans)
 open import Substrate.Foundation.Product using (_×_; _,_)
 open import Substrate.Groups.Coxeter.Word
   using (Word; []; _∷_; _++_; ++-assoc; ++-identity-left; ++-identity-right)
-open import Substrate.Foundation.Empty using (⊥)
+open import Substrate.Foundation.Empty.Bot
 open import Substrate.Category.FreeOverBasis
   using (AlgebraClass; mkAlgebraClass)
 open import Substrate.Category.FreeUniversalProperty using (FreeUP)
 open import Substrate.Category.PresentedUniversalProperty
   using (PresentedUP; Free-as-Presented)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
 
 ------------------------------------------------------------------------
 -- 1. The monoid structure as an AlgebraClass.

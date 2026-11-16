@@ -16,7 +16,6 @@
 
 module Substrate.Algebra.Group.ToSetoid where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂)
 open import Substrate.Algebra.Magma using (Magma)
 open import Substrate.Algebra.Semigroup using (Semigroup; magma; ·-assoc)
 open import Substrate.Algebra.Monoid
@@ -24,6 +23,11 @@ open import Substrate.Algebra.Monoid
 open import Substrate.Algebra.Group
   using (Group; monoid; inv; inv-left; inv-right)
 open import Substrate.Algebra.SetoidGroup using (SetoidGroup)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
 
 ------------------------------------------------------------------------
 -- The coercion.

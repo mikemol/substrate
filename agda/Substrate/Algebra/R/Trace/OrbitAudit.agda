@@ -11,16 +11,23 @@
 
 module Substrate.Algebra.R.Trace.OrbitAudit where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
 open import Substrate.Algebra.R.Trace using (RealTrace; head; tail)
-open import Substrate.Algebra.R.Trace.Bisim using (_~_; head~; tail~; ~-refl)
-open import Substrate.Algebra.R.Trace.Final using (Coalg; ana; ana-unique)
+open import Substrate.Algebra.R.Trace.Bisim.Op
+open import Substrate.Algebra.R.Trace.Final.Ana
+open import Substrate.Algebra.R.Trace.Final.AnaUnique
+open import Substrate.Algebra.R.Trace.Final.Coalg
 open import Substrate.Algebra.R.Trace.OrbitUniversality using (module OrbitCover)
 open import Substrate.Algebra.R.Trace.OrbitFaithful using (module Faithful)
 
-open import Substrate.Foundation.Bool using (Bool; not; boolToℕ) renaming (true to tt; false to ff)   -- dedup ⟡A4
+open import Substrate.Foundation.Bool.Bool
+open import Substrate.Foundation.Bool.Not
+open import Substrate.Foundation.Bool.BoolToNat
+
+pattern tt = true
+pattern ff = false
+open import Substrate.Foundation.Eq
 data ⊥ : Set where
 ¬_ : Set → Set
 ¬ A = A → ⊥

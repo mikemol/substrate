@@ -12,13 +12,13 @@
 
 module Substrate.Category.Poly.Eval where
 
-open import Substrate.Foundation.Nat using (ℕ; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Eq using (_≡_)
-open import Substrate.WitnessTower.LehmerPath using (LehmerPath; start; _◂_)
+open import Substrate.WitnessTower.LehmerPath.LehmerPath
 open import Substrate.WitnessTower.Wedge.OrientationUniversal
   using (LehmerAlgebra; fold; fold-unique)
 open import Substrate.Category.Poly.Term using (PolyTerm)
+open import Substrate.Foundation.Eq
 
 -- The denotation: the unique fold into any LehmerAlgebra target.
 eval : {C : ℕ → Set} → LehmerAlgebra C → {n : ℕ} → PolyTerm n → C n

@@ -12,10 +12,10 @@
 
 module Substrate.Algebra.F2.AES.KeySchedule.RoundTrip where
 
-open import Substrate.Foundation.Eq using (_≡_)
 open import Substrate.Algebra.F2.AES.Round using (State)
 open import Substrate.Algebra.F2.AES.Cipher.RoundTrip using (decrypt; cipher-rt)
 open import Substrate.Algebra.F2.AES.KeySchedule using (rk0; rkmid; rk10; encrypt-key)
+open import Substrate.Foundation.Eq
 
 decrypt-key : State → State → State
 decrypt-key key t = decrypt (rk0 key) (rkmid key) (rk10 key) t

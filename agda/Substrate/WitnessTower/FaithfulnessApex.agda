@@ -11,7 +11,7 @@
 -- the Perm carrier.
 --
 -- This file connects them: instantiate Detector at Perm n (decidable eq from
--- Fin ≟ via Vec ≡-dec), then show the tower's permutation faithfulness
+-- Fin ≟ᶠ via Vec ≡-dec), then show the tower's permutation faithfulness
 -- (apply-injective: pointwise action-agreement ⟹ σ ≡ τ) IS the detector's
 -- kernel law (detect σ τ ≡ 𝟘 ⟹ σ ≡ τ) composed with the action reading. So
 -- "a permutation is determined by its action" and "the detector annihilates
@@ -24,24 +24,27 @@
 
 module Substrate.WitnessTower.FaithfulnessApex where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Op
 open import Substrate.Foundation.Vec using (Vec)
-open import Substrate.Foundation.Vec.Properties using (≡-dec)
-open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym)
-open import Substrate.Algebra.F2 using (F₂; 𝟘)
+open import Substrate.Foundation.Vec.Properties.EqDec
+open import Substrate.Algebra.F2.F2
 
 open import Substrate.WitnessTower.Enumerate using (Perm)
 open import Substrate.WitnessTower.SnGroup using (apply; apply-injective)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.WitnessTower.LeibnizDet
 import Substrate.Algebra.Wedge.AxisWord.Detector as Det
 
 ------------------------------------------------------------------------
--- 1. Perm n has decidable equality (Perm n = Vec (Fin n) n, from Fin ≟).
+-- 1. Perm n has decidable equality (Perm n = Vec (Fin n) n, from Fin ≟ᶠ).
 ------------------------------------------------------------------------
 
 _≟P_ : {n : ℕ} (σ τ : Perm n) → _
-_≟P_ {n} = ≡-dec _≟_
+_≟P_ {n} = ≡-dec _≟ᶠ_
 
 ------------------------------------------------------------------------
 -- 2. Instantiate the detector grade at Perm n.

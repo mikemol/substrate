@@ -21,8 +21,7 @@
 
 module Substrate.Algebra.Wedge.Product.ListIso where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Eq using (_≡_; refl; cong; trans; sym)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂)
 import Substrate.Foundation.Vec as V
 import Substrate.Foundation.List as L
@@ -30,6 +29,10 @@ open import Substrate.Foundation.List.Length using (length)
 open import Substrate.Algebra.Wedge.Bridge using (Bridge)
 open import Substrate.Algebra.Wedge.Product using (vec-product; gpower; flatten)
 open import Substrate.Algebra.List.Wedge using (List-div; lrepeat)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Sym
 
 ------------------------------------------------------------------------
 -- 1. The forgetful Vec → List (drops the length index; no transport).

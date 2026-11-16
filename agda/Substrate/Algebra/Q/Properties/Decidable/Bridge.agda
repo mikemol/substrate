@@ -8,11 +8,13 @@
 
 module Substrate.Algebra.Q.Properties.Decidable.Bridge where
 
-open import Substrate.Foundation.Eq using (_≡_; sym; subst)
-open import Substrate.Algebra.Q using (ℚ)
+open import Substrate.Algebra.Q.Rat
 open import Substrate.Algebra.Q.Equiv using (_≈ℚ_; ≈ℚ-sym; ≈ℚ-trans)
 open import Substrate.Algebra.Q.Reduce using (reduce)
-open import Substrate.Algebra.Q.Properties.Reduce using (≈-reduce)
+open import Substrate.Algebra.Q.Properties.Reduce.ApproxReduce
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Subst
 
 re→≈ : {a b : ℚ} → reduce a ≡ reduce b → a ≈ℚ b
 re→≈ {a} {b} re =

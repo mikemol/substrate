@@ -33,13 +33,15 @@
 module Substrate.ShadowArchitecture.Persistence where
 open import Substrate.Algebra.F2.FanoPlane using (Point; FanoLine)
 
-open import Substrate.Foundation.Bool using (Bool; true; false; _∨_)
+open import Substrate.Foundation.Bool.Bool
+open import Substrate.Foundation.Bool.Or
 open import Substrate.Foundation.Product using (_×_; _,_)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; trans)
-open import Substrate.Foundation.Negation using (¬_)
+open import Substrate.Foundation.Negation.Not
 
 open import Substrate.ShadowArchitecture.FanoLabeling
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
 
 ------------------------------------------------------------------------
 -- 1. The cotype.

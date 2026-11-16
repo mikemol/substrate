@@ -13,7 +13,8 @@
 module Substrate.S5.Dedupe where
 
 open import Substrate.Foundation.Bool                 using (Bool; true; false)
-open import Substrate.Foundation.Nat                  using (ℕ; suc; _≤_; z≤n; s≤s)
+open import Substrate.Foundation.Nat.Le
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Nat.Properties.Order using (≤-suc-r)
 open import Substrate.Foundation.List                 using (List; []; _∷_)
 open import Substrate.Foundation.List.Length          using (length)

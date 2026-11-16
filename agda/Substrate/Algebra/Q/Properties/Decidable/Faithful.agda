@@ -9,13 +9,17 @@
 
 module Substrate.Algebra.Q.Properties.Decidable.Faithful where
 
-open import Substrate.Foundation.Eq using (_≡_; sym; trans)
 open import Substrate.Foundation.Product using (_×_)
-open import Substrate.Algebra.Q using (ℚ; num; denominator)
-open import Substrate.Algebra.Q.Reduction using (is-reduced; abs-ℤ)
+open import Substrate.Algebra.Q.Denominator
+open import Substrate.Algebra.Q.Rat
+open import Substrate.Algebra.Q.Reduction.AbsInt
+open import Substrate.Algebra.Q.Reduction.IsReduced
 open import Substrate.Algebra.Nat.GCD.GcdTrace using (gcd-trace; coprime-trace)
-open import Substrate.Algebra.Nat.GCD.CFInjective using (cf-injective)
+open import Substrate.Algebra.Nat.GCD.CFInjective.CfInjective
 open import Substrate.Algebra.Q.Properties.Decidable.Key
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
 
 opaque
   unfolding q-key

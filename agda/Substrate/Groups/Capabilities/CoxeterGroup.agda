@@ -17,8 +17,9 @@
 
 module Substrate.Groups.Capabilities.CoxeterGroup where
 
-open import Substrate.Foundation.Eq using (_≡_)
 open import Substrate.Groups.Coxeter.Word using (Word; _++_; [])
+open import Substrate.Foundation.Eq
+open import Substrate.Algebra.Quotient.Canonical
 
 ------------------------------------------------------------------------
 -- The capability record.

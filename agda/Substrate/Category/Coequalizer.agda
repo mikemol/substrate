@@ -32,10 +32,11 @@
 module Substrate.Category.Coequalizer where
 
 open import Substrate.Foundation.Level using (Level)
-open import Substrate.Foundation.Eq using (_≡_; refl; cong)
 open import Substrate.Foundation.Function using (id)
 
 open import Substrate.Category.Coalgebra using (Endomap; FixedPoint; fixed)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
 
 private
   variable

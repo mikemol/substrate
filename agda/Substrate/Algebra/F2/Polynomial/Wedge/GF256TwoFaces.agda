@@ -28,16 +28,17 @@ open import Substrate.Algebra.Polynomial.Graded.Mod using (xpow)
 open import Substrate.Algebra.Polynomial.Graded.Mod.Core using (ytime)
 open import Substrate.Algebra.F2.Polynomial.Wedge.DLogHom using (gpow)
 
-open import Substrate.Foundation.Nat using (ℕ; _+_)
-open import Substrate.Foundation.Bool using (false)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Bool.Bool
 open import Substrate.Algebra.F2.CommRing using (F₂-CommRing)
 import Substrate.Algebra.Polynomial.Graded.Quotient as Q
-import Substrate.Algebra.Polynomial.Graded.Mod as M
 import Substrate.Algebra.Polynomial.Graded.FromCommRing as F
 import Substrate.Algebra.Polynomial.Graded.Div as D
-open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit.Base using (m-lo; is-zero8)
+open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit.Base.IsZero8
+open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit.Base.MLo
 open import Substrate.Algebra.F2.Polynomial.Wedge.Inverse using (inv; inv-law)
+import Substrate.Algebra.Polynomial.Graded.Mod as M
 import Substrate.Algebra.F2.Polynomial.Wedge.DLogHom as DH
 
 open F.Over F₂-CommRing using (Poly)
@@ -45,6 +46,10 @@ open M.Over F₂-CommRing 7 m-lo
 open Q.Over F₂-CommRing 7 m-lo
 open D.Over F₂-CommRing 7 m-lo
   using (Poly; _*Q_; oneC; *Q-comm; *Q-assoc; *Q-identityˡ; *Q-identityʳ)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 -- the division-regime antilog at GF(2⁸): x^· (covers the order-51 ⟨x⟩ subgroup).
 module GF256 = DH.Over 7 m-lo
@@ -56,7 +61,7 @@ order255 : gpow 255 ≡ oneC
 order255 = refl
 
 -- the dlog inverse law for x-powers: gᵏ · g^(255−k) ≡ 1, all k+j = 255 at once.
-dlog-inv-law₈ : (k j : ℕ) → k + j ≡ 255 → (gpow k *Q gpow j) ≡ oneC
+dlog-inv-law₈ : (k j : ℕ) → k ℕ+ j ≡ 255 → (gpow k *Q gpow j) ≡ oneC
 dlog-inv-law₈ = GF256.dlog-inv-law 255 order255
 
 ------------------------------------------------------------------------
@@ -77,7 +82,7 @@ inv-unique a b c ab ac =
 -- because the inverse is unique. (gᵏ nonzero; k+j = 255.)
 ------------------------------------------------------------------------
 
-two-faces : (k j : ℕ) → k + j ≡ 255 → is-zero8 (gpow k) ≡ false →
+two-faces : (k j : ℕ) → k ℕ+ j ≡ 255 → is-zero8 (gpow k) ≡ false →
             inv (gpow k) ≡ gpow j
 two-faces k j kj nz =
   inv-unique (gpow k) (inv (gpow k)) (gpow j)

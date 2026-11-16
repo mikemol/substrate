@@ -20,11 +20,14 @@
 
 module Substrate.Algebra.Wedge.TraceNuColimit where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Unit using (⊤; tt)
 open import Substrate.Algebra.Wedge using (DivStr)
-open import Substrate.Category.Allegory.Refinement
-  using (_⊑ᶠ_; ⊑ᶠ-refl; ⊑ᶠ-trans; Refinement; iterate; chain)
+open import Substrate.Category.Allegory.Refinement.Chain
+open import Substrate.Category.Allegory.Refinement.Iterate
+open import Substrate.Category.Allegory.Refinement.Refinement
+open import Substrate.Category.Allegory.Refinement.SqsubF
+open import Substrate.Category.Allegory.Refinement.SqsubFTrans
 open import Substrate.Algebra.Wedge.TraceMuStep using (Idx; Φ-step; Φ-step-mono; step-refinement)
 
 module _ {C : Set} (D : DivStr C) where

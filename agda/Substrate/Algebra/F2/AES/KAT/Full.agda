@@ -22,7 +22,6 @@
 
 module Substrate.Algebra.F2.AES.KAT.Full where
 
-open import Substrate.Foundation.Eq using (_≡_; trans; cong; cong₂)
 open import Substrate.Foundation.Vec using (Vec; _∷_; []; _++_)
 open import Substrate.Algebra.F2.AES.Round using (State; round; final-round; addKey)
 open import Substrate.Algebra.F2.AES.Cipher using (fold)
@@ -36,6 +35,10 @@ open import Substrate.Algebra.F2.AES.KAT.FullKeySched using (rkmid-eq-C; rk10-eq
 open import Substrate.Algebra.F2.AES.KAT.FullFcShardA using (fcA-C)
 open import Substrate.Algebra.F2.AES.KAT.FullFcShardB using (fcB-C)
 open import Substrate.Algebra.F2.AES.KAT.FullFcShardC using (fcC-C)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
 
 mk : State
 mk = to-state key-C1

@@ -28,14 +28,14 @@ module Substrate.WitnessTower.V4Grounding where
 
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using (Vec; []; _∷_)
-open import Substrate.Foundation.Bool using (Bool; true)
-open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Bool.Bool
 open import Substrate.WitnessTower.Enumerate using (Perm)
 open import Substrate.WitnessTower.FirstAppearance using (compose; is-involution)
-open import Substrate.Groups.V4.Bijection using (V₄; e; α; β; γ)
-open import Substrate.Groups.V4.Operations using (_·_)
+open import Substrate.Groups.V4.Bijection.V4
+open import Substrate.Groups.V4.Operations using (_·₄_)
 open import Substrate.Groups.V4.Bundle using (V₄-Group)
 open import Substrate.Algebra.TopologicalGroup using (TopologicalGroup)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- ① V₄ EMBEDDED IN THE BUILD. Each element IS a permutation the tower's `perms 4` enumeration produces:
@@ -52,7 +52,7 @@ open import Substrate.Algebra.TopologicalGroup using (TopologicalGroup)
 --    element-shadow of the build. All 16 cases refl: ⟦_⟧ is a group homomorphism, so the abstract V₄ op is
 --    never recomputed — it is READ OFF `compose`.
 ------------------------------------------------------------------------
-·-is-compose : (x y : V₄) → ⟦ x · y ⟧ ≡ compose ⟦ x ⟧ ⟦ y ⟧
+·-is-compose : (x y : V₄) → ⟦ x ·₄ y ⟧ ≡ compose ⟦ x ⟧ ⟦ y ⟧
 ·-is-compose e e = refl
 ·-is-compose e α = refl
 ·-is-compose e β = refl

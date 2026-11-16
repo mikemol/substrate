@@ -16,17 +16,20 @@
 
 module Substrate.WitnessTower.Complete where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using (Vec; [])
 open import Substrate.Foundation.List using (List; []; _∷_; _++_)
-open import Substrate.Foundation.Eq using (_≡_; refl; subst; sym)
 open import Substrate.Foundation.Product using (Σ; _,_)
 
 open import Substrate.WitnessTower.Enumerate
   using (Perm; perms; insert-at; mapL; concatMapL; all-positions)
 open import Substrate.WitnessTower.IsPermutation using (IsPerm)
 open import Substrate.WitnessTower.Decompose using (decompose)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Subst
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Algebra.Wedge.AxisWord.PackedReadout
 
 ------------------------------------------------------------------------
 -- 0. List membership + the structural lemmas.

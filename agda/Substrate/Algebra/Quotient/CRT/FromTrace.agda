@@ -3,7 +3,7 @@
 --
 -- The last link, closing the whole CRT chain from gcd = 1:
 --   combine ← idempotents ← inverses ← BÉZOUT (modular EEA fold).
--- From a coprimality trace, bezout-mod gives (s·M + t·N) ≡ 1 (mod M); since
+-- From a coprimality trace, bezout-mod gives (s·M ℕ+ t·N) ≡ 1 (mod M); since
 -- s·M ≡ 0 (mod M), the coefficient t is N⁻¹ mod M. Two such traces assemble
 -- the full CRT-Witness — no hand-given inverses or idempotents.
 ------------------------------------------------------------------------
@@ -12,20 +12,35 @@
 
 module Substrate.Algebra.Quotient.CRT.FromTrace where
 
-open import Substrate.Foundation.Nat using (ℕ; suc; _+_; _*_; _≤_; s≤s; z≤n)
+open import Substrate.Foundation.Nat.Le
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Times
 open import Substrate.Foundation.Nat.Properties.Mul using (*-comm)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
 open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂)
-open import Substrate.Algebra.Nat.Mod using (_mod-suc_; mod-suc-id; mod-suc-bound)
+open import Substrate.Foundation.Nat.Nat.ModSuc
+open import Substrate.Algebra.Nat.Mod.ModSucBound
+open import Substrate.Algebra.Nat.Mod.ModSucId
+open import Substrate.Algebra.Nat.Mod.ModSucPeriodic
+open import Substrate.Algebra.Nat.Mod.ModSucSuc
+open import Substrate.Algebra.Nat.Mod.SucModSucLt
+open import Substrate.Algebra.Nat.Mod.SucModSucSelf
 open import Substrate.Algebra.Nat.Mod.Homomorphism using (mod-add-hom)
 open import Substrate.Algebra.Nat.GCD.EEATrace using (EEATrace)
 open import Substrate.Algebra.Nat.GCD.BezoutMod using (bezout-mod)
 open import Substrate.Algebra.Nat.GCD.ComputeTrace using (compute-trace)
 open import Substrate.Algebra.Quotient.CRT using (CRT-Witness; combine)
-open import Substrate.Algebra.Quotient.CRT.Idempotents using (CRTIdempotents)
+-- ⚑ DEAD CLAUSE ENTRY, found by `--clause-audit --unused` (ⓉCLAUSE-UNUSED).
+-- This file reaches the CRT witness through `FromIdempotents.crt-witness`
+-- (below) and never names the record type itself.
+open import Substrate.Algebra.Quotient.CRT.Idempotents
 open import Substrate.Algebra.Quotient.CRT.Inverses
   using (ModInverses; idempotents-from-inverses; modulus-multiple)
 open import Substrate.Algebra.Quotient.CRT.FromIdempotents using (crt-witness)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- 1. The modular inverse of N = suc n, mod M = suc m, from a coprime trace.
@@ -41,9 +56,9 @@ inverse-from-trace {m} {n} tr with bezout-mod m tr
     mod-idem-m a = mod-suc-id (a mod-suc m) m (mod-suc-bound a m)
     sM-zero : (s * suc m) mod-suc m ≡ 0
     sM-zero = trans (cong (_mod-suc m) (*-comm s (suc m))) (modulus-multiple m s)
-    drop : ((s * suc m) + (t * suc n)) mod-suc m ≡ (t * suc n) mod-suc m
+    drop : ((s * suc m) ℕ+ (t * suc n)) mod-suc m ≡ (t * suc n) mod-suc m
     drop = trans (mod-add-hom (s * suc m) (t * suc n) m)
-                 (trans (cong (λ z → (z + ((t * suc n) mod-suc m)) mod-suc m) sM-zero)
+                 (trans (cong (λ z → (z ℕ+ ((t * suc n) mod-suc m)) mod-suc m) sM-zero)
                         (mod-idem-m (t * suc n)))
     proof : (suc n * t) mod-suc m ≡ 1 mod-suc m
     proof = trans (cong (_mod-suc m) (*-comm (suc n) t)) (trans (sym drop) eq)

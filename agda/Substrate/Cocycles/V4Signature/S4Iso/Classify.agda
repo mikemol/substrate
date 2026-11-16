@@ -13,7 +13,6 @@ module Substrate.Cocycles.V4Signature.S4Iso.Classify where
 open import Substrate.Cocycles.V4Signature.OrbitKey.Type
 open import Substrate.Cocycles.V4Signature.CY5
 open import Substrate.Foundation.Product using (_,_; proj₁; proj₂)
-open import Substrate.Foundation.Eq using (_≡_; refl)
 
 open import Substrate.Axes.Axis using (Axis; D; C; S; W)
 open import Substrate.Groups.Symmetric.Permutation Axis
@@ -28,7 +27,17 @@ open import Substrate.Cocycles.V4Signature.Pairing.Type
 open import Substrate.Cocycles.V4Signature.Chirality.Type
 open import Substrate.Groups.SemidirectProduct.Stab
 open import Substrate.Groups.SemidirectProduct.S
-open import Substrate.Groups.SemidirectProduct.V
+open import Substrate.Groups.SemidirectProduct.V.NonDSends
+open import Substrate.Groups.SemidirectProduct.V.Private
+open import Substrate.Groups.SemidirectProduct.V.SelfToD
+open import Substrate.Groups.SemidirectProduct.V.VFor
+open import Substrate.Groups.SemidirectProduct.V.VForAnchor
+open import Substrate.Groups.SemidirectProduct.V.VForAnchorSends
+open import Substrate.Groups.SemidirectProduct.V.VOfAxisAnchor
+open import Substrate.Groups.SemidirectProduct.V.VOfAxisAnchorSends
+open import Substrate.Groups.SemidirectProduct.V.VOfAxisUnique
+open import Substrate.Groups.SemidirectProduct.V.VSendsD
+open import Substrate.Foundation.Eq
 ------------------------------------------------------------------------
 -- TotalSpace of the CY-5 cocycle.
 ------------------------------------------------------------------------

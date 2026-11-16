@@ -15,16 +15,20 @@
 
 module Substrate.Algebra.Nat.GCD.Fold where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Eq using (_≡_; refl; trans; cong)
-open import Substrate.Algebra.Nat.GCD.Wedge using (remainder) renaming (Wedge to Wedge⟦b7e6a995⟧)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Algebra.Nat.GCD.Wedge using (remainder) renaming (Wedge-GCD to Wedge-GCD)
 open import Substrate.Algebra.Nat.GCD.EEATrace using (EEATrace; base; step)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Algebra.Nat.GCD.Wedge
+open import Substrate.Algebra.CayleyDickson
 
 -- the universal fold (= EEATrace's recursor, named so targets are swappable).
 eea-fold :
   {T : ℕ → ℕ → ℕ → Set}
   (base-interp : (a : ℕ) → T a 0 a)
-  (step-interp : {a g : ℕ} (b : ℕ) (w : Wedge⟦b7e6a995⟧ a (suc b)) →
+  (step-interp : {a g : ℕ} (b : ℕ) (w : Wedge-GCD a (suc b)) →
                  T (suc b) (remainder w) g → T a (suc b) g) →
   {a b g : ℕ} → EEATrace a b g → T a b g
 eea-fold {T} bi si (base a)       = bi a
@@ -57,11 +61,11 @@ gcd-fold-correct (step b w sub) = gcd-fold-correct sub
 eea-fold-unique :
   {T : ℕ → ℕ → ℕ → Set}
   (base-interp : (a : ℕ) → T a 0 a)
-  (step-interp : {a g : ℕ} (b : ℕ) (w : Wedge⟦b7e6a995⟧ a (suc b)) →
+  (step-interp : {a g : ℕ} (b : ℕ) (w : Wedge-GCD a (suc b)) →
                  T (suc b) (remainder w) g → T a (suc b) g)
   (h : {a b g : ℕ} → EEATrace a b g → T a b g)
   (h-base : (a : ℕ) → h (base a) ≡ base-interp a)
-  (h-step : {a g : ℕ} (b : ℕ) (w : Wedge⟦b7e6a995⟧ a (suc b))
+  (h-step : {a g : ℕ} (b : ℕ) (w : Wedge-GCD a (suc b))
             (sub : EEATrace (suc b) (remainder w) g) →
             h (step b w sub) ≡ step-interp b w (h sub)) →
   {a b g : ℕ} (t : EEATrace a b g) → h t ≡ eea-fold {T} base-interp step-interp t

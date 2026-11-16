@@ -11,6 +11,8 @@
 module Substrate.Algebra.SetoidGroup.Properties where
 
 open import Substrate.Algebra.SetoidGroup using (SetoidGroup)
+open import Substrate.TokiPona.ModifierBilinear.WithBasisAction.Step1
+open import Substrate.TokiPona.ModifierBilinear.WithBasisAction.Step2
 
 module Props (Carrier : Set) (_≈_ : Carrier → Carrier → Set)
              (G : SetoidGroup Carrier _≈_) where

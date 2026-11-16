@@ -25,12 +25,13 @@ module Substrate.Category.UniversalProperty.DiagonalObsCode where
 -- The CRT full round-trip under coprime bounds — ⟡diagonal-obs-code-crt-roundtrip — is now PROVEN in
 -- the sibling DiagonalObsCodeCRT (crt-roundtrip); this module's PAIR framing is backed by that theorem.
 
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
 open import Substrate.Algebra.R.Trace using (RealTrace)
-open import Substrate.Algebra.R.Trace.Final using (Coalg; ana)
+open import Substrate.Algebra.R.Trace.Final.Ana
+open import Substrate.Algebra.R.Trace.Final.Coalg
 open import Substrate.Algebra.Quotient.CRT using (CRT-Witness; combine)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- ① THE CODE IS A PARAMETER (pluggable, per 230): a slice type `Slice`, its code into ℕ, and its

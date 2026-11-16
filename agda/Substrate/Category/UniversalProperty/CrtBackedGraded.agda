@@ -15,7 +15,7 @@
 
 module Substrate.Category.UniversalProperty.CrtBackedGraded where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Product using (_×_; _,_)
 open import Substrate.Algebra.Quotient.CRT using (combine)
 open import Substrate.Algebra.Quotient.CRT.FromTrace using (witness-3-5)

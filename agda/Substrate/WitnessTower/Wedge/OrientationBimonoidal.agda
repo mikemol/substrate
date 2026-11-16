@@ -23,9 +23,10 @@
 
 module Substrate.WitnessTower.Wedge.OrientationBimonoidal where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Eq using (_≡_; subst)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Subst
 
 ------------------------------------------------------------------------
 -- The parameterized structure: a graded product over a grading operation (op, ε).

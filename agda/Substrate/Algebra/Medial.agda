@@ -23,8 +23,11 @@
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.Algebra.Medial where
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Cong
 
-open import Substrate.Foundation.Eq using (_≡_; trans; sym; cong)
 
 module _ {A : Set} (_·_ : A → A → A)
   (·-assoc : (a b c : A) → (a · b) · c ≡ a · (b · c))

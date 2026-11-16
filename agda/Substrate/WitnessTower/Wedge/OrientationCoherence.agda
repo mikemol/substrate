@@ -12,7 +12,7 @@
 --
 -- ("= the unitor" means value-preserving: on the underlying element, σ_{A,I} is identity —
 -- both A⊕0 ≅ A ≅ 0⊕A and A⊗1 ≅ A ≅ 1⊗A collapse. toℕ route, via the rig-9 combine-unit
--- lemmas + blockSwap-L.)
+-- lemmas ℕ+ blockSwap-L.)
 --
 -- RESIDUE (⟡rig-13 part 2, deep): the HEXAGONS (blockSwap/factorSwap vs the associator)
 -- and the DISTRIBUTOR PENTAGONS. These need a functorial ⊕/⊗-on-MORPHISMS layer
@@ -20,7 +20,7 @@
 -- between the composite's stages — a substantial build-out. The associator/unit PENTAGONS
 -- are automatic (strict associators, r=id). Recursive-common-structure: coherence work ∝
 -- non-strictness — only the up-to-iso r's carry non-trivial diagrams, and of those only the
--- hexagon/pentagon remain (involution + naturality + unit are done).
+-- hexagon/pentagon remain (involution ℕ+ naturality ℕ+ unit are done).
 --
 -- Zero postulates, --safe --without-K.
 ------------------------------------------------------------------------
@@ -29,26 +29,32 @@
 
 module Substrate.WitnessTower.Wedge.OrientationCoherence where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; _+_; _*_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Times
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.To
 open import Substrate.Foundation.Fin.RemQuot using (remQuot)
-open import Substrate.Foundation.Fin.Combine.Assoc using (toℕ-inject+; toℕ-raise)
+open import Substrate.Foundation.Fin.Combine.Assoc.ToNatInjectPlus
+open import Substrate.Foundation.Fin.Combine.Assoc.ToNatRaise
 open import Substrate.Foundation.Fin.Combine.CombineRemQuotInverse using (combine-remQuot)
 open import Substrate.Foundation.Fin.SplitAt.View using (splitAt-view; fromₗ; fromᵣ)
 open import Substrate.Foundation.Product using (proj₁; proj₂)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
 open import Substrate.WitnessTower.Wedge.OrientationSumComm using (blockSwap; blockSwap-L)
 open import Substrate.WitnessTower.Wedge.OrientationProductComm using (factorSwap)
 open import Substrate.WitnessTower.Wedge.OrientationProductUnit
   using (combine-unitₗ; combine-unitᵣ)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- 1. ⊕ braiding-unit: blockSwap with the empty (0) block is value-preserving.
---    x : Fin (m + 0) is always in the m-block (the 0-block is empty).
+--    x : Fin (m ℕ+ 0) is always in the m-block (the 0-block is empty).
 ------------------------------------------------------------------------
 
-blockSwap-unit : ∀ m (x : Fin (m + 0)) → toℕ (blockSwap m 0 x) ≡ toℕ x
+blockSwap-unit : ∀ m (x : Fin (m ℕ+ 0)) → toℕ (blockSwap m 0 x) ≡ toℕ x
 blockSwap-unit m x with splitAt-view m {0} x
 ... | fromₗ i = trans (cong toℕ (blockSwap-L m 0 i))
                       (trans (toℕ-raise 0 i) (sym (toℕ-inject+ 0 i)))

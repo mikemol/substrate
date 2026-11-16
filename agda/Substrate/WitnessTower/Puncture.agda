@@ -28,12 +28,12 @@
 
 module Substrate.WitnessTower.Puncture where
 
-open import Substrate.Foundation.Nat using (ℕ; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Negation using (¬_)
-open import Substrate.Foundation.Eq using (_≡_)
+open import Substrate.Foundation.Negation.Not
 open import Substrate.Foundation.Fin.Punctured
   using (punchIn; punchIn-≢; punchOut; punchOut-punchIn; punchIn-punchOut)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. Cell indices of a rung. A rung-k simplex has k+1 cells.

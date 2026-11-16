@@ -26,13 +26,14 @@
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.Logic.Evidence.ElAtlas.GenusSpecies where
+open import Substrate.Algebra.Z.Add
 
 open import Substrate.Foundation.Vec using (Vec; _∷_; [])
-open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.Foundation.Empty using (⊥)
+open import Substrate.Foundation.Empty.Bot
 open import Substrate.Foundation.Product using (_,_)
-open import Substrate.Algebra.Z using (ℤ; +_; -ℤ_)
-open import Substrate.Algebra.Z.Arithmetic using (_+ℤ_)
+open import Substrate.Algebra.Z.Int
+open import Substrate.Algebra.Z.Int2
+
 open import Substrate.Algebra.Wedge.Mul using (Nilpotent)
 open import Substrate.Algebra.Wedge.Species
   using (Ortho; Stable; IdempotentSpecies; NilpotentSpecies; species-disjoint)
@@ -42,6 +43,7 @@ open import Substrate.Algebra.Wedge.NComplex
   using (three-mul; η; sq; η-degree-3)
 open import Substrate.Logic.Evidence.ElAtlas.OrbitCloudRung3Wedge
   using (act-T; vsub)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- IDEMPOTENT species — Ξ★.cⁿ, the CRT idempotents of ℤ/6.

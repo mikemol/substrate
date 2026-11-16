@@ -14,9 +14,9 @@
 
 module Substrate.Conway.Birthday where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Conway.SurrealFinite using (SurrealFinite; ⟨_∣_⟩)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. Birthday extraction.

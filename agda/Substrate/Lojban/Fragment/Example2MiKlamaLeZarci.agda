@@ -11,12 +11,12 @@
 module Substrate.Lojban.Fragment.Example2MiKlamaLeZarci where
 
 open import Substrate.Foundation.Vec using ([]; _∷_)
-open import Substrate.Foundation.Eq using (_≡_; refl)
 
 open import Substrate.Lojban.Gismu using (klama)
 open import Substrate.Lojban.Bridi using (Bridi; make-bridi; interpret)
 open import Substrate.Lojban.Fragment.Carriers
   using (Sumti; mi; zo-e; le-zarci; Sem; fact; gismu-to-selbri)
+open import Substrate.Foundation.Eq
 
 example-mi-klama-le-zarci : Bridi 5 Sumti Sem
 example-mi-klama-le-zarci =

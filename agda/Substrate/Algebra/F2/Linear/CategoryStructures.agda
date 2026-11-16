@@ -23,9 +23,10 @@ module Substrate.Algebra.F2.Linear.CategoryStructures where
 
 open import Substrate.Foundation.Level using (Level; suc; _⊔_)
 
-open import Substrate.Category.CategoryOf using (CategoryOf)
+open import Substrate.Category.CategoryOf.CategoryOf
 open import Substrate.Category.SymmetricMonoidal using (SymmetricMonoidal)
 open import Substrate.Category.DaggerCategory using (DaggerCategory)
+open import Substrate.Probability.MarkovCategory
 
 ------------------------------------------------------------------------
 -- The bundled record.

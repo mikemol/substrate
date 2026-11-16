@@ -30,9 +30,13 @@
 
 module Substrate.Algebra.Wedge.Bridge where
 
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; subst)
-open import Substrate.Algebra.Wedge using (DivStr; z; recon; quot; rem; wedge-eq; Trace; done; more) renaming (Wedge to Wedge⟦478f66a6⟧)
+open import Substrate.Algebra.Wedge using (DivStr; z; recon; quot; rem; wedge-eq; Trace; done; more) renaming (Wedge to Wedge)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Subst
+open import Substrate.Algebra.Wedge
 ------------------------------------------------------------------------
 -- 1. The bridge: a structure-respecting translation between silos.
 ------------------------------------------------------------------------
@@ -53,7 +57,7 @@ open Bridge public
 
 -- a wedge in D₁ becomes a wedge in D₂ (quotient and remainder both translated).
 transport-wedge : {C₁ C₂ : Set} {D₁ : DivStr C₁} {D₂ : DivStr C₂} (br : Bridge D₁ D₂) {a b : C₁} →
-                  Wedge⟦478f66a6⟧ D₁ a b → Wedge⟦478f66a6⟧ D₂ (translate br a) (translate br b)
+                  Wedge D₁ a b → Wedge D₂ (translate br a) (translate br b)
 transport-wedge br {a} {b} w = record
   { quot     = translate br (quot w)
   ; rem      = translate br (rem w)
@@ -91,7 +95,7 @@ record LaxBridge {C₁ C₂ : Set} (D₁ : DivStr C₁) (D₂ : DivStr C₂) : S
   field
     translate : C₁ → C₂
     gap : (q b r : C₁) →
-          Wedge⟦478f66a6⟧ D₂ (translate (recon D₁ q b r))
+          Wedge D₂ (translate (recon D₁ q b r))
                    (recon D₂ (translate q) (translate b) (translate r))
 
 open LaxBridge public

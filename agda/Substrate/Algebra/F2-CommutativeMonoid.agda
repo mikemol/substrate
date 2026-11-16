@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------
 -- Substrate.Algebra.F2-CommutativeMonoid
 --
--- F₂'s additive structure (𝟘, 𝟙, +) packaged as a CommutativeMonoid.
+-- F₂'s additive structure (𝟘, 𝟙, +F) packaged as a CommutativeMonoid.
 --
 -- The grading group for F₂-graded structures throughout the substrate:
 -- V₄'s 3+1 parity, Bivector self-dual vs anti-self-dual axis, etc.
@@ -11,15 +11,19 @@
 
 module Substrate.Algebra.F2-CommutativeMonoid where
 
-open import Substrate.Algebra.F2
-  using (F₂; 𝟘; _+_; +-assoc; +-identityˡ; +-identityʳ; +-comm)
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.PlusAssoc
+open import Substrate.Algebra.F2.PlusComm
+open import Substrate.Algebra.F2.PlusF
+open import Substrate.Algebra.F2.PlusIdentityL
+open import Substrate.Algebra.F2.PlusIdentityR
 open import Substrate.Category.CommutativeMonoid
 
 ------------------------------------------------------------------------
 -- F₂'s additive CommutativeMonoid.
 ------------------------------------------------------------------------
 
-F₂-CommMonoid : CommutativeMonoid F₂ _+_ 𝟘
+F₂-CommMonoid : CommutativeMonoid F₂ _+F_ 𝟘
 F₂-CommMonoid = record
   { +R-assoc     = +-assoc
   ; +R-identityˡ = +-identityˡ

@@ -23,12 +23,17 @@ module Substrate.Algebra.F2.Linear.KernelPredBridge where
 
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using (lookup)
-open import Substrate.Foundation.Eq
-  using (_≡_; sym; trans; cong; cong-trans; sym-trans; trans-sym)
 
-open import Substrate.Algebra.F2 using (F₂; 𝟘)
+open import Substrate.Algebra.F2.F2
 open import Substrate.Algebra.F2.Vector using (Vector; 𝟎ⱽ; lookup-𝟎)
-open import Substrate.Algebra.F2.Linear using (Linear; apply)
+open import Substrate.Algebra.F2.Linear.Linear
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.CongTrans
+open import Substrate.Foundation.Eq.SymTrans
+open import Substrate.Foundation.Eq.TransSym
 
 ------------------------------------------------------------------------
 -- pred-at-i → kernel-at-i.

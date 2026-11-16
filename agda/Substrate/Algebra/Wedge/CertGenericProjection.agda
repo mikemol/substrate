@@ -17,11 +17,13 @@
 
 module Substrate.Algebra.Wedge.CertGenericProjection where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Algebra.Wedge using (ℕ-div; rem)
-open import Substrate.Category.Allegory.Refinement using (_⊑ᶠ_; ⊑ᶠ-trans; iterate)
+open import Substrate.Category.Allegory.Refinement.Iterate
+open import Substrate.Category.Allegory.Refinement.SqsubF
+open import Substrate.Category.Allegory.Refinement.SqsubFTrans
 open import Substrate.Algebra.Wedge.Certified using (wedge)
-open import Substrate.Foundation.Sum using (inj₁; inj₂)
+open import Substrate.Foundation.Sum.Sum
 open import Substrate.Foundation.Product using (_,_)
 -- the generic functor (158) + its Limit (162), at ℕ-div.
 open import Substrate.Algebra.Wedge.TraceMuStep using (Φ-step; Φ-step-mono; step-refinement)

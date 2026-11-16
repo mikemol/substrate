@@ -12,6 +12,7 @@ module Substrate.Groups.Z2-Coxeter-Group where
 
 import Substrate.Groups.Capabilities.CoxeterGroup.Witness as CoxeterGroupW
 open import Substrate.Groups.Coxeter.Cyclic.Base 1 using (Gen)
+open import Substrate.Groups.Coxeter.Cyclic.Base.Gen
 cap-Z₂ = CoxeterGroupW.cap 1
 
 

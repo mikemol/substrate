@@ -12,11 +12,10 @@
 
 module Substrate.Groups.Capabilities.CoxeterFin where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Iterate
 open import Substrate.Foundation.Product using (Σ)
-open import Substrate.Foundation.Eq using (_≡_)
 
 open import Substrate.Groups.Coxeter.Word using (Word)
 
@@ -29,7 +28,9 @@ open import Substrate.Groups.Coxeter.Word using (Word)
 -- Canonical : Word Gen → Set family out of the record; both were `field`s
 -- valued in Set, forcing the record to Set₁. With them as module parameters
 -- the record lands in Set. Consumers write `CoxeterFinCapability Gen Canonical n`.
-open import Substrate.Algebra.Nat.CyclicSuc using (cyclic-suc)
+open import Substrate.Foundation.Eq
+open import Substrate.Algebra.Quotient.Canonical
+open import Substrate.Lifecycle.Fragment
 module _ (Gen : Set) (Canonical : Word Gen → Set) where
 
   record CoxeterFinCapability (n : ℕ) : Set where

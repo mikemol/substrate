@@ -3,18 +3,24 @@
 --
 -- Truncated subtraction (∸) lemmas.
 --
---   ∸-+-id : (m k : ℕ) → k ≤ m → (m ∸ k) + k ≡ m
+--   ∸-+-id : (m k : ℕ) → k ≤ m → (m ∸ k) ℕ+ k ≡ m
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.Foundation.Nat.Properties.Sub where
 
-open import Substrate.Foundation.Nat
-  using (ℕ; zero; suc; _+_; _∸_; _≤_; s≤s; z≤n)
-open import Substrate.Foundation.Nat.Properties.Add using (+-identityʳ; +-suc)
+open import Substrate.Foundation.Nat.Le
+open import Substrate.Foundation.Nat.Monus
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Properties.Add.PlusIdentityR
+open import Substrate.Foundation.Nat.Properties.Add.PlusSuc
 open import Substrate.Foundation.Nat.Properties.Order using (≤-refl; ≤-suc-r)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- ∸-+-id : reconstruction-from-subtraction identity.
@@ -24,10 +30,10 @@ open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
 -- on the suc-suc case by k ≤ m.
 ------------------------------------------------------------------------
 
-∸-+-id : (m k : ℕ) → k ≤ m → (m ∸ k) + k ≡ m
-∸-+-id m       zero    _         = +-identityʳ m
+∸-+-id : (m k : ℕ) → k ≤ m → (m ∸ k) ℕ+ k ≡ m
+∸-+-id m       zero    _         = +ℕ-identityʳ m
 ∸-+-id (suc m) (suc k) (s≤s k≤m) =
-  trans (+-suc (m ∸ k) k) (cong suc (∸-+-id m k k≤m))
+  trans (+ℕ-suc (m ∸ k) k) (cong suc (∸-+-id m k k≤m))
 
 ------------------------------------------------------------------------
 -- ∸-≤-self : truncated subtraction can only reduce.

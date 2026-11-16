@@ -56,10 +56,13 @@
 
 module Substrate.Category.Lawvere where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
-open import Substrate.Foundation.Empty using (⊥)
+open import Substrate.Foundation.Empty.Bot
 open import Substrate.Foundation.Product using (Σ; _,_)
-open import Substrate.Foundation.Sum using (_⊎_; inj₁; inj₂)
+open import Substrate.Foundation.Sum.Sum
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- 1. THE ATOM. A fixed-point-free endomap on values: the residue that

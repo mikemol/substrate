@@ -17,16 +17,15 @@
 module Substrate.Category.FreeLinearization.FromImages where
 
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Eq
-  using (_≡_; trans; sym)
+open import Substrate.Foundation.Nat.Nat
 
 open import Substrate.Algebra.F2.Vector using (Vector; basis)
-open import Substrate.Algebra.F2.Linear using (Linear; apply)
 open import Substrate.Algebra.F2.Linear.FromImages
   using (linear-from-images; apply-linear-from-images-basis)
 open import Substrate.Algebra.F2.Linear.Universal using (linear-extensionality)
 open import Substrate.Category.FreeLinearization
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Sym
 
 ------------------------------------------------------------------------
 -- N-1: The canonical FreeLinearization constructor.

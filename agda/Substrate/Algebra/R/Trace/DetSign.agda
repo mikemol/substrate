@@ -30,16 +30,19 @@
 
 module Substrate.Algebra.R.Trace.DetSign where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_)
-open import Substrate.Foundation.Eq  using (_≡_; refl)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Times
 
-open import Substrate.Algebra.Z       using (ℤ; +_; -suc_; -ℤ_)
+open import Substrate.Algebra.Z.Int
+open import Substrate.Algebra.Z.Int2
 open import Substrate.Algebra.Z.Add   using (_⊖_)
 open import Substrate.Algebra.Z.Mul   using (_*ℤ_)
 
 open import Substrate.Algebra.R.Trace using (RealTrace)
 open import Substrate.Algebra.R.Trace.Properties
   using (det4; det-after; det-flip; det²≡1; ⊖-swap-neg)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- The gauge group is ℤ/2: its nontrivial generator is negation, an involution.
@@ -55,7 +58,7 @@ sign-flip-invol (-suc n)    = refl
 ------------------------------------------------------------------------
 
 det-is-ℤ/2-valued : (n : ℕ) (r : RealTrace) →
-  det-after n 1 0 0 1 r *ℤ det-after n 1 0 0 1 r ≡ + 1
+  det-after n 1 0 0 1 r *ℤ det-after n 1 0 0 1 r ≡ ℕ+ 1
 det-is-ℤ/2-valued = det²≡1
 
 ------------------------------------------------------------------------
@@ -64,7 +67,7 @@ det-is-ℤ/2-valued = det²≡1
 ------------------------------------------------------------------------
 
 step-acts-by-flip : (a p₁ q₁ p₀ q₀ : ℕ) →
-  det4 (a * p₁ + p₀) (a * q₁ + q₀) p₁ q₁ ≡ -ℤ (det4 p₁ q₁ p₀ q₀)
+  det4 (a * p₁ ℕ+ p₀) (a * q₁ ℕ+ q₀) p₁ q₁ ≡ -ℤ (det4 p₁ q₁ p₀ q₀)
 step-acts-by-flip = det-flip
 
 ------------------------------------------------------------------------

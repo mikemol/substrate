@@ -6,22 +6,33 @@
 -- uses — distribution where one side is a NONNEGATIVE coercion (which is
 -- all the back-sub touches: a, b, q, r are ℕ) and a specialised
 -- associativity with the two right factors positive — via a scalar-over-⊖
--- lemma (M1) + neg-*-left. This avoids the full general *-distrib/assoc
+-- lemma (M1) ℕ+ neg-*-left. This avoids the full general *-distrib/assoc
 -- sign grind while giving the back-sub everything it needs.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.Algebra.Z.Properties.Mul where
+open import Substrate.Algebra.Z.Mul
+open import Substrate.Algebra.Z.Add
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_)
-open import Substrate.Foundation.Nat.Properties.Add using (+-identityʳ; +-suc)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Times
+open import Substrate.Foundation.Nat.Properties.Add.PlusIdentityR
+open import Substrate.Foundation.Nat.Properties.Add.PlusSuc
 open import Substrate.Foundation.Nat.Properties.Mul
   using (*-zeroʳ; *-comm; *-assoc; *-distribˡ-+; *-suc)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂)
-open import Substrate.Algebra.Z using (ℤ; +_; -suc_; -ℤ_; -ℤ-involutive)
-open import Substrate.Algebra.Z.Arithmetic using (_⊖_; _+ℤ_; _-ℤ_; _*ℤ_)
+open import Substrate.Algebra.Z.Int
+open import Substrate.Algebra.Z.Int2
+open import Substrate.Algebra.Z.IntInvolutive
+
 open import Substrate.Algebra.Z.Properties.Add using (⊖-merge)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
 
 ------------------------------------------------------------------------
 -- 1. Helpers.
@@ -31,7 +42,7 @@ neg-pos-as-⊖ : (j : ℕ) → -ℤ (+ j) ≡ 0 ⊖ j
 neg-pos-as-⊖ zero    = refl
 neg-pos-as-⊖ (suc j) = refl
 
-⊖-cancelˡ : (k a b : ℕ) → (k + a) ⊖ (k + b) ≡ a ⊖ b
+⊖-cancelˡ : (k a b : ℕ) → (k ℕ+ a) ⊖ (k ℕ+ b) ≡ a ⊖ b
 ⊖-cancelˡ zero    a b = refl
 ⊖-cancelˡ (suc k) a b = ⊖-cancelˡ k a b
 
@@ -47,10 +58,10 @@ M1 k (suc m) (suc n) =
                     (⊖-cancelˡ k (k * m) (k * n))))
 
 -- sum of two negatives.
-neg-add : (α β : ℕ) → (-ℤ (+ α)) +ℤ (-ℤ (+ β)) ≡ -ℤ (+ (α + β))
+neg-add : (α β : ℕ) → (-ℤ (+ α)) +ℤ (-ℤ (+ β)) ≡ -ℤ (+ (α ℕ+ β))
 neg-add α β =
   trans (cong₂ _+ℤ_ (neg-pos-as-⊖ α) (neg-pos-as-⊖ β))
-        (trans (⊖-merge 0 α 0 β) (sym (neg-pos-as-⊖ (α + β))))
+        (trans (⊖-merge 0 α 0 β) (sym (neg-pos-as-⊖ (α ℕ+ β))))
 
 ------------------------------------------------------------------------
 -- 2. Commutativity and negation-pull.
@@ -74,7 +85,7 @@ neg-*-left (-suc m)  (-suc n) = refl
 -- 3. Distribution by a nonnegative scalar / over a nonnegative factor.
 ------------------------------------------------------------------------
 
--- (+k)·(x + y) = (+k)·x + (+k)·y.
+-- (+k)·(x ℕ+ y) = (+k)·x ℕ+ (+k)·y.
 distribˡ-scalar : (k : ℕ) (x y : ℤ) →
                   (+ k) *ℤ (x +ℤ y) ≡ ((+ k) *ℤ x) +ℤ ((+ k) *ℤ y)
 distribˡ-scalar k (+ a)    (+ b)    = cong +_ (*-distribˡ-+ k a b)
@@ -82,19 +93,19 @@ distribˡ-scalar k (+ a)    (-suc b) =
   trans (M1 k a (suc b))
         (sym (trans (cong ((+ (k * a)) +ℤ_) (neg-pos-as-⊖ (k * suc b)))
                     (trans (⊖-merge (k * a) 0 0 (k * suc b))
-                           (cong (_⊖ (k * suc b)) (+-identityʳ (k * a))))))
+                           (cong (_⊖ (k * suc b)) (+ℕ-identityʳ (k * a))))))
 distribˡ-scalar k (-suc a) (+ b)    =
   trans (M1 k b (suc a))
         (sym (trans (cong (_+ℤ (+ (k * b))) (neg-pos-as-⊖ (k * suc a)))
                     (trans (⊖-merge 0 (k * suc a) (k * b) 0)
-                           (cong ((k * b) ⊖_) (+-identityʳ (k * suc a))))))
+                           (cong ((k * b) ⊖_) (+ℕ-identityʳ (k * suc a))))))
 distribˡ-scalar k (-suc a) (-suc b) =
   trans (cong (λ z → -ℤ (+ z))
-              (trans (cong (k *_) (sym (cong suc (+-suc a b))))
+              (trans (cong (k *_) (sym (cong suc (+ℕ-suc a b))))
                      (*-distribˡ-+ k (suc a) (suc b))))
         (sym (neg-add (k * suc a) (k * suc b)))
 
--- x·(+j + +k) = x·(+j) + x·(+k).
+-- x·(+j ℕ+ +k) = x·(+j) ℕ+ x·(+k).
 distribˡ-pos : (x : ℤ) (j k : ℕ) →
                x *ℤ ((+ j) +ℤ (+ k)) ≡ (x *ℤ (+ j)) +ℤ (x *ℤ (+ k))
 distribˡ-pos (+ m)    j k = cong +_ (*-distribˡ-+ m j k)
@@ -102,7 +113,7 @@ distribˡ-pos (-suc m) j k =
   trans (cong (λ z → -ℤ (+ z)) (*-distribˡ-+ (suc m) j k))
         (sym (neg-add (suc m * j) (suc m * k)))
 
--- (x + y)·(+k) = x·(+k) + y·(+k).  (via comm + scalar-distribution)
+-- (x ℕ+ y)·(+k) = x·(+k) ℕ+ y·(+k).  (via comm ℕ+ scalar-distribution)
 distribʳ-pos : (x y : ℤ) (k : ℕ) →
                (x +ℤ y) *ℤ (+ k) ≡ (x *ℤ (+ k)) +ℤ (y *ℤ (+ k))
 distribʳ-pos x y k =

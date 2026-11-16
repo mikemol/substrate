@@ -16,18 +16,27 @@
 
 module Substrate.Algebra.Wedge.CertifiedPhiStep where
 
-open import Substrate.Foundation.Eq  using (_≡_; refl; subst)
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _<_; _≟_; _≤_; z≤n; s≤s)
+open import Substrate.Foundation.Nat.Dec
+open import Substrate.Foundation.Nat.Le
+open import Substrate.Foundation.Nat.Lt
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Unit using (⊤; tt)
-open import Substrate.Foundation.Empty using (⊥; ⊥-elim)
-open import Substrate.Foundation.Negation using (¬_; Dec; yes; no)
+open import Substrate.Foundation.Empty.Bot
+open import Substrate.Foundation.Empty.BotElim
+open import Substrate.Foundation.Negation.Dec
+open import Substrate.Foundation.Negation.Not
 open import Substrate.Foundation.Product using (Σ; _,_; _×_; proj₁; proj₂)
-open import Substrate.Foundation.Sum using (_⊎_; inj₁; inj₂)
+open import Substrate.Foundation.Sum.Sum
 open import Substrate.Algebra.Wedge using (ℕ-div; rem)
-open import Substrate.Category.Allegory.Refinement
-  using (_⊑ᶠ_; ⊑ᶠ-trans; Refinement; iterate; chain)
+open import Substrate.Category.Allegory.Refinement.Chain
+open import Substrate.Category.Allegory.Refinement.Iterate
+open import Substrate.Category.Allegory.Refinement.Refinement
+open import Substrate.Category.Allegory.Refinement.SqsubF
+open import Substrate.Category.Allegory.Refinement.SqsubFTrans
 open import Substrate.Algebra.Wedge.Certified using (CertifiedWedge; wedge; small; idℕ)
 open import Substrate.Algebra.Wedge.NuAbstractLimitInstance using (cwrem-uniq)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Subst
 
 -- the index (a, b, g) over ℕ-div.
 Idxℕ : Set

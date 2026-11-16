@@ -120,10 +120,8 @@ open import Substrate.Algebra.F2.FanoPlane
 open import Substrate.Algebra.F2.HodgeDim4.HodgeStar
   using ( hodge-star
         )
-open import Substrate.ShadowArchitecture.Duality
-  using ( normal-vector
-        ; dual-line
-        )
+open import Substrate.ShadowArchitecture.Duality.DualLine
+open import Substrate.ShadowArchitecture.Duality.NormalVector
 open import Substrate.Category.FreeOverBasis
   using ( FreeOverBasis
         )
@@ -186,12 +184,8 @@ open import Substrate.Category.UniversalProperty
 open import Substrate.Category.UniversalProperty.Morphism
   using ( UPMorphism
         )
-open import Substrate.Category.UniversalProperty.FixedPoint
-  using ( ι
-        )
-open import Substrate.Category.UniversalProperty.Terminal
-  using ( to-trivial-cond
-        )
+open import Substrate.Category.UniversalProperty.FixedPoint.Op
+open import Substrate.Category.UniversalProperty.Terminal.ToTrivialCond
 open import Substrate.Category.Monad
   using ( Monad
         )
@@ -202,6 +196,10 @@ open import Substrate.Category.KanExtension
   using ( LeftKanExtension
         ; RightKanExtension
         )
+open import Substrate.Groups.Actions.S3-on-V4.Generators.RotPow
+open import Substrate.Groups.Actions.S3-on-V4.Generators.Rotate
+open import Substrate.Groups.Actions.S3-on-V4.Generators.SwapPow
+open import Substrate.Groups.Actions.S3-on-V4.Generators.SwapAB
 module Z₂C where
   open import Substrate.Groups.Z2-Coxeter
 module Z₃C where

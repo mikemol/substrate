@@ -13,11 +13,11 @@
 
 module Substrate.ShadowArchitecture.Raven.Semantics.L7Population where
 
-open import Substrate.Foundation.Bool using (Bool; true; false)
-open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Bool.Bool
 open import Substrate.ShadowArchitecture.FanoLabeling using (L₇)
 open import Substrate.ShadowArchitecture.Persistence using (Cotype)
 open import Substrate.ShadowArchitecture.Raven.Semantics.Cotypes
+open import Substrate.Foundation.Eq
 
 L₇-c0  : Cotype.populated-line c0  L₇ ≡ false
 L₇-c0  = refl

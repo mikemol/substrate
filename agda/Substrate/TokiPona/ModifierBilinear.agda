@@ -41,10 +41,7 @@
 
 module Substrate.TokiPona.ModifierBilinear where
 
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; cong; cong₂)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Category.CommutativeMonoid using (CommutativeMonoid)
 
 open import Substrate.Groups.Coxeter.Word
@@ -53,6 +50,10 @@ open import Substrate.Groups.Coxeter.Word
 open import Substrate.TokiPona.SemanticSpace
   using (SemVec; ∅; _⊕_; ⊕-assoc; ⊕-comm;
          ⊕-identityˡ; ⊕-identityʳ; ⊕-self-inverse)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
 
 private
   variable

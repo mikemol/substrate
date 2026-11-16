@@ -50,16 +50,21 @@
 
 module Substrate.WitnessTower.Wedge.OrientationFlatGradedBridge where
 
-open import Substrate.Foundation.Nat using (ℕ; suc; _≟_)
+open import Substrate.Foundation.Nat.Dec
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; subst)
-open import Substrate.Foundation.Hedberg using (Decidable⇒UIP)
-open import Substrate.WitnessTower.LehmerPath using (LehmerPath; start; _◂_)
+open import Substrate.Foundation.Hedberg.DecidableUIP
+open import Substrate.WitnessTower.LehmerPath.LehmerPath
 open import Substrate.Algebra.Wedge using (z)
 open import Substrate.Algebra.Wedge.Graded using (recon; gforget)
 open import Substrate.WitnessTower.Wedge.OrientationRigResidue using (divᴸ)
 open import Substrate.WitnessTower.Wedge.OrientationTowerDiv using (towerDiv; stepWedge)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Subst
 
 ------------------------------------------------------------------------
 -- 1. ι — the grade-forgetting inclusion: DEMOTE the type-level grade INDEX

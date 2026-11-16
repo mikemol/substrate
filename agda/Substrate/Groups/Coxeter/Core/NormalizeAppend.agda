@@ -14,7 +14,15 @@
 
 {-# OPTIONS --safe --without-K #-}
 
-open import Substrate.Foundation.Eq using (_≡_)
+
+-- ⚑ `_≡_` is used in the TELESCOPE below, so its import must PRECEDE the
+-- module header: a parameter list is scope-checked before anything inside
+-- `where`.  The splitter emits the prelude AFTER the header (correct for a
+-- body, wrong for a telescope), so every leaf whose parameters mention `≡`
+-- inherited this.  MEASURED: 6 of the Core leaves.
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.List
+open import Substrate.Algebra.Quotient.Canonical
 
 module Substrate.Groups.Coxeter.Core.NormalizeAppend
   (Word : Set)

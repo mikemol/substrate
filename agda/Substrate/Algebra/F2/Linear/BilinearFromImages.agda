@@ -28,24 +28,52 @@
 -- construction.
 --
 -- (Framing above is prose. What the Agda BELOW establishes is exactly
--- the four bilinearity laws + the basis collapse, no more.)
+-- the four bilinearity laws +F the basis collapse, no more.)
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.Algebra.F2.Linear.BilinearFromImages where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; lookup)
 open import Substrate.Foundation.Function using (_∘_)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; trans; cong; cong₂; cong-trans; sym-trans; trans-sym)
 
-open import Substrate.Algebra.F2
+open import Substrate.Algebra.F2.AbsorbL
+open import Substrate.Algebra.F2.AbsorbR
+open import Substrate.Algebra.F2.Assoc
+open import Substrate.Algebra.F2.Comm
+open import Substrate.Algebra.F2.Dec
+open import Substrate.Algebra.F2.DistribLPlus
+open import Substrate.Algebra.F2.DistribRPlus
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.F2Cases
+open import Substrate.Algebra.F2.Idempotent
+open import Substrate.Algebra.F2.IdentityL
+open import Substrate.Algebra.F2.IdentityR
+open import Substrate.Algebra.F2.InvOfOne
+open import Substrate.Algebra.F2.OneNeqZero
+open import Substrate.Algebra.F2.Op
+open import Substrate.Algebra.F2.Op2
+open import Substrate.Algebra.F2.PlusAssoc
+open import Substrate.Algebra.F2.PlusComm
+open import Substrate.Algebra.F2.PlusF
+open import Substrate.Algebra.F2.PlusIdentityL
+open import Substrate.Algebra.F2.PlusIdentityR
+open import Substrate.Algebra.F2.PlusInverseL
+open import Substrate.Algebra.F2.PlusInverseR
+open import Substrate.Algebra.F2.PlusSelfInverse
+open import Substrate.Algebra.F2.ZeroNeqOne
 open import Substrate.Algebra.F2.Vector
 open import Substrate.Algebra.F2.Vector.Universal
-open import Substrate.Algebra.F2.Linear
+open import Substrate.Algebra.F2.Linear.CompL
+open import Substrate.Algebra.F2.Linear.CompLAssoc
+open import Substrate.Algebra.F2.Linear.CompLIdentityL
+open import Substrate.Algebra.F2.Linear.CompLIdentityR
+open import Substrate.Algebra.F2.Linear.IdL
+open import Substrate.Algebra.F2.Linear.Linear
+open import Substrate.Algebra.F2.Linear.Preserves
 open import Substrate.Algebra.F2.Linear.FromImages
   using ( linear-from-images
         ; apply-linear-from-images-lookup
@@ -59,6 +87,14 @@ open import Substrate.Algebra.F2.Linear.MultilinearFromImages
   using (apply-n)
 open import Substrate.Foundation.Product using (_,_; proj₁; proj₂)
 open import Substrate.Foundation.Unit using (tt)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.Foundation.Eq.CongTrans
+open import Substrate.Foundation.Eq.SymTrans
+open import Substrate.Foundation.Eq.TransSym
 
 -- sum-F₂-+-distrib / sum-F₂-·-distrib and images-cong / images-add /
 -- images-scale moved to Substrate.Algebra.F2.Linear.ImagesProps (their base
@@ -133,7 +169,7 @@ bilinear-*ₛᵣ f c u v =
         (images-scale c (λ i → apply (linear-from-images (f i)) v) u)
 
 ------------------------------------------------------------------------
--- Package: a record mirroring Linear, carrying apply₂ + the four
+-- Package: a record mirroring Linear, carrying apply₂ +F the four
 -- bilinearity laws.
 ------------------------------------------------------------------------
 

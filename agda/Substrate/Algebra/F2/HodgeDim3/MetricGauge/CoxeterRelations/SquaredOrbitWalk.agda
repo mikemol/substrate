@@ -25,9 +25,12 @@
 
 module Substrate.Algebra.F2.HodgeDim3.MetricGauge.CoxeterRelations.SquaredOrbitWalk where
 
-open import Substrate.Foundation.Eq using (_≡_; trans; cong)
 open import Substrate.Algebra.F2.Vector using (Vector)
-open import Substrate.Algebra.F2.Linear using (Linear; apply; _∘L_)
+open import Substrate.Algebra.F2.Linear.CompL
+open import Substrate.Algebra.F2.Linear.Linear
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- The 1-step trans/cong chain underlying s ∘L s on any starting

@@ -13,11 +13,11 @@ module Substrate.Category.CommutativeComonoid.Sites.V4 where
 
 open import Substrate.Foundation.Product using (_×_; _,_)
 open import Substrate.Foundation.Unit using (⊤; tt)
-open import Substrate.Foundation.Eq using (_≡_; refl)
 
 open import Substrate.Category.Comonoid
 open import Substrate.Category.CommutativeComonoid
 open import Substrate.Category.Comonoid.Sites.V4 using (V4; e; α; β; γ; V4-Comonoid)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- Swap on V₄ × V₄.

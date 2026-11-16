@@ -29,6 +29,7 @@ module Substrate.FUSep.ConversionCongruence where
 
 open import Substrate.Algebra.Magma using (Magma)
 open import Substrate.FUSep.FoldUnfold using (Congruence)
+open import Substrate.FUSep.FUSepConvEtaWitness
 
 -- an APPLICATIVE REDUCTION SYSTEM: a magma with a COMPATIBLE reduction — closed
 -- under application contexts (the ONLY property the congruence proof needs).

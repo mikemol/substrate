@@ -25,10 +25,22 @@
 
 module Substrate.Algebra.Nat.ModEquiv where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
+open import Substrate.Foundation.Nat.Nat
 
-open import Substrate.Algebra.Nat.Mod public using (_mod-suc_)
+-- ⚑ `public` RETIRED (Ⓑ2c).  Both consumers (`Quotient.CRT`, `Quotient.ModN`)
+-- reached `_mod-suc_` through this forward and now bind `Nat.Mod` themselves —
+-- that binding is the precondition for the removal, not a separate cleanup.
+open import Substrate.Foundation.Nat.Nat.ModSuc
+open import Substrate.Algebra.Nat.Mod.ModSucBound
+open import Substrate.Algebra.Nat.Mod.ModSucId
+open import Substrate.Algebra.Nat.Mod.ModSucPeriodic
+open import Substrate.Algebra.Nat.Mod.ModSucSuc
+open import Substrate.Algebra.Nat.Mod.SucModSucLt
+open import Substrate.Algebra.Nat.Mod.SucModSucSelf
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 -- `_mod-suc_` now comes from the substrate-native module; no
 -- dependency on stdlib's Data.Nat.DivMod chain. The earlier
 -- Wedge-eq-based formulation lives in Substrate.Algebra.Nat.GCD

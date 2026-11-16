@@ -4,14 +4,14 @@
 -- V₄ as a Coxeter presentation: ⟨A, B | A² = B² = ε, AB = BA⟩.
 --
 -- This file is the V₄ INSTANTIATION of Substrate.Groups.Coxeter.Core.
--- The per-construct work (Gen, Canonical-V4, insert, the 3 invariants
+-- The per-construct work (Gen-V4, Canonical-V4, insert, the 3 invariants
 -- that depend on V₄'s specific relations) lives here. The scalable
 -- foundation (Word, normalize, _·_, _≈_, _≉_, ε, the bridge lemmas,
 -- clash, ++-assoc-4) is inherited from Core via instantiation.
 --
 -- Per [[feedback-v4-typeclass-architecture]] applied at the Coxeter
 -- level: ~280 lines of reusable Core inherited; the V₄-specific work
--- is ~250 lines (Gen + insert + Canonical-V4 + insert-involution +
+-- is ~250 lines (Gen-V4 + insert + Canonical-V4 + insert-involution +
 -- insert-commute + insert-append-lemma + same-canonical + eval-
 -- canonical + V₄-4-product).
 --
@@ -25,27 +25,50 @@
 module Substrate.Groups.V4-Coxeter where
 
 open import Substrate.Groups.Coxeter.Word
-open import Substrate.Foundation.Empty using (⊥; ⊥-elim)
-open import Substrate.Foundation.Negation using (Dec; yes; no)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; trans; sym; cong; cong₂; _≢_; sym-trans; cong-trans)
+open import Substrate.Foundation.Negation.Dec
 
 ------------------------------------------------------------------------
 -- 1. V₄-specific data: generators, canonical forms, insert.
 ------------------------------------------------------------------------
 
-open import Substrate.Groups.Coxeter.SameCanonical
-  using (same-canonical-via-Gen)
-data Gen : Set where
-  A B : Gen
+open import Substrate.Groups.Coxeter.SameCanonical.SameCanonicalViaGen
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.Foundation.Eq.Neq
+open import Substrate.Foundation.Eq.SymTrans
+open import Substrate.Foundation.Eq.CongTrans
+-- ⚑⚑⚑ SEVEN MORE LEAF IMPORTS DELETED HERE — the same two-path ambiguity as the
+-- `NormalizeIdem` line below, and the parameter-agreement question that blocked batching them
+-- is now ANSWERED BY THE COMPILER: deleting `NormalizeIdem` alone cleared `:215` and advanced
+-- to `:225`, i.e. the re-exported path DOES carry the V4-specific instantiation from
+-- `WithLemmas` at `:168`. `--reexports` shows which parameters a parent passes; it cannot show
+-- that two paths AGREE on them. One compile settled what no reading could.
+-- Deleted: AssocFour · Clash · NormalizeAppend.Left · NormalizeAppend.Right ·
+--          HigherArity.Quad · IdemInequality.Op   (+ NormalizeIdem, below)
+-- All arrive via `ListPresentation:81` → `Core` → `ListPresentation:100`'s `public` re-export.
+-- ⚑⚑ `…Core.NormalizeIdem` WAS IMPORTED HERE AND IS NOT — the fifth instance of the two-path
+-- ambiguity, and the first reached through TWO hops: `ListPresentation:81` imports `Core`, and
+-- `ListPresentation:100` re-exports it `public` applied to the same nine parameters, so
+-- `Core`'s own re-export of `NormalizeIdem` already arrives here. One definition
+-- (NormalizeIdem.agda:27), two paths, [AmbiguousName] at :215.
+-- ⚑ SEVEN SIBLING LEAF IMPORTS ABOVE AND BELOW ARE THE SAME SHAPE and are deliberately NOT
+-- touched in this edit: `:159` applies `WithLemmas` with V4-SPECIFIC instantiations, and
+-- whether the re-exported path agrees on those parameters is not answerable by reading —
+-- `--reexports` shows which parameters are passed, never that two paths agree on them. One
+-- deletion, one compile, then the next.
+data Gen-V4 : Set where      -- ⟦shape:3b176641 A,B⟧
+  A B : Gen-V4
 
-data Canonical-V4 : Word Gen → Set where      -- ⟦shape:ab211b40 c-ε,c-A,c-B⟧
+data Canonical-V4 : Word Gen-V4 → Set where      -- ⟦shape:ab211b40 c-ε,c-A,c-B⟧
   c-ε  : Canonical-V4 []
   c-A  : Canonical-V4 (A ∷ [])
   c-B  : Canonical-V4 (B ∷ [])
   c-AB : Canonical-V4 (A ∷ B ∷ [])
 
-insert : Gen → Word Gen → Word Gen
+insert : Gen-V4 → Word Gen-V4 → Word Gen-V4
 insert A []           = A ∷ []
 insert A (A ∷ [])     = []
 insert A (B ∷ [])     = A ∷ B ∷ []
@@ -56,7 +79,7 @@ insert B (B ∷ [])     = []
 insert B (A ∷ B ∷ []) = A ∷ []
 insert g w            = g ∷ w  -- fallback structural safety
 
-insert-canonical : (g : Gen) {w : Word Gen} → Canonical-V4 w → Canonical-V4 (insert g w)
+insert-canonical : (g : Gen-V4) {w : Word Gen-V4} → Canonical-V4 w → Canonical-V4 (insert g w)
 insert-canonical A c-ε  = c-A
 insert-canonical A c-A  = c-ε
 insert-canonical A c-B  = c-AB
@@ -68,11 +91,11 @@ insert-canonical B c-AB = c-A
 
 
 open import Substrate.Groups.Coxeter.ListPresentation
-  Gen Canonical-V4 c-ε insert insert-canonical public
+  Gen-V4 Canonical-V4 c-ε insert insert-canonical public
 ------------------------------------------------------------------------
 -- 2. Open the ListPresentation wrapper with V₄'s atoms.
 --
--- ListPresentation defines Word = Word Gen + normalize + normalize-
+-- ListPresentation defines Word = Word Gen-V4 + normalize + normalize-
 -- canonical and exposes the WithLemmas sub-module that takes the
 -- per-relation obligations.
 ------------------------------------------------------------------------
@@ -88,7 +111,7 @@ open import Substrate.Groups.Coxeter.ListPresentation
 -- BA). 10 refl cases (g = h trivial; g ≠ h × 4 canonical forms × 2).
 ------------------------------------------------------------------------
 
-insert-involution : (g : Gen) {w : Word Gen} → Canonical-V4 w →
+insert-involution : (g : Gen-V4) {w : Word Gen-V4} → Canonical-V4 w →
                     insert g (insert g w) ≡ w
 insert-involution A c-ε  = refl
 insert-involution A c-A  = refl
@@ -99,7 +122,7 @@ insert-involution B c-A  = refl
 insert-involution B c-B  = refl
 insert-involution B c-AB = refl
 
-insert-commute : (g h : Gen) {w : Word Gen} → Canonical-V4 w →
+insert-commute : (g h : Gen-V4) {w : Word Gen-V4} → Canonical-V4 w →
                  insert g (insert h w) ≡ insert h (insert g w)
 insert-commute A A _    = refl
 insert-commute B B _    = refl
@@ -118,14 +141,14 @@ insert-commute B A c-AB = refl
 -- commute).
 ------------------------------------------------------------------------
 
-canonical-is-fixed-V4 : {w : Word Gen} → Canonical-V4 w → normalize w ≡ w
+canonical-is-fixed-V4 : {w : Word Gen-V4} → Canonical-V4 w → normalize w ≡ w
 canonical-is-fixed-V4 c-ε  = refl
 canonical-is-fixed-V4 c-A  = refl
 canonical-is-fixed-V4 c-B  = refl
 canonical-is-fixed-V4 c-AB = refl
 
 insert-append-lemma-V4 :
-  (g : Gen) {w : Word Gen} (w₂ : Word Gen) → Canonical-V4 w →
+  (g : Gen-V4) {w : Word Gen-V4} (w₂ : Word Gen-V4) → Canonical-V4 w →
   normalize (insert g w ++ w₂) ≡ insert g (normalize (w ++ w₂))
 insert-append-lemma-V4 A {[]}         w₂ c-ε  = refl
 insert-append-lemma-V4 A {A ∷ []}     w₂ c-A  =
@@ -151,8 +174,16 @@ open WithLemmas canonical-is-fixed-V4 insert-append-lemma-V4 public
 --
 -- This brings _·_, _≈_, _≉_, ε, normalize-idem, normalize-append,
 -- normalize-append-right, normalize-cong-right, normalize-distrib,
--- normalize-triple, normalize-quad, ≉-idem, clash, ++-assoc-4 into
--- scope (re-exported via `public`).
+-- normalize-triple, clash, ++-assoc-4 into scope.
+--
+-- ⚑ THE LIST USED TO NAME `≉-idem` AND `normalize-quad`, AND `WithLemmas` DOES
+-- NOT PROVIDE EITHER (Ⓐ¹⁵).  `≉-idem` was reaching this file through
+-- `Core.IdemInequality`'s `public` re-export, which Ⓑ2c retired — so the comment
+-- was describing a route, not a definition, and outlived the route by one commit.
+-- Its real home is the `IdemInequality.Idem` leaf, applied below to the same five
+-- arguments this module already binds.
+open import Substrate.Groups.Coxeter.Core.IdemInequality.Idem
+  (Word Gen-V4) Canonical-V4 normalize normalize-canonical canonical-is-fixed-V4
 ------------------------------------------------------------------------
 
 
@@ -161,14 +192,14 @@ open WithLemmas canonical-is-fixed-V4 insert-append-lemma-V4 public
 -- the 4 ctors). Used by eval-canonical's clash dispatcher.
 ------------------------------------------------------------------------
 
-gen-≟ : (g₁ g₂ : Gen) → Dec (g₁ ≡ g₂)
+gen-≟ : (g₁ g₂ : Gen-V4) → Dec (g₁ ≡ g₂)
 gen-≟ A A = yes refl
 gen-≟ A B = no (λ ())
 gen-≟ B A = no (λ ())
 gen-≟ B B = yes refl
 
 
-same-canonical : {w₁ w₂ : Word Gen} → Canonical-V4 w₁ → Canonical-V4 w₂ → Dec (w₁ ≡ w₂)
+same-canonical : {w₁ w₂ : Word Gen-V4} → Canonical-V4 w₁ → Canonical-V4 w₂ → Dec (w₁ ≡ w₂)
 same-canonical = same-canonical-via-Gen gen-≟
 
 ------------------------------------------------------------------------
@@ -189,7 +220,7 @@ private
   -- normalizes), cong normalize ∘ ++-assoc-4 (rearrange), normalize-
   -- quad (push normalize through each operand).
   flatten-product :
-    (w₁ w₂ w₃ w₄ : Word Gen) →
+    (w₁ w₂ w₃ w₄ : Word Gen-V4) →
     normalize ((w₁ · w₂) · (w₃ · w₄)) ≡
     normalize (normalize w₁ ++ normalize w₂ ++ normalize w₃ ++ normalize w₄)
   flatten-product w₁ w₂ w₃ w₄ =
@@ -210,7 +241,7 @@ private
   -- vs V4-Normality is that the per-instance theorem lives WITH the
   -- presentation (V4-Coxeter), not bolted on at the action level.
   eval-canonical :
-    {w₁ w₂ w₃ w₄ : Word Gen}
+    {w₁ w₂ w₃ w₄ : Word Gen-V4}
     (c₁ : Canonical-V4 w₁) (c₂ : Canonical-V4 w₂)
     (c₃ : Canonical-V4 w₃) (c₄ : Canonical-V4 w₄) →
     w₁ ≉ w₂ → w₁ ≉ w₃ → w₁ ≉ w₄ → w₂ ≉ w₃ → w₂ ≉ w₄ → w₃ ≉ w₄ →
@@ -345,7 +376,7 @@ private
   eval-canonical c-AB c-B  c-A  c-A  _ _ _  _  _  e₆ = clash c-A  c-A  e₆ refl
 
 V₄-4-product :
-  (w₁ w₂ w₃ w₄ : Word Gen) →
+  (w₁ w₂ w₃ w₄ : Word Gen-V4) →
   w₁ ≉ w₂ → w₁ ≉ w₃ → w₁ ≉ w₄ → w₂ ≉ w₃ → w₂ ≉ w₄ → w₃ ≉ w₄ →
   ((w₁ · w₂) · (w₃ · w₄)) ≈ ε
 V₄-4-product w₁ w₂ w₃ w₄ e₁ e₂ e₃ e₄ e₅ e₆ =

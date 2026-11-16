@@ -17,13 +17,13 @@
 
 module Substrate.ShadowArchitecture.Raven.PhaseTransition.PerStanzaPhase where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.ShadowArchitecture.Raven.Poem.Raven using (raven)
 open import Substrate.ShadowArchitecture.Raven.PhaseTransition.HistoryPhase
   using (HistoryPhase; open-phase; locked-now; post-lock)
 open import Substrate.ShadowArchitecture.Raven.PhaseTransition.HistoryPhaseAt
   using (history-phase-at)
 open import Substrate.ShadowArchitecture.Raven.PhaseTransition.StanzaIndices
+open import Substrate.Foundation.Eq
 
 stanza-I-phase    : history-phase-at raven s1  ≡ open-phase
 stanza-I-phase    = refl

@@ -20,16 +20,18 @@
 
 module Substrate.Algebra.Wedge.CrossMulGraded where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; cong)
 open import Substrate.Foundation.Product using (_,_)
-open import Substrate.Foundation.Empty using (⊥)
+open import Substrate.Foundation.Empty.Bot
 open import Substrate.Foundation.Vec using (_∷_)
-open import Substrate.Algebra.F2 using (F₂; 𝟙; 𝟙≢𝟘)
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.OneNeqZero
 open import Substrate.Algebra.Wedge.Bridge using (Bridge)
 open import Substrate.Algebra.Wedge.Mul using (Two; ε; two-div) renaming (𝟘 to t0)
 open import Substrate.Algebra.Wedge.CrossMul using (CrossMix; cross; Coherent)
 open import Substrate.Algebra.Wedge.Wedderburn
   using (M2; M2-div; M2-mul-str; 𝟎; e₁₁; e₁₂)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
 
 -- Two → M₂: the zero goes to 𝟎; the live element goes to e₁₁ (left) / e₁₂ (right).
 tA tB : Two → M2

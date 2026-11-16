@@ -10,9 +10,9 @@
 -- of two kinds, and this file keeps them honestly separate:
 --
 --   • STRICT, at the DECATEGORIFIED level (⟡rig-3). The grade of a rig element is its
---     ℕ-index; the operations shift it by ℕ's + and * BY THE TYPE (⊕ : grade m+n,
+--     ℕ-index; the operations shift it by ℕ's ℕ+ and * BY THE TYPE (⊕ : grade m+n,
 --     ⊗ : grade m·n; 0#/1# at grades 0/1). So the decategorification is exactly
---     (ℕ, +, *, 0, 1) — a commutative semiring, its laws literally ℕ's. We bank them
+--     (ℕ, ℕ+, *, 0, 1) — a commutative semiring, its laws literally ℕ's. We bank them
 --     here as the strict rig laws. The ONE law that also lifts strictly to the orderings
 --     is the additive left-unit (0# ⊕ l ≡ l, definitional — grade 0+n=n).
 --
@@ -24,7 +24,7 @@
 --
 -- ⟡rig-4: commutativity a·b = b·a is invariance under the argument-swap involution
 -- s:(a,b)↦(b,a) (a C₂). The rig's two ops give two C₂s over that one swap, distinguished
--- by grade-effect: ⊕ ↦ +-comm, ⊗ ↦ *-comm. GradedStarV4's 2×2 arrangement gives them
+-- by grade-effect: ⊕ ↦ +ℕ-comm, ⊗ ↦ *-comm. GradedStarV4's 2×2 arrangement gives them
 -- INDEPENDENT axes (rowSwap = ⊕-comm, colSwap = ⊗-comm) so the two commute = V₄.
 --
 -- Zero postulates, --safe --without-K.
@@ -34,37 +34,41 @@
 
 module Substrate.WitnessTower.Wedge.OrientationRig where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_)
-open import Substrate.Foundation.Nat.Properties.Add using (+-identityʳ; +-assoc; +-comm)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Times
+open import Substrate.Foundation.Nat.Properties.Add.PlusAssoc
+open import Substrate.Foundation.Nat.Properties.Add.PlusComm
+open import Substrate.Foundation.Nat.Properties.Add.PlusIdentityR
 open import Substrate.Foundation.Nat.Properties.Mul
   using (*-identityˡ; *-identityʳ; *-assoc; *-comm; *-distribˡ-+; *-distribʳ-+)
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Category.Lawvere using (CommutingInvolutions)
 open import Substrate.Algebra.Wedge.FourPointV4 using (Square; rowSwap; colSwap; square-V4)
 open import Substrate.WitnessTower.Enumerate using (Perm)
 open import Substrate.WitnessTower.IsPermutation using (IsPerm)
-open import Substrate.WitnessTower.LehmerPath using (LehmerPath)
+open import Substrate.WitnessTower.LehmerPath.LehmerPath
 open import Substrate.WitnessTower.Wedge.OrientationSum using (_⊕_; 0#; ⊕-unit-left)
 open import Substrate.WitnessTower.Wedge.OrientationProduct using (_⊗_; 1#)
 open import Substrate.WitnessTower.Wedge.OrientationProductPerm using (⊗-is-perm)
 open import Substrate.WitnessTower.Wedge.GradedStarV4 using (tower-V4)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
--- 1. ⟡rig-3 — THE DECATEGORIFIED COMMUTATIVE SEMIRING (ℕ, +, *, 0, 1).
+-- 1. ⟡rig-3 — THE DECATEGORIFIED COMMUTATIVE SEMIRING (ℕ, ℕ+, *, 0, 1).
 --    The grade laws ARE ℕ's; we bank them as the strict rig skeleton. Each governs the
 --    correspondingly-graded rig operation by the type (⊕ : m+n, ⊗ : m·n).
 ------------------------------------------------------------------------
 
 -- additive commutative monoid (the ⊕ grade):
-⊕-grade-assoc : (m n p : ℕ) → (m + n) + p ≡ m + (n + p)
-⊕-grade-assoc = +-assoc
+⊕-grade-assoc : (m n p : ℕ) → (m ℕ+ n) ℕ+ p ≡ m ℕ+ (n ℕ+ p)
+⊕-grade-assoc = +ℕ-assoc
 
-⊕-grade-identityʳ : (n : ℕ) → n + zero ≡ n
-⊕-grade-identityʳ = +-identityʳ
+⊕-grade-identityʳ : (n : ℕ) → n ℕ+ zero ≡ n
+⊕-grade-identityʳ = +ℕ-identityʳ
 
-⊕-grade-comm : (m n : ℕ) → m + n ≡ n + m
-⊕-grade-comm = +-comm
+⊕-grade-comm : (m n : ℕ) → m ℕ+ n ≡ n ℕ+ m
+⊕-grade-comm = +ℕ-comm
 
 -- multiplicative commutative monoid (the ⊗ grade):
 ⊗-grade-assoc : (m n p : ℕ) → (m * n) * p ≡ m * (n * p)
@@ -79,11 +83,11 @@ open import Substrate.WitnessTower.Wedge.GradedStarV4 using (tower-V4)
 ⊗-grade-comm : (m n : ℕ) → m * n ≡ n * m
 ⊗-grade-comm = *-comm
 
--- distributivity of × over + at the grade (the rig coherence, decategorified):
-⊗-grade-distribˡ : (a m n : ℕ) → a * (m + n) ≡ a * m + a * n
+-- distributivity of × over ℕ+ at the grade (the rig coherence, decategorified):
+⊗-grade-distribˡ : (a m n : ℕ) → a * (m ℕ+ n) ≡ a * m ℕ+ a * n
 ⊗-grade-distribˡ = *-distribˡ-+
 
-⊗-grade-distribʳ : (a m n : ℕ) → (m + n) * a ≡ m * a + n * a
+⊗-grade-distribʳ : (a m n : ℕ) → (m ℕ+ n) * a ≡ m * a ℕ+ n * a
 ⊗-grade-distribʳ = *-distribʳ-+
 
 -- The one law that lifts STRICTLY to the orderings (not just the grades): the additive
@@ -93,7 +97,7 @@ open import Substrate.WitnessTower.Wedge.GradedStarV4 using (tower-V4)
 
 ------------------------------------------------------------------------
 -- 2. ⟡rig-4 — THE TWO COMMUTATIVITY C₂s. The argument-swap involution on an operand
---    grade-pair, and the two commutativity witnesses (⊕ ↦ +-comm, ⊗ ↦ *-comm) it makes
+--    grade-pair, and the two commutativity witnesses (⊕ ↦ +ℕ-comm, ⊗ ↦ *-comm) it makes
 --    a C₂ of. GradedStarV4's V₄ is these two on independent 2×2 axes.
 ------------------------------------------------------------------------
 
@@ -106,10 +110,10 @@ swap-grade-inv : (p : ℕ × ℕ) → swap-grade (swap-grade p) ≡ p
 swap-grade-inv (m , n) = refl
 
 -- ⊕-commutativity: the additive grade is invariant under the swap — this IS +-comm.
---   grade(a ⊕ b) = m + n ; grade(b ⊕ a) = n + m ; +-comm bridges them.
+--   grade(a ⊕ b) = m ℕ+ n ; grade(b ⊕ a) = n ℕ+ m ; +ℕ-comm bridges them.
 ⊕-commutativity : (p : ℕ × ℕ) →
-                  proj₁ p + proj₂ p ≡ proj₁ (swap-grade p) + proj₂ (swap-grade p)
-⊕-commutativity (m , n) = +-comm m n
+                  proj₁ p ℕ+ proj₂ p ≡ proj₁ (swap-grade p) ℕ+ proj₂ (swap-grade p)
+⊕-commutativity (m , n) = +ℕ-comm m n
 
 -- ⊗-commutativity: the multiplicative grade is invariant under the swap — this IS *-comm.
 ⊗-commutativity : (p : ℕ × ℕ) →

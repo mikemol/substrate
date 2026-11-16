@@ -23,12 +23,13 @@
 
 module Substrate.Algebra.Wedge.NilpotentLogExpBridge where
 
-open import Substrate.Foundation.Eq  using (_≡_; refl; sym; trans; cong)
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _<_)
-open import Substrate.Foundation.Negation using (¬_)
-open import Substrate.Foundation.Empty using (⊥)
+open import Substrate.Foundation.Nat.Lt
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Negation.Not
+open import Substrate.Foundation.Empty.Bot
 open import Substrate.Foundation.Vec using (Vec; replicate)
-import Substrate.Algebra.F2 as F2
+import Substrate.Algebra.F2.F2 as F2
 open import Substrate.Algebra.F2.CommRing using (F₂-CommRing)
 open import Substrate.Algebra.F2.Polynomial.Wedge.DLogHom using (module Over)
 import Substrate.Algebra.Polynomial.Graded.FromCommRing as F
@@ -39,6 +40,10 @@ import Substrate.Algebra.Polynomial.Graded.Div as Div
 open import Substrate.Algebra.Wedge.Mul using (pow)
 open import Substrate.Algebra.Wedge.NilpotentDegreeK using (Rk; gen; addCap)
 open import Substrate.Algebra.Wedge.NilpotentDegreeKGeneral using (addCap-keep; addCap-collapse)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- Match the regimes: Rₖ at k = 3 (cap suc 3 = 4) ↔ Poly at d = 3 (bound suc 3 = 4).
@@ -56,14 +61,14 @@ open Over d f-lo₀ using (gpow; gpow-hom)
 
 ------------------------------------------------------------------------
 -- ① THE BRIDGE, BELOW THE CAP: gpow intertwines Rₖ's addCap with the ring *Q.
--- For i + j below the cap, addCap is genuine addition, and gpow (addCap) =
+-- For i ℕ+ j below the cap, addCap is genuine addition, and gpow (addCap) =
 -- gpow (i+j) = gpow i *Q gpow j. This is the faithful part: Rₖ is exactly the
 -- log chart of the Poly ring here — addition of logs = multiplication of exps.
 ------------------------------------------------------------------------
-bridge-below : (i j : ℕ) → (i + j) < suc d
+bridge-below : (i j : ℕ) → (i ℕ+ j) < suc d
              → gpow (addCap d i j) ≡ (gpow i *Q gpow j)
 bridge-below i j lt =
-  trans (cong gpow (addCap-keep d i j lt))    -- gpow (addCap d i j) ≡ gpow (i + j)
+  trans (cong gpow (addCap-keep d i j lt))    -- gpow (addCap d i j) ≡ gpow (i ℕ+ j)
         (gpow-hom i j)                        -- gpow (i+j) ≡ gpow i *Q gpow j
 
 ------------------------------------------------------------------------
@@ -72,7 +77,7 @@ bridge-below i j lt =
 -- which in the nilpotent regime is 𝟎C once i+j reaches the bound. The two do NOT
 -- agree: oneC (Rₖ's reset) vs 𝟎C (the ring's annihilation).
 ------------------------------------------------------------------------
-bridge-resets : (i j : ℕ) → ¬ ((i + j) < suc d)
+bridge-resets : (i j : ℕ) → ¬ ((i ℕ+ j) < suc d)
               → gpow (addCap d i j) ≡ oneC
 bridge-resets i j ¬lt = cong gpow (addCap-collapse d i j ¬lt)   -- gpow 0 = oneC (refl)
 

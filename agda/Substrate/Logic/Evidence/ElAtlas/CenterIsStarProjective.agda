@@ -24,11 +24,14 @@
 
 module Substrate.Logic.Evidence.ElAtlas.CenterIsStarProjective where
 
-open import Substrate.Foundation.Nat using (ℕ; _*_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Times
 open import Substrate.Foundation.Nat.Properties.Mul using (*-comm)
 open import Substrate.Foundation.Product using (_×_; _,_)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans)
-open import Substrate.Foundation.Empty using (⊥)
+open import Substrate.Foundation.Empty.Bot
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
 
 ------------------------------------------------------------------------
 -- ℙ¹ over the G-value pairs: homogeneous coords [n : d], up to cross-mult.

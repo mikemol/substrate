@@ -6,7 +6,7 @@
 --                     scratch/spectral_view.py:a4z2_compose (PROVENANCE:
 --                     transcription, checked by eye against that source —
 --                     NOT verified by the typechecker; σ = the proven V₄
---                     3-cycle `rotate`, · = the proven V₄ op).
+--                     3-cycle `rotate`, ·₄ = the proven V₄ op).
 --   * `central-χ`   — the element χ = (odd, ε, z0) commutes with every g.
 --
 -- WHAT THIS FILE DOES *NOT* PROVE (PENDING — do not read the proof as
@@ -27,13 +27,12 @@
 module Substrate.WitnessTower.M40Closure where
 
 import Substrate.Groups.V4.Operations as V4
-open import Substrate.Groups.V4.Bijection using (V₄; e; α; β; γ)
-open import Substrate.Groups.V4.Operations using (_·_; ε)
+open import Substrate.Groups.V4.Bijection.V4
+open import Substrate.Groups.V4.Operations using (_·₄_; ε)
 open import Substrate.Groups.V4.Axioms.EpsilonLeft using (ε-left)
 open import Substrate.Groups.V4.Axioms.EpsilonIdentity using (ε-identity)
 open import Substrate.Groups.V4.Axioms.InvLeft using (inv-left)
 open import Substrate.Groups.Actions.S3-on-V4.Generators.Rotate using (rotate)
-open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym; cong)
 open import Substrate.Foundation.Product using (proj₂)
 
 ------------------------------------------------------------------------
@@ -43,8 +42,12 @@ open import Substrate.Foundation.Product using (proj₂)
 
 open import Substrate.Foundation.Unit using (⊤)
 open import Substrate.Algebra.Monoid using (Monoid)
-open import Substrate.Category.CategoryOf using (CategoryOf)
+open import Substrate.Category.CategoryOf.CategoryOf
 open import Substrate.Category.Delooping using (deloop)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Cong
 data Chir : Set where
   even odd : Chir
 
@@ -81,7 +84,7 @@ odd  *c odd  = even
 
 Chir-Monoid : Monoid Chir
 Chir-Monoid = record
-  { semigroup = record { magma = record { _·_ = _*c_ } ; ·-assoc = *c-assoc }
+  { semigroup = record { magma = record { _·₄_ = _*c_ } ; ·-assoc = *c-assoc }
   ; ε = even ; ε-left = λ a → refl ; ε-right = *c-identityʳ }
 
 Chir-Category : CategoryOf ⊤ (λ _ _ → Chir)
@@ -135,7 +138,7 @@ record A4Z2 : Set where
 open A4Z2
 compose : A4Z2 → A4Z2 → A4Z2
 compose g h = mk (chir g *c chir h)
-                 (mask g · σ (zee g) (mask h))
+                 (mask g ·₄ σ (zee g) (mask h))
                  (zee g +₃ zee h)
 
 -- componentwise equality of carrier elements.
@@ -145,8 +148,8 @@ a4z2-≡ refl refl refl = refl
 
 ------------------------------------------------------------------------
 -- L-CENTRALITY (M2): chirality χ = (odd, ε, z0) commutes with every g.
---   compose χ g .mask = ε · σ z0 (mask g) = ε · mask g = mask g
---   compose g χ .mask = mask g · σ (zee g) ε = mask g · ε = mask g
+--   compose χ g .mask = ε ·₄ σ z0 (mask g) = ε ·₄ mask g = mask g
+--   compose g χ .mask = mask g ·₄ σ (zee g) ε = mask g ·₄ ε = mask g
 -- The sign factor commutes (ℤ₂); the cycle factor's identity laws agree.
 ------------------------------------------------------------------------
 
@@ -157,9 +160,9 @@ central-χ : (g : A4Z2) → compose χ g ≡ compose g χ
 central-χ g =
   a4z2-≡
     (*c-comm odd (chir g))                                   -- ℤ₂: odd·s ≡ s·odd
-    (trans (ε-left (mask g))                                  -- ε · m  ≡ m
-           (trans (sym (proj₂ ε-identity (mask g)))           -- m      ≡ m · ε
-                  (cong (mask g ·_) (sym (σ-fixes-e (zee g)))))) -- m · ε ≡ m · σ j ε
+    (trans (ε-left (mask g))                                  -- ε ·₄ m  ≡ m
+           (trans (sym (proj₂ ε-identity (mask g)))           -- m      ≡ m ·₄ ε
+                  (cong (mask g ·₄_) (sym (σ-fixes-e (zee g)))))) -- m ·₄ ε ≡ m ·₄ σ j ε
     (sym (+₃-idʳ (zee g)))                                    -- z0 + j ≡ j + z0   (both ≡ j)
 
 ------------------------------------------------------------------------
@@ -184,8 +187,8 @@ central-χ g =
 *c-sq even = refl
 *c-sq odd  = refl
 
--- V₄ exponent-2: x · x ≡ ε  (inv x ≡ x definitionally, so inv-left applies).
-·-sq : (x : V₄) → x · x ≡ ε
+-- V₄ exponent-2: x ·₄ x ≡ ε  (inv x ≡ x definitionally, so inv-left applies).
+·-sq : (x : V₄) → x ·₄ x ≡ ε
 ·-sq x = inv-left x
 
 sq : A4Z2 → A4Z2

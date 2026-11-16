@@ -49,12 +49,11 @@
 
 module Substrate.WitnessTower.Wedge.OrientationRigCatPermCoxeterGeneral.Properties where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; suc-injective)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.SucInjective
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.To
-open import Substrate.Foundation.Fin.Sucinjective
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; lookup; map)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; subst)
 open import Substrate.Foundation.Fin.Raise using (raise)
 open import Substrate.Foundation.Fin.Punctured using (punchIn)
 
@@ -66,12 +65,19 @@ open import Substrate.WitnessTower.Wedge.OrientationDistributor
   using (blockSum; blockSum-inject; blockSum-raise)
 open import Substrate.WitnessTower.Wedge.OrientationRigCatPermBifunctor
   using (blockSum-id; blockSum-compose)
-open import Substrate.WitnessTower.LehmerPath
-  using (LehmerPath; start; _◂_; decode; encode; decode-encode)
+open import Substrate.WitnessTower.LehmerPath.Decode
+open import Substrate.WitnessTower.LehmerPath.DecodeEncode
+open import Substrate.WitnessTower.LehmerPath.Encode
+open import Substrate.WitnessTower.LehmerPath.LehmerPath
 open import Substrate.WitnessTower.IsPermutation using (IsPerm)
 
 open import Substrate.WitnessTower.Wedge.OrientationRigCatPermCoxeterGeneral
   using (s₁; sadj; inj1; CoxGen; cox-id; cox-s; cox-∘)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Subst
 
 ------------------------------------------------------------------------
 -- 0. A local lookup/map lemma (not in Foundation.Vec).

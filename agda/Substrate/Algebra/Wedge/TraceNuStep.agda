@@ -21,13 +21,14 @@
 
 module Substrate.Algebra.Wedge.TraceNuStep where
 
-open import Substrate.Foundation.Eq  using (_≡_; refl)
 open import Substrate.Foundation.Product using (Σ; _,_; _×_; proj₁; proj₂)
-open import Substrate.Foundation.Sum using (_⊎_; inj₁; inj₂)
-open import Substrate.Algebra.Wedge using (DivStr; z; quot; rem; recon) renaming (Wedge to Wedge⟦478f66a6⟧)
+open import Substrate.Foundation.Sum.Sum
+open import Substrate.Algebra.Wedge using (DivStr; z; quot; rem; recon) renaming (Wedge to Wedge)
 open import Substrate.Algebra.Wedge.Coalgebra using (WedgeCoalg; divide; eq?)
-open import Substrate.Category.Allegory.Refinement using (_⊑ᶠ_)
+open import Substrate.Category.Allegory.Refinement.SqsubF
 open import Substrate.Algebra.Wedge.TraceMuStep using (Idx; Φ-step; step-refinement)
+open import Substrate.Foundation.Eq
+open import Substrate.Algebra.Wedge
 
 module _ {C : Set} (D : DivStr C) where
 
@@ -50,7 +51,7 @@ module _ {C : Set} (D : DivStr C) where
   -- the STEP carrier: states that emit a wedge (the coalgebra's active domain).
   -- A step-state at (a,b,g) is a witness that divide produces the wedge a→b.
   StepAt : WedgeCoalg D → Idx D → Set
-  StepAt co (a , b , g) = Σ (Wedge⟦478f66a6⟧ D a b) (λ w → rem w ≡ rem (divide co a b))
+  StepAt co (a , b , g) = Σ (Wedge D a b) (λ w → rem w ≡ rem (divide co a b))
 
   -- the coalgebra unrolls a step-state into a Φ-step layer (the inj₂ / more side):
   -- emit the wedge and land on the residual state (b, rem w, g). Dual to 158's roll.
@@ -80,7 +81,8 @@ module _ {C : Set} (D : DivStr C) where
 -- finite cyclic lasso (halt/loop/stop), never a materialized infinite object.
 ------------------------------------------------------------------------
 open import Substrate.Algebra.R.Trace using (RealTrace; head; tail)
-open import Substrate.Algebra.R.Trace.Bisim using (_~_; ~-refl)
+open import Substrate.Algebra.R.Trace.Bisim.Op
+open import Substrate.Algebra.R.Trace.Bisim.Refl
 
 -- the ν side's self-consistency (the terminal object is bisimilar to itself — the
 -- coinductive reflexivity, from Final's ana-unique self-unfold shape).

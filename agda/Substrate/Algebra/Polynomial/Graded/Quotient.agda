@@ -23,17 +23,25 @@
 
 module Substrate.Algebra.Polynomial.Graded.Quotient where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Nat.Properties.Add using () renaming (+-comm to +ℕ-comm; +-assoc to +ℕ-assoc)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Properties.Add.PlusAssoc
+-- ⚑ A DEAD `renaming`: `PlusComm` provides `+ℕ-comm` AT SOURCE, so renaming
+-- `+-comm` to it renames a name the leaf does not export.  Binds nothing, and
+-- agda reports it as a WARNING — the failure surfaces later, at a use site.
+open import Substrate.Foundation.Nat.Properties.Add.PlusComm
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; replicate)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂)
-open import Substrate.Algebra.CommutativeRing using (CommutativeRing)
+open import Substrate.Algebra.CommutativeRing.Record
 open import Substrate.Algebra.Monoid using (Monoid)
 open import Substrate.Algebra.AbelianGroup using (AbelianGroup)
 open import Substrate.Algebra.Semiring using (Semiring)
 open import Substrate.Algebra.Ring using (Ring)
 import Substrate.Algebra.Polynomial.Graded.FromCommRing as F
 import Substrate.Algebra.Polynomial.Graded.Mod as M
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
 
 module Over {A : Set} (CR : CommutativeRing A) (d : ℕ) (f-lo : Vec A (suc d)) where
   -- ⟡public-policy: bind Graded's API at ITS source. `Mod` no longer re-exports what it
@@ -53,6 +61,10 @@ module Over {A : Set} (CR : CommutativeRing A) (d : ℕ) (f-lo : Vec A (suc d)) 
 
   +P-assoc : (u v w : Poly n) → (u +P v) +P w ≡ u +P (v +P w)
   +P-assoc []      []      []      = refl
+  -- ⚑ THE CARRIER'S `+-assoc`, NOT ℕ's — `x`/`y`/`z : A`.  The sweep inverted
+  -- this the same way it did in `Mod/Core`, and the opposite way from
+  -- `Laws/Comm`.  One sweep, both directions: neither spelling is assumable,
+  -- only the ARGUMENT TYPES decide.
   +P-assoc (x ∷ u) (y ∷ v) (z ∷ w) = cong₂ _∷_ (+-assoc x y z) (+P-assoc u v w)
 
   -P : Poly n → Poly n

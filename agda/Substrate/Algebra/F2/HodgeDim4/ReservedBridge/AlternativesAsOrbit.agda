@@ -43,10 +43,9 @@ module Substrate.Algebra.F2.HodgeDim4.ReservedBridge.AlternativesAsOrbit where
 
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Literals using (₁; ₂)
-open import Substrate.Foundation.Eq using (_≡_; refl)
 
 open import Substrate.Algebra.F2.Vector using (Vector)
-open import Substrate.Algebra.F2.Linear using (Linear; apply)
+open import Substrate.Algebra.F2.Linear.Linear
 open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Linear using (basis-permutation-Linear)
 open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Order using (HasOrder-from-perm)
 open import Substrate.Foundation.Fin.Iterate using (HasOrderPerm)
@@ -67,6 +66,7 @@ open import Substrate.Algebra.F2.HodgeDim4.ReservedBridge.GaugeTorsor
 ------------------------------------------------------------------------
 
 open import Substrate.Algebra.GL3F2.MultiRouteEquivariance.Cycle3GL using (cycle3-GL)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 2. swap12 — basis transposition swapping positions 1 and 2.

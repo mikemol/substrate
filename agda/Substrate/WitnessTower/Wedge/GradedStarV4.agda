@@ -26,12 +26,12 @@
 
 module Substrate.WitnessTower.Wedge.GradedStarV4 where
 
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Eq using (_≡_)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Category.Lawvere using (CommutingInvolutions)
 open import Substrate.Algebra.Wedge.FourPointV4
   using (Square; rowSwap; colSwap; klein-rot; square-V4; klein-rot-inv)
 open import Substrate.WitnessTower.Enumerate using (Perm)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. THE GRADED V₄ over any ℕ-graded carrier. At grade n the four points are a 2×2

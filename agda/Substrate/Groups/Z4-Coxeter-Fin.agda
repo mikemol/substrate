@@ -16,5 +16,7 @@ open import Substrate.Groups.Coxeter.Cyclic.Core 3 using (chain)
 
 
 import Substrate.Groups.Z4-Coxeter as Z₄
+open import Substrate.Groups.Coxeter.Cyclic.Base.HasOrderPerm
+open import Substrate.Groups.Coxeter.Cyclic.Base.OrderOf
 
 

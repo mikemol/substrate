@@ -22,22 +22,24 @@
 
 module Substrate.Algebra.Wedge.ResidueAtom.Properties where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.Foundation.Empty using (⊥)
-open import Substrate.Foundation.Sum using (_⊎_; inj₁; inj₂)
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Algebra.F2 using (F₂; 𝟘; 𝟙; 𝟙≢𝟘)
+open import Substrate.Foundation.Empty.Bot
+open import Substrate.Foundation.Sum.Sum
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.OneNeqZero
 open import Substrate.Algebra.Wedge using (forget; forget-correct; ℕ-div)
-  renaming (Wedge to Wedge⟦478f66a6⟧)
+  renaming (Wedge to Wedge)
 open import Substrate.Category.Lawvere
   using (FixedPointFree; TorsorAtom; prove-or-correct; e)
 open import Substrate.Algebra.Wedge.ResidueAtom using (F₂-torsor; ℕ-torsor; ℕ-zero?)
+open import Substrate.Foundation.Eq
+open import Substrate.Algebra.Wedge
 
 ------------------------------------------------------------------------
 -- HALF 1 — the triangle is the wedge witness (the reconstruction half).
 ------------------------------------------------------------------------
 
-keystone-triangle : {a b : ℕ} (w : Wedge⟦478f66a6⟧ ℕ-div a b) → forget w ≡ a
+keystone-triangle : {a b : ℕ} (w : Wedge ℕ-div a b) → forget w ≡ a
 keystone-triangle = forget-correct
 
 ------------------------------------------------------------------------

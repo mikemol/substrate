@@ -17,16 +17,18 @@
 
 module Substrate.Algebra.R.Trace.SKIReductionToList where
 
-open import Substrate.Foundation.Eq  using (_≡_; refl)
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.List using (List; []; _∷_)
 
 -- REUSE the shared base (ADD 150): its Tm, cost, Chain, autochain, total-cost.
-open import Substrate.Algebra.R.Trace.SKIShedDuality
-  using (Tm; S; K; I; _∙_; cost; Chain; total-cost; autochain)
+open import Substrate.Algebra.R.Trace.SKIShedDuality.Autochain
+open import Substrate.Algebra.R.Trace.SKIShedDuality.Chain
+open import Substrate.Algebra.R.Trace.SKIShedDuality.Tm
+open import Substrate.Algebra.R.Trace.SKIShedDuality.TotalCost
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
--- ① The full SKI reduction, mirrored onto the SHARED Tm (β-I, β-K, β-S + congruence)
+-- ① The full SKI reduction, mirrored onto the SHARED Tm (β-I, β-K, β-S ℕ+ congruence)
 -- — so reduction and cost are on one carrier. Same shape as NewmanKI's, plus β-S.
 ------------------------------------------------------------------------
 data _⇒_ : Tm → Tm → Set where      -- ⟦shape:66d2c034 β-I,β-K,β-S⟧
@@ -60,7 +62,7 @@ reduction-cost : {a b : Tm} → a ⇒* b → ℕ
 reduction-cost r = total-cost (reduction→list r)
 
 ------------------------------------------------------------------------
--- ④ CONCRETE: a real head-reduction sequence and its derived list + cost. Each
+-- ④ CONCRETE: a real head-reduction sequence and its derived list ℕ+ cost. Each
 -- HEAD step contracts a head redex (cost 1); the derived list's total-cost counts
 -- them. (Deep cong-steps shed head-cost 0 — the head-cost model, SKIShedDuality's;
 -- capturing the redex-position cost is ⟡ski-position-cost, scoped.)

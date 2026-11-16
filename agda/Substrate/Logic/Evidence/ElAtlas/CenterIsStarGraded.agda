@@ -28,11 +28,11 @@
 
 module Substrate.Logic.Evidence.ElAtlas.CenterIsStarGraded where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Foundation.Product using (Σ; _,_)
 open import Substrate.Algebra.Wedge.NComplex using (Three; 𝟘; η; sq; three-div; three-mul)
 open import Substrate.Algebra.Wedge.Bridge using (id-bridge)
 open import Substrate.Algebra.Wedge.CrossMul using (CrossMix; cross; Coherent)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- The graded cospan: both strands embed (identically) into the N-complex.

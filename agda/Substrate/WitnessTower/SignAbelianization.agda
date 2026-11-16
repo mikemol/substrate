@@ -16,7 +16,7 @@
 --     2). So length does not descend to the group — only its parity does.
 --
 -- Together: Sₙ^ab retains exactly the parity = Z/2, tower-native, from proven
--- pieces (sign-wd + the tp-involutivity behind sadj).
+-- pieces (sign-wd ℕ+ the tp-involutivity behind sadj).
 --
 -- HONEST REMAINDER (a labeled arc, NOT an obstruction). The FULL claim — the sign
 -- is the UNIQUE nontrivial abelian character (no character finer than Z/2, i.e.
@@ -31,11 +31,11 @@
 
 module Substrate.WitnessTower.SignAbelianization where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym; cong)
-open import Substrate.Foundation.Bool using (Bool; false)
-open import Substrate.Foundation.Negation using (¬_)
+open import Substrate.Foundation.Bool.Bool
+open import Substrate.Foundation.Negation.Not
 open import Substrate.WitnessTower.Enumerate using (Perm)
 open import Substrate.WitnessTower.FirstAppearance using (id-perm; compose)
 open import Substrate.WitnessTower.SnGroup using (apply; apply-compose; apply-id; apply-injective)
@@ -43,6 +43,10 @@ open import Substrate.WitnessTower.Wedge.OrientationRigCatPermSign
   using (signW; sign-wd; sadj-realizes; tp; tp-inv)
 open import Substrate.WitnessTower.Wedge.OrientationRigCatPermCoxeterGeneral
   using (sadj; CoxGen; cox-id; cox-s; cox-∘)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- 1. THE ABELIANISATION CHARACTER — the length parity is derivation-invariant.
@@ -62,7 +66,7 @@ signW-invariant g g' = trans (sym (sign-wd g)) (sign-wd g')
 lengthW : {n : ℕ} {τ : Perm n} → CoxGen τ → ℕ
 lengthW cox-id      = 0
 lengthW (cox-s j)   = 1
-lengthW (cox-∘ g h) = lengthW g + lengthW h
+lengthW (cox-∘ g h) = lengthW g ℕ+ lengthW h
 
 -- an adjacent transposition is an involution: sadj n j ∘ sadj n j = id.
 -- (Lifted from tp-inv via sadj-realizes — the index map tp is self-inverse.)

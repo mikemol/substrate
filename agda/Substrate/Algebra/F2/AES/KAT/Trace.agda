@@ -18,7 +18,7 @@
 
 module Substrate.Algebra.F2.AES.KAT.Trace where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Vec using (Vec; _∷_; [])
 open import Substrate.Algebra.F2.AES.Round using (State)
 open import Substrate.Algebra.F2.AES.KAT using (to-state; pt-C1; ct-C1)

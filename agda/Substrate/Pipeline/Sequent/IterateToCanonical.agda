@@ -11,7 +11,7 @@
 
 module Substrate.Pipeline.Sequent.IterateToCanonical where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Maybe using (Maybe; just; nothing)
 open import Substrate.Pipeline.Sequent.CanonicalSpec using (CanonicalSpec)
 

@@ -10,10 +10,13 @@
 module Substrate.Algebra.F2.Linear.FromImages.Permutation.Compose where
 
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Eq using (_≡_; sym; trans; cong)
 
 open import Substrate.Foundation.Fin.Iterate
   using (HasOrderPerm)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 HasOrderPerm-compose-commute-order-2 :
   ∀ {n} (σ τ : Fin n → Fin n) →

@@ -24,12 +24,13 @@
 module Substrate.Category.UniversalProperty.ExtrudeSKIGroupoid where
 
 open import Substrate.Foundation.Product using (Σ; _,_)
-open import Substrate.Algebra.R.Trace.SKIShedDuality using (S; K; _∙_) renaming (Tm to Tm⟦533ef80d⟧)
+open import Substrate.Algebra.R.Trace.SKIShedDuality.Tm
 open import Substrate.Category.UniversalProperty.ExtrudeSKISetoid
   using (_≋_; K-law-≋; S-law-≋; fix-law-≋; ski-HasFix)
 open import Substrate.FUSep.ConversionCongruence using (ARS; _≈_; ≈refl; ≈sym; ≈trans)
 open import Substrate.Category.UniversalProperty.ExtrudeSKISetoid using (ski-ARS)
 open import Substrate.Category.UniversalProperty.DiagonalYCombinator using (Y-of)
+open import Substrate.Algebra.R.Trace.SKIShedDuality.Tm
 
 ------------------------------------------------------------------------
 -- ① Tm⟦533ef80d⟧/≈ IS A GROUPOID (the constructive quotient). Objects = Tm⟦533ef80d⟧; a morphism a → b is a proof a ≋ b
@@ -37,18 +38,18 @@ open import Substrate.Category.UniversalProperty.DiagonalYCombinator using (Y-of
 --    is invertible — its inverse is ≈sym. This is the setoid-as-groupoid (StencilGroupoid), and it IS the
 --    quotient Tm⟦533ef80d⟧/≈ constructively: "equality of objects" = an invertible morphism = ≋.
 ------------------------------------------------------------------------
-Hom : Tm⟦533ef80d⟧ → Tm⟦533ef80d⟧ → Set
+Hom : Tm → Tm → Set
 Hom a b = a ≋ b
 
-hom-id : (a : Tm⟦533ef80d⟧) → Hom a a
+hom-id : (a : Tm) → Hom a a
 hom-id a = ≈refl
 
-hom-∘ : {a b c : Tm⟦533ef80d⟧} → Hom b c → Hom a b → Hom a c
+hom-∘ : {a b c : Tm} → Hom b c → Hom a b → Hom a c
 hom-∘ g f = ≈trans f g
 
 -- the GROUPOID property: every morphism is invertible (by ≈sym). This is what makes ≈ a QUOTIENT
 -- equality (objects equal-up-to-iso ⟺ ≋) rather than a mere preorder.
-≈-inv : {a b : Tm⟦533ef80d⟧} → Hom a b → Hom b a
+≈-inv : {a b : Tm} → Hom a b → Hom b a
 ≈-inv f = ≈sym f
 
 ------------------------------------------------------------------------
@@ -56,18 +57,18 @@ hom-∘ g f = ≈trans f g
 --    are EQUALITIES (invertible morphisms), not mere reductions — because a Hom IS the quotient-equality.
 --    So (Tm⟦533ef80d⟧/≈, ∙) is a combinator algebra with Y-of the fixpoint, at the quotient's OWN equality.
 ------------------------------------------------------------------------
-K-eq : (x y : Tm⟦533ef80d⟧) → Hom ((K ∙ x) ∙ y) x
+K-eq : (x y : Tm) → Hom ((K ∙ x) ∙ y) x
 K-eq = K-law-≋
 
-S-eq : (x y z : Tm⟦533ef80d⟧) → Hom (((S ∙ x) ∙ y) ∙ z) ((x ∙ z) ∙ (y ∙ z))
+S-eq : (x y z : Tm) → Hom (((S ∙ x) ∙ y) ∙ z) ((x ∙ z) ∙ (y ∙ z))
 S-eq = S-law-≋
 
-fix-eq : (f : Tm⟦533ef80d⟧) → Hom (Y-of f) (f ∙ (Y-of f))
+fix-eq : (f : Tm) → Hom (Y-of f) (f ∙ (Y-of f))
 fix-eq = fix-law-≋
 
 -- the fixpoint, as quotient data: for every f, an object v = Y-of f with an ISO (invertible morphism)
 -- v ≅ f · v. On the quotient groupoid this IS "v ≡ f · v" — the literal HasFix, at the quotient equality.
-quotient-HasFix : (f : Tm⟦533ef80d⟧) → Σ Tm⟦533ef80d⟧ (λ v → Hom v (f ∙ v))
+quotient-HasFix : (f : Tm) → Σ Tm (λ v → Hom v (f ∙ v))
 quotient-HasFix = ski-HasFix
 
 ------------------------------------------------------------------------

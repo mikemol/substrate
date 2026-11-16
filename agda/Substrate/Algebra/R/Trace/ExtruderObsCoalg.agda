@@ -15,14 +15,21 @@
 
 module Substrate.Algebra.R.Trace.ExtruderObsCoalg where
 
-open import Substrate.Foundation.Eq      using (_≡_; refl)
-open import Substrate.Foundation.Nat     using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
 
 open import Substrate.Algebra.R.Trace         using (RealTrace; head; tail)
-open import Substrate.Algebra.R.Trace.Bisim   using (_~_; head~; tail~; ~-refl)
-open import Substrate.Algebra.R.Trace.Final   using (Coalg; ana; ana-head; ana-tail; ana-unique; out; self-unfold)
+open import Substrate.Algebra.R.Trace.Bisim.Op
+open import Substrate.Algebra.R.Trace.Bisim.Refl
+open import Substrate.Algebra.R.Trace.Final.Ana
+open import Substrate.Algebra.R.Trace.Final.AnaHead
+open import Substrate.Algebra.R.Trace.Final.AnaTail
+open import Substrate.Algebra.R.Trace.Final.Coalg
 open import Substrate.Algebra.R.Trace.ExtruderFix using (CombinatorAlgebra)
+open import Substrate.Foundation.Eq
+open import Substrate.FUSep.FUEtaObsCoalg
+open import Substrate.Algebra.Nat.GCD.EEATrace
+open import Substrate.Foundation.Empty.Bot
 
 ------------------------------------------------------------------------
 -- An OBSERVED combinator algebra: a CombinatorAlgebra with a one-step observation

@@ -4,10 +4,10 @@ module Substrate.Groups.Actions.S3-on-V4.CanonicalFaithful.RowInj where
 
 -- ROW-INJECTIVITY: agreeing at α and β ⇒ same row. 36 cases.
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.Groups.V4.Bijection using (α; β)
+open import Substrate.Groups.V4.Bijection.V4
 open import Substrate.Groups.Actions.S3-on-V4.CanonicalFaithful.Row
 open import Substrate.Groups.Actions.S3-on-V4.CanonicalFaithful.ActRow using (act-row)
+open import Substrate.Foundation.Eq
 
 row-inj : (ρ σ : Row) →
           act-row ρ α ≡ act-row σ α →

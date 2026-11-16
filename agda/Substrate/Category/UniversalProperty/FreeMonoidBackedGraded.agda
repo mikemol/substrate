@@ -15,7 +15,7 @@
 
 module Substrate.Category.UniversalProperty.FreeMonoidBackedGraded where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Product using (_,_)
 open import Substrate.Groups.Coxeter.Word using (Word; []; _∷_)
 open import Substrate.Category.FreeUniversalProperty.FreeMonoid using (MonoidOn; word-monoid; foldW)

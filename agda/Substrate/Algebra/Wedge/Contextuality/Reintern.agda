@@ -33,12 +33,12 @@
 
 module Substrate.Algebra.Wedge.Contextuality.Reintern where
 
-open import Substrate.Foundation.Nat using (ℕ; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Vec using (Vec; []; _∷_)
-open import Substrate.Foundation.Eq using (_≡_; refl; cong)
 open import Substrate.Foundation.Product using (_,_)
 open import Substrate.Foundation.Unit using (tt)
-open import Substrate.Algebra.F2 using (F₂; 𝟘; 𝟙; _+_)
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.PlusF
 open import Substrate.Algebra.F2.Vector using (Vector; 𝟎ⱽ)
 open import Substrate.Algebra.Wedge.Contextuality
   using (Constraint; con; lhs; rhs; satisfies; ⟨_,_⟩; inner-zero;
@@ -46,6 +46,9 @@ open import Substrate.Algebra.Wedge.Contextuality
 open import Substrate.Algebra.Wedge.Contextuality.General using (GlobalSection)
 open import Substrate.Algebra.Wedge.Graded
   using (GradedDivStr; GradedWedge; recon)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Algebra.Z.Int
 
 ------------------------------------------------------------------------
 -- Slice 7. Extend by a fresh measurement; the reinterned obstruction is

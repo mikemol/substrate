@@ -10,11 +10,11 @@
 
 module Substrate.Category.ComposedReference.QuotOrbit where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Maybe using (nothing)
 open import Substrate.Category.ComposedReference.EmissionSource using (EmissionSource; Rule)
 open import Substrate.Category.ComposedReference.ActionAlgebra using (ActionAlgebra)
-open import Substrate.Category.ComposedReference.V4 using (e)
+open import Substrate.Groups.V4.Bijection.V4
 open import Substrate.Category.ComposedReference.BasisLabel using (BasisLabel; ALGEBRAIC)
 open import Substrate.Category.ComposedReference.Record using (ComposedReference)
 

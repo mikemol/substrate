@@ -4,7 +4,7 @@
 -- Substrate.Algebra.Q.JacobianEvalCDCurried — ⟡jac-lit1-cd-curried (Route 2).
 --
 -- The DUAL common-denominator evaluator: a memory-cheap FACTORED normal form
--- for the CURRIED ℚ map `C.f₁ = z·(1+xy)³ + y²·(1+xy)·(4+3xy)`, over the SAME
+-- for the CURRIED ℚ map `C.f₁ = z·(1+xy)³ ℕ+ y²·(1+xy)·(4+3xy)`, over the SAME
 -- fixed denominator `Dden = qx³·qy⁴·qz` that `JacobianEvalCD.evalCD` uses for
 -- the sparse `MPoly` side (box (3,4,1)).
 --
@@ -34,11 +34,11 @@
 -- is proven.  This is NOT `refl` (MEASURED: fails at 97 MB with a structural
 -- first-term mismatch `+ (1*1*1*1) != num z`).  Both sides are DISTINCT STUCK
 -- ℤ trees — the EXPANDED 204-monomial padded sum on the R side vs the FACTORED
--- `pz·Ux³·qy + …` on the C side — and `_*ℤ_` does not auto-distribute over the
--- symbolic `Ux = qx·qy + px·py`, so proving them equal is the genuine BINOMIAL
+-- `pz·Ux³·qy ℕ+ …` on the C side — and `_*ℤ_` does not auto-distribute over the
+-- symbolic `Ux = qx·qy ℕ+ px·py`, so proving them equal is the genuine BINOMIAL
 -- EXPANSION of `Ux³` in ℤ (a 6-variable ℤ ring identity in px,py,pz,qx,qy,qz).
 --
--- So Route 2 STRIPS the ℚ-eta + `_+ℚ_`-cross-multiplication overhead (both
+-- So Route 2 STRIPS the ℚ-eta ℕ+ `_+ℚ_`-cross-multiplication overhead (both
 -- endpoints are ~99 MB) and LOCALIZES the irreducible core of the 781 MB to a
 -- single, precisely-stated ℤ polynomial identity — but does NOT eliminate the
 -- cube-binomial.  Its proof needs genuine ring reasoning (a 6-variable ℤ
@@ -50,16 +50,21 @@
 
 module Substrate.Algebra.Q.JacobianEvalCDCurried where
 
-open import Substrate.Foundation.Nat
-  using (ℕ; zero; suc; _+_; _*_; _^_; _∸_; _≤_; s≤s; z≤n)
+open import Substrate.Foundation.Nat.Le
+open import Substrate.Foundation.Nat.Monus
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Pow
+open import Substrate.Foundation.Nat.Times
 open import Substrate.Foundation.Nat.Properties.Mul
   using (*-assoc; *-identityˡ; *-identityʳ; swap-mul; quad)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂)
-open import Substrate.Algebra.Z using (ℤ; +_; 1ℤ)
+open import Substrate.Algebra.Z.Int
+open import Substrate.Algebra.Z.OneInt
 open import Substrate.Algebra.Z.Mul using (_*ℤ_)
 open import Substrate.Algebra.Z.Add using (_+ℤ_)
 open import Substrate.Algebra.Z.Properties.MulFull using (*ℤ-assoc)
-open import Substrate.Algebra.Q using (ℚ; mkℚ; num; den-1; 1ℚ)
+open import Substrate.Algebra.Q.OneRat
+open import Substrate.Algebra.Q.Rat
 open import Substrate.Algebra.Q.Add using (_+ℚ_)
 open import Substrate.Algebra.Q.Mul using (_*ℚ_)
 open import Substrate.Algebra.Q.Equiv using (_≈ℚ_; ≈ℚ-refl; ≈ℚ-trans)
@@ -67,13 +72,18 @@ open import Substrate.Algebra.Q.Properties.Congruence using (+ℚ-cong; *ℚ-con
 open import Substrate.Algebra.Q.JacobianEvalNormalize using (≡→≈ℚ)
 import Substrate.Algebra.Q.JacobianEvalCD as CD
 import Substrate.Algebra.Q.JacobianCollision as C
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
 
 ------------------------------------------------------------------------
 -- General helpers (point-independent).
 ------------------------------------------------------------------------
 
 -- ℕ power adds exponents.
-powℕ-add : (m a d : ℕ) → m ^ (a + d) ≡ m ^ a * m ^ d
+powℕ-add : (m a d : ℕ) → m ^ (a ℕ+ d) ≡ m ^ a * m ^ d
 powℕ-add m zero    d = sym (*-identityˡ (m ^ d))
 powℕ-add m (suc a) d =
   trans (cong (m *_) (powℕ-add m a d)) (sym (*-assoc m (m ^ a) (m ^ d)))
@@ -135,8 +145,8 @@ module _ (x y z : ℚ) where
     CD.1≤* (CD.1≤pow (den-1 x) a)
            (CD.1≤* (CD.1≤pow (den-1 y) b) (CD.1≤pow (den-1 z) c))
 
-  -- Qn multiplies by adding exponents (quad interchange + powℕ-add ×3).
-  Qn-mul : (a b c d e f : ℕ) → Qn a b c * Qn d e f ≡ Qn (a + d) (b + e) (c + f)
+  -- Qn multiplies by adding exponents (quad interchange ℕ+ powℕ-add ×3).
+  Qn-mul : (a b c d e f : ℕ) → Qn a b c * Qn d e f ≡ Qn (a ℕ+ d) (b ℕ+ e) (c ℕ+ f)
   Qn-mul a b c d e f =
     trans (quad (qxn ^ a) (qyn ^ b * qzn ^ c) (qxn ^ d) (qyn ^ e * qzn ^ f))
     (trans (cong ((qxn ^ a * qxn ^ d) *_)

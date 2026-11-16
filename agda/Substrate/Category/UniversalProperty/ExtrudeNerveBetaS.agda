@@ -24,36 +24,37 @@
 
 module Substrate.Category.UniversalProperty.ExtrudeNerveBetaS where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; cong)
 open import Substrate.Foundation.Product using (_×_; _,_)
-open import Substrate.Algebra.R.Trace.SKIShedDuality using (S; K; I; _∙_) renaming (Tm to Tm⟦533ef80d⟧)
-import Substrate.Algebra.R.Trace.SKIReductionToList as R
+open import Substrate.Algebra.R.Trace.SKIShedDuality.Tm
 open R using (_⇒_; β-S)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Algebra.R.Trace.SKIShedDuality.Tm
 
 ------------------------------------------------------------------------
 -- ① THE S-DEGENERACY: distribute z to both branches — one copy each. This IS the reduct's shape; it is the
 --    term-tree degeneracy (duplicate the argument z), the analogue of the list degeneracy dupAt (270).
 ------------------------------------------------------------------------
-s-degen : Tm⟦533ef80d⟧ → Tm⟦533ef80d⟧ → Tm⟦533ef80d⟧ → Tm⟦533ef80d⟧
+s-degen : Tm → Tm → Tm → Tm
 s-degen x y z = (x ∙ z) ∙ (y ∙ z)      -- z DUPLICATED: one copy to x's branch, one to y's
 
 -- β-S produces exactly the s-degeneracy (the reduction IS the degeneracy applied):
-βS-is-degen : (x y z : Tm⟦533ef80d⟧) → (((S ∙ x) ∙ y) ∙ z) ⇒ s-degen x y z
+βS-is-degen : (x y z : Tm) → (((S ∙ x) ∙ y) ∙ z) ⇒ s-degen x y z
 βS-is-degen x y z = β-S x y z
 
 ------------------------------------------------------------------------
 -- ② THE DUPLICATION, STRUCTURALLY: z occurs in BOTH branches of the s-degeneracy — witnessed by projecting
 --    the right-argument of each branch. This is z copied (a step UP), the degeneracy's defining move.
 ------------------------------------------------------------------------
-larg : Tm⟦533ef80d⟧ → Tm⟦533ef80d⟧                          -- left operand of an application
+larg : Tm → Tm                          -- left operand of an application
 larg (f ∙ _) = f
 larg a       = a
-rarg : Tm⟦533ef80d⟧ → Tm⟦533ef80d⟧                          -- right operand (the argument)
+rarg : Tm → Tm                          -- right operand (the argument)
 rarg (_ ∙ x) = x
 rarg a       = a
 
 -- both branches of s-degen carry z as their argument — the duplication made explicit (rarg twice on each):
-s-degen-dup-both : (x y z : Tm⟦533ef80d⟧) → (rarg (larg (s-degen x y z)) ≡ z) × (rarg (rarg (s-degen x y z)) ≡ z)
+s-degen-dup-both : (x y z : Tm) → (rarg (larg (s-degen x y z)) ≡ z) × (rarg (rarg (s-degen x y z)) ≡ z)
 s-degen-dup-both x y z = refl , refl   -- left branch (x∙z) arg = z ; right branch (y∙z) arg = z — z twice
 
 ------------------------------------------------------------------------
@@ -63,11 +64,11 @@ s-degen-dup-both x y z = refl , refl   -- left branch (x∙z) arg = z ; right br
 --    dual, exactly as dupAt (up) and delAt (down) are dual (270).
 ------------------------------------------------------------------------
 -- drop the right branch (keep the left x∙z, which carries one z): the face that undoes the duplication.
-drop-right-branch : Tm⟦533ef80d⟧ → Tm⟦533ef80d⟧
+drop-right-branch : Tm → Tm
 drop-right-branch (f ∙ _) = f
 drop-right-branch a       = a
 
-degen-undone-by-face : (x y z : Tm⟦533ef80d⟧) → drop-right-branch (s-degen x y z) ≡ (x ∙ z)
+degen-undone-by-face : (x y z : Tm) → drop-right-branch (s-degen x y z) ≡ (x ∙ z)
 degen-undone-by-face x y z = refl      -- drop the y∙z branch, left with x∙z (one z) — the duplicate removed
 
 ------------------------------------------------------------------------

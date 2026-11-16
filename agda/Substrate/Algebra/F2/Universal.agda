@@ -17,7 +17,7 @@
 -- interop, if any).
 --
 -- Status: scaffolding, no in-tree consumers yet. The point is the
--- bridge SHAPE: a universal property as a record + a constructive
+-- bridge SHAPE: a universal property as a record +F a constructive
 -- function producing the iso. Future bridges instantiate the shape
 -- per representation.
 ------------------------------------------------------------------------
@@ -27,12 +27,37 @@
 module Substrate.Algebra.F2.Universal where
 
 open import Substrate.Foundation.Level using (Level; suc)
-open import Substrate.Foundation.Empty using (⊥; ⊥-elim)
-open import Substrate.Foundation.Sum using (_⊎_; inj₁; inj₂)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym)
+open import Substrate.Foundation.Empty.Bot
+open import Substrate.Foundation.Empty.BotElim
+open import Substrate.Foundation.Sum.Sum
 
-open import Substrate.Algebra.F2
+open import Substrate.Algebra.F2.AbsorbL
+open import Substrate.Algebra.F2.AbsorbR
+open import Substrate.Algebra.F2.Assoc
+open import Substrate.Algebra.F2.Comm
+open import Substrate.Algebra.F2.Dec
+open import Substrate.Algebra.F2.DistribLPlus
+open import Substrate.Algebra.F2.DistribRPlus
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.F2Cases
+open import Substrate.Algebra.F2.Idempotent
+open import Substrate.Algebra.F2.IdentityL
+open import Substrate.Algebra.F2.IdentityR
+open import Substrate.Algebra.F2.InvOfOne
+open import Substrate.Algebra.F2.OneNeqZero
+open import Substrate.Algebra.F2.Op
+open import Substrate.Algebra.F2.Op2
+open import Substrate.Algebra.F2.PlusAssoc
+open import Substrate.Algebra.F2.PlusComm
+open import Substrate.Algebra.F2.PlusF
+open import Substrate.Algebra.F2.PlusIdentityL
+open import Substrate.Algebra.F2.PlusIdentityR
+open import Substrate.Algebra.F2.PlusInverseL
+open import Substrate.Algebra.F2.PlusInverseR
+open import Substrate.Algebra.F2.PlusSelfInverse
+open import Substrate.Algebra.F2.ZeroNeqOne
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
 
 ------------------------------------------------------------------------
 -- F₂-Like: the set-level characterisation of "a 2-element type

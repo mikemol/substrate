@@ -32,20 +32,23 @@
 module Substrate.WitnessTower.M40Action where
 
 import Substrate.Groups.V4.Operations as V4
-open import Substrate.Groups.V4.Bijection using (V₄; e)
-open import Substrate.Groups.V4.Operations using (_·_)
+open import Substrate.Groups.V4.Bijection.V4
+open import Substrate.Groups.V4.Operations using (_·₄_)
 open import Substrate.Groups.V4.Axioms.Assoc using (·-assoc)
 open import Substrate.Groups.V4.Axioms.EpsilonIdentity using (ε-identity)
 open import Substrate.Groups.Actions.S3-on-V4.Generators.Rotate using (rotate)
 open import Substrate.Groups.Actions.S3-on-V4.Generators.RotateIsHom using (rotate-IsHom)
 open import Substrate.Groups.Actions.S3-on-V4.Generators.RotateCubeId using (rotate³-id)
-open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym; cong)
 open import Substrate.Foundation.Product using (proj₂)
 open import Substrate.WitnessTower.M40Closure
   using (Chir; even; odd; _*c_; Z3; z0; z1; z2; _+₃_; σ; A4Z2; mk; compose)
 open A4Z2
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Cong
 
-ε-right : (x : V₄) → (x · e) ≡ x
+ε-right : (x : V₄) → (x ·₄ e) ≡ x
 ε-right = proj₂ ε-identity
 
 ------------------------------------------------------------------------
@@ -58,7 +61,7 @@ cinv z1 v = rotate (rotate v)
 cinv z2 v = rotate v
 
 -- c⁻ʲ is a V₄-homomorphism (rotate-IsHom, composed for z1).
-cinv-hom : (j : Z3) (a b : V₄) → cinv j (a · b) ≡ cinv j a · cinv j b
+cinv-hom : (j : Z3) (a b : V₄) → cinv j (a ·₄ b) ≡ cinv j a ·₄ cinv j b
 cinv-hom z0 a b = refl
 cinv-hom z1 a b = trans (cong rotate (rotate-IsHom a b)) (rotate-IsHom (rotate a) (rotate b))
 cinv-hom z2 a b = rotate-IsHom a b
@@ -99,9 +102,9 @@ module Action (𝕍 : Set) (neg : 𝕍 → 𝕍) (neg-neg : (x : 𝕍) → neg (
   sgn-hom odd  even x = refl
   sgn-hom odd  odd  x = sym (neg-neg x)
 
-  -- act(s,m,j) F k = sgnˢ (F (c⁻ʲ (k · m)))  — exactly a4z2_act.
+  -- act(s,m,j) F k = sgnˢ (F (c⁻ʲ (k ·₄ m)))  — exactly a4z2_act.
   act : A4Z2 → C → C
-  act g F k = sgn (chir g) (F (cinv (zee g) (k · mask g)))
+  act g F k = sgn (chir g) (F (cinv (zee g) (k ·₄ mask g)))
 
   -- THE load-bearing fact: act is a homomorphism (the model law computes
   -- the composition of the real actions). Pointwise — no funext needed.
@@ -120,29 +123,29 @@ module Action (𝕍 : Set) (neg : 𝕍 → 𝕍) (neg-neg : (x : 𝕍) → neg (
       C₁ = cinv (jg +₃ jh) (σ jg mh)
       C₂ = cinv jh mh
       idxL idxR : V₄
-      idxL = cinv (jg +₃ jh) (k · (mg · σ jg mh))
-      idxR = cinv jh (cinv jg (k · mg) · mh)
+      idxL = cinv (jg +₃ jh) (k ·₄ (mg ·₄ σ jg mh))
+      idxR = cinv jh (cinv jg (k ·₄ mg) ·₄ mh)
       C₁≡C₂ : C₁ ≡ C₂
       C₁≡C₂ = trans (sym (cinv-add jg jh (σ jg mh)))
                     (cong (cinv jh) (cinv-σ-cancel jg mh))
       idx-eq : idxL ≡ idxR
       idx-eq =
-        trans (cinv-hom (jg +₃ jh) k (mg · σ jg mh))
-        (trans (cong (A ·_) (cinv-hom (jg +₃ jh) mg (σ jg mh)))
+        trans (cinv-hom (jg +₃ jh) k (mg ·₄ σ jg mh))
+        (trans (cong (A ·₄_) (cinv-hom (jg +₃ jh) mg (σ jg mh)))
         (trans (sym (·-assoc A B C₁))
-        (trans (cong ((A · B) ·_) C₁≡C₂)
-        (trans (cong (_· C₂) (sym (cinv-hom (jg +₃ jh) k mg)))
-        (trans (cong (_· C₂) (sym (cinv-add jg jh (k · mg))))
-               (sym (cinv-hom jh (cinv jg (k · mg)) mh)))))))
+        (trans (cong ((A ·₄ B) ·₄_) C₁≡C₂)
+        (trans (cong (_·₄ C₂) (sym (cinv-hom (jg +₃ jh) k mg)))
+        (trans (cong (_·₄ C₂) (sym (cinv-add jg jh (k ·₄ mg))))
+               (sym (cinv-hom jh (cinv jg (k ·₄ mg)) mh)))))))
 
   ------------------------------------------------------------------------
   -- The three REAL carrier actions (faithful to spectral_view.py), and the
   -- proof each EQUALS act of the corresponding model generator.
   ------------------------------------------------------------------------
 
-  -- spectral_translation by mask m:  F'[k] = F[k · m].
+  -- spectral_translation by mask m:  F'[k] = F[k ·₄ m].
   transl : V₄ → C → C
-  transl m F k = F (k · m)
+  transl m F k = F (k ·₄ m)
 
   -- z3_cycle: pullback by c⁻¹ = rotate²  (F[0],F[3],F[1],F[2]).
   zcycle : C → C

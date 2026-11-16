@@ -2,7 +2,6 @@
 -- Sharded round-fold, rounds 7..9: fold round [k7,k8,k9] s6 ≡ s9, sealed opaque.
 module Substrate.Algebra.F2.AES.KAT.FullFcShardC where
 
-open import Substrate.Foundation.Eq using (_≡_; trans; cong)
 open import Substrate.Foundation.Vec using (_∷_; [])
 open import Substrate.Algebra.F2.AES.Round using (State; round)
 open import Substrate.Algebra.F2.AES.Cipher using (fold)
@@ -10,6 +9,10 @@ open import Substrate.Algebra.F2.AES.KAT.Trace using (S6; S7; S8; S9; M6; M7; M8
 open import Substrate.Algebra.F2.AES.KAT.Round7 using (r7)
 open import Substrate.Algebra.F2.AES.KAT.Round8 using (r8)
 open import Substrate.Algebra.F2.AES.KAT.Round9 using (r9)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.WitnessTower.Wedge.OrientationRigCatPermCoxeter4.Elements
 
 module AssembleFcC
   (s6 s7 s8 s9 k7 k8 k9 : State)

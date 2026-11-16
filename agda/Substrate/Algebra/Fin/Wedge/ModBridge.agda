@@ -16,7 +16,7 @@
 -- homomorphism in Algebra.Nat.Mod.Homomorphism (mod-add-hom /
 -- mod-*-right / mod-+-left). The ENTIRE content of `respects` is the
 -- ℕ-level identity
---     (q·b + r) mod n  ≡  (q·(b mod n) + (r mod n)) mod n
+--     (q·b ℕ+ r) mod n  ≡  (q·(b mod n) ℕ+ (r mod n)) mod n
 -- assembled from those, then lifted into Fin (suc n) equality by
 -- `toℕ-injective` (carrier elements are distinguished by `toℕ`) using the
 -- round-trip `toℕ-fromℕ<`. No new mod ring-hom lemmas were needed.
@@ -36,18 +36,29 @@
 
 module Substrate.Algebra.Fin.Wedge.ModBridge where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Times
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.To
 open import Substrate.Foundation.Fin.From2
 open import Substrate.Foundation.Fin.Properties using (toℕ-fromℕ<; toℕ-injective)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
-open import Substrate.Algebra.Nat.Mod using (_mod-suc_; mod-suc-bound)
+open import Substrate.Foundation.Nat.Nat.ModSuc
+open import Substrate.Algebra.Nat.Mod.ModSucBound
+open import Substrate.Algebra.Nat.Mod.ModSucId
+open import Substrate.Algebra.Nat.Mod.ModSucPeriodic
+open import Substrate.Algebra.Nat.Mod.ModSucSuc
+open import Substrate.Algebra.Nat.Mod.SucModSucLt
+open import Substrate.Algebra.Nat.Mod.SucModSucSelf
 open import Substrate.Algebra.Nat.Mod.Homomorphism
   using (mod-add-hom; mod-mult-hom; mod-+-left)
 open import Substrate.Algebra.Wedge using (DivStr; ℕ-div; Trace)
 open import Substrate.Algebra.Wedge.Bridge using (Bridge; transport-trace)
 open import Substrate.Algebra.Fin.Wedge using (Cyc-div; recon-cyc)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- 1. The translation: modular reduction ℕ → Z/(suc n) = Fin (suc n).
@@ -63,25 +74,25 @@ toℕ-reduce n a = toℕ-fromℕ< (mod-suc-bound a n)
 ------------------------------------------------------------------------
 -- 2. The ℕ-level ring-hom identity that IS the content of `respects`.
 --
---   (q·b + r) mod n ≡ (q·(b mod n) + (r mod n)) mod n
+--   (q·b ℕ+ r) mod n ≡ (q·(b mod n) ℕ+ (r mod n)) mod n
 --
 -- Assembled from the existing modular ring-homomorphism lemmas; no new
 -- mod arithmetic is introduced here.
 ------------------------------------------------------------------------
 
 respects-ℕ : (n q b r : ℕ) →
-             (q * b + r) mod-suc n
-               ≡ ((q mod-suc n) * (b mod-suc n) + (r mod-suc n)) mod-suc n
+             (q * b ℕ+ r) mod-suc n
+               ≡ ((q mod-suc n) * (b mod-suc n) ℕ+ (r mod-suc n)) mod-suc n
 respects-ℕ n q b r =
   trans (mod-add-hom (q * b) r n)
-        (trans (cong (λ z → (z + (r mod-suc n)) mod-suc n)
+        (trans (cong (λ z → (z ℕ+ (r mod-suc n)) mod-suc n)
                      (mod-mult-hom q b n))
                (mod-+-left ((q mod-suc n) * (b mod-suc n)) (r mod-suc n) n))
 
 ------------------------------------------------------------------------
 -- 3. Reading the two recon-sides through `toℕ`.
 --
---   LHS = translate (recon ℕ-div q b r) = reduce n (q·b + r)
+--   LHS = translate (recon ℕ-div q b r) = reduce n (q·b ℕ+ r)
 --   RHS = recon (Cyc-div n) q (reduce b) (reduce r)
 -- The bridge equation is their equality in Fin (suc n); both read through
 -- `toℕ` into the two sides of `respects-ℕ`.
@@ -89,14 +100,14 @@ respects-ℕ n q b r =
 
 toℕ-RHS : (n q b r : ℕ) →
           toℕ (recon-cyc n (reduce n q) (reduce n b) (reduce n r))
-            ≡ ((q mod-suc n) * (b mod-suc n) + (r mod-suc n)) mod-suc n
+            ≡ ((q mod-suc n) * (b mod-suc n) ℕ+ (r mod-suc n)) mod-suc n
 toℕ-RHS n q b r =
-  trans (toℕ-reduce n (toℕ (reduce n q) * toℕ (reduce n b) + toℕ (reduce n r)))
-  (trans (cong (λ z → (z * toℕ (reduce n b) + toℕ (reduce n r)) mod-suc n)
+  trans (toℕ-reduce n (toℕ (reduce n q) * toℕ (reduce n b) ℕ+ toℕ (reduce n r)))
+  (trans (cong (λ z → (z * toℕ (reduce n b) ℕ+ toℕ (reduce n r)) mod-suc n)
                (toℕ-reduce n q))
-  (trans (cong (λ z → ((q mod-suc n) * z + toℕ (reduce n r)) mod-suc n)
+  (trans (cong (λ z → ((q mod-suc n) * z ℕ+ toℕ (reduce n r)) mod-suc n)
                (toℕ-reduce n b))
-         (cong (λ z → ((q mod-suc n) * (b mod-suc n) + z) mod-suc n)
+         (cong (λ z → ((q mod-suc n) * (b mod-suc n) ℕ+ z) mod-suc n)
                (toℕ-reduce n r))))
 
 ------------------------------------------------------------------------
@@ -104,9 +115,9 @@ toℕ-RHS n q b r =
 ------------------------------------------------------------------------
 
 respects-cyc : (n q b r : ℕ) →
-               reduce n (q * b + r) ≡ recon-cyc n (reduce n q) (reduce n b) (reduce n r)
+               reduce n (q * b ℕ+ r) ≡ recon-cyc n (reduce n q) (reduce n b) (reduce n r)
 respects-cyc n q b r = toℕ-injective
-  (trans (toℕ-reduce n (q * b + r))
+  (trans (toℕ-reduce n (q * b ℕ+ r))
          (trans (respects-ℕ n q b r) (sym (toℕ-RHS n q b r))))
 
 modn-bridge : (n : ℕ) → Bridge ℕ-div (Cyc-div n)

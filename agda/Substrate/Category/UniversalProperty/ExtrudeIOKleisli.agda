@@ -22,9 +22,12 @@
 module Substrate.Category.UniversalProperty.ExtrudeIOKleisli
   (O : Set) (𝕆 : Set) (⟦_⟧ : 𝕆 → Set) where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
 open import Substrate.Category.UniversalProperty.ExtrudeIO O
   using (IO; ret; _>>=_; >>=-right-id; >>=-assoc)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- ① THE KLEISLI DATA: morphisms are emit-computations ⟦a⟧ → IO ⟦b⟧; id = ret; compose = Kleisli bind.

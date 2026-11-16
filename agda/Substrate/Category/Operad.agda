@@ -10,8 +10,7 @@
 
 module Substrate.Category.Operad where
 
-open import Substrate.Foundation.Level using (Level)
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 
 -- ⟡set1-paydown: parameterize Ops (the ℕ-indexed operation family). `Ops : ℕ → Set` was the
 -- indexed-family FIELD forcing Operad : Set₁; take it as a module parameter and the record lives

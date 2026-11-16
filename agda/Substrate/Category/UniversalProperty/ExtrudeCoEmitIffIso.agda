@@ -6,10 +6,10 @@
 ------------------------------------------------------------------------
 module Substrate.Category.UniversalProperty.ExtrudeCoEmitIffIso where
 
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Algebra.R.Trace using (RealTrace; head)
-open import Substrate.Algebra.R.Trace.Bisim using (_~_; head~; tail~)
+open import Substrate.Algebra.R.Trace.Bisim.Op
+open import Substrate.Foundation.Eq
 
 -- proof-bisimilarity on _~_ : two bisimilarity-proofs agree if their head-equalities coincide and their
 -- tail-proofs are proof-bisimilar. (head~ p, head~ q : head x ≡ head y in ℕ — a set — so they're equal.)
@@ -26,7 +26,7 @@ open _≈~_ public
 -- NO UIP needed. This is the iso for the CoIO family; the CoEmit (parity) round-trip needs ℕ-UIP (labeled).
 ------------------------------------------------------------------------
 open import Substrate.Category.UniversalProperty.ExtrudeIOCostream using (CoIO)
-open import Substrate.Category.UniversalProperty.ExtrudeIOCostreamBisim using (_≈ᶜ_)
+open import Substrate.Category.UniversalProperty.ExtrudeIOCostreamBisim.Approx
 open import Substrate.Category.UniversalProperty.ExtrudeCostreamViaTrace using (coio-trace; ≈ᶜ→~; ≈ᶜ←~)
 
 -- proof-bisim reflexivity (any _~_ proof is proof-bisimilar to itself):
@@ -44,9 +44,11 @@ tail≈~ (iso-CoIO q) = iso-CoIO (tail~ q)
 -- refl — but ℕ is a SET (Hedberg: decidable equality ⇒ UIP), so ANY two head-equalities coincide. Composed
 -- from Foundation.Hedberg (Decidable⇒UIP) + Foundation.Nat (_≟_). This closes ⟡iff-iso-coemit-uip.
 ------------------------------------------------------------------------
-open import Substrate.Foundation.Nat using (_≟_)
-open import Substrate.Foundation.Hedberg using (Decidable⇒UIP)
-open import Substrate.Category.UniversalProperty.ExtrudeCoEmitViaTrace using (coemit-trace; ≈ᵉ→~; ≈ᵉ←~)
+open import Substrate.Foundation.Nat.Dec
+open import Substrate.Foundation.Hedberg.DecidableUIP
+open import Substrate.Category.UniversalProperty.ExtrudeCoEmitViaTrace.Approx
+open import Substrate.Category.UniversalProperty.ExtrudeCoEmitViaTrace.ApproxTo
+open import Substrate.Category.UniversalProperty.ExtrudeCoEmitViaTrace.CoemitTrace
 open import Substrate.Category.UniversalProperty.ExtrudeCoEmitMonad ℕ using (CoEmit; _≈ᵉ_; ret; emitᶜ; step)
 
 -- ℕ is a set: any two proofs of m ≡ n in ℕ are equal (the head component's justification).
@@ -69,7 +71,8 @@ iso-CoEmit-head q = ℕ-UIP _ _
 -- groupoid (the coinductive carrier, up-to). The iff (304, both directions) IS the frame-groupoid iso — no
 -- proof-bisimilarity round-trip needed (that is the STRONGER definitional iso, landed for CoIO at 308).
 ------------------------------------------------------------------------
-open import Substrate.Algebra.R.Trace.Bisim using (~-sym; ~-trans)
+open import Substrate.Algebra.R.Trace.Bisim.Sym
+open import Substrate.Algebra.R.Trace.Bisim.Trans
 
 record FrameIso {c d : CoEmit ℕ} : Set where   -- the stencil iso: connected in the ~-groupoid, both directions
   field
@@ -129,7 +132,10 @@ tail≈~ (~-prop p q) = ~-prop (tail~ p) (tail~ q)
 -- shows ~ is a PROP up to ≈~, so EVERY round-trip is ≈~ id — no map-commutation needed. The CoEmit proof-iso
 -- reaches the SAME grade as CoIO (308), via the point (ℕ-UIP) + the cover (coinduction), not definitional invertibility.
 ------------------------------------------------------------------------
-open import Substrate.Category.UniversalProperty.ExtrudeCoEmitViaTrace using () renaming (≈ᵉ→~ to E→; ≈ᵉ←~ to E←)
+open import Substrate.Category.UniversalProperty.ExtrudeCoEmitViaTrace.Approx
+  renaming (≈ᵉ←~ to E←)
+open import Substrate.Category.UniversalProperty.ExtrudeCoEmitViaTrace.ApproxTo
+  renaming (≈ᵉ→~ to E→)
 
 iso-CoEmit-tail : {c d : CoEmit ℕ} (q : coemit-trace c ~ coemit-trace d) → (E→ (E← q)) ≈~ q
 iso-CoEmit-tail q = ~-prop (E→ (E← q)) q

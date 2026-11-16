@@ -34,12 +34,12 @@
 
 module Substrate.Category.FreeUniversalProperty where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Foundation.Unit using (⊤; tt)
 open import Substrate.Category.FreeOverBasis
   using (AlgebraClass; Has-structure; Hom-preserves; trivial-AlgebraClass;
          FreeOverBasis; mkFreeOverBasis)
 open import Substrate.Category.UniversalProperty using (UPArrowP; mkUP)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. THE CENTER. Free ⊣ Forgetful, universal-arrow form, with content.

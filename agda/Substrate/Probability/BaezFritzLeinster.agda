@@ -24,13 +24,13 @@
 
 module Substrate.Probability.BaezFritzLeinster where
 
-open import Substrate.Foundation.Level using (Level; _⊔_) renaming (suc to lsuc)
-open import Substrate.Foundation.Eq using (_≡_)
+open import Substrate.Foundation.Level using (Level; _⊔_)
 
 open import Substrate.Probability.Simplex
 open import Substrate.Probability.Entropy
 open import Substrate.Probability.KLDivergence
 open import Substrate.Probability.MarkovCategory
+open import Substrate.Foundation.Eq
 
 private
   variable

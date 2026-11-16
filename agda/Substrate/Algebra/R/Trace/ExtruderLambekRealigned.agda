@@ -15,13 +15,19 @@
 
 module Substrate.Algebra.R.Trace.ExtruderLambekRealigned where
 
-open import Substrate.Foundation.Eq      using (_≡_; refl)
-open import Substrate.Foundation.Nat     using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Product using (_×_; _,_)
 
 open import Substrate.Algebra.R.Trace       using (RealTrace; head; tail)
-open import Substrate.Algebra.R.Trace.Bisim using (_~_; head~; tail~; ~-refl; cons)
-open import Substrate.Algebra.R.Trace.Final using (out; into; lambek-out-into; lambek-into-out; self-unfold)
+open import Substrate.Algebra.R.Trace.Bisim.Cons
+open import Substrate.Algebra.R.Trace.Bisim.Op
+open import Substrate.Algebra.R.Trace.Bisim.Refl
+open import Substrate.Algebra.R.Trace.Final.Into
+open import Substrate.Algebra.R.Trace.Final.LambekIntoOut
+open import Substrate.Algebra.R.Trace.Final.LambekOutInto
+open import Substrate.Algebra.R.Trace.Final.Out
+open import Substrate.Algebra.R.Trace.Final.SelfUnfold
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- THE LAMBEK FIXED POINT, as a corollary of Final (NOT re-declared). RealTrace ≅
@@ -55,7 +61,7 @@ realtrace-lambek = record
 -- RealTrace x ~ ana out x — x is the fixed point of the observation coalgebra.
 -- (The ad-hoc cyc-is-fixpoint / cyc-hasfix are instances of self-unfold + cons.)
 ------------------------------------------------------------------------
-open import Substrate.Algebra.R.Trace.Final using (ana)
+open import Substrate.Algebra.R.Trace.Final.Ana
 
 realtrace-is-fixpoint : (x : RealTrace) → x ~ ana out x
 realtrace-is-fixpoint = self-unfold

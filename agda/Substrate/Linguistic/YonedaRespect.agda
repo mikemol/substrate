@@ -20,7 +20,8 @@
 
 module Substrate.Linguistic.YonedaRespect where
 
-open import Substrate.Linguistic.Roster using (Lang; witness-of)
+open import Substrate.Linguistic.Roster.Lang
+open import Substrate.Linguistic.Roster.WitnessOf
 open import Substrate.Linguistic.Morphism using (LanguageMorphism)
 open import Substrate.Linguistic.CategoryLaws using (_≈M_)
 open import Substrate.Linguistic.MorphismSetoid using (LangMor-Setoid)

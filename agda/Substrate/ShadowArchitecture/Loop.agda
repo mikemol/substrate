@@ -35,16 +35,15 @@
 module Substrate.ShadowArchitecture.Loop where
 
 open import Substrate.Foundation.List using (List; []; _∷_; foldl; foldr)
-open import Substrate.Foundation.Sum using (_⊎_; inj₁; inj₂)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl)
+open import Substrate.Foundation.Sum.Sum
 
 open import Substrate.ShadowArchitecture.FanoLabeling
-open import Substrate.ShadowArchitecture.Duality using (normal-vector)
+open import Substrate.ShadowArchitecture.Duality.NormalVector
 open import Substrate.ShadowArchitecture.SelfReference
   using (_on_; L₆-normal-is-110)
 open import Substrate.ShadowArchitecture.Mode
   using (001-on-L₆)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. The five loop steps.

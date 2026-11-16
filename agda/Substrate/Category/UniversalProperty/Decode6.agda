@@ -28,9 +28,10 @@
 
 module Substrate.Category.UniversalProperty.Decode6 where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _<_; s≤s; z≤n)
+open import Substrate.Foundation.Nat.Le
+open import Substrate.Foundation.Nat.Lt
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Product using (_×_; _,_; Σ; proj₁)
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Category.UniversalProperty.TmDBGodel using (TmDB; var; S; K; I; app)
 open import Substrate.Category.UniversalProperty.ObjectUniverse using (O)
 open import Substrate.Algebra.Quotient.CRT using (combine)
@@ -42,6 +43,7 @@ open import Substrate.Category.UniversalProperty.Vacuity using (eq-contentful)
 open import Substrate.Category.UniversalProperty.Recognized using (crt-recognized; content)
 open import Substrate.Category.UniversalProperty.Quotient using (Quotient-contentful)
 open import Substrate.Category.UniversalProperty.QuotientProduct using (QuotientProduct-contentful)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. The ℕ ↔ O coding: n ↦ (grade 0, var n); recover by reading the var index.

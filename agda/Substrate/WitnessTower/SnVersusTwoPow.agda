@@ -27,8 +27,8 @@
 --   (B) THE COMPLEMENT-8 REAPPEARANCE (the invariant under the crossover):
 --       the gap to the CEILING power of 2 is 8 at BOTH n = 4 (32 ∸ 24) and
 --       n = 5 (128 ∸ 120) — but at DIFFERENT ceiling exponents (5 and 7).
---       The dim-4 Hodge closure "24 + 8 = 32 = 2⁵" is the n = 4 instance; the
---       n = 5 complement-8 (120 + 8 = 128 = 2⁷) is arithmetically the same
+--       The dim-4 Hodge closure "24 ℕ+ 8 = 32 = 2⁵" is the n = 4 instance; the
+--       n = 5 complement-8 (120 ℕ+ 8 = 128 = 2⁷) is arithmetically the same
 --       gap at a different exponent, NOT the same Hodge-dim-4 construction.
 --
 -- The common structure the disappear/reappear instantiates: the gap
@@ -45,11 +45,14 @@
 
 module Substrate.WitnessTower.SnVersusTwoPow where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _^_; _∸_; _+_)
-open import Substrate.Foundation.Bool using (Bool; true; false)
-open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Nat.Monus
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Pow
+open import Substrate.Foundation.Bool.Bool
 open import Substrate.WitnessTower.Enumerate using (factorial)
 open import Substrate.WitnessTower.Wedge.OrientationRigCatPermSign using (_<ᵇ_)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 0. |Sₙ| is the tower's own count: factorial n = |perms n|. (Named here so
@@ -179,7 +182,7 @@ open import Substrate.WitnessTower.Enumerate using (perms; perms-length; lengthL
 --   Reserved = Σ Codeword IsReserved            (comment: 8)
 --   Live     = Σ Codeword (¬ IsReserved)         (comment: 24)
 -- over the RM(1,4) code (WitnessTower.Codeword: dimension 5, 2⁵ = 32
--- codewords). So 24 + 8 = 32 is Live + Reserved = all-codewords at n = 4.
+-- codewords). So 24 ℕ+ 8 = 32 is Live ℕ+ Reserved = all-codewords at n = 4.
 --
 -- HONEST BOUNDARY: the cardinalities 24 and 8 are stated in COMMENTS on those
 -- Σ-types. UPDATE (◆AI-1b''/1d discharged): |Reserved| ≡ 8 IS now a term —
@@ -194,10 +197,10 @@ open import Substrate.WitnessTower.Enumerate using (perms; perms-length; lengthL
 ------------------------------------------------------------------------
 
 -- The arithmetic identity the codeword decomposition would realise at n = 4:
--- Live(24) + Reserved(8) = 32 = 2⁵. Stated as pure ℕ (the shadow); the
+-- Live(24) ℕ+ Reserved(8) = 32 = 2⁵. Stated as pure ℕ (the shadow); the
 -- codeword-side proof of the counts is ◆AI-1b.
-codeword-closure-4 : |S| 4 + complement 4 ≡ 2 ^ 5
-codeword-closure-4 = refl   -- 24 + 8 ≡ 32
+codeword-closure-4 : |S| 4 ℕ+ complement 4 ≡ 2 ^ 5
+codeword-closure-4 = refl   -- 24 ℕ+ 8 ≡ 32
 
 ------------------------------------------------------------------------
 -- CO-APEX 3 (the surfaced gap, CORRECTED TWICE). "Leave ceil-exp as-is" was a

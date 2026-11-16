@@ -31,9 +31,11 @@
 
 module Substrate.Algebra.Q.HetBasisNest where
 
-open import Substrate.Foundation.Nat using (ℕ; _*_)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Times
 open import Substrate.Algebra.Q.HetBasis
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
 
 ------------------------------------------------------------------------
 -- Inner fraction carrier + its cross-multiplication equality in R = ℕ.

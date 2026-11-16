@@ -11,8 +11,8 @@
 
 module Substrate.Category.RuleAction.SpanCoupling where
 
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Bool using (Bool)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Bool.Bool
 open import Substrate.Foundation.List using (List; [])
 open import Substrate.Foundation.Maybe using (Maybe; nothing)
 

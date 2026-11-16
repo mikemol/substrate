@@ -39,7 +39,10 @@ module Substrate.Category.GTorsor where
 open import Substrate.Foundation.Level using (Level; _⊔_)
 open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂)
 open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; trans; cong)
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Algebra.GL3F2
 
 -- (Level variables introduced per-record / per-function below.)
 

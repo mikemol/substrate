@@ -13,9 +13,10 @@
 
 module Substrate.Algebra.F2.Polynomial.Wedge.DegreeLt where
 
-open import Substrate.Foundation.Nat using (ℕ; _<_)
+open import Substrate.Foundation.Nat.Lt
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Maybe using (Maybe; nothing; just)
-open import Substrate.Foundation.Empty using (⊥)
+open import Substrate.Foundation.Empty.Bot
 open import Substrate.Foundation.Unit using (⊤)
 
 degree-lt : Maybe ℕ → Maybe ℕ → Set

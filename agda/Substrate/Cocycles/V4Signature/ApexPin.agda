@@ -27,16 +27,16 @@
 
 module Substrate.Cocycles.V4Signature.ApexPin where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Algebra.SetoidGroup using (SetoidGroup)
 
-open import Substrate.Groups.V4.Bijection using (V₄)
+open import Substrate.Groups.V4.Bijection.V4
 
 -- the tower apex (rung-3 factor of the whole tower = S₄)
 open import Substrate.WitnessTower.WholeTower using (apex-V₄)
 
 -- the CY-5 cocycle's gauge
 open import Substrate.Cocycles.V4Signature.V4GroupSetoid using (V₄-Group-Setoid)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- THE PIN. Both sides are `to-setoid V₄-Group : SetoidGroup V₄ _≡_`.

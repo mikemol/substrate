@@ -25,18 +25,18 @@
 
 module Substrate.Algebra.Q.HetSymbolic where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Function using (id)
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Algebra.Q.HetBasis
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- A free term algebra: atoms (labels, NOT numbers) and one binary product.
 ------------------------------------------------------------------------
 
-data Tm : Set where      -- ⟦shape:27e68fcc atom,_∙_⟧
-  atom : ℕ → Tm
-  _∙_  : Tm → Tm → Tm
+data Tm-HetSym : Set where      -- ⟦shape:27e68fcc atom,_∙_⟧
+  atom : ℕ → Tm-HetSym
+  _∙_  : Tm-HetSym → Tm-HetSym → Tm-HetSym
 
 infixl 7 _∙_
 
@@ -45,7 +45,7 @@ infixl 7 _∙_
 -- semigroup operation. This is the ONLY "law" content — purely symbolic.
 ------------------------------------------------------------------------
 
-data _≈t_ : Tm → Tm → Set where
+data _≈t_ : Tm-HetSym → Tm-HetSym → Set where
   rfl   : ∀ {t}      → t ≈t t
   comm  : ∀ {a b}    → (a ∙ b) ≈t (b ∙ a)
   assoc : ∀ {a b c}  → ((a ∙ b) ∙ c) ≈t (a ∙ (b ∙ c))
@@ -70,7 +70,7 @@ data _≈t_ : Tm → Tm → Set where
 
 -- The symbolic product ∙ is itself the bridged cross with IDENTITY codecs
 -- (same language on both sides, no translation needed): definitional.
-∙-via-bridges : (s t : Tm) → (s ∙ t) ≡ viaBridges id id _∙_ s t
+∙-via-bridges : (s t : Tm-HetSym) → (s ∙ t) ≡ viaBridges id id _∙_ s t
 ∙-via-bridges s t = refl
 
 ------------------------------------------------------------------------
@@ -83,7 +83,7 @@ data _≈t_ : Tm → Tm → Set where
 open CrossEq _∙_ _≈t_ rfl symm renaming (_≈H_ to _≈s_)
 
 -- Atoms as names (the ℕ is a LABEL, not a quantity).
-a b k : Tm
+a b k : Tm-HetSym
 a = atom 0
 b = atom 1
 k = atom 2

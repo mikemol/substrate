@@ -29,11 +29,11 @@
 
 module Substrate.Category.UniversalProperty.ExtrudeStepDecidable where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Negation using (Dec; yes; no)
+open import Substrate.Foundation.Negation.Dec
 open import Substrate.Foundation.Product using (_×_; _,_)
-open import Substrate.Algebra.R.Trace.SKIShedDuality using (S; K; I; _∙_) renaming (Tm to Tm⟦533ef80d⟧)
+open import Substrate.Algebra.R.Trace.SKIShedDuality.Tm
+open import Substrate.Foundation.Eq
+open import Substrate.Algebra.R.Trace.SKIShedDuality.Tm
 
 ------------------------------------------------------------------------
 -- ① THE WITHIN-STEP OBSERVATION: a Tm⟦533ef80d⟧'s head shape is a FINITE tag (S / K / I / app) — the cheapest
@@ -42,7 +42,7 @@ open import Substrate.Algebra.R.Trace.SKIShedDuality using (S; K; I; _∙_) rena
 data HeadShape : Set where
   isS isK isI isApp : HeadShape
 
-head-shape : Tm⟦533ef80d⟧ → HeadShape
+head-shape : Tm → HeadShape
 head-shape S       = isS
 head-shape K       = isK
 head-shape I       = isI
@@ -72,7 +72,7 @@ isApp ≟ₕ isI   = no λ ()
 
 -- the within-step cycle-test observation: compare the head shapes (decidable) — the head is decided, the
 -- subterms (for an app) are the RESIDUE bled to the next unfold step (never decided totally here):
-step-obs : (a b : Tm⟦533ef80d⟧) → Dec (head-shape a ≡ head-shape b)
+step-obs : (a b : Tm) → Dec (head-shape a ≡ head-shape b)
 step-obs a b = head-shape a ≟ₕ head-shape b
 
 ------------------------------------------------------------------------
@@ -80,12 +80,12 @@ step-obs a b = head-shape a ≟ₕ head-shape b
 --    the ARGUMENTS are the residue — the next step's observation. This is the search-as-reduction-strategy:
 --    decide the cheap head, defer the subterms coinductively (à la Bisim.tail~).
 ------------------------------------------------------------------------
-residue : Tm⟦533ef80d⟧ → Tm⟦533ef80d⟧ × Tm⟦533ef80d⟧
+residue : Tm → Tm × Tm
 residue (f ∙ x) = f , x
 residue a       = a , a
 
 -- head decided + residue deferred: an app's observation is isApp (decided), its residue the two subterms:
-obs-bleeds-residue : (f x : Tm⟦533ef80d⟧) → (head-shape (f ∙ x) ≡ isApp) × (residue (f ∙ x) ≡ (f , x))
+obs-bleeds-residue : (f x : Tm) → (head-shape (f ∙ x) ≡ isApp) × (residue (f ∙ x) ≡ (f , x))
 obs-bleeds-residue f x = refl , refl
 
 ------------------------------------------------------------------------

@@ -117,17 +117,19 @@ import Substrate.Algebra.Wedge.Shape.Double as Double
 import Substrate.Algebra.Wedge.Shape.Twist as Twist
 import Substrate.Algebra.Wedge.Shape.Register as Reg
 import Substrate.Algebra.Wedge.Shape.Register.FromTrace as FromTrace
-import Substrate.Algebra.Wedge.Monoidal as Mon
 import Substrate.Algebra.Wedge.Registry as Registry
 import Substrate.Algebra.F2.Linear.BilinearFromImages as Bilin
 import Substrate.Algebra.CayleyDickson.Cocycle as Cocycle
-import Substrate.Algebra.CayleyDickson.Grade as Grade
 import Substrate.Algebra.CayleyDickson.Curve as Curve
 import Substrate.Algebra.CayleyDickson.Coboundary as Coboundary
 import Substrate.Algebra.CayleyDickson.Hilbert2D as Hilbert2D
 import Substrate.Algebra.CayleyDickson.Hilbert2DContinuous as Hilbert2DContinuous
 import Substrate.Algebra.Wedge.Wedderburn as Wedderburn
 import Substrate.Algebra.Wedge.CrossMulGraded as CrossMulGraded
+open import Substrate.Category.CliffordEmissionAlgebra
+import Substrate.Algebra.CayleyDickson.Grade as Grade
+open import Substrate.Algebra.Z.ZRingNorm
+import Substrate.Algebra.Wedge.Monoidal as Mon
 
 ------------------------------------------------------------------------
 -- Live references to the proven cells. Renaming/removing any breaks this

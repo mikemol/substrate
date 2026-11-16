@@ -26,14 +26,20 @@
 
 module Substrate.S5.S5MatrixBridge where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_)
-open import Substrate.Foundation.Eq  using (_≡_; refl; sym; trans; cong)
-open import Substrate.Algebra.Z using (ℤ; -ℤ_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Times
+open import Substrate.Algebra.Z.Int
+open import Substrate.Algebra.Z.Int2
 open import Substrate.Algebra.R.Trace.Properties using (det4)
 
 import Substrate.S5.S5Matrix                            as S5M
 import Substrate.Algebra.R.Trace.CFMatrixBridge         as CF
 import Substrate.Algebra.R.Trace.CFMatrixBridge.Properties as CFP
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- 1. The structural ISO: the two Mat records are one 2×2 ℕ-matrix.

@@ -15,7 +15,7 @@
 
 module Substrate.Algebra.Q.JacobianExpr where
 
-open import Substrate.Algebra.Z using (ℤ; +_; -suc_)
+open import Substrate.Algebra.Z.Int
 import Substrate.Algebra.Z.JacobianResidue as R
 open R using (MPoly; _*P_; _+P_)
 

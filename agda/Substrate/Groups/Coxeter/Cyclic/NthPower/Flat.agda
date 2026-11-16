@@ -11,17 +11,45 @@
 
 {-# OPTIONS --safe --without-K #-}
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
+open import Substrate.Foundation.Nat.Nat
 
 open import Substrate.Groups.Coxeter.Word using (Word; _++_)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Groups.Coxeter.Cyclic.Base.Gen
+open import Substrate.Groups.Coxeter.Core.NormalizeAppend.Left
+open import Substrate.Groups.Coxeter.Core.NormalizeAppend.Right
 
 module Substrate.Groups.Coxeter.Cyclic.NthPower.Flat (n : ℕ) where
 
-open import Substrate.Groups.Coxeter.Cyclic.Existential n using (normalize)
+-- ⚑ `normalize` IS NOT `Existential`'s (Ⓑ2c-BRIDGE10‴).  `--provides` shows
+-- Existential exporting six names, none of them `normalize`; it arrived through
+-- Existential's own `open ListPresentation`, two hops from anywhere it is named.
+-- A `using` naming a non-export is only a WARNING, so this bound nothing and the
+-- error landed at the use site.  Applied to the SAME five arguments `Core` uses,
+-- so both see one instance — a differently-applied copy is a different type.
+-- ⚑ ORDER MATTERS: `Base` supplies `Gen`/`insert`, `Existential` supplies
+-- `Canonical-ex`/`c-ε`/`insert-canonical-ex`, and the ListPresentation
+-- APPLICATION consumes all five — so it must come after both.  Agda binds from
+-- the statement onward, which `agda_defs --late-imports` exists to catch.
+open import Substrate.Groups.Coxeter.Cyclic.Base n
+-- ⛑ Ⓡ2ᵈ: the `Defs` LEAVES this shard cites, derived by
+-- `rewire_fcr --siblings Defs <file>` — a SET, not a prefix. `Defs`'s
+-- re-opens are bare (Ⓡ1), so a leaf-defined name no longer arrives
+-- through the root. Each leaf carries its OWN minimal telescope, so the
+-- argument lists differ by leaf and are read from each header.
+open import Substrate.Groups.Coxeter.Cyclic.Base.Insert n
+open import Substrate.Groups.Coxeter.Cyclic.Existential n
+open import Substrate.Groups.Coxeter.ListPresentation
+  Gen Canonical-ex c-ε insert insert-canonical-ex
 open import Substrate.Groups.Coxeter.Cyclic.Core n using (_·_; normalize-idem; normalize-append; normalize-append-right)
-open import Substrate.Groups.Coxeter.Cyclic.Base n using (Gen)
-open import Substrate.Groups.Coxeter.Cyclic.NthPower.Concat n
+-- ⚑ A THIRD DISSOLVED PARENT (Ⓑ2c-BRIDGE10‴).  `NthPower.Concat` was split into
+-- the six leaves below by the same commit; its consumers were not rewired either.
+open import Substrate.Groups.Coxeter.Cyclic.NthPower.Concat.PowerConcatEq n
+open import Substrate.Groups.Coxeter.Cyclic.NthPower.Concat.NormalizePower n
+open import Substrate.Groups.Coxeter.Cyclic.NthPower.Concat.PowerCyclicNormalize n
 
 ------------------------------------------------------------------------
 -- 1. apply-power-suc / apply-power-suc-flat.

@@ -29,14 +29,13 @@
 module Substrate.ShadowArchitecture.Weight where
 open import Substrate.Algebra.F2.FanoPlane using (Point; FanoLine)
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Literals using (₁; ₂; ₃; ₄; ₅; ₆; ₇)
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Eq
-  using (_≡_; refl)
 
 open import Substrate.ShadowArchitecture.FanoLabeling
-open import Substrate.ShadowArchitecture.Duality using (normal-vector)
+open import Substrate.ShadowArchitecture.Duality.NormalVector
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. Point weight.

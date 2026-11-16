@@ -43,11 +43,13 @@ module Substrate.Category.Equalizer where
 open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂)
 open import Substrate.Foundation.Function using (id; const)
 open import Substrate.Foundation.Level using (Level; _⊔_)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; trans; cong)
 
 open import Substrate.Category.Coalgebra
   using (Endomap; FixedPoint; fixed)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 private
   variable

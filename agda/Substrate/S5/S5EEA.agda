@@ -29,6 +29,11 @@
 module Substrate.S5.S5EEA where
 
 open import Substrate.S5.S5Verdict using (_≡_; refl; sym; trans; cong)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.List
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
 
 -- the DivStr interface, reproduced field-for-field from Algebra.Wedge.DivStr
 -- ⟡set1-paydown: parameterize Carrier. `C : Set` was the carrier FIELD, forcing

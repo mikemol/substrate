@@ -21,9 +21,10 @@
 module Substrate.Category.Opposite where
 
 open import Substrate.Foundation.Level using (Level)
-open import Substrate.Foundation.Eq using (_≡_; sym)
 
-open import Substrate.Category.CategoryOf using (CategoryOf; mkCategoryOf)
+open import Substrate.Category.CategoryOf.CategoryOf
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
 
 ------------------------------------------------------------------------
 -- Opposite : CategoryOf → CategoryOf.

@@ -30,9 +30,10 @@
 module Substrate.Category.Cone.EdgeApex where
 
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Level using (Level; _⊔_)
-open import Substrate.Foundation.Eq using (_≡_)
+open import Substrate.Foundation.Eq
+open import Substrate.Category.UniversalProperty.Coverage
 
 private
   variable

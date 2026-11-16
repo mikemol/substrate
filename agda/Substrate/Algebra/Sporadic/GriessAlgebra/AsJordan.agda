@@ -37,10 +37,10 @@
 {-# OPTIONS --safe --without-K #-}
 
 open import Substrate.Foundation.Level using (Level)
-open import Substrate.Foundation.Eq using (_≡_)
 
 open import Substrate.Category.JordanAlgebra
   using (JordanAlgebra; mkJordanAlgebra)
+open import Substrate.Foundation.Eq
 
 module Substrate.Algebra.Sporadic.GriessAlgebra.AsJordan
   -- The Griess-like algebra's carrier + commutative structure.

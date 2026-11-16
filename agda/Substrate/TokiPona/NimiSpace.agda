@@ -25,10 +25,16 @@
 
 module Substrate.TokiPona.NimiSpace where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Vec using (Vec; lookup)
-  renaming ([] to []ᵥ; _∷_ to _∷ᵥ_)
+-- ⚑ Ⓑ8: THE BAN SWEEP (771283c8) STRIPPED HALF A `renaming` CLAUSE.  This read
+-- `renaming ([] to []ᵥ; _∷_ to _∷ᵥ_)`; the sweep removed the `_∷_` half and left
+-- the `[]` half, so `∷ᵥ` had NO definer anywhere in the tree (`--collide _∷ᵥ_`
+-- → 0 providers) while `[]ᵥ` still bound.  One error, at :70, for a module that
+-- blocked 67 others.  Both halves are now the BARE constructors, per the ban —
+-- the subscripted spellings existed only to dodge a collision the bare import
+-- does not have here.
+open import Substrate.Foundation.Vec
 
 open import Substrate.Algebra.F2.Vector using (basis)
 open import Substrate.TokiPona.SemanticSpace using (SemVec; ∅; _⊕_)
@@ -40,10 +46,10 @@ open import Substrate.TokiPona.Nimi
          li-p; e-p; pi-p; la-p; o-p;
          en; tan; tawa; lon; kepeken)
 
-open import Substrate.Algebra.F2.Linear using (Linear)
 open import Substrate.Category.FreeLinearization using (FreeLinearization)
 open import Substrate.Category.FreeLinearization.FromImages
   using (free-linearize)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. The default one-hot embedding.
@@ -53,7 +59,6 @@ open import Substrate.Category.FreeLinearization.FromImages
 -- supports arbitrary image maps via WithTarget below.
 ------------------------------------------------------------------------
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
 nimi-as-vector : Nimi → SemVec nimi-count
 nimi-as-vector n = basis (nimi-index n)
 
@@ -68,13 +73,13 @@ nimi-as-vector n = basis (nimi-index n)
 
 nimi-vec : Vec Nimi nimi-count
 nimi-vec =
-  jan    ∷ᵥ soweli ∷ᵥ kili   ∷ᵥ moku  ∷ᵥ tomo  ∷ᵥ
-  ma     ∷ᵥ telo   ∷ᵥ ilo    ∷ᵥ ijo   ∷ᵥ pona  ∷ᵥ
-  ike    ∷ᵥ suli   ∷ᵥ lili   ∷ᵥ wawa  ∷ᵥ sin   ∷ᵥ
-  toki   ∷ᵥ olin   ∷ᵥ pana   ∷ᵥ mi    ∷ᵥ sina  ∷ᵥ
-  ona    ∷ᵥ ni     ∷ᵥ li-p   ∷ᵥ e-p   ∷ᵥ pi-p  ∷ᵥ
-  la-p   ∷ᵥ o-p    ∷ᵥ en     ∷ᵥ tan   ∷ᵥ tawa  ∷ᵥ
-  lon    ∷ᵥ kepeken ∷ᵥ []ᵥ
+  jan    ∷ soweli ∷ kili   ∷ moku  ∷ tomo  ∷
+  ma     ∷ telo   ∷ ilo    ∷ ijo   ∷ pona  ∷
+  ike    ∷ suli   ∷ lili   ∷ wawa  ∷ sin   ∷
+  toki   ∷ olin   ∷ pana   ∷ mi    ∷ sina  ∷
+  ona    ∷ ni     ∷ li-p   ∷ e-p   ∷ pi-p  ∷
+  la-p   ∷ o-p    ∷ en     ∷ tan   ∷ tawa  ∷
+  lon    ∷ kepeken ∷ []
 
 nimi-from-index : Fin nimi-count → Nimi
 nimi-from-index = lookup nimi-vec

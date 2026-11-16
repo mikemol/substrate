@@ -21,15 +21,16 @@
 
 module Substrate.Category.Cone.EqualizerWithMorphisms where
 
-open import Substrate.Foundation.Bool using (Bool; true; false)
+open import Substrate.Foundation.Bool.Bool
 open import Substrate.Foundation.Fin.Literals using (₁)
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Level using (Level)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym)
 
 open import Substrate.Category.Cone.WithMorphisms
 open import Substrate.Category.Equalizer
   using (Equalizer-Of; equalizer-incl; equalizer-eq)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
 
 private
   variable

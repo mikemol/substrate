@@ -23,17 +23,19 @@
 
 module Substrate.Algebra.Q.HetReduceBezout where
 
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Iff using (_⇔_; ⇔-refl)
-open import Substrate.Algebra.Z using (ℤ; +_)
-open import Substrate.Algebra.Z.Arithmetic using (_+ℤ_; _*ℤ_)
-open import Substrate.Algebra.Q using (ℚ; num; denominator)
-open import Substrate.Algebra.Q.Reduction using (abs-ℤ; gcd-of-ℚ; is-reduced)
+open import Substrate.Algebra.Z.Int
+
+open import Substrate.Algebra.Q.Denominator
+open import Substrate.Algebra.Q.Rat
+open import Substrate.Algebra.Q.Reduction.AbsInt
+open import Substrate.Algebra.Q.Reduction.GcdOfRat
+open import Substrate.Algebra.Q.Reduction.IsReduced
 open import Substrate.Algebra.Q.HetBasis using (HetQ; _//_; hnum; hden; toHetQ)
-open import Substrate.Algebra.Nat.GCD.EEATrace using (EEATrace)
 open import Substrate.Algebra.Nat.GCD.GcdTrace using (coprime-trace)
 open import Substrate.Algebra.Z.Bezout using (BezoutℤWitness; bezout-ℤ)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. The two carriers of a HetQ ℤ ℕ, read off a ℚ via `toHetQ`. The numerator

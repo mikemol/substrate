@@ -16,14 +16,19 @@
 
 module Substrate.Algebra.Wedge.NuShapeIso where
 
-open import Substrate.Foundation.Eq  using (_≡_; refl)
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
 open import Substrate.Algebra.Wedge using (DivStr; z; quot; rem; ℕ-div)
 open import Substrate.Algebra.Wedge.Coalgebra using (WedgeCoalg; divide)
 open import Substrate.Algebra.R.Trace using (RealTrace; head; tail)
-open import Substrate.Algebra.R.Trace.Final using (Coalg; ana; ana-head; ana-tail; ana-unique)
-open import Substrate.Algebra.R.Trace.Bisim using (_~_; head~; tail~; ~-refl)
+open import Substrate.Algebra.R.Trace.Final.Ana
+open import Substrate.Algebra.R.Trace.Final.AnaHead
+open import Substrate.Algebra.R.Trace.Final.AnaTail
+open import Substrate.Algebra.R.Trace.Final.AnaUnique
+open import Substrate.Algebra.R.Trace.Final.Coalg
+open import Substrate.Algebra.R.Trace.Bisim.Op
+open import Substrate.Algebra.R.Trace.Bisim.Refl
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- ① THE QUOTIENT-COALGEBRA over ℕ-div. A wedge-coalgebra's unfold, at state (a,b),

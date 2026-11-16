@@ -15,6 +15,8 @@
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.Category.Site where
+open import Substrate.Algebra.Wedge.TraceMuStep
+open import Substrate.Probability.MarkovCategory
 
 ------------------------------------------------------------------------
 -- 1. The CoverData record.

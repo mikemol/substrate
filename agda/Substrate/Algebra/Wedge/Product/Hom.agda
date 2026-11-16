@@ -4,7 +4,7 @@
 -- SLICE 4: graded homomorphisms — the bridge layer between graded products, the
 -- graded analog of Algebra.Wedge.Bridge. A GradedHom P Q is a grade-preserving
 -- map respecting the unit and the wedge product. With identity and composition,
--- GradedProduct + GradedHom is a category; this is how graded roots
+-- GradedProduct ℕ+ GradedHom is a category; this is how graded roots
 -- interconnect (the graded form of "raise the bridge-degree").
 --
 --   * id-hom / comp-hom — the category structure.
@@ -21,14 +21,17 @@
 
 module Substrate.Algebra.Wedge.Product.Hom where
 
-open import Substrate.Foundation.Nat using (ℕ; _+_)
-open import Substrate.Foundation.Eq using (_≡_; refl; cong; trans)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
 open import Substrate.Foundation.Product using (Σ; _,_)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; _++_; map)
 -- ⟡set1-paydown: GradedProduct's carrier family is now its param, so the old
 -- `C P` / `C Q` projections become the module params Cᴾ / Cᴽ threaded here.
 open import Substrate.Algebra.Wedge.Product
   using (GradedProduct; u; _∧_; vec-product)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Trans
 
 ------------------------------------------------------------------------
 -- 1. The graded homomorphism: grade-preserving, unit- and ∧-respecting.
@@ -89,6 +92,6 @@ flatten-map h (n , x) = n , map₀ h x
 flatten-map-· : {Cᴾ Cᴽ : ℕ → Set} {P : GradedProduct Cᴾ} {Q : GradedProduct Cᴽ}
                 (h : GradedHom P Q)
                 {i j : ℕ} (a : Cᴾ i) (b : Cᴾ j) →
-                flatten-map h (i + j , _∧_ P a b)
-                  ≡ (i + j , _∧_ Q (map₀ h a) (map₀ h b))
+                flatten-map h (i ℕ+ j , _∧_ P a b)
+                  ≡ (i ℕ+ j , _∧_ Q (map₀ h a) (map₀ h b))
 flatten-map-· h a b = cong (_ ,_) (map-∧ h a b)

@@ -12,21 +12,21 @@
 -- degree < n ℕ+ m for inputs of degree < n and < m.
 --
 -- Per the structural conversation: F₂[x] IS a Euclidean domain
--- (polynomial division gives quotient + remainder of strictly lower
--- degree). Slice B's eventual polynomial EEA mirrors the Wedge +
+-- (polynomial division gives quotient +F remainder of strictly lower
+-- degree). Slice B's eventual polynomial EEA mirrors the Wedge +F
 -- EEATrace pattern from Substrate.Algebra.Nat.GCD lifted to
 -- polynomials.
 --
 -- This slice lays the polynomial foundation:
 --
 --   * Polynomial = Vec F₂ n (with n = degree bound)
---   * degree-bound : extract "leading nonzero index + 1" or 0
+--   * degree-bound : extract "leading nonzero index +F 1" or 0
 --   * +P = +ⱽ (alias for polynomial addition)
---   * *P = convolution (polynomial multiplication via shift + add)
+--   * *P = convolution (polynomial multiplication via shift +F add)
 --   * x-shift : multiply by x (shift coefficients up by 1)
 --   * evaluate : Horner-style evaluation at a F₂ point
 --
--- Full polynomial EEA (Wedge-Poly + EEATrace-Poly) is the natural
+-- Full polynomial EEA (Wedge-Poly +F EEATrace-Poly) is the natural
 -- follow-on, opening the dual-code bridge (Code/ImageCode ↔
 -- KernelCode via polynomial GCD).
 ------------------------------------------------------------------------
@@ -36,14 +36,35 @@
 module Substrate.Algebra.F2.Polynomial where
 
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Fin.Op2
-open import Substrate.Foundation.Nat using (ℕ; zero; suc) renaming (_+_ to _ℕ+_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; lookup; replicate)
-open import Substrate.Foundation.Function using (_∘_)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl)
 
-open import Substrate.Algebra.F2
+open import Substrate.Algebra.F2.AbsorbL
+open import Substrate.Algebra.F2.AbsorbR
+open import Substrate.Algebra.F2.Assoc
+open import Substrate.Algebra.F2.Comm
+open import Substrate.Algebra.F2.Dec
+open import Substrate.Algebra.F2.DistribLPlus
+open import Substrate.Algebra.F2.DistribRPlus
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.F2Cases
+open import Substrate.Algebra.F2.Idempotent
+open import Substrate.Algebra.F2.IdentityL
+open import Substrate.Algebra.F2.IdentityR
+open import Substrate.Algebra.F2.InvOfOne
+open import Substrate.Algebra.F2.OneNeqZero
+open import Substrate.Algebra.F2.Op
+open import Substrate.Algebra.F2.Op2
+open import Substrate.Algebra.F2.PlusAssoc
+open import Substrate.Algebra.F2.PlusComm
+open import Substrate.Algebra.F2.PlusF
+open import Substrate.Algebra.F2.PlusIdentityL
+open import Substrate.Algebra.F2.PlusIdentityR
+open import Substrate.Algebra.F2.PlusInverseL
+open import Substrate.Algebra.F2.PlusInverseR
+open import Substrate.Algebra.F2.PlusSelfInverse
+open import Substrate.Algebra.F2.ZeroNeqOne
 open import Substrate.Algebra.F2.Vector
 
 ------------------------------------------------------------------------
@@ -58,8 +79,18 @@ open import Substrate.Algebra.F2.Vector
 ------------------------------------------------------------------------
 
 open import Substrate.Foundation.Vec using (replicate)
-open import Substrate.Foundation.Nat.Properties.Add using (+-identityʳ; +-suc) renaming (+-comm to +ℕ-comm)
-open import Substrate.Foundation.Eq using (subst)
+-- ⚑ Ⓑ2: WAS `renaming (+-comm to +ℕ-comm)`. The ban sweep already renamed AT
+-- SOURCE, so `PlusComm` exports `+ℕ-comm` directly and this `renaming` named a
+-- name that no longer exists — binding NOTHING while looking correct. Agda reports
+-- that as a WARNING at the import (`-W[no]ModuleDoesntExport`), so the failure
+-- surfaces far away at the use site, if at all: the exact hazard `agda-ban-decompose`
+-- documents and Ⓑ4ᵇ hit in `Category/Functor`. A bare import cannot go stale this
+-- way — there is no name list to fall out of date.
+open import Substrate.Foundation.Nat.Properties.Add.PlusComm
+open import Substrate.Foundation.Nat.Properties.Add.PlusIdentityR
+open import Substrate.Foundation.Nat.Properties.Add.PlusSuc
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Subst
 Polynomial : ℕ → Set
 Polynomial n = Vector n
 
@@ -76,21 +107,21 @@ _+P_ = _+ⱽ_
 infixl 6 _+P_
 
 ------------------------------------------------------------------------
--- N-3: degree-bound — the leading-nonzero-index + 1.
+-- N-3: degree-bound — the leading-nonzero-index +F 1.
 --
 -- For a polynomial p : Polynomial n, `degree-bound p` is the smallest
 -- k such that all coefficients at positions ≥ k are 𝟘. Conventions:
 --
 --   * degree-bound 𝟎ⱽ = 0 (zero polynomial)
 --   * degree-bound of a polynomial with leading coefficient at
---     position i (and zero above) is i + 1.
+--     position i (and zero above) is i +F 1.
 --
 -- Computed by scanning from the high end. For Vec F₂ n, scan starts
 -- at index n-1 and decreases.
 ------------------------------------------------------------------------
 
 -- Helper: given a Vec, find the position of the highest nonzero
--- coefficient + 1 (or 0 if all coefficients are zero).
+-- coefficient +F 1 (or 0 if all coefficients are zero).
 -- We scan from the head, tracking the highest seen position.
 degree-bound-acc : ∀ {n} → Vec F₂ n → ℕ → ℕ → ℕ
 degree-bound-acc []        _   best = best
@@ -103,9 +134,9 @@ degree-bound p = degree-bound-acc p 0 0
 ------------------------------------------------------------------------
 -- N-4: x-shift — multiply by x (= shift coefficients up by 1).
 --
--- Given p : Polynomial n representing a₀ + a₁x + ... + a_{n-1}x^{n-1},
--- x-shift p : Polynomial (suc n) representing 0 + a₀x + a₁x² + ...
--- + a_{n-1}x^n. Coefficient at position 0 is 𝟘; coefficients at
+-- Given p : Polynomial n representing a₀ +F a₁x +F ... +F a_{n-1}x^{n-1},
+-- x-shift p : Polynomial (suc n) representing 0 +F a₀x +F a₁x² +F ...
+-- +F a_{n-1}x^n. Coefficient at position 0 is 𝟘; coefficients at
 -- positions i ≥ 1 are p[i-1].
 --
 -- Used by polynomial multiplication via partial-product-and-shift.
@@ -145,12 +176,12 @@ infixl 7 _·c_
 --
 -- `outer` is the UNIVERSAL bilinear map (Polynomial n × Polynomial m
 -- → tensor product); `anti-diag-sum` is the SPECIFIC linear projection
--- from the tensor product to Polynomial (n + m).
+-- from the tensor product to Polynomial (n +F m).
 --
 -- Per the structural conversation: this separates the bilinear-lifting
 -- (outer, universal) from the polynomial-specific recombination
 -- (anti-diag-sum). Future TensorProduct primitive would make
--- the universal property explicit; for now, outer + anti-diag-sum
+-- the universal property explicit; for now, outer +F anti-diag-sum
 -- give the cleaner decomposition than convolution-mashing.
 ------------------------------------------------------------------------
 
@@ -176,24 +207,24 @@ shift-to-suc-on-left :
 shift-to-suc-on-left {m} {n'} p = subst Polynomial (+ℕ-comm m (suc n')) p
 
 -- Anti-diagonal sum: collapse the n × m tensor to a polynomial of
--- degree < n + m. The specific linear projection.
+-- degree < n +F m. The specific linear projection.
 --
 -- Structurally: anti-diag-sum [] gives the zero polynomial at length m;
 -- anti-diag-sum (row ∷ rows) places row at low positions and recurses
 -- with x-shift to position the rest at higher positions.
 --
 -- Length arithmetic via subst at the +-comm boundary (pad-end produces
--- m + suc n' shape but we need suc n' + m).
+-- m +F suc n' shape but we need suc n' +F m).
 anti-diag-sum : ∀ {n m} → Vec (Polynomial m) n → Polynomial (n ℕ+ m)
 anti-diag-sum {.0}       {m} []           = replicate m 𝟘
 anti-diag-sum {.(suc _)} {m} (row ∷ rows) =
-  -- row : Polynomial m. Pad with (suc n') zeros → Polynomial (m + suc n').
-  -- Re-shape to Polynomial (suc n' + m) via +-comm.
-  -- x-shift (anti-diag-sum rows) : Polynomial (suc (n' + m)) = Polynomial (suc n' + m).
+  -- row : Polynomial m. Pad with (suc n') zeros → Polynomial (m +F suc n').
+  -- Re-shape to Polynomial (suc n' +F m) via +-comm.
+  -- x-shift (anti-diag-sum rows) : Polynomial (suc (n' +F m)) = Polynomial (suc n' +F m).
   -- Sum the two.
   shift-to-suc-on-left (pad-end _ row) +ⱽ x-shift (anti-diag-sum rows)
 
--- Polynomial multiplication: composition of outer + anti-diag-sum.
+-- Polynomial multiplication: composition of outer +F anti-diag-sum.
 _*P_ : ∀ {n m} → Polynomial n → Polynomial m → Polynomial (n ℕ+ m)
 _*P_ p q = anti-diag-sum (outer p q)
 
@@ -202,15 +233,15 @@ infixl 7 _*P_
 ------------------------------------------------------------------------
 -- N-6: Polynomial evaluation at a point — Horner's method.
 --
--- evaluate p α = a₀ + a₁·α + a₂·α² + ... + a_{n-1}·α^{n-1}.
--- Via Horner: p(α) = a₀ + α·(a₁ + α·(a₂ + α·(...))).
+-- evaluate p α = a₀ +F a₁·α +F a₂·α² +F ... +F a_{n-1}·α^{n-1}.
+-- Via Horner: p(α) = a₀ +F α·(a₁ +F α·(a₂ +F α·(...))).
 --
 -- For F₂: α ∈ {𝟘, 𝟙}; evaluation reduces to specific arithmetic.
 ------------------------------------------------------------------------
 
 evaluate : ∀ {n} → Polynomial n → F₂ → F₂
 evaluate []      _ = 𝟘
-evaluate (a ∷ p) α = a + α · evaluate p α
+evaluate (a ∷ p) α = a +F α · evaluate p α
 
 ------------------------------------------------------------------------
 -- N-7: Capstone — F₂[x] polynomial foundation lands.
@@ -275,12 +306,12 @@ evaluate (a ∷ p) α = a + α · evaluate p α
 --      whether both leading coefficients are 𝟙.
 --
 --   3. **EEATrace-Poly**: data type for polynomial EEA, mirroring
---      ℕ's EEATrace structure (base + step with wedge).
+--      ℕ's EEATrace structure (base +F step with wedge).
 --
 --   4. **compute-trace-poly** (with well-founded recursion on
 --      degree-bound).
 --
---   5. **gcd-Poly** extraction + divisibility properties (via
+--   5. **gcd-Poly** extraction +F divisibility properties (via
 --      structural induction on EEATrace-Poly).
 --
 --   6. **Bezout polynomial coefficients**: structural fold on the
@@ -291,11 +322,11 @@ evaluate (a ∷ p) α = a + α · evaluate p α
 --   * **ImageCode ↔ KernelCode**: at the polynomial level, an
 --     `ImageCode k n` with generator polynomial g(x) corresponds to
 --     `KernelCode n (n - k)` with parity-check polynomial
---     `(x^n - 1)/g(x)` (over F₂, x^n + 1 since char 2). The
+--     `(x^n - 1)/g(x)` (over F₂, x^n +F 1 since char 2). The
 --     polynomial Bezout coefficients give the explicit isomorphism.
 --
 --   * **Cyclic codes**: codes of length n that are ideals in
---     F₂[x]/(x^n + 1). Polynomial EEA in this quotient ring is the
+--     F₂[x]/(x^n +F 1). Polynomial EEA in this quotient ring is the
 --     foundational machinery.
 --
 --   * **Hamming, RM codes**: cyclic; their generator polynomials
@@ -304,13 +335,13 @@ evaluate (a ∷ p) α = a + α · evaluate p α
 -- Deferred follow-ons (in dependency order):
 --
 --   * `Substrate.Algebra.F2.Polynomial.Division` — long division
---     algorithm + Wedge-Poly structure.
---   * `Substrate.Algebra.F2.Polynomial.GCD` — EEATrace-Poly +
---     gcd-Poly + Bezout.
+--     algorithm +F Wedge-Poly structure.
+--   * `Substrate.Algebra.F2.Polynomial.GCD` — EEATrace-Poly +F
+--     gcd-Poly +F Bezout.
 --   * `Substrate.Algebra.F2.Code.Dual` — dual-code bridge via
 --     polynomial GCD.
 --   * `Substrate.Algebra.F2.Code.Cyclic` — cyclic codes as F₂[x] /
---     (x^n + 1) ideals.
+--     (x^n +F 1) ideals.
 --
 -- Per [[project-composite-torsion-euler-substrate]]: the F₂[x] EEA
 -- is the substrate's natural Euclidean-domain instance; this slice

@@ -31,11 +31,12 @@
 
 module Substrate.Algebra.Wedge.Shape.Twist where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; sym)
 open import Substrate.Algebra.Wedge using (DivStr; Trace)
 open import Substrate.Algebra.Wedge.Bridge using (Bridge; translate; transport-trace)
 open import Substrate.Algebra.Wedge.Shape using (shape)
 open import Substrate.Algebra.Wedge.Shape.Transport using (shape-transport; mapL)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
 
 -- companion: the bridge read FORWARD (the trace direction). The image's shape
 -- is the trace's shape relabelled through the bridge.

@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------
 -- Substrate.Algebra.F2.Transfer
 --
--- M-11 full machinery sub-slice 3. SplitSection/lift operations + the
+-- M-11 full machinery sub-slice 3. SplitSection/lift operations +F the
 -- transfer map: the cohomological composite F₂^m → F₂^n → F₂^n → F₂^m
 -- (lift via a section, apply an automorphism, project back).
 --
@@ -36,13 +36,44 @@
 
 module Substrate.Algebra.F2.Transfer where
 
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; trans; cong)
+open import Substrate.Foundation.Nat.Nat
 
-open import Substrate.Algebra.F2
+open import Substrate.Algebra.F2.AbsorbL
+open import Substrate.Algebra.F2.AbsorbR
+open import Substrate.Algebra.F2.Assoc
+open import Substrate.Algebra.F2.Comm
+open import Substrate.Algebra.F2.Dec
+open import Substrate.Algebra.F2.DistribLPlus
+open import Substrate.Algebra.F2.DistribRPlus
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.F2Cases
+open import Substrate.Algebra.F2.Idempotent
+open import Substrate.Algebra.F2.IdentityL
+open import Substrate.Algebra.F2.IdentityR
+open import Substrate.Algebra.F2.InvOfOne
+open import Substrate.Algebra.F2.OneNeqZero
+open import Substrate.Algebra.F2.Op
+open import Substrate.Algebra.F2.Op2
+open import Substrate.Algebra.F2.PlusAssoc
+open import Substrate.Algebra.F2.PlusComm
+open import Substrate.Algebra.F2.PlusF
+open import Substrate.Algebra.F2.PlusIdentityL
+open import Substrate.Algebra.F2.PlusIdentityR
+open import Substrate.Algebra.F2.PlusInverseL
+open import Substrate.Algebra.F2.PlusInverseR
+open import Substrate.Algebra.F2.PlusSelfInverse
+open import Substrate.Algebra.F2.ZeroNeqOne
 open import Substrate.Algebra.F2.Vector
-open import Substrate.Algebra.F2.Linear
+open import Substrate.Algebra.F2.Linear.CompL
+open import Substrate.Algebra.F2.Linear.CompLAssoc
+open import Substrate.Algebra.F2.Linear.CompLIdentityL
+open import Substrate.Algebra.F2.Linear.CompLIdentityR
+open import Substrate.Algebra.F2.Linear.IdL
+open import Substrate.Algebra.F2.Linear.Linear
+open import Substrate.Algebra.F2.Linear.Preserves
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- SplitSection record: a left-inverse pair of F₂-linear maps.
@@ -50,7 +81,7 @@ open import Substrate.Algebra.F2.Linear
 -- (lift : Linear m n, drop : Linear n m) with `drop ∘ lift ≡ id`.
 -- The section "lifts" m-dim vectors into n-dim space (n ≥ m); drop
 -- "projects" back. The drop-lift property ensures we can recover the
--- original m-dim vector after lifting + dropping (information is
+-- original m-dim vector after lifting +F dropping (information is
 -- preserved by the section).
 --
 -- The section's "torsion content" is implicit in the choice of lift

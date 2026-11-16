@@ -7,7 +7,7 @@
 --
 -- Where a definition like Stab-S3's `extend-fn` enumerates (4 anchors ×
 -- 4 axes = 16 clauses) so round-trip proofs can close by `refl` on each
--- concrete value, `extend` here is ONE definition dispatching on i ≟ k,
+-- concrete value, `extend` here is ONE definition dispatching on i ≟ᶠ k,
 -- and its β-laws
 --
 --   extend-point   : extend k f k             ≡ k
@@ -28,16 +28,20 @@
 
 module Substrate.Foundation.Fin.Punctured.Pointed where
 
-open import Substrate.Foundation.Nat using (ℕ; suc)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
-open import Substrate.Foundation.Empty using (⊥-elim)
-open import Substrate.Foundation.Negation using (¬_; yes; no)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Empty.BotElim
+open import Substrate.Foundation.Negation.Dec
+open import Substrate.Foundation.Negation.Not
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Op
 open import Substrate.Foundation.Fin.Punctured
 open import Substrate.Foundation.Fin.Punctured
   using (punchIn; punchIn-≢; punchOut; punchOut-irrelevant; punchOut-cong;
          punchOut-punchIn; punchIn-punchOut)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 private
   variable
@@ -46,7 +50,7 @@ private
 ------------------------------------------------------------------------
 -- 1. extend : ONE definition (point ↦ point, punch j ↦ punchIn (f j)).
 --
--- Dispatches on the decidable i ≟ k — the computational content of the
+-- Dispatches on the decidable i ≟ᶠ k — the computational content of the
 -- pointed decomposition Fin (suc n) ≅ {k} ⊎ Fin n.  (A `PunchView`
 -- datatype could package the ⊎ explicitly, but the dependent index
 -- makes its eliminator awkward and it is not needed for the β-laws, so
@@ -54,7 +58,7 @@ private
 ------------------------------------------------------------------------
 
 extend : (k : Fin (suc n)) → (Fin n → Fin n) → Fin (suc n) → Fin (suc n)
-extend k f i with i ≟ k
+extend k f i with i ≟ᶠ k
 ... | yes _ = k
 ... | no  p = punchIn k (f (punchOut {k = k} {i = i} p))
 
@@ -63,14 +67,14 @@ extend k f i with i ≟ k
 ------------------------------------------------------------------------
 
 extend-point : (k : Fin (suc n)) (f : Fin n → Fin n) → extend k f k ≡ k
-extend-point k f with k ≟ k
+extend-point k f with k ≟ᶠ k
 ... | yes _ = refl
 ... | no ¬p = ⊥-elim (¬p refl)
 
 extend-punchIn :
   (k : Fin (suc n)) (f : Fin n → Fin n) (i : Fin n) →
   extend k f (punchIn k i) ≡ punchIn k (f i)
-extend-punchIn k f i with punchIn k i ≟ k
+extend-punchIn k f i with punchIn k i ≟ᶠ k
 ... | yes eq = ⊥-elim (punchIn-≢ k i eq)
 ... | no  p  =
       cong (λ z → punchIn k (f z))

@@ -23,20 +23,23 @@
 
 module Substrate.Cocycles.V4Signature.Codeword.Live where
 
-open import Substrate.Foundation.Level using (0ℓ)
-open import Substrate.Foundation.Bool using (Bool; true; false)
+open import Substrate.Foundation.Bool.Bool
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂; Σ; Σ-syntax)
-open import Substrate.Foundation.Empty using (⊥; ⊥-elim)
-open import Substrate.Foundation.Negation using (Dec; yes; no; ¬_)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; trans; cong; cong₂)
-open import Substrate.Algebra.Bijection using (_↔_; mk↔ₛ′)
+open import Substrate.Foundation.Empty.BotElim
+open import Substrate.Foundation.Negation.Dec
+open import Substrate.Foundation.Negation.Not
 
 open import Substrate.Axes.Axis using (Axis; D; C; S; W)
 open import Substrate.Cocycles.V4Signature.Codeword.AxisBits using (axis-from-bits; axis-to-bits; axis-bits-id; bits-axis-id)
 open import Substrate.Cocycles.V4Signature.Codeword.IsReserved using (IsReserved)
 open import Substrate.Cocycles.V4Signature.Codeword.Subtypes using (Reserved; Live)
 open import Substrate.Cocycles.V4Signature.Codeword.Type using (Codeword)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.Algebra.Wedge.BinMul.Sel
 
 ------------------------------------------------------------------------
 -- Decidable equality on Axis.

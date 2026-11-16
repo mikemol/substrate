@@ -15,22 +15,38 @@
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.Algebra.Q.Properties.Field where
+open import Substrate.Algebra.Z.Mul
+-- ⚑ Ⓑ1a: `_+ℤ_` at its owner.  `scope_fix --seed` could not supply it: the site
+-- is a SECTION (`_+ℤ (…)`), so the failing expression carries the name spelled
+-- `_+ℤ` while the seed is keyed `_+ℤ_` — no match, and the parse error names no
+-- owner by construction.
+open import Substrate.Algebra.Z.Add
 
-open import Substrate.Foundation.Nat using (suc; _*_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Times
 open import Substrate.Foundation.Nat.Properties.Mul
   using (*-comm; *-assoc; *-identityˡ; *-identityʳ; quad)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂)
-open import Substrate.Algebra.Z using (ℤ; +_; -ℤ_)
-open import Substrate.Algebra.Z.Arithmetic using (_+ℤ_; _*ℤ_)
+open import Substrate.Algebra.Z.Int
+
 open import Substrate.Algebra.Z.Properties.Mul using (neg-*-left; *ℤ-comm)
 open import Substrate.Algebra.Z.Properties.MulFull
   using (*ℤ-assoc; *ℤ-identityˡ; *ℤ-identityʳ; *ℤ-zeroˡ; *ℤ-zeroʳ;
          *ℤ-distribˡ-+; *ℤ-distribʳ-+; quadℤ)
 open import Substrate.Algebra.Z.Properties.Add
   using (+ℤ-comm; +ℤ-assoc; +ℤ-identityˡ; +ℤ-identityʳ; +ℤ-inverseˡ; +ℤ-inverseʳ)
-open import Substrate.Algebra.Q using (ℚ; mkℚ; num; den-1; 0ℚ; 1ℚ)
+open import Substrate.Algebra.Q.OneRat
+open import Substrate.Algebra.Q.Rat
+open import Substrate.Algebra.Q.ZeroRat
 open import Substrate.Algebra.Q.Arithmetic using (_+ℚ_; _*ℚ_; -ℚ_)
 open import Substrate.Algebra.Q.Equiv using (_≈ℚ_)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.Algebra.Q.Mul
+open import Substrate.Algebra.Q.Add
+open import Substrate.Algebra.Q.Neg
 
 ------------------------------------------------------------------------
 -- Commutativity.

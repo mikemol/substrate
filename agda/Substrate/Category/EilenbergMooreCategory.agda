@@ -19,7 +19,7 @@
 
 open import Substrate.Foundation.Level using (Level)
 
-open import Substrate.Category.CategoryOf using (CategoryOf)
+open import Substrate.Category.CategoryOf.CategoryOf
 open import Substrate.Category.Monad using (Monad)
 
 module Substrate.Category.EilenbergMooreCategory
@@ -32,5 +32,4 @@ module Substrate.Category.EilenbergMooreCategory
   where
 
 open import Substrate.Category.Monad.DerivedCategoryOf C M EM-Cat
-  renaming (monad-derived-Category to EilenbergMoore-Category)
 

@@ -17,7 +17,7 @@
 module Substrate.Category.Poly.Sites.FinPoly where
 
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 
 open import Substrate.Category.Poly
 

@@ -18,7 +18,7 @@
 --     F, G : orientationRigCatSym → T that AGREE (up to the object-transport) on
 --     every adjacent transposition sadjˢ n i agree on EVERY permutation
 --     morphism. Proof = induction on the CoxGen derivation `coxeter-complete σ pf`:
---       cox-id → F/G-idHom     cox-s → the generator hypothesis     cox-∘ → F/G-∘ + IH.
+--       cox-id → F/G-idHom     cox-s → the generator hypothesis     cox-∘ → F/G-∘ ℕ+ IH.
 --
 --   STAGE 2 (the ⊕-bifunctor on Sym) — `bimap⊕`: the block-sum of two Sym
 --     morphisms is a Sym morphism (blockSum of two permutations is a permutation),
@@ -48,9 +48,10 @@
 
 module Substrate.WitnessTower.Wedge.OrientationRigCatSymUP where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Times
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂; subst)
 open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂)
 
 open import Substrate.WitnessTower.Enumerate using (Perm)
@@ -71,16 +72,30 @@ open import Substrate.WitnessTower.Wedge.OrientationBimonoidal
   using (_∧_)
 open import Substrate.WitnessTower.Wedge.OrientationRigCat
   using (GradedRigCat; Objₛ; ⋆; idHom; _∘_; ⊕obj)
-open import Substrate.WitnessTower.Wedge.OrientationRigCatPerm
-  using (Homᵣ; homEq; uipℕ)
-open import Substrate.WitnessTower.Wedge.OrientationRigCatSym
-  using ( orientationRigCatSym; Homˢ; homEqˢ
-        ; Iso; IsPerm→Iso; Iso→IsPerm; iso-id; idˢ; _∘ˢ_ )
+open import Substrate.WitnessTower.Wedge.OrientationRigCatPerm.Hom
+open import Substrate.WitnessTower.Wedge.OrientationRigCatPerm.HomEq
+open import Substrate.WitnessTower.Wedge.OrientationRigCatPerm.UipNat
+open import Substrate.WitnessTower.Wedge.OrientationRigCatSym.Comp
+open import Substrate.WitnessTower.Wedge.OrientationRigCatSym.Hom
+open import Substrate.WitnessTower.Wedge.OrientationRigCatSym.HomEq
+open import Substrate.WitnessTower.Wedge.OrientationRigCatSym.Id
+open import Substrate.WitnessTower.Wedge.OrientationRigCatSym.IsPermToIso
+open import Substrate.WitnessTower.Wedge.OrientationRigCatSym.Iso
+open import Substrate.WitnessTower.Wedge.OrientationRigCatSym.IsoId
+open import Substrate.WitnessTower.Wedge.OrientationRigCatSym.IsoToIsPerm
+open import Substrate.WitnessTower.Wedge.OrientationRigCatSym.OrientationRigCatSym
 open import Substrate.WitnessTower.Wedge.OrientationRigCatUP
   using ( RigFunctor; F-obj; F-hom; F-idHom; F-∘; trⱽ
         ; F-⊕obj-u; F-⊕obj-∧; F-⊗obj-u; RigFunctor≈ )
-open import Substrate.WitnessTower.Wedge.OrientationRigCatUP.Properties
-  using (freeObj)
+open import Substrate.WitnessTower.Wedge.OrientationRigCatUP.Properties.FreeObj
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.Foundation.Eq.Subst
+open import Substrate.Probability.MarkovCategory
+open import Substrate.Linguistic.RosettaTable.RosettaEntry
 
 ------------------------------------------------------------------------
 -- The canonical Sym endomorphism carried by a permutation σ (grade-endo, its
@@ -121,22 +136,22 @@ iso-blockSum : {m n : ℕ} (σ : Perm m) (τ : Perm n) →
 iso-blockSum {m} {n} σ τ (σ⁻ , σr , σl) (τ⁻ , τr , τl) =
   blockSum σ⁻ τ⁻ , right , left
   where
-    right : compose (blockSum σ τ) (blockSum σ⁻ τ⁻) ≡ id-perm (m + n)
+    right : compose (blockSum σ τ) (blockSum σ⁻ τ⁻) ≡ id-perm (m ℕ+ n)
     right = trans (blockSum-compose σ σ⁻ τ τ⁻)
                   (trans (cong₂ blockSum σr τr) (blockSum-id {m} {n}))
-    left : compose (blockSum σ⁻ τ⁻) (blockSum σ τ) ≡ id-perm (m + n)
+    left : compose (blockSum σ⁻ τ⁻) (blockSum σ τ) ≡ id-perm (m ℕ+ n)
     left = trans (blockSum-compose σ⁻ σ τ⁻ τ)
                  (trans (cong₂ blockSum σl τl) (blockSum-id {m} {n}))
 
 -- the bifunctor ACTION on morphisms: block-sum the arrows.
-bimap⊕ : {a b c d : ℕ} → Homˢ a b → Homˢ c d → Homˢ (a + c) (b + d)
+bimap⊕ : {a b c d : ℕ} → Homˢ a b → Homˢ c d → Homˢ (a ℕ+ c) (b ℕ+ d)
 bimap⊕ f g =
-  ( cong₂ _+_ (proj₁ (proj₁ f)) (proj₁ (proj₁ g))
+  ( cong₂ _ℕ+_ (proj₁ (proj₁ f)) (proj₁ (proj₁ g))
   , blockSum (proj₂ (proj₁ f)) (proj₂ (proj₁ g)) )
   , iso-blockSum (proj₂ (proj₁ f)) (proj₂ (proj₁ g)) (proj₂ f) (proj₂ g)
 
 -- gmap-id (Homˢ level): bimap⊕ preserves identities.
-bimap-id : (a c : ℕ) → bimap⊕ (idˢ a) (idˢ c) ≡ idˢ (a + c)
+bimap-id : (a c : ℕ) → bimap⊕ (idˢ a) (idˢ c) ≡ idˢ (a ℕ+ c)
 bimap-id a c = homEqˢ (homEq refl (blockSum-id {a} {c}))
 
 -- gmap-∘ (Homˢ level, on the diagonal-grade endomorphisms — where the endpoint
@@ -310,7 +325,7 @@ module _
 ------------------------------------------------------------------------
 -- STAGE 5 — THE OBJECT-AGREEMENT, PROVEN (no longer a hypothesis). The
 -- object map of ANY RigFunctor orientationRigCatSym → T is FORCED to the
--- grade-fold freeObj (Objₛ singleton + trivial ⊕/⊗ products — identical to
+-- grade-fold freeObj (Objₛ singleton ℕ+ trivial ⊕/⊗ products — identical to
 -- the skeletal/perm sources, so freeFunctorₚ-obj-unique's induction runs
 -- verbatim). Two functors therefore agree on objects: both factor through
 -- freeObj T n. This DISCHARGES the objag hypothesis of the Reduction module.

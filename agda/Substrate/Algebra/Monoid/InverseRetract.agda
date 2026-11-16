@@ -18,10 +18,13 @@
 
 module Substrate.Algebra.Monoid.InverseRetract where
 
-open import Substrate.Foundation.Eq using (_≡_; sym; trans; cong)
 open import Substrate.Algebra.Magma using (Magma)
 open import Substrate.Algebra.Semigroup using (Semigroup)
 open import Substrate.Algebra.Monoid using (Monoid)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 module _ {A : Set} (M : Monoid A) where
   private

@@ -19,18 +19,22 @@
 
 module Substrate.WitnessTower.Decompose where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Sucinjective
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; lookup; map; tabulate)
-open import Substrate.Foundation.Vec.Properties using (lookup∘tabulate)
-open import Substrate.Foundation.Eq using (_≡_; refl; cong; sym; trans)
-open import Substrate.Foundation.Negation using (¬_)
+open import Substrate.Foundation.Vec.Properties.LookupComptabulate
+open import Substrate.Foundation.Negation.Not
 open import Substrate.Foundation.Product using (Σ; _,_; _×_)
 open import Substrate.Foundation.Fin.Punctured using (punchIn; punchOut; punchIn-punchOut)
 
 open import Substrate.WitnessTower.Enumerate using (Perm; insert-at)
 open import Substrate.WitnessTower.IsPermutation using (IsPerm; lookup-map)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong2
 
 ------------------------------------------------------------------------
 -- 0. Vec extensionality (pointwise lookup ⟹ equal) and punchOut injective.
@@ -41,7 +45,6 @@ lookup-ext : {A : Set} {n : ℕ} (v w : Vec A n) →
 lookup-ext []      []      _ = refl
 lookup-ext (x ∷ v) (y ∷ w) h =
   cong₂ _∷_ (h zero) (lookup-ext v w (λ i → h (suc i)))
-  where open import Substrate.Foundation.Eq using (cong₂)
 
 -- punchOut is injective: distinct inputs (off k) punch to distinct outputs.
 -- Derived from punchIn (punchOut x) ≡ x — no case split.

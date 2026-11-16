@@ -21,15 +21,19 @@
 
 module Substrate.WitnessTower.Wedge.PyAstRewriteAct where
 
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym; cong)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Product using (proj₁)
 open import Substrate.WitnessTower.Enumerate using (Perm)
-open import Substrate.WitnessTower.LehmerPath using (decode)
+open import Substrate.WitnessTower.LehmerPath.Decode
 open import Substrate.WitnessTower.FirstAppearance using (id-perm; compose)
 open import Substrate.WitnessTower.Wedge.PyAstRig using (Objpy; act; act-id; act-∘; pyRecon)
 open import Substrate.WitnessTower.Wedge.PyAstRewrite using (PyRewrite)
 open import Substrate.WitnessTower.Wedge.PyAstRewriteSnRig using (interp; interp-is-decode)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Groups.V4-Cosets
 
 -- THE REWRITE ACTION: decode-then-apply. A rewrite reorders a term's operand positions.
 actR : {n : ℕ} → PyRewrite n → Objpy n → Objpy n

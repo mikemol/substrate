@@ -22,10 +22,12 @@
 module Substrate.Category.UniversalProperty.SubstrateSheaves where
 
 open import Substrate.Foundation.Product using (Σ; _,_)
-open import Substrate.Foundation.Eq using (_≡_; refl; cong)
 open import Substrate.Category.UniversalProperty.Term using (UPTerm; _++ᵤ_)
 open import Substrate.Category.UniversalProperty.Category using (++ᵤ-assoc)
 open import Substrate.Category.UniversalProperty.Presheaf using (UPPresheaf)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Probability.MarkovCategory
 
 -- ⟡odecode-residues: InstancesAt is now MIGRATED to the Set₀ O-form as a FULL
 -- UPPresheaf (was a bare `UPArrowP → Set` signature-stub reading per-object

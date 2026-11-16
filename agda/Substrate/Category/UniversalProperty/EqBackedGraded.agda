@@ -15,7 +15,7 @@
 
 module Substrate.Category.UniversalProperty.EqBackedGraded where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Product using (_,_)
 open import Substrate.Category.UPArrowGraded using (UPArrowᴳ; mkUP)
 open import Substrate.Category.UniversalProperty.BackedGraded using (BackedUPᴳ)

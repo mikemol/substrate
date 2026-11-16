@@ -29,12 +29,12 @@
 
 module Substrate.Category.PresentedUniversalProperty where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.Foundation.Empty using (⊥)
+open import Substrate.Foundation.Empty.Bot
 open import Substrate.Foundation.Unit using (⊤; tt)
 open import Substrate.Category.FreeOverBasis
   using (AlgebraClass; Has-structure; Hom-preserves; trivial-AlgebraClass)
 open import Substrate.Category.UniversalProperty using (UPArrowP; mkUP)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. THE QUOTIENT CENTER. Coequalizer of lhs, rhs : R ⇉ F in A-algebras.

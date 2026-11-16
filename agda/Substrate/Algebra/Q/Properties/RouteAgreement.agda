@@ -29,16 +29,17 @@
 
 module Substrate.Algebra.Q.Properties.RouteAgreement where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; cong)
-open import Substrate.Foundation.Negation using (¬_)
-open import Substrate.Foundation.Hedberg using (Decidable⇒UIP)
-open import Substrate.Algebra.Z using (ℤ; +_)
-open import Substrate.Algebra.Q using (ℚ; mkℚ; num)
+open import Substrate.Foundation.Negation.Not
+open import Substrate.Foundation.Hedberg.DecidableUIP
+open import Substrate.Algebra.Z.Int
+open import Substrate.Algebra.Q.Rat
 open import Substrate.Algebra.Q.Equiv using (_≈ℚ_)
 open import Substrate.Algebra.Q.Reduce using (reduce)
 open import Substrate.Algebra.Q.DecidableEq using (_≟ℚ_)
-open import Substrate.Algebra.Q.Properties.Canonical using (reduce-respects-≈)
-open import Substrate.Algebra.Q.Properties.CanonicalBezout using (reduce-respects-≈-bezout)
+open import Substrate.Algebra.Q.Properties.Canonical.ReduceRespectsApprox
+open import Substrate.Algebra.Q.Properties.CanonicalBezout.ReduceRespectsApproxBezout
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- 1. The chart certificate: ℚ is a set (Hedberg on _≟ℚ_).

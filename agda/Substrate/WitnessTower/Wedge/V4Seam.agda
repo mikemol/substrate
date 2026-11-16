@@ -36,17 +36,17 @@
 
 module Substrate.WitnessTower.Wedge.V4Seam where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Eq using (_≡_; refl)
 
-open import Substrate.Algebra.Wedge using () renaming (Wedge to Wedge⟦478f66a6⟧)
+open import Substrate.Algebra.Wedge
 open import Substrate.WitnessTower.Wedge.Factoradic
   using (tower-wedge; tower-quotient)
 open import Substrate.WitnessTower.KleinCensus
   using (klein-pairs; klein-pairs-3-absent; klein-pairs-4)
 open import Substrate.WitnessTower.Hodge
   using (dual-grade₃; dual-grade₃-involution; witness-distinct)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. The rung-3→4 wedge has quotient 4 = |V₄| = [S₄ : S₃].
@@ -57,11 +57,19 @@ seam-quotient-is-4 : tower-quotient 3 ≡ 4
 seam-quotient-is-4 = refl
 
 -- read directly off the wedge record (same value, via Wedge.quot).
-seam-wedge-quot-is-4 : Wedge⟦478f66a6⟧.quot (tower-wedge 3) ≡ 4
+-- ⚑ Ⓑ14: was `Wedge⟦478f66a6⟧.quot` — a shape-pin whose `renaming` clause the
+-- ban sweep stripped, leaving a PROJECTION through a name nothing binds.  The
+-- hash is also STALE: `⟦478f66a6⟧` is absent from `scratch/sppf_collision_
+-- index.md`, because this record's fields changed and it rehashed to
+-- `⟦9e8d371e⟧`.  So restoring the clause verbatim would re-pin a shape that no
+-- longer exists.  `Substrate.Algebra.Wedge` is imported bare at :42, so the
+-- record projection resolves under its own name — which is exactly what the
+-- compiler suggested.
+seam-wedge-quot-is-4 : Wedge.quot (tower-wedge 3) ≡ 4
 seam-wedge-quot-is-4 = refl
 
 -- the seam wedge is EXACT: V₄'s 4 cosets tile S₄ over S₃ with no remainder.
-seam-wedge-exact : Wedge⟦478f66a6⟧.rem (tower-wedge 3) ≡ 0
+seam-wedge-exact : Wedge.rem (tower-wedge 3) ≡ 0
 seam-wedge-exact = refl
 
 ------------------------------------------------------------------------

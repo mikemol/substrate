@@ -17,13 +17,15 @@
 
 module Substrate.Algebra.F2.AES.Cipher.RoundTrip where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Vec using (Vec; []; _∷_)
-open import Substrate.Foundation.Eq using (_≡_; refl; trans; cong)
 open import Substrate.Algebra.F2.AES.Round using (State; round; final-round; addKey)
 open import Substrate.Algebra.F2.AES.Round.RoundTrip
   using (inv-round; inv-final-round; round-rt; final-round-rt; add-rt)
 open import Substrate.Algebra.F2.AES.Cipher using (fold; encrypt)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- generic reverse-order fold + its round-trip (the cipher-level combinator).

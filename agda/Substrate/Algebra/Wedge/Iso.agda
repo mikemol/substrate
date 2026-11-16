@@ -31,11 +31,13 @@
 
 module Substrate.Algebra.Wedge.Iso where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; trans; cong)
 open import Substrate.Foundation.Product using (_,_)
 open import Substrate.Algebra.Wedge using (DivStr)
 open import Substrate.Algebra.Wedge.Bridge using (Bridge; translate; id-bridge)
 open import Substrate.Algebra.Wedge.Correspondence using (_⊚_; Correspondence)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- 1. A correspondence is an iso: codomain inverse to domain.

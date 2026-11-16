@@ -25,35 +25,37 @@
 ------------------------------------------------------------------------
 
 module Substrate.FUSep.FUSepQReduce where
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.RewriteConfluence
+open import Substrate.Foundation.WellFounded
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
 
-data Tm : Set where      -- ⟦shape:533ef80d atom,app⟧
-  atom : Tm
-  app  : Tm → Tm → Tm
+data Tm-QReduce : Set where      -- ⟦shape:533ef80d atom,app⟧
+  atom : Tm-QReduce
+  app  : Tm-QReduce → Tm-QReduce → Tm-QReduce
 
 -- one reduction step (abstract carrier of the residue-shedding), with the
 -- prove-or-correct TAG: a step either STOPS (value, clean, residue = z) or SHEDS
 -- a residue and CONTINUES to a successor. This is Trace.Residues' done | more.
-data Step (t : Tm) : Set where      -- ⟦shape:c0e06c56 stop,shed⟧
+data Step (t : Tm-QReduce) : Set where      -- ⟦shape:dd7bab21 stop,shed⟧
   stop : Step t                        -- residue = z: a value/nf (the gcd, base)
-  shed : (t' : Tm) → Step t            -- residue ≢ z: a fixed-point-free correction
+  shed : (t' : Tm-QReduce) → Step t            -- residue ≢ z: a fixed-point-free correction
 
 -- the reduction system: a classifier (the wedge) tags each term.
 Reduce : Set
-Reduce = (t : Tm) → Step t
+Reduce = (t : Tm-QReduce) → Step t
 
 module _ (⇒ : Reduce) where
 
   -- the forward step relation extracted from the classifier.
-  data _↦_ : Tm → Tm → Set where
+  data _↦_ : Tm-QReduce → Tm-QReduce → Set where
     mk : ∀ {t t'} → ⇒ t ≡ shed t' → t ↦ t'
 
   ----------------------------------------------------------------------
   -- SN = the LEAST fixed point (inductive Acc): the shedding TERMINATES — every
   -- ↦-path reaches `stop` (a value). Finite CF / rational / ℚ side.
   ----------------------------------------------------------------------
-  data SN (t : Tm) : Set where
+  data SN (t : Tm-QReduce) : Set where
     sn : (∀ t' → t ↦ t' → SN t') → SN t
 
   ----------------------------------------------------------------------
@@ -61,10 +63,10 @@ module _ (⇒ : Reduce) where
   -- PRODUCTIVE forever — always another residue to shed, never `stop`. Infinite
   -- CF / irrational / R side. THIS is the residue the wedge projects out.
   ----------------------------------------------------------------------
-  record Diverges (t : Tm) : Set where
+  record Diverges (t : Tm-QReduce) : Set where
     coinductive
     field
-      next   : Tm
+      next   : Tm-QReduce
       steps  : t ↦ next
       onward : Diverges next
   open Diverges public
@@ -78,17 +80,17 @@ module _ (⇒ : Reduce) where
   ----------------------------------------------------------------------
   data Tag : Set where cleanStop : Tag ; correct : Tag
 
-  classify : (t : Tm) → Tag
+  classify : (t : Tm-QReduce) → Tag
   classify t with ⇒ t
   ... | stop    = cleanStop      -- residue z: the gcd/base — STOP
   ... | shed _  = correct        -- residue ≢ z: fixed-point-free correction
 
   -- the tag is FAITHFUL: cleanStop ⟺ the term is a value (⇒ t ≡ stop). One EEA
   -- step never dead-ends — it either stops clean or hands back a correction.
-  tag-stops : (t : Tm) → ⇒ t ≡ stop → classify t ≡ cleanStop
+  tag-stops : (t : Tm-QReduce) → ⇒ t ≡ stop → classify t ≡ cleanStop
   tag-stops t eq with ⇒ t
   ... | stop   = refl
-  tag-corrects : ∀ (t t' : Tm) → ⇒ t ≡ shed t' → classify t ≡ correct
+  tag-corrects : ∀ (t t' : Tm-QReduce) → ⇒ t ≡ shed t' → classify t ≡ correct
   tag-corrects t t' eq with ⇒ t
   ... | shed _ = refl
 
@@ -114,7 +116,7 @@ module _ (⇒ : Reduce) where
   -- handed to bisimilarity (ADD 100) — the R side where SN fails and Newman cannot
   -- reach, exactly as the ℚ⊣R = SN boundary (ADD 109 insight).
   ----------------------------------------------------------------------
-  open import Substrate.Foundation.RewriteConfluence _↦_ using () renaming (SN to SN-Acc; WCR to WCR↦; CR to CR↦; newman to newman↦)
+  open import Substrate.Foundation.RewriteConfluence _↦_ using () renaming (SN to SN-Acc; WCR to WCR↦; newman to newman↦)
 
   -- SN (this module's least-fixed-point) coincides with Newman's Acc-SN.
   SN⟹Acc : ∀ {t} → SN t → SN-Acc t

@@ -3,7 +3,7 @@
 --
 -- PF15-PF20: connect existing substrate primitives (FieldFanOut,
 -- StratifiedBundle) to polynomial functors. Show that:
---   * FixedFanOut n IS a polynomial functor with Positions = ⊤ and
+--   * FixedFanOut n IS a polynomial functor with Positions = ⊤ᵖ and
 --     Directions tt = Fin n.
 --   * Variable-arity FieldFanOut IS a polynomial functor with
 --     Positions = Base and Directions b = Fin (arity-fn b).
@@ -21,14 +21,11 @@
 module Substrate.Category.Poly.Connections where
 
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Unit.Polymorphic using (⊤; tt)
-open import Substrate.Foundation.Level using (Level; 0ℓ) renaming (suc to lsuc)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Unit.Polymorphic using (⊤ᵖ; tt)
+open import Substrate.Foundation.Level using (Level; 0ℓ)
 
-open import Substrate.Category.FieldFanOut
 open import Substrate.Category.Poly
-open import Substrate.Category.PolyLens
-open import Substrate.Category.StratifiedBundle
 
 private
   variable
@@ -38,7 +35,7 @@ private
 -- PF15: FixedFanOut n → Poly.
 --
 -- A FixedFanOut at arity n has Source and n Targets connected by n
--- Bonds. As a polynomial: Positions = ⊤ (only one position because
+-- Bonds. As a polynomial: Positions = ⊤ᵖ (only one position because
 -- the source is uniform), Directions tt = Fin n (the n target
 -- indices).
 --
@@ -46,7 +43,7 @@ private
 -- y type: given a position (tt) and a function Fin n → y, evaluate
 -- via the n bonds.
 
-fixed-fan-out-as-Poly : (n : ℕ) → Poly {0ℓ} ⊤ (λ _ → Fin n)
+fixed-fan-out-as-Poly : (n : ℕ) → Poly {0ℓ} ⊤ᵖ (λ _ → Fin n)
 fixed-fan-out-as-Poly n = record {}
 
 ------------------------------------------------------------------------

@@ -19,8 +19,8 @@
 
 module Substrate.Algebra.R.Trace.ExtruderMiscRealigned where
 
-open import Substrate.Foundation.Eq  using (_≡_; refl)
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _<_)
+open import Substrate.Foundation.Nat.Lt
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.List using (List; []; _∷_)
 open import Substrate.Foundation.Product using (_×_; _,_)
 
@@ -32,7 +32,7 @@ open import Substrate.Foundation.Product using (_×_; _,_)
 -- generator). Referenced by center:
 ------------------------------------------------------------------------
 open import Substrate.Algebra.Nat.GCD.GcdN using (gcd-ℕ)
-open import Substrate.Algebra.Nat.GCD.Fold using (eea-fold)
+open import Substrate.Foundation.Eq
 -- (the ad-hoc FoldUnfold's fold IS eea-fold; the free/aggressive pair is the
 --  catamorphism over the EEA trace, the universal generator. gcd-ℕ = a fold.)
 fold-witness : gcd-ℕ 3 2 ≡ 1
@@ -56,7 +56,6 @@ open import Substrate.Algebra.R.Trace.RationalAdjunction using (qToR; unit-3/2)
 -- same value (a*d ≡ c*b) ⟹ same shape (ℕ-shape t₁ ≡ ℕ-shape t₂), over EEATrace,
 -- by structural induction with the divmod-cross head step. Referenced by center:
 ------------------------------------------------------------------------
-open import Substrate.Algebra.Nat.GCD.CFInvariance using (shape-value-invariance)
 -- (the ad-hoc FUSepQ.bt-reflect IS shape-value-invariance — the CFInvariance
 --  cross-equation shape I explicitly cited when building it, ADD 102.)
 

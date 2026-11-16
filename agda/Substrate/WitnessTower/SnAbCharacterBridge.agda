@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------
 -- Substrate.WitnessTower.SnAbCharacterBridge
 --
--- ◆ip-cap-concrete-bridge (b) + ⟡cap-parity-coapex — the "show-equality"
+-- ◆ip-cap-concrete-bridge (b) +F ⟡cap-parity-coapex — the "show-equality"
 -- character coincidence: the two Z/2's that the abelianization arc produces
 -- are the SAME map.
 --
@@ -19,15 +19,15 @@
 --
 -- It collapses to two steps over PROVEN pieces:
 --   Step A = signW-flatten g       (SignGrade2Generated; carries the whole
---                                    xor ↔ + / count-parity content)
+--                                    xor ↔ +F / count-parity content)
 --   Step B = quotient-is-wpar      (the ONE new lemma below: quotient IS
 --                                    wpar, pointwise-definitional)
 --
 -- ⟡cap-parity-coapex = the generic `foldW-const-𝟙` at an arbitrary
 -- generator alphabet {Gen}; `quotient-is-wpar` is its specialization at
 -- Gen = Fin (suc n). Both are the same 2-clause induction: 𝟘 ≡ parity 0
--- at [], and `cong (𝟙 +_)` at the cons (z2-monoid's ∙ = F₂ + = parity's +,
--- and parity (suc n) = 𝟙 + parity n — so NO parity-+ / bool→F₂-xor glue is
+-- at [], and `cong (𝟙 +_)` at the cons (z2-monoid's ∙ = F₂ +F = parity's +F,
+-- and parity (suc n) = 𝟙 +F parity n — so NO parity-+ / bool→F₂-xor glue is
 -- needed; signW-flatten already did that work).
 --
 -- HONEST BOUNDARY: this needs only the flatten SURJECTION direction (a
@@ -42,10 +42,10 @@
 
 module Substrate.WitnessTower.SnAbCharacterBridge where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym; cong)
-open import Substrate.Algebra.F2 using (F₂; 𝟙; _+_)
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.PlusF
 open import Substrate.Algebra.F2.FromBool using (bool→F₂)
 open import Substrate.Groups.Coxeter.Word using (Word; []; _∷_)
 open import Substrate.Category.FreeUniversalProperty.FreeMonoid using (foldW)
@@ -56,6 +56,10 @@ open import Substrate.WitnessTower.Enumerate using (Perm)
 open import Substrate.WitnessTower.Wedge.OrientationRigCatPermCoxeterGeneral using (CoxGen)
 open import Substrate.WitnessTower.Wedge.OrientationRigCatPermSign using (signW)
 open import Substrate.WitnessTower.SignGrade2Generated using (flatten; signW-flatten)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- 1. ⟡cap-parity-coapex — the generic co-apex: the Route-C fold-into-F₂
@@ -66,7 +70,7 @@ open import Substrate.WitnessTower.SignGrade2Generated using (flatten; signW-fla
 foldW-const-𝟙 : {Gen : Set} (w : Word Gen) →
                 foldW Gen (z2-monoid zero) (λ _ → 𝟙) w ≡ wpar w
 foldW-const-𝟙 []      = refl
-foldW-const-𝟙 (g ∷ w) = cong (𝟙 +_) (foldW-const-𝟙 w)
+foldW-const-𝟙 (g ∷ w) = cong (𝟙 +F_) (foldW-const-𝟙 w)
 
 ------------------------------------------------------------------------
 -- 2. Step B — `quotient IS wpar` at Gen = Fin (suc n): the bridge's own
@@ -75,7 +79,7 @@ foldW-const-𝟙 (g ∷ w) = cong (𝟙 +_) (foldW-const-𝟙 w)
 
 quotient-is-wpar : {n : ℕ} (w : Word (Fin (suc n))) → quotient n w ≡ wpar w
 quotient-is-wpar []      = refl
-quotient-is-wpar (a ∷ w) = cong (𝟙 +_) (quotient-is-wpar w)
+quotient-is-wpar (a ∷ w) = cong (𝟙 +F_) (quotient-is-wpar w)
 
 ------------------------------------------------------------------------
 -- 3. ◆ip-cap-concrete-bridge (b) — THE character coincidence.

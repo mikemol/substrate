@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------
 -- Substrate.Algebra.Nat.Mod.Power
 --
--- Modular exponentiation + the Euler–Fermat engine: exponential periodicity.
+-- Modular exponentiation ℕ+ the Euler–Fermat engine: exponential periodicity.
 -- If aᵈ ≡ 1 (mod M) — i.e. the order of a divides d — then a^(n·d) ≡ 1
 -- (mod M). This is the mechanism of Euler/Fermat: once a power returns to 1,
 -- every multiple of that exponent does too. Euler's theorem is the case
@@ -13,12 +13,24 @@
 
 module Substrate.Algebra.Nat.Mod.Power where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_)
-open import Substrate.Foundation.Nat.Properties.Add using (+-identityʳ)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Times
+open import Substrate.Foundation.Nat.Properties.Add.PlusIdentityR
 open import Substrate.Foundation.Nat.Properties.Mul using (*-assoc)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂)
-open import Substrate.Algebra.Nat.Mod using (_mod-suc_)
+open import Substrate.Foundation.Nat.Nat.ModSuc
+open import Substrate.Algebra.Nat.Mod.ModSucBound
+open import Substrate.Algebra.Nat.Mod.ModSucId
+open import Substrate.Algebra.Nat.Mod.ModSucPeriodic
+open import Substrate.Algebra.Nat.Mod.ModSucSuc
+open import Substrate.Algebra.Nat.Mod.SucModSucLt
+open import Substrate.Algebra.Nat.Mod.SucModSucSelf
 open import Substrate.Algebra.Nat.Mod.Homomorphism using (mod-mult-hom)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
 
 ------------------------------------------------------------------------
 -- 1. ℕ exponentiation and the exponent-addition law.
@@ -28,8 +40,8 @@ pow : ℕ → ℕ → ℕ
 pow a zero    = 1
 pow a (suc k) = a * pow a k
 
-pow-add : (a j k : ℕ) → pow a (j + k) ≡ pow a j * pow a k
-pow-add a zero    k = sym (+-identityʳ (pow a k))
+pow-add : (a j k : ℕ) → pow a (j ℕ+ k) ≡ pow a j * pow a k
+pow-add a zero    k = sym (+ℕ-identityʳ (pow a k))
 pow-add a (suc j) k =
   trans (cong (a *_) (pow-add a j k)) (sym (*-assoc a (pow a j) (pow a k)))
 

@@ -62,20 +62,21 @@
 
 module Substrate.Algebra.Z.CommRing where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.Foundation.Empty using (⊥)
+open import Substrate.Foundation.Empty.Bot
 
 open import Substrate.Algebra.Group using (Group)
 open import Substrate.Algebra.AbelianGroup using (AbelianGroup)
 open import Substrate.Algebra.Ring using (Ring)
-open import Substrate.Algebra.CommutativeRing using (CommutativeRing)
+open import Substrate.Algebra.CommutativeRing.Record
 
-open import Substrate.Algebra.Z using (ℤ; +_; -suc_; -ℤ_)
+open import Substrate.Algebra.Z.Int
+open import Substrate.Algebra.Z.Int2
 open import Substrate.Algebra.Z.Properties.Add
   using (+ℤ-comm; +ℤ-inverseˡ; +ℤ-inverseʳ)
 open import Substrate.Algebra.Z.Properties.Mul using (*ℤ-comm)
 open import Substrate.Algebra.Semiring.Instances.Z
   using (ℤ-semiring; ℤ-+-Monoid)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. The additive group — (ℤ, +ℤ, 0ℤ, -ℤ).

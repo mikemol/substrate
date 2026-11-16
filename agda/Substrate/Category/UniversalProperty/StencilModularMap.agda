@@ -18,11 +18,12 @@
 
 module Substrate.Category.UniversalProperty.StencilModularMap where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Foundation.Product using (Σ; _,_; _×_; proj₁; proj₂)
 open import Substrate.Category.Allegory
   using (_⨾_; _∧_; _†; _⊆_; _≈_; idR; modular; ∧-⊆ˡ; ∧-⊆ʳ; ∧-greatest)
 open import Substrate.Category.Allegory.Maps using (deterministic; graph; graph-det)
+open import Substrate.Foundation.Eq
+open import Substrate.Algebra.Wedge.CrossMul
 
 module _ {A B C : Set} (f : A → B → Set) (det : deterministic f) where
 

@@ -13,19 +13,24 @@
 
 module Substrate.Algebra.Z.JacobianDetNative where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Product using (proj₁; _,_)
-open import Substrate.Algebra.Z using (ℤ)
+open import Substrate.Algebra.Z.Int
 open import Substrate.Algebra.Z.JacobianResidue
   using (∂x; ∂y; ∂z; f₁; f₂; f₃; detJac; coeff; MPoly; Mono)
 open import Substrate.Algebra.Z.MPolyNormalize using (normalize)
-open import Substrate.Algebra.Z.MPolyNormalize.Properties using (coeff-normalize; normalize-sorted)
+open import Substrate.Algebra.Z.MPolyNormalize.Properties.CoeffNormalize
+open import Substrate.Algebra.Z.MPolyNormalize.Properties.NormalizeSorted
 open import Substrate.Algebra.Z.MPolySemiring using (NormPoly; NormPoly-Semiring; ε₂; ε₂-sq)
 open import Substrate.WitnessTower.LeibnizDet using (module Det)
 
 open Det NormPoly NormPoly-Semiring using (Mat)
 open Det.WithSign NormPoly NormPoly-Semiring ε₂ ε₂-sq using (det)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.WitnessTower.LeibnizMonomial
 
 -- Set₀ packaging glue (3b named its Σ-constructor differently).
 mkN : MPoly → NormPoly

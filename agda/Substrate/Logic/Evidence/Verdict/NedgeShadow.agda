@@ -33,14 +33,17 @@
 
 module Substrate.Logic.Evidence.Verdict.NedgeShadow where
 
-open import Substrate.Foundation.Bool    using (Bool; true; false; _xor_)
-open import Substrate.Foundation.Empty   using (⊥)
-open import Substrate.Foundation.Eq      using (_≡_; refl; sym; cong)
+open import Substrate.Foundation.Bool.Bool
+open import Substrate.Foundation.Bool.Xor
+open import Substrate.Foundation.Empty.Bot
 open import Substrate.Foundation.Product using (_×_; _,_)
 
 open import Substrate.Logic.Evidence.Verdict
   using (Evidence; ⟨_,_⟩; Verdict; verdict; eU; U≢V)
 open import Substrate.Logic.Evidence.Verdict.NoCollapse using (faithful-separates)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- Nedge's single-rail reading, recovered as a PROJECTION of the dual-rail

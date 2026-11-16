@@ -15,10 +15,10 @@
 
 module Substrate.WitnessTower.Wedge.OrientationRigCatPermCoxeter4.Tail where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.Foundation.Sum using (_⊎_; inj₁; inj₂)
+open import Substrate.Foundation.Sum.Sum
 open import Substrate.WitnessTower.Enumerate using (Perm)
 open import Substrate.WitnessTower.Wedge.OrientationRigCatPermCoxeter4.Elements
+open import Substrate.Foundation.Eq
 
 -- e12 … e23 as a 12-way nested ⊎ (same right-nesting as the parent's).
 AllAdjGen4-tail : Perm 4 → Set

@@ -8,10 +8,10 @@
 
 module Substrate.Algebra.Q.Properties.Decidable.Decide where
 
-open import Substrate.Foundation.Negation using (Dec; yes; no)
-open import Substrate.Algebra.Q using (ℚ)
+open import Substrate.Foundation.Negation.Dec
+open import Substrate.Algebra.Q.Rat
 open import Substrate.Algebra.Q.Equiv using (_≈ℚ_)
-open import Substrate.Algebra.Q.Properties.Canonical using (reduce-respects-≈)
+open import Substrate.Algebra.Q.Properties.Canonical.ReduceRespectsApprox
 open import Substrate.Algebra.Q.Properties.Decidable.ReduceEq
 open import Substrate.Algebra.Q.Properties.Decidable.Bridge
 

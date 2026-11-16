@@ -20,10 +20,13 @@
 
 module Substrate.Algebra.F2.AES.Round.RoundTrip where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; map; zipWith)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂)
-open import Substrate.Algebra.F2 using (F₂; _+_; +-assoc; +-identityˡ; +-self-inverse)
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.PlusAssoc
+open import Substrate.Algebra.F2.PlusF
+open import Substrate.Algebra.F2.PlusIdentityL
+open import Substrate.Algebra.F2.PlusSelfInverse
 open import Substrate.Algebra.F2.Polynomial.Wedge.SBoxTable using (sbox)
 open import Substrate.Algebra.F2.Polynomial.Wedge.SBoxTable.Properties using (inv-sbox; sbox-rt)
 open import Substrate.Algebra.F2.MixColumns.Proof using (mixcolumns-round-trip)
@@ -32,6 +35,13 @@ open import Substrate.Algebra.F2.MixColumns.Fast using (mix-fast)
 open import Substrate.Algebra.F2.MixColumns.Fast.Properties using (mix-fast-round-trip)
 open import Substrate.Algebra.F2.AES.Round
   using (State; SubBytes; MixColumns; ShiftRows; addKey; round; final-round)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.Algebra.F2.MixColumns.Base
+open import Substrate.Algebra.F2.Polynomial.Wedge.SBox
 
 ------------------------------------------------------------------------
 -- two generic reversibility combinators (the reusable costructure).
@@ -66,12 +76,12 @@ mix-rt = map-rt mix-fast mix-inv mix-fast-round-trip
 ------------------------------------------------------------------------
 -- AddRoundKey⁻¹ (XOR self-inverse, bit→byte→col→state).
 ------------------------------------------------------------------------
-bit-self : (k x : F₂) → k + (k + x) ≡ x
-bit-self k x = trans (sym (+-assoc k k x)) (trans (cong (_+ x) (+-self-inverse k)) (+-identityˡ x))
+bit-self : (k x : F₂) → k +F (k +F x) ≡ x
+bit-self k x = trans (sym (+-assoc k k x)) (trans (cong (_+F x) (+-self-inverse k)) (+-identityˡ x))
 
 add-rt : (k s : State) → addKey k (addKey k s) ≡ s
-add-rt = zipWith-self (zipWith (zipWith _+_))
-           (zipWith-self (zipWith _+_) (zipWith-self _+_ bit-self))
+add-rt = zipWith-self (zipWith (zipWith _+F_))
+           (zipWith-self (zipWith _+F_) (zipWith-self _+F_ bit-self))
 
 ------------------------------------------------------------------------
 -- ShiftRows⁻¹ (explicit byte permutation; round-trip by refl).
@@ -86,7 +96,7 @@ shift-rt ((b00 ∷ b01 ∷ b02 ∷ b03 ∷ []) ∷ (b10 ∷ b11 ∷ b12 ∷ b13 
         ∷ (b20 ∷ b21 ∷ b22 ∷ b23 ∷ []) ∷ (b30 ∷ b31 ∷ b32 ∷ b33 ∷ []) ∷ []) = refl
 
 ------------------------------------------------------------------------
--- THE INVERSE ROUND + per-round round-trip.
+-- THE INVERSE ROUND +F per-round round-trip.
 ------------------------------------------------------------------------
 inv-round : State → State → State
 inv-round k t = InvSubBytes (InvShiftRows (InvMixColumns (addKey k t)))

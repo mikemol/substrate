@@ -13,7 +13,6 @@
 
 module Substrate.Groups.Capabilities.xFreeCyclic where
 
-open import Substrate.Foundation.Eq using (_≡_)
 open import Substrate.Groups.Coxeter.Word using (Word; _++_)
 
 ------------------------------------------------------------------------
@@ -25,6 +24,8 @@ open import Substrate.Groups.Coxeter.Word using (Word; _++_)
 -- valued in Set, forcing the record to Set₁. As module parameters the record
 -- lands in Set; consumers write `xFreeCyclicCapability Zn-Word Zn-Canonical`.
 open import Substrate.Groups.Coxeter.Word using ([])
+open import Substrate.Foundation.Eq
+open import Substrate.Algebra.Quotient.Canonical
 module _ (Zn-Word : Set) (Zn-Canonical : Zn-Word → Set) where
 
   record xFreeCyclicCapability : Set where

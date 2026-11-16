@@ -11,11 +11,12 @@
 
 module Substrate.Algebra.R.Trace.CycleWire where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.List using (List; []; _∷_)
-open import Substrate.Foundation.Eq using (_≡_; refl; cong)
 open import Substrate.Algebra.R.Trace using (RealTrace; head; tail; take; twos)
-open import Substrate.Algebra.R.Trace.Bisim using (_~_; head~; tail~; ~-refl)
+open import Substrate.Algebra.R.Trace.Bisim.Op
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- cycle: the periodic-CF constructor over the substrate's RealTrace, from a

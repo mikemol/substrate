@@ -15,7 +15,7 @@
 
 module Substrate.Category.UniversalProperty.MuBackedGraded where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Product using (Σ; _,_)
 open import Substrate.Algebra.Wedge using (DivStr; Trace; done; collapse-fold; ℕ-div)
 open import Substrate.Category.UPArrowGraded using (UPArrowᴳ; mkUP)

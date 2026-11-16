@@ -15,11 +15,17 @@
 
 {-# OPTIONS --safe --without-K #-}
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 
 module Substrate.Groups.Coxeter.Cyclic.InvCanonical (n : ℕ) where
 
 open import Substrate.Groups.Coxeter.Cyclic.InvCanonical.InvPosAddMod n
 open import Substrate.Groups.Coxeter.Cyclic.InvCanonical.Left          n
 open import Substrate.Groups.Coxeter.Cyclic.InvCanonical.Right         n
-open import Substrate.Groups.Coxeter.Cyclic.InvCanonical.InvInv        n
+-- ⚑ `InvCanonical.InvInv` DISSOLVED (771283c8) into six leaves (Ⓐ¹²‴).  This is
+-- an AGGREGATOR — its whole body is the four sibling opens — so it takes the
+-- leaf that carries the headline lemma; the intermediate `toℕ-inv-pos*` chain is
+-- InvInvCanonicalEx's own dependency, not this module's surface.
+-- ⚑ `InvInv.Private` is NOT among them: `--provides` reports it defines ZERO
+-- names (an empty module the split emitted).
+open import Substrate.Groups.Coxeter.Cyclic.InvCanonical.InvInv.InvInvCanonicalEx n

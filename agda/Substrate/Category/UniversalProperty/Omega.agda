@@ -19,6 +19,7 @@ module Substrate.Category.UniversalProperty.Omega where
 open import Substrate.Foundation.Product using (Σ)
 open import Substrate.Category.UniversalProperty.Term using (UPTerm)
 open import Substrate.Category.UniversalProperty.Sieve using (Sieve)
+open import Substrate.S5.Dedupe
 
 module _ (O : Set) (Hom : O → O → Set) where
 

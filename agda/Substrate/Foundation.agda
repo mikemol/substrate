@@ -54,18 +54,6 @@ module Substrate.Foundation where
 -- Level's `zero`/`suc` are renamed at the capstone level to avoid
 -- the inevitable clash with Nat's `zero`/`suc`. Consumers needing
 -- level constructors import Substrate.Foundation.Level directly.
-open import Substrate.Foundation.Level
-  using (Level; _⊔_; Setω)
-open import Substrate.Foundation.Empty
-open import Substrate.Foundation.Unit
-open import Substrate.Foundation.Bool
-open import Substrate.Foundation.Function
-open import Substrate.Foundation.Eq
-open import Substrate.Foundation.Negation
-open import Substrate.Foundation.Nat
 open import Substrate.Foundation.Nat.Properties
-open import Substrate.Foundation.Product
-open import Substrate.Foundation.Sum
 -- Fin's `zero`/`suc`/`_<_`/`_≤_`/`_≟_` clash with Nat's; consumers
 -- needing Fin's variants import Substrate.Foundation.Fin directly.
-open import Substrate.Foundation.Vec

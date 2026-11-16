@@ -41,16 +41,22 @@
 
 module Substrate.Algebra.Q.JacobianCounterexample where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans)
 open import Substrate.Foundation.Product using (proj₁)
-open import Substrate.Algebra.Z using (ℤ; -suc_; 0ℤ; 1ℤ)
-open import Substrate.Algebra.Q using (ℚ; 0ℚ; 1ℚ)
+open import Substrate.Algebra.Z.Int
+open import Substrate.Algebra.Z.OneInt
+open import Substrate.Algebra.Z.ZeroInt
+open import Substrate.Algebra.Q.OneRat
+open import Substrate.Algebra.Q.Rat
+open import Substrate.Algebra.Q.ZeroRat
 open import Substrate.Algebra.Q.Equiv using (_≈ℚ_)
 import Substrate.Algebra.Q.JacobianCollision as C
 import Substrate.Algebra.Z.JacobianResidue   as R
 open import Substrate.Algebra.Z.MPolyNormalize using (normalize)
 open import Substrate.Algebra.Z.JacobianDetNative using (detNative; detNative-normal)
 import Substrate.Algebra.Q.JacobianEncodingLiteral as L
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
 
 -- ⚑ The ℚ-EVAL companion of `det-is-const-neg2` — the RAW determinant polynomial
 -- evaluated equals −2 at every point — is `Substrate.Algebra.Q.JacobianDetLiteral.

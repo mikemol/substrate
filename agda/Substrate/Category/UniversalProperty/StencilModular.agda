@@ -10,7 +10,8 @@
 -- GROUNDED (reuse, not re-proof): Category.Allegory.modular R S T : ((R ⨾ S) ∧ T) ⊆
 -- ((R ∧ (T ⨾ S†)) ⨾ S) — PROVEN (a constructive Σ/×-rearrangement). We INSTANTIATE it at
 -- the stencil's symmetric agree (R = S = T = agree). And the substrate's OWN either/or-
--- dissolution mirror: Allegory.Division.residual-duality — (R ∖ T)† ≡ (R† ／ T†), "left and
+-- dissolution mirror: Allegory.Division.ResidualDuality.residual-duality — (R ∖ T)† ≈
+-- (R† ／ T†), "left and
 -- right division are not two choices but the same residual seen through †" — the modular
 -- law's residual conjugate, the dissolve-either/or made a theorem (root/log as one residual).
 ------------------------------------------------------------------------
@@ -61,7 +62,7 @@ module _ {F : Set}
 -- either/or-dissolutions BOTTOMS OUT at the modular law: every either/or the stencil touched
 -- (relation vs function, A vs B, forward vs converse, root vs log) is a commute (193), and
 -- ALL those commutes COHERE via the one modular identity — the deepest invariant, the gate
--- that makes the allegory an allegory. The substrate's residual-duality ((R ∖ T)† ≡ R†／T†,
+-- that makes the allegory an allegory. The substrate's residual-duality ((R ∖ T)† ≈ R†／T†,
 -- "left and right division are the same residual through †") is the same dissolution made a
 -- theorem elsewhere — the modular/residual structure IS the either/or-dissolution mechanism,
 -- named category-theoretically. The stencil's agree is a symmetric relation satisfying the

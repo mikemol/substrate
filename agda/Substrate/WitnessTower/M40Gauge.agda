@@ -23,19 +23,22 @@
 module Substrate.WitnessTower.M40Gauge where
 
 import Substrate.Groups.V4.Operations as V4
-open import Substrate.Groups.V4.Bijection using (V₄; e)
-open import Substrate.Groups.V4.Operations using (_·_)
+open import Substrate.Groups.V4.Bijection.V4
+open import Substrate.Groups.V4.Operations using (_·₄_)
 open import Substrate.Groups.V4.Axioms.EpsilonLeft using (ε-left)
 open import Substrate.Groups.V4.Axioms.EpsilonIdentity using (ε-identity)
-open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym; cong)
 open import Substrate.Foundation.Product using (_×_; _,_; proj₂)
 open import Substrate.WitnessTower.M40Closure
   using (Chir; even; odd; _*c_; *c-comm; Z3; z0; +₃-idʳ; σ; σ-fixes-e;
          A4Z2; mk; compose; a4z2-≡; central-χ)
 open A4Z2
 open import Substrate.WitnessTower.M40Iso using (oflip; oflip-invol)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Cong
 
-ε-right : (x : V₄) → (x · e) ≡ x
+ε-right : (x : V₄) → (x ·₄ e) ≡ x
 ε-right = proj₂ ε-identity
 
 ------------------------------------------------------------------------
@@ -49,7 +52,7 @@ central-sign s g =
   a4z2-≡ (*c-comm s (chir g))
          (trans (ε-left (mask g))
                 (trans (sym (ε-right (mask g)))
-                       (cong (mask g ·_) (sym (σ-fixes-e (zee g))))))
+                       (cong (mask g ·₄_) (sym (σ-fixes-e (zee g))))))
          (sym (+₃-idʳ (zee g)))
 
 -- ΞB2i's central-χ is the s = odd instance — so the original verdict is just

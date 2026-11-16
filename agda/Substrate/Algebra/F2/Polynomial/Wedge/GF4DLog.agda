@@ -15,7 +15,7 @@
 -- This is the SECOND face of the field inverse (cf. the EEA-Bézout face in
 -- `SBoxFaces`/`Inverse`/`GF16Inverse`) — the two compute the one inverse
 -- (Cryptographic-Total-Space). Mechanism witnessed minimally; GF(2⁴)/GF(2⁸)
--- follow the same shape via structural induction (g^(a+b)=gᵃ·gᵇ) + g^(2ⁿ-1)=1.
+-- follow the same shape via structural induction (g^(a+b)=gᵃ·gᵇ) +F g^(2ⁿ-1)=1.
 --
 -- Zero postulates, --safe --without-K.
 ------------------------------------------------------------------------
@@ -24,19 +24,25 @@
 
 module Substrate.Algebra.F2.Polynomial.Wedge.GF4DLog where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_)
-import Substrate.Algebra.F2 as F2
+-- ⚑ WAS `import Substrate.Algebra.F2 as F2` — retired barrel + banned alias.
+-- The `F`/`M`/`Q`/`D`/`ELC` aliases below name LIVE parameterized modules and
+-- stay: only an alias pointing at a RETIRED module is this transform's class.
+open import Substrate.Algebra.F2.F2
 open import Substrate.Algebra.F2.CommRing using (F₂-CommRing)
 open import Substrate.Algebra.ExpLogCodec as ELC using (ExpLogCodec)
 import Substrate.Algebra.Polynomial.Graded.FromCommRing as F
 import Substrate.Algebra.Polynomial.Graded.Mod as M
 import Substrate.Algebra.Polynomial.Graded.Quotient as Q
 import Substrate.Algebra.Polynomial.Graded.Div as D
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 -- GF(4) = F₂[x]/(x²+x+1): low coeffs (x⁰,x¹) = (1,1), the leading x² implicit (d=1).
-m-lo₂ : Vec F2.F₂ 2
-m-lo₂ = F2.𝟙 ∷ F2.𝟙 ∷ []
+m-lo₂ : Vec F₂ 2
+m-lo₂ = 𝟙 ∷ 𝟙 ∷ []
 
 open F.Over F₂-CommRing using (Poly)
 open M.Over F₂-CommRing 1 m-lo₂ using (oneC)
@@ -44,9 +50,9 @@ open Q.Over F₂-CommRing 1 m-lo₂ using (_*Q_)
 
 -- the three nonzero field elements: 1, x, x+1  (Poly 2 = Vec F₂ 2, degree < 2).
 ex  : Poly 2      -- x
-ex  = F2.𝟘 ∷ F2.𝟙 ∷ []
+ex  = 𝟘 ∷ 𝟙 ∷ []
 ex1 : Poly 2      -- x+1
-ex1 = F2.𝟙 ∷ F2.𝟙 ∷ []
+ex1 = 𝟙 ∷ 𝟙 ∷ []
 
 ------------------------------------------------------------------------
 -- L = ℤ/3, the exponent group (GF(4)* is cyclic of order 3).

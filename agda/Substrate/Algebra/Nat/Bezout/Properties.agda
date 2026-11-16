@@ -19,22 +19,27 @@
 
 module Substrate.Algebra.Nat.Bezout.Properties where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_)
-open import Substrate.Foundation.Sum using (_⊎_; inj₁; inj₂)
-open import Substrate.Foundation.Nat.Properties.Add using (+-identityʳ; +-identityˡ)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Times
+open import Substrate.Foundation.Sum.Sum
+open import Substrate.Foundation.Nat.Properties.Add.PlusIdentityL
+open import Substrate.Foundation.Nat.Properties.Add.PlusIdentityR
 open import Substrate.Foundation.Nat.Properties.Mul using (*-zeroˡ; *-identityˡ)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
 
-open import Substrate.Algebra.Nat.GCD.EEATrace using (EEATrace; base; step)
 open import Substrate.Algebra.Nat.Bezout using (BezoutWitness)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- N-2: Base-case Bezout — for the trivial gcd(a, 0) = a.
 --
 -- At gcd(a, 0) = a: take s = 1, t = 0. Then:
 --   s · a = 1 · a = a
---   t · b + g = 0 · 0 + a = a
--- So s · a ≡ t · b + g (left case).
+--   t · b ℕ+ g = 0 · 0 ℕ+ a = a
+-- So s · a ≡ t · b ℕ+ g (left case).
 ------------------------------------------------------------------------
 
 base-bezout : (a : ℕ) → BezoutWitness a 0 a
@@ -44,8 +49,8 @@ base-bezout a = record
   ; eq = inj₁ eq-proof
   }
   where
-    eq-proof : 1 * a ≡ 0 * 0 + a
-    eq-proof = trans (*-identityˡ a) (sym (+-identityˡ a))
+    eq-proof : 1 * a ≡ 0 * 0 ℕ+ a
+    eq-proof = trans (*-identityˡ a) (sym (+ℕ-identityˡ a))
 
 ------------------------------------------------------------------------
 -- N-3: BezoutWitness from EEATrace — the structural fold (template).
@@ -59,8 +64,8 @@ base-bezout a = record
 -- (BezoutWitness (suc b) (remainder w) g), then derive
 -- BezoutWitness a (suc b) g via:
 --
---   From IH: s' · suc b = t' · remainder w + g  (or swapped)
---   From wedge: a ≡ quotient w · suc b + remainder w
+--   From IH: s' · suc b = t' · remainder w ℕ+ g  (or swapped)
+--   From wedge: a ≡ quotient w · suc b ℕ+ remainder w
 --               ⟹ remainder w = a - quotient w · suc b
 --
 --   Substitution gives a new linear combination of (a, suc b) with g.
@@ -80,4 +85,4 @@ base-bezout a = record
 --   -- (s_old, t_old, quotient w).
 --
 -- Deferred: the substantive arithmetic proof. Current slice provides
--- the type (in Bezout.agda) + base case + structural template.
+-- the type (in Bezout.agda) ℕ+ base case ℕ+ structural template.

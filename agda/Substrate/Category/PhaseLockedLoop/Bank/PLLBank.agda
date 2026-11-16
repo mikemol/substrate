@@ -9,7 +9,7 @@
 
 module Substrate.Category.PhaseLockedLoop.Bank.PLLBank where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Groups.Coxeter.Word using (Word)
 
 open import Substrate.Category.PhaseLockedLoop.LockState using (LockState)

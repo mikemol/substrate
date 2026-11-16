@@ -12,10 +12,22 @@
 module Substrate.Algebra.Q.Capstone where
 
 -- Re-export the Q-arc slices publicly.
-open import Substrate.Algebra.Z
-open import Substrate.Algebra.Q
+open import Substrate.Algebra.Z.DecInt
+open import Substrate.Algebra.Z.Int
+open import Substrate.Algebra.Z.NatDec
+open import Substrate.Algebra.Z.OneInt
+open import Substrate.Algebra.Z.OneInt2
+open import Substrate.Algebra.Z.ZeroInt
+open import Substrate.Algebra.Q.Denominator
+open import Substrate.Algebra.Q.Numerator
+open import Substrate.Algebra.Q.OneRat
+open import Substrate.Algebra.Q.OneRat2
+open import Substrate.Algebra.Q.Rat
+open import Substrate.Algebra.Q.RatOf
+open import Substrate.Algebra.Q.ZeroRat
 open import Substrate.Algebra.Q.DecidableEq
-open import Substrate.Algebra.Q.Reduction
+open import Substrate.Algebra.Q.Reduction.Op3
+open import Substrate.Algebra.Q.Reduction.Private
 open import Substrate.Algebra.Q.Arithmetic
 open import Substrate.Algebra.Q.Order
 open import Substrate.Algebra.Q.Embeddings
@@ -28,9 +40,11 @@ open import Substrate.Algebra.Q.Linear
 -- Storage: (1*1 + 1*1, 1*1 - 1) = (2, 0). Verified by inspection.
 ------------------------------------------------------------------------
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.Algebra.Z using (ℤ; +_)
-open import Substrate.Algebra.Q using (ℚ; mkℚ)
+open import Substrate.Algebra.Z.Int
+open import Substrate.Algebra.Q.Rat
+open import Substrate.Foundation.Eq
+open import Substrate.Algebra.Q.Mul
+open import Substrate.Algebra.Q.Add
 
 1+1-storage : (1ℚ +ℚ 1ℚ) ≡ mkℚ (+ 2) 0
 1+1-storage = refl

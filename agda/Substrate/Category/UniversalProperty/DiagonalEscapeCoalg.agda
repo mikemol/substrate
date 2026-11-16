@@ -26,12 +26,18 @@ module Substrate.Category.UniversalProperty.DiagonalEscapeCoalg where
 -- illuminating framing, NOT a theorem of this slice; not enforced by the typechecker).
 -- Promoting the framing to a theorem would require the formal functor-map from ana-unique to the defeat of the Lawvere negateAll endomap (⟡diagonal-lawvere-coalg), and the ℕ-observation coding 233's Pred slice (⟡diagonal-obs-code).
 
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
 open import Substrate.Algebra.R.Trace using (RealTrace; head; tail)
-open import Substrate.Algebra.R.Trace.Bisim using (_~_; head~; tail~; ~-refl)
-open import Substrate.Algebra.R.Trace.Final using (Coalg; out; into; ana; ana-head; ana-tail; ana-unique; lambek-into-out; lambek-out-into)
+open import Substrate.Algebra.R.Trace.Bisim.Op
+open import Substrate.Algebra.R.Trace.Final.Ana
+open import Substrate.Algebra.R.Trace.Final.AnaUnique
+open import Substrate.Algebra.R.Trace.Final.Coalg
+open import Substrate.Algebra.R.Trace.Final.Into
+open import Substrate.Algebra.R.Trace.Final.LambekIntoOut
+open import Substrate.Algebra.R.Trace.Final.LambekOutInto
+open import Substrate.Algebra.R.Trace.Final.Out
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- ① THE OBSERVER IS A COALGEBRA. Its state carries a plural prediction, presented as a single

@@ -49,16 +49,18 @@
 
 module Substrate.WitnessTower.LeibnizMonomial where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _*_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Times
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Punctured using (punchIn)
 open import Substrate.Foundation.Fin.Combine using (combine)
 open import Substrate.Foundation.Fin.RemQuot using (remQuot)
 open import Substrate.Foundation.Product using (proj₁; proj₂)
-open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.WitnessTower.LehmerPath using (LehmerPath; start; _◂_)
+open import Substrate.WitnessTower.LehmerPath.LehmerPath
 open import Substrate.WitnessTower.Wedge.OrientationUniversal
   using (LehmerAlgebra; fold)
+open import Substrate.Foundation.Eq
+open import Substrate.Category.DiscreteFourierTransform
 
 ------------------------------------------------------------------------
 -- 1. THE FLAT MATRIX CARRIER, and the graded monomial-reader over it.

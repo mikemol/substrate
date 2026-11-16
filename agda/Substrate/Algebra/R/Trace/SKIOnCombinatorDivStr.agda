@@ -3,7 +3,7 @@
 ------------------------------------------------------------------------
 -- Substrate.Algebra.R.Trace.SKIOnCombinatorDivStr — ⟡ski-on-combinatordivstr: the
 -- CORRECTED grounding of the whole SKI-shedding arc (ADD 143-151). Those five
--- modules hand-rolled `Tm`, `cost : Tm → ℕ`, and `_⇒_` — re-deriving what the
+-- modules hand-rolled `Tm`, `cost : Tm-CombDivStr → ℕ`, and `_⇒_` — re-deriving what the
 -- substrate ALREADY parameterizes as Wedge.CombinatorDivStr.Reduction (ADD 152).
 --
 -- Here: supply ONLY the carrier parameters (S = the term, nf = a normal form,
@@ -16,34 +16,35 @@
 
 module Substrate.Algebra.R.Trace.SKIOnCombinatorDivStr where
 
-open import Substrate.Foundation.Eq  using (_≡_; refl)
 open import Substrate.Foundation.List using (List; []; _∷_)
 open import Substrate.Algebra.Wedge using (DivStr; z; recon; Trace; done; more; quot)
 open import Substrate.Algebra.Wedge.Shape using (WedgeShape; shape)
 import Substrate.Algebra.Wedge.CombinatorDivStr as CDS
+open import Substrate.Foundation.Eq
+open import Substrate.Algebra.Wedge
 
 ------------------------------------------------------------------------
 -- ① THE CARRIER PARAMETER (the ONLY thing supplied — S, nf, rb). A minimal SKI
 -- term as the reduction-state carrier. Note: this is the DivStr's C (a parameter),
 -- NOT a re-derivation — the reduction/cost/SN/Diverges all come from the center.
 ------------------------------------------------------------------------
-data Tm : Set where      -- ⟦shape:c800487a S K I,_∙_,nf⟧
-  S K I : Tm
-  _∙_   : Tm → Tm → Tm
-  nf    : Tm                          -- the terminal/normal-form marker (the z)
+data Tm-CombDivStr : Set where      -- ⟦shape:c800487a S K I,_∙_,nf⟧
+  S K I : Tm-CombDivStr
+  _∙_   : Tm-CombDivStr → Tm-CombDivStr → Tm-CombDivStr
+  nf    : Tm-CombDivStr                          -- the terminal/normal-form marker (the z)
 infixl 7 _∙_
 
 -- reconstruction rb q b r: rebuild a reduction state from generator q, base b,
 -- residual r. For the combinator wedge, the generator applied to the residual —
 -- the structure-rebuild (FUSepQSKI's rcn, the invertible peel), q kept as the head.
-rb : Tm → Tm → Tm → Tm
+rb : Tm-CombDivStr → Tm-CombDivStr → Tm-CombDivStr → Tm-CombDivStr
 rb q b r = (q ∙ b) ∙ r
 
 ------------------------------------------------------------------------
 -- ② INSTANTIATE THE CENTER. This ONE line replaces the five hand-rolled modules'
 -- reduction+cost+SN+Diverges machinery.
 ------------------------------------------------------------------------
-open CDS.Reduction Tm nf rb
+open CDS.Reduction Tm-CombDivStr nf rb
   using (combinator-DivStr; ReductionTrace; reduction-CF; value-is-empty-CF; PeriodWitness)
 
 ------------------------------------------------------------------------
@@ -51,14 +52,14 @@ open CDS.Reduction Tm nf rb
 -- quotient sequence (the CF), quotients kept as carrier reps. A reduction's cost
 -- IS its CF — the list of redex-contraction generators, from the center.
 ------------------------------------------------------------------------
-ski-cost : {a b g : Tm} → ReductionTrace a b g → WedgeShape combinator-DivStr
+ski-cost : {a b g : Tm-CombDivStr} → ReductionTrace a b g → WedgeShape combinator-DivStr
 ski-cost = reduction-CF                       -- = shape, the quotient sequence
 
 ------------------------------------------------------------------------
 -- ④ SN = value-is-empty-CF: a term that IS a normal form has empty CF (done, no
 -- steps shed). The least-fixed-point/terminal corner, from the center.
 ------------------------------------------------------------------------
-ski-nf-empty : (a : Tm) → ski-cost (done a) ≡ []
+ski-nf-empty : (a : Tm-CombDivStr) → ski-cost (done a) ≡ []
 ski-nf-empty = value-is-empty-CF
 
 ------------------------------------------------------------------------
@@ -68,8 +69,8 @@ ski-nf-empty = value-is-empty-CF
 ------------------------------------------------------------------------
 -- more b w rec : Trace a b g. Build a 2-step trace ending in done. The wedge at
 -- each step carries quot = the generator. We use the generic Wedge record.
-open import Substrate.Algebra.Wedge using () renaming (Wedge to Wedge⟦478f66a6⟧)
-step-wedge : (gen b r : Tm) → Wedge⟦478f66a6⟧ combinator-DivStr (rb gen b r) b
+open import Substrate.Algebra.Wedge using () renaming (Wedge to Wedge)
+step-wedge : (gen b r : Tm-CombDivStr) → Wedge combinator-DivStr (rb gen b r) b
 step-wedge gen b r = record { quot = gen ; rem = r ; wedge-eq = refl }
 
 -- a 2-step reduction ending at nf. Build bottom-up so every wedge-eq is refl by
@@ -96,9 +97,9 @@ red2-self-period = refl
 ------------------------------------------------------------------------
 -- THE INVARIANT (bottoming out — the correction realized): the SKI reduction, its
 -- cost, its SN corner, and its regress/period ALL come from ONE instantiation of
--- Wedge.CombinatorDivStr.Reduction. The only thing supplied is the carrier (Tm, nf,
+-- Wedge.CombinatorDivStr.Reduction. The only thing supplied is the carrier (Tm-CombDivStr, nf,
 -- rb); reduction = ReductionTrace, cost = shape (the quotient sequence [I,K], not a
--- hand-rolled cost : Tm → ℕ), SN = value-is-empty-CF, period = PeriodWitness. The
+-- hand-rolled cost : Tm-CombDivStr → ℕ), SN = value-is-empty-CF, period = PeriodWitness. The
 -- five hand-rolled modules (ADD 143-151) are the residue this replaces: each
 -- re-derived this parameterization; this instantiates it. The either/or "define the
 -- SKI machinery vs reuse the center" dissolves — the machinery IS the center,

@@ -14,7 +14,7 @@
 -- "derived from a LehmerAlgebra, shown equivalent to it" made total:
 --   ⊕ᶜ-base   ← blockSum(id-perm 0) τ ≡ τ                    (blockSum-raise, raise 0 = id)
 --   ⊕ᶜ-step   ← blockSum(insert-at p σ)τ ≡ insert-at(inject+ p)(blockSum σ τ)
---               via decode-⊕ + the DEFINITIONAL (lσ◂p)⊕lτ = (lσ⊕lτ)◂inject
+--               via decode-⊕ ℕ+ the DEFINITIONAL (lσ◂p)⊕lτ = (lσ⊕lτ)◂inject
 --   ⊗ᶜ-absorb ← (id-perm 0) ⊗ τ ≡ id-perm 0                  (Perm 0 singleton)
 --   ⊗ᶜ-step   ← perm-⊗ᶜ-step-decode (PyAstRewritePermRig), lifted through decode-encode
 -- and the Σ-equalities collapse to their Perm component via Iso-prop (`snEq`).
@@ -26,14 +26,16 @@
 
 module Substrate.WitnessTower.Wedge.PyAstRewriteSnRig where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Times
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Inject using (inject+)
-open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym; cong)
 open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂; Σ-≡,≡→≡)
 open import Substrate.WitnessTower.Enumerate using (Perm; insert-at)
 open import Substrate.WitnessTower.Decompose using (lookup-ext)
-open import Substrate.WitnessTower.LehmerPath using (LehmerPath; start; _◂_; decode)
+open import Substrate.WitnessTower.LehmerPath.Decode
+open import Substrate.WitnessTower.LehmerPath.LehmerPath
 open import Substrate.WitnessTower.FirstAppearance using (id-perm)
 open import Substrate.WitnessTower.IsPermutation using (IsPerm; IsPerm-[]; insert-at-preserves)
 open import Substrate.WitnessTower.Wedge.OrientationDistributor using (blockSum; blockSum-raise)
@@ -42,16 +44,23 @@ open import Substrate.WitnessTower.Wedge.IsoDecodeLift using (on-iso; on-iso₂)
 open import Substrate.WitnessTower.Wedge.OrientationProduct using (_⊗_)
 open import Substrate.WitnessTower.Wedge.OrientationProductPerm using (⊗-is-perm)
 open import Substrate.WitnessTower.Wedge.OrientationProductStructural using (offsetDigit)
-open import Substrate.WitnessTower.Wedge.OrientationRigCatSym using (Iso; Iso-prop; IsPerm→Iso; Iso→IsPerm)
+open import Substrate.WitnessTower.Wedge.OrientationRigCatSym.IsPermToIso
+open import Substrate.WitnessTower.Wedge.OrientationRigCatSym.Iso
+open import Substrate.WitnessTower.Wedge.OrientationRigCatSym.IsoProp
+open import Substrate.WitnessTower.Wedge.OrientationRigCatSym.IsoToIsPerm
 open import Substrate.WitnessTower.Wedge.OrientationRigCatSymUP using (iso-blockSum)
 open import Substrate.WitnessTower.Wedge.OrientationUniversal using (LehmerAlgebra; fold)
 open import Substrate.WitnessTower.Wedge.OrientationRigInitial using (RigAlgebra; foldR)
 open import Substrate.WitnessTower.Wedge.OrientationRigUniversal using (replayᶜ)
 open import Substrate.WitnessTower.Wedge.PyAstRewritePermRig
   using (permAlg; fold-permAlg≡decode; perm-⊗ᶜ-step-decode)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
--- 0. THE CARRIER: the funext-free Sₙ (permutation + two-sided-inverse witness).
+-- 0. THE CARRIER: the funext-free Sₙ (permutation ℕ+ two-sided-inverse witness).
 ------------------------------------------------------------------------
 Sₙ : ℕ → Set
 Sₙ n = Σ (Perm n) Iso
@@ -95,7 +104,7 @@ perm-⊗ᶜ-step-iso {m} {n} σ iσ p l₂ =
          (λ lx → perm-⊗ᶜ-step-decode lx p l₂) σ iσ
 
 ------------------------------------------------------------------------
--- 3. THE Sₙ LehmerAlgebra + Σ-naturality of fold / replayᶜ.
+-- 3. THE Sₙ LehmerAlgebra ℕ+ Σ-naturality of fold / replayᶜ.
 ------------------------------------------------------------------------
 snAlg : LehmerAlgebra Sₙ
 snAlg = record

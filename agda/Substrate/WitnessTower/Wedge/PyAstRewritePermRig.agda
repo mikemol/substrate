@@ -35,11 +35,12 @@
 
 module Substrate.WitnessTower.Wedge.PyAstRewritePermRig where
 
-open import Substrate.Foundation.Nat using (ℕ; suc; _*_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Times
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym; cong)
 open import Substrate.WitnessTower.Enumerate using (Perm; insert-at)
-open import Substrate.WitnessTower.LehmerPath using (LehmerPath; _◂_; start; decode)
+open import Substrate.WitnessTower.LehmerPath.Decode
+open import Substrate.WitnessTower.LehmerPath.LehmerPath
 open import Substrate.WitnessTower.FirstAppearance using (id-perm)
 open import Substrate.WitnessTower.Wedge.OrientationProduct using (_⊗_)
 open import Substrate.WitnessTower.Wedge.OrientationProductStructural using (_⊗ˢ_; replay-aux)
@@ -48,6 +49,10 @@ open import Substrate.WitnessTower.Wedge.OrientationUniversal using (LehmerAlgeb
 open import Substrate.WitnessTower.Wedge.OrientationRigUniversal using (replayᶜ; fold-replay)
 open import Substrate.WitnessTower.Wedge.OrientationRigInstance
   using (idAlg; fold-idAlg; replayᶜ-id; lehmer-⊗ᶜ-step)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- 1. THE PERMUTATION ALGEBRA: base = the empty perm, step = insert-at. Its fold IS

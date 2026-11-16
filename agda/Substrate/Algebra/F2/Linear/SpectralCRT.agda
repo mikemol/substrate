@@ -28,13 +28,13 @@
 
 module Substrate.Algebra.F2.Linear.SpectralCRT where
 
-open import Substrate.Foundation.Eq using (refl)
 open import Substrate.Algebra.F2.Linear.KernelSpan using (KernelDim)
 open import Substrate.Algebra.F2.Linear.SpectralCycle using (Φσ)
-open import Substrate.Algebra.F2.Linear.SpectralCycleDim using (dim-ker-Φσ)
+open import Substrate.Algebra.F2.Linear.SpectralCycleDim.DimKer
 open import Substrate.Algebra.Nat.GCD.GcdTrace using (coprime-trace)
 open import Substrate.Algebra.Quotient.CRT using (CRT-Witness)
 open import Substrate.Algebra.Quotient.CRT.FromTrace using (crt-from-traces)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. The spectral kernel dimension is order−1 for ANY order — primality-free.

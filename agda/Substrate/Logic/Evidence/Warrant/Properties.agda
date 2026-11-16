@@ -13,10 +13,11 @@
 
 module Substrate.Logic.Evidence.Warrant.Properties where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; trans)
 open import Substrate.Category.CommutativeMonoid using (CommutativeMonoid)
 
 open import Substrate.Logic.Evidence.Warrant
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
 
 ⊓w-idem : (a : Warrant) → a ⊓w a ≡ a
 ⊓w-idem W = refl

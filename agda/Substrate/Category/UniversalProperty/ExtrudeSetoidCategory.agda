@@ -22,8 +22,12 @@
 ------------------------------------------------------------------------
 
 module Substrate.Category.UniversalProperty.ExtrudeSetoidCategory where
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Category.UniversalProperty.ExtrudeIOKleisli
+open import Substrate.Probability.MarkovCategory
 
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans)
 
 ------------------------------------------------------------------------
 -- ① IsEquivalence (in Set — parameterized over the carrier A : Set and the relation _≈_, both concrete):

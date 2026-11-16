@@ -32,25 +32,50 @@
 module Substrate.Algebra.F2.SymBilinForm.HodgeRecast where
 
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Vec using ([]; _∷_; lookup)
-open import Substrate.Foundation.Function using (_∘_)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; trans; cong)
 
-open import Substrate.Algebra.F2
+open import Substrate.Algebra.F2.AbsorbL
+open import Substrate.Algebra.F2.AbsorbR
+open import Substrate.Algebra.F2.Assoc
+open import Substrate.Algebra.F2.Comm
+open import Substrate.Algebra.F2.Dec
+open import Substrate.Algebra.F2.DistribLPlus
+open import Substrate.Algebra.F2.DistribRPlus
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.F2Cases
+open import Substrate.Algebra.F2.Idempotent
+open import Substrate.Algebra.F2.IdentityL
+open import Substrate.Algebra.F2.IdentityR
+open import Substrate.Algebra.F2.InvOfOne
+open import Substrate.Algebra.F2.OneNeqZero
+open import Substrate.Algebra.F2.Op
+open import Substrate.Algebra.F2.Op2
+open import Substrate.Algebra.F2.PlusAssoc
+open import Substrate.Algebra.F2.PlusComm
+open import Substrate.Algebra.F2.PlusF
+open import Substrate.Algebra.F2.PlusIdentityL
+open import Substrate.Algebra.F2.PlusIdentityR
+open import Substrate.Algebra.F2.PlusInverseL
+open import Substrate.Algebra.F2.PlusInverseR
+open import Substrate.Algebra.F2.PlusSelfInverse
+open import Substrate.Algebra.F2.ZeroNeqOne
 open import Substrate.Algebra.F2.Vector
 open import Substrate.Algebra.F2.Vector.Universal using (sum-F₂; sum-F₂-cong)
 open import Substrate.Algebra.F2.Vector.DotProduct using (_·F_)
 open import Substrate.Algebra.F2.SymBilinForm.BilinForm using (BilinForm)
 open import Substrate.Algebra.F2.SymBilinForm.BilinearFormOf using (bilinear-form-of)
 open import Substrate.Algebra.F2.SymBilinForm.MetricId using (metric-id)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- N-1: sum-of-zeros — sum-F₂ of the constant-𝟘 function is 𝟘.
 --
--- Trivial by induction on n: at zero, refl. At suc, `𝟘 + sum-of-zeros`
--- reduces via the `𝟘 + y = y` pattern.
+-- Trivial by induction on n: at zero, refl. At suc, `𝟘 +F sum-of-zeros`
+-- reduces via the `𝟘 +F y = y` pattern.
 ------------------------------------------------------------------------
 
 sum-of-zeros : ∀ {n} → sum-F₂ {n} (λ _ → 𝟘) ≡ 𝟘
@@ -69,11 +94,11 @@ sum-of-zeros {suc n} = sum-of-zeros {n}
 --
 --   Case i = zero (w = w₀ ∷ ws): the j=zero term is `𝟙 · w₀ = w₀`;
 --     every j=suc-_ term is `𝟘 · lookup ws j' = 𝟘`. Sum collapses
---     to `w₀ + 𝟘 = w₀`.
+--     to `w₀ +F 𝟘 = w₀`.
 --
 --   Case i = suc i' (w = w₀ ∷ ws): the j=zero term is `𝟘 · w₀ = 𝟘`;
 --     every j=suc-_ term is `metric-id i' j' · lookup ws j'`. Sum
---     becomes `𝟘 + sum-F₂ (...) ≡ sum-F₂ (...)`, and by IH equals
+--     becomes `𝟘 +F sum-F₂ (...) ≡ sum-F₂ (...)`, and by IH equals
 --     `lookup ws i' = lookup (w₀ ∷ ws) (suc i')`.
 ------------------------------------------------------------------------
 
@@ -81,17 +106,17 @@ metric-id-collapse :
   ∀ {n} (i : Fin n) (w : Vector n) →
   sum-F₂ (λ j → metric-id i j · lookup w j) ≡ lookup w i
 metric-id-collapse {suc n} zero    (w₀ ∷ ws) =
-  -- LHS reduces to: w₀ + sum-F₂ {n} (λ j → 𝟘 · lookup ws j)
-  -- → w₀ + sum-F₂ {n} (λ _ → 𝟘)   [sum-F₂-cong via ·-absorbˡ]
-  -- → w₀ + 𝟘                      [sum-of-zeros]
+  -- LHS reduces to: w₀ +F sum-F₂ {n} (λ j → 𝟘 · lookup ws j)
+  -- → w₀ +F sum-F₂ {n} (λ _ → 𝟘)   [sum-F₂-cong via ·-absorbˡ]
+  -- → w₀ +F 𝟘                      [sum-of-zeros]
   -- → w₀                          [+-identityʳ]
-  trans (cong (w₀ +_)
+  trans (cong (w₀ +F_)
               (trans (sum-F₂-cong {n} (λ j → ·-absorbˡ (lookup ws j)))
                      (sum-of-zeros {n})))
         (+-identityʳ w₀)
 metric-id-collapse {suc n} (suc i) (w₀ ∷ ws) =
-  -- LHS reduces to: 𝟘 + sum-F₂ {n} (λ j → metric-id i j · lookup ws j)
-  -- → sum-F₂ {n} (λ j → metric-id i j · lookup ws j)   [𝟘 + y = y, by pattern]
+  -- LHS reduces to: 𝟘 +F sum-F₂ {n} (λ j → metric-id i j · lookup ws j)
+  -- → sum-F₂ {n} (λ j → metric-id i j · lookup ws j)   [𝟘 +F y = y, by pattern]
   -- → lookup ws i                                       [IH at n]
   -- = lookup (w₀ ∷ ws) (suc i)                          [by definition]
   metric-id-collapse {n} i ws
@@ -140,9 +165,9 @@ metric-id-collapse {suc n} (suc i) (w₀ ∷ ws) =
 -- annealing step that depends on the (deferred) SymBilinForm-3/4 ↔
 -- SymBilinForm 3/4 wrappers.
 --
--- Per `feedback_categorical_name_first`: the δ-collapse + sum-F₂-cong
+-- Per `feedback_categorical_name_first`: the δ-collapse +F sum-F₂-cong
 -- IS the inference rule for HodgeRecast at any n. No new infrastructure
 -- per dim; the universal property of metric-id (the Kronecker delta)
--- + the universal property of sum-F₂ (congruence under pointwise
+-- +F the universal property of sum-F₂ (congruence under pointwise
 -- equality) compose to give HodgeRecast for free.
 ------------------------------------------------------------------------

@@ -21,11 +21,12 @@
 
 module Substrate.Algebra.Wedge.BoundedIso where
 
-open import Substrate.Foundation.Nat     using (ℕ; suc; _<_)
-open import Substrate.Foundation.Eq      using (_≡_)
+open import Substrate.Foundation.Nat.Lt
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Product using (_×_)
 open import Substrate.Algebra.Wedge             using (recon; ℕ-div)
-open import Substrate.Algebra.Nat.DivMod.Unique using (divmod-unique)
+open import Substrate.Algebra.Nat.DivMod.Unique.DivmodUnique
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- The no-gauge certificate, at the wedge `recon` level: over ℕ-div, the

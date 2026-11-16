@@ -23,13 +23,13 @@
 
 module Substrate.Algebra.R.Trace.Unfold where
 
-open import Substrate.Foundation.Nat     using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
 open import Substrate.Foundation.Unit    using (⊤; tt)
 open import Substrate.Foundation.List    using (List; []; _∷_)
-open import Substrate.Foundation.Eq      using (_≡_; refl)
 
 open import Substrate.Algebra.R.Trace using (RealTrace; head; tail; take)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- The anamorphism. `head` terminates (it is `proj₁ (f s)`), so the whole

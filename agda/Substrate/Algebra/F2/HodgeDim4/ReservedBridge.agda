@@ -39,7 +39,7 @@
 -- identity permutation on the 3 sd-pair generators). Two alternatives
 -- are formalised in
 -- `Substrate.Algebra.F2.HodgeDim4.ReservedBridgeAlternatives`
--- (cyclic shift + last-two swap). At the F₂-linear level, none is
+-- (cyclic shift +F last-two swap). At the F₂-linear level, none is
 -- privileged; the catalog has no preferred choice. See memory
 -- `project_reserved_selfdual_bijection_gauge` for the full 168-coset
 -- analysis, the V₄-equivariance impossibility, and the fractal
@@ -55,14 +55,42 @@ module Substrate.Algebra.F2.HodgeDim4.ReservedBridge where
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Literals using (₀; ₁; ₂; ₃; ₄)
 open import Substrate.Foundation.Vec using ([]; _∷_; lookup)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; trans; cong; cong₂; cong-trans)
 
-open import Substrate.Algebra.F2
+open import Substrate.Algebra.F2.AbsorbL
+open import Substrate.Algebra.F2.AbsorbR
+open import Substrate.Algebra.F2.Assoc
+open import Substrate.Algebra.F2.Comm
+open import Substrate.Algebra.F2.Dec
+open import Substrate.Algebra.F2.DistribLPlus
+open import Substrate.Algebra.F2.DistribRPlus
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.F2Cases
+open import Substrate.Algebra.F2.Idempotent
+open import Substrate.Algebra.F2.IdentityL
+open import Substrate.Algebra.F2.IdentityR
+open import Substrate.Algebra.F2.InvOfOne
+open import Substrate.Algebra.F2.OneNeqZero
+open import Substrate.Algebra.F2.Op
+open import Substrate.Algebra.F2.Op2
+open import Substrate.Algebra.F2.PlusAssoc
+open import Substrate.Algebra.F2.PlusComm
+open import Substrate.Algebra.F2.PlusF
+open import Substrate.Algebra.F2.PlusIdentityL
+open import Substrate.Algebra.F2.PlusIdentityR
+open import Substrate.Algebra.F2.PlusInverseL
+open import Substrate.Algebra.F2.PlusInverseR
+open import Substrate.Algebra.F2.PlusSelfInverse
+open import Substrate.Algebra.F2.ZeroNeqOne
 open import Substrate.Algebra.F2.Vector
 open import Substrate.Algebra.F2.HodgeDim4.Bivector
 open import Substrate.Algebra.F2.HodgeDim4.HodgeStar
 open import Substrate.Algebra.F2.HodgeDim4.SelfDual
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.Foundation.Eq.CongTrans
 
 ------------------------------------------------------------------------
 -- Backward: Vector 3 → SelfDual (via canonical generators).
@@ -117,39 +145,39 @@ selfdual-coefficients ω =
 
 -- Helper: lookup at index 0 of `vector3-to-selfdual (c₀, c₁, c₂)` is c₀.
 -- After Agda's reduction of the basis / +ⱽ / *ₛ expressions:
---   = (c₀ · 𝟙) + ((c₁ · 𝟘) + (c₂ · 𝟘))
+--   = (c₀ · 𝟙) +F ((c₁ · 𝟘) +F (c₂ · 𝟘))
 --   = c₀ via ·-identityʳ, ·-absorbʳ, +-identityˡ, +-identityʳ chains.
 lookup-0-roundtrip :
   (c₀ c₁ c₂ : F₂) →
   lookup (vector3-to-selfdual (c₀ ∷ c₁ ∷ c₂ ∷ [])) zero ≡ c₀
 lookup-0-roundtrip c₀ c₁ c₂ =
-  cong-trans (_+ ((c₁ · 𝟘) + (c₂ · 𝟘))) (·-identityʳ c₀)
-  (cong-trans (c₀ +_) (cong (_+ (c₂ · 𝟘)) (·-absorbʳ c₁))
-  (cong-trans (c₀ +_) (+-identityˡ _)
-  (cong-trans (c₀ +_) (·-absorbʳ c₂)
+  cong-trans (_+F ((c₁ · 𝟘) +F (c₂ · 𝟘))) (·-identityʳ c₀)
+  (cong-trans (c₀ +F_) (cong (_+F (c₂ · 𝟘)) (·-absorbʳ c₁))
+  (cong-trans (c₀ +F_) (+-identityˡ _)
+  (cong-trans (c₀ +F_) (·-absorbʳ c₂)
          (+-identityʳ c₀))))
 
 -- Helper: lookup at index 1 is c₁.
--- After reduction: = (c₀ · 𝟘) + ((c₁ · 𝟙) + (c₂ · 𝟘))
+-- After reduction: = (c₀ · 𝟘) +F ((c₁ · 𝟙) +F (c₂ · 𝟘))
 lookup-1-roundtrip :
   (c₀ c₁ c₂ : F₂) →
   lookup (vector3-to-selfdual (c₀ ∷ c₁ ∷ c₂ ∷ [])) ₁ ≡ c₁
 lookup-1-roundtrip c₀ c₁ c₂ =
-  cong-trans (_+ ((c₁ · 𝟙) + (c₂ · 𝟘))) (·-absorbʳ c₀)
+  cong-trans (_+F ((c₁ · 𝟙) +F (c₂ · 𝟘))) (·-absorbʳ c₀)
   (trans (+-identityˡ _)
-  (cong-trans (_+ (c₂ · 𝟘)) (·-identityʳ c₁)
-  (cong-trans (c₁ +_) (·-absorbʳ c₂)
+  (cong-trans (_+F (c₂ · 𝟘)) (·-identityʳ c₁)
+  (cong-trans (c₁ +F_) (·-absorbʳ c₂)
          (+-identityʳ c₁))))
 
 -- Helper: lookup at index 2 is c₂.
--- After reduction: = (c₀ · 𝟘) + ((c₁ · 𝟘) + (c₂ · 𝟙))
+-- After reduction: = (c₀ · 𝟘) +F ((c₁ · 𝟘) +F (c₂ · 𝟙))
 lookup-2-roundtrip :
   (c₀ c₁ c₂ : F₂) →
   lookup (vector3-to-selfdual (c₀ ∷ c₁ ∷ c₂ ∷ [])) ₂ ≡ c₂
 lookup-2-roundtrip c₀ c₁ c₂ =
-  cong-trans (_+ ((c₁ · 𝟘) + (c₂ · 𝟙))) (·-absorbʳ c₀)
+  cong-trans (_+F ((c₁ · 𝟘) +F (c₂ · 𝟙))) (·-absorbʳ c₀)
   (trans (+-identityˡ _)
-  (cong-trans (_+ (c₂ · 𝟙)) (·-absorbʳ c₁)
+  (cong-trans (_+F (c₂ · 𝟙)) (·-absorbʳ c₁)
   (trans (+-identityˡ _)
          (·-identityʳ c₂))))
 

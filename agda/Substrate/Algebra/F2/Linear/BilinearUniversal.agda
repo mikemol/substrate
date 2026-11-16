@@ -28,7 +28,6 @@ open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using (_∷_; [])
 open import Substrate.Foundation.Unit using (tt)
 open import Substrate.Foundation.Product using (_,_; proj₁; proj₂)
-open import Substrate.Foundation.Eq using (_≡_; sym; trans)
 
 open import Substrate.Algebra.F2.Vector using (Vector; basis)
 open import Substrate.Algebra.F2.Linear.BilinearFromImages
@@ -37,6 +36,10 @@ open import Substrate.Algebra.F2.Linear.BilinearFromImages
         ; bilinear-from-images; bilinear-from-images-basis )
 open import Substrate.Algebra.F2.Linear.MultilinearUniversal
   using ( Args; IsMultilinear; basis-tuple; multilinear-extensionality )
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Lojban.Bridi
 
 ------------------------------------------------------------------------
 -- A Bilinear IS a 2-ary multilinear map: uncurry it onto Args (k ∷ l ∷ [])

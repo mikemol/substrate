@@ -7,6 +7,8 @@
 --   k00 = offset 0 (diagonal) ≡ {01} ;  k01,k02,k03 = offsets 1,2,3 ≡ {00}.
 module Substrate.Algebra.F2.MixColumns.Collapse where
 open import Substrate.Algebra.F2.MixColumns.Base
+open import Substrate.Foundation.Eq
+open import Substrate.Algebra.F2.Vector
 k00 : (b1c +ⱽ c0b) +ⱽ (c0d +ⱽ b1b) ≡ c01 ; k00 = refl
 k01 : (b12 +ⱽ b16) +ⱽ (c0d +ⱽ c09) ≡ 𝟎ⱽ ; k01 = refl
 k02 : (c0e +ⱽ b1d) +ⱽ (b1a +ⱽ c09) ≡ 𝟎ⱽ ; k02 = refl

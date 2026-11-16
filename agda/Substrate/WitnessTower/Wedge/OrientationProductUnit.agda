@@ -19,8 +19,10 @@
 
 module Substrate.WitnessTower.Wedge.OrientationProductUnit where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_)
-open import Substrate.Foundation.Nat.Properties.Add using (+-identityʳ)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Times
+open import Substrate.Foundation.Nat.Properties.Add.PlusIdentityR
 open import Substrate.Foundation.Nat.Properties.Mul using (*-identityˡ; *-identityʳ)
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.To
@@ -28,15 +30,20 @@ open import Substrate.Foundation.Fin.Properties using (toℕ-injective)
 open import Substrate.Foundation.Fin.Combine using (combine)
 open import Substrate.Foundation.Fin.RemQuot using (remQuot)
 open import Substrate.Foundation.Fin.Combine.CombineRemQuotInverse using (combine-remQuot)
-open import Substrate.Foundation.Fin.Combine.Assoc using (toℕ-subst; toℕ-combine)
+open import Substrate.Foundation.Fin.Combine.Assoc.ToNatCombine
+open import Substrate.Foundation.Fin.Combine.Assoc.ToNatSubst
 open import Substrate.Foundation.Vec using (lookup)
-open import Substrate.Foundation.Vec.Properties using (lookup∘tabulate)
+open import Substrate.Foundation.Vec.Properties.LookupComptabulate
 open import Substrate.Foundation.Product using (proj₁; proj₂)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; subst)
 open import Substrate.WitnessTower.Enumerate using (Perm)
 open import Substrate.WitnessTower.Decompose using (lookup-ext)
 open import Substrate.WitnessTower.Wedge.OrientationProduct using (_⊗_; 1#)
 open import Substrate.WitnessTower.Wedge.OrientationProductLaws using (lookup-subst-Perm)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Subst
 
 ------------------------------------------------------------------------
 -- 1. helpers: any Fin 1 has toℕ 0; combine with a Fin-1 factor collapses (toℕ).
@@ -46,13 +53,13 @@ fin1-toℕ0 : (x : Fin 1) → toℕ x ≡ zero
 fin1-toℕ0 zero = refl
 
 combine-unitₗ : ∀ {n} (x : Fin 1) (y : Fin n) → toℕ (combine x y) ≡ toℕ y
-combine-unitₗ {n} x y = trans (toℕ-combine x y) (cong (λ z → z * n + toℕ y) (fin1-toℕ0 x))
+combine-unitₗ {n} x y = trans (toℕ-combine x y) (cong (λ z → z * n ℕ+ toℕ y) (fin1-toℕ0 x))
 
 combine-unitᵣ : ∀ {m} (x : Fin m) (y : Fin 1) → toℕ (combine x y) ≡ toℕ x
 combine-unitᵣ x y =
   trans (toℕ-combine x y)
-        (trans (cong (toℕ x * 1 +_) (fin1-toℕ0 y))
-               (trans (+-identityʳ (toℕ x * 1)) (*-identityʳ (toℕ x))))
+        (trans (cong (toℕ x * 1 ℕ+_) (fin1-toℕ0 y))
+               (trans (+ℕ-identityʳ (toℕ x * 1)) (*-identityʳ (toℕ x))))
 
 -- toℕ of a lookup under a grade-subst.
 toℕ-lookup-subst : ∀ {k k'} (eq : k ≡ k') (v : Perm k) (i : Fin k') →
@@ -61,7 +68,7 @@ toℕ-lookup-subst eq v i =
   trans (cong toℕ (lookup-subst-Perm eq v i)) (toℕ-subst eq (lookup v (subst Fin (sym eq) i)))
 
 ------------------------------------------------------------------------
--- 2. THE UNITS. lookup-ext + toℕ-injective; the collapsing factor is 1#'s Fin-1 slot.
+-- 2. THE UNITS. lookup-ext ℕ+ toℕ-injective; the collapsing factor is 1#'s Fin-1 slot.
 ------------------------------------------------------------------------
 
 ⊗-unit-left : ∀ {n} (σ : Perm n) → subst Perm (*-identityˡ n) (1# ⊗ σ) ≡ σ

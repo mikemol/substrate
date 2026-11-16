@@ -29,9 +29,8 @@
 
 module Substrate.Foundation.Fin.Cover where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Empty using (⊥)
 open import Substrate.Foundation.Product using (_×_; _,_)
 open import Substrate.Foundation.Function using (_∘_)
 

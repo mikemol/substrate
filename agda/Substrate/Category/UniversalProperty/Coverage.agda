@@ -19,6 +19,7 @@ module Substrate.Category.UniversalProperty.Coverage where
 
 open import Substrate.Category.UniversalProperty.Term
   using (UPTerm)
+open import Substrate.Algebra.Wedge.TraceMuStep
 
 module _ (O : Set) (Hom : O → O → Set) where
 

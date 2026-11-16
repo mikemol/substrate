@@ -38,12 +38,13 @@
 
 module Substrate.Category.AbelianPFG where
 
-open import Substrate.Foundation.Level using (Level; _⊔_) renaming (suc to lsuc)
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Level using (Level; _⊔_)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
 
 open import Substrate.Category.PrimeFactoredGauge
   using (PrimeFactoredGauge)
+open import Substrate.Algebra.GL3F2
 
 private
   variable

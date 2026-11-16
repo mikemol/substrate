@@ -19,15 +19,15 @@
 
 module Substrate.Category.UniversalProperty.BackedGradedUnique where
 
-open import Substrate.Foundation.Nat using (ℕ; suc; _<_)
+open import Substrate.Foundation.Nat.Lt
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Eq using (_≡_; sym; trans; cong₂)
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
 open import Substrate.Algebra.Wedge
   using (DivStr; Trace; done; more; rem; recon; collapse-fold; trace-fold-unique; ℕ-div)
-  renaming (Wedge to Wedge⟦478f66a6⟧)
+  renaming (Wedge to Wedge)
 open import Substrate.Algebra.Wedge.BoundedIso using (recon-bounded-unique)
-open import Substrate.WitnessTower.LehmerPath using (LehmerPath; start; _◂_)
+open import Substrate.WitnessTower.LehmerPath.LehmerPath
 open import Substrate.WitnessTower.Wedge.OrientationUniversal using (base; step)
 open import Substrate.WitnessTower.Wedge.OrientationRigInitial using (RigAlgebra; foldR; foldR-initial; alg)
 open import Substrate.WitnessTower.Wedge.OrientationRigInstance using (LehmerRig)
@@ -35,6 +35,10 @@ open import Substrate.Category.UPArrowGraded using (UPArrowᴳ; solve; Determine
 open import Substrate.Category.UniversalProperty.BackedGraded using (arrowᴳ)
 open import Substrate.Category.UniversalProperty.OrientationRigBackedGraded using (orientationRig-backedᴳ)
 open import Substrate.Category.UniversalProperty.MuBackedGraded using (SomeTraceℕ; mu-backedᴳ)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong2
 
 ------------------------------------------------------------------------
 -- ① orientation-rig: solve = foldR LehmerRig; uniqueness IS Mac Lane rigidity (foldR-initial) — any g
@@ -59,7 +63,7 @@ module _ {C : Set} (D : DivStr C) where
   mu-fold-uniqueᴳ :
     (h : {a b g : C} → Trace D a b g → C)
     (h-done : (a : C) → h (done a) ≡ a)
-    (h-more : {a g : C} (b : C) (w : Wedge⟦478f66a6⟧ D a b) (tr : Trace D b (rem w) g) →
+    (h-more : {a g : C} (b : C) (w : Wedge D a b) (tr : Trace D b (rem w) g) →
               h (more b w tr) ≡ h tr) →
     {a b g : C} (t : Trace D a b g) → h t ≡ collapse-fold t
   mu-fold-uniqueᴳ h h-done h-more t = trace-fold-unique (λ a → a) (λ _ _ rec → rec) h h-done h-more t
@@ -69,7 +73,7 @@ module _ {C : Set} (D : DivStr C) where
 mu-determinesᴳ :
   (h : {a b g : ℕ} → Trace ℕ-div a b g → ℕ)
   (h-done : (a : ℕ) → h (done a) ≡ a)
-  (h-more : {a g : ℕ} (b : ℕ) (w : Wedge⟦478f66a6⟧ ℕ-div a b) (tr : Trace ℕ-div b (rem w) g) →
+  (h-more : {a g : ℕ} (b : ℕ) (w : Wedge ℕ-div a b) (tr : Trace ℕ-div b (rem w) g) →
             h (more b w tr) ≡ h tr) →
   Determines (arrowᴳ mu-backedᴳ) (λ {n} st → h (proj₂ (proj₂ (proj₂ st))))
 mu-determinesᴳ h h-done h-more {n} st = mu-fold-uniqueᴳ ℕ-div h h-done h-more (proj₂ (proj₂ (proj₂ st)))

@@ -30,10 +30,9 @@
 
 module Substrate.Category.MultiscaleOctonionLoop where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
-open import Substrate.Foundation.Bool using (Bool)
-open import Substrate.Foundation.Product using (_×_; _,_)
-open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- The rotation at scale n.
@@ -60,8 +59,8 @@ compose-rotation : {n : ℕ} → Rotation n → Rotation n → Rotation n
 compose-rotation r₁ r₂ = record
   -- F₂^n component composes by XOR; we leave this abstract since the
   -- concrete bit-XOR requires bounded-ℕ arithmetic.
-  { k = k r₁ + k r₂   -- placeholder: actual XOR mod 2^n
-  ; f = f r₁ + f r₂   -- placeholder: actual XOR
+  { k = k r₁ ℕ+ k r₂   -- placeholder: actual XOR mod 2^n
+  ; f = f r₁ ℕ+ f r₂   -- placeholder: actual XOR
   }
 
 ------------------------------------------------------------------------
@@ -154,7 +153,7 @@ identity-self-composes n = refl
 -- bit-layer; the substrate's universal recurses through every
 -- doubling.
 --
--- The runtime implementation (eliza/multiscale_rotation.py +
+-- The runtime implementation (eliza/multiscale_rotation.py ℕ+
 -- gpu_codec_v7.py BB1-BB4) materialises this primitive at scales
 -- [0, 5] (1-bit through 32-bit dword); higher scales follow the
 -- same pattern but use larger units.

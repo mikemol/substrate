@@ -23,7 +23,12 @@ module Substrate.Lojban.Fragment where
 
 -- Re-export the L1-L8 surface so consumers can `open import
 -- Substrate.Lojban.Fragment` and get the whole arc.
-open import Substrate.Lojban.PlaceStructure
+open import Substrate.Lojban.PlaceStructure.Private
+open import Substrate.Lojban.PlaceStructure.Selbri
+open import Substrate.Lojban.PlaceStructure.SelbriPostcompose
+open import Substrate.Lojban.PlaceStructure.SelbriPostcomposeCompose
+open import Substrate.Lojban.PlaceStructure.SelbriPostcomposeId
+open import Substrate.Lojban.PlaceStructure.SelbriPrecompose
 open import Substrate.Lojban.Gismu
 open import Substrate.Lojban.Lujvo
   using (Lujvo; mkLujvo; lujvo-word; lujvo-arity;

@@ -18,11 +18,15 @@
 
 module Substrate.Category.UniversalProperty.BezoutGcdTransport where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; trans; cong)
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Algebra.Nat.GCD.Wedge using (remainder) renaming (Wedge to Wedge⟦b7e6a995⟧)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Algebra.Nat.GCD.Wedge using (remainder) renaming (Wedge-GCD to Wedge-GCD)
 open import Substrate.Algebra.Nat.GCD.EEATrace using (EEATrace; base; step)
 open import Substrate.Algebra.Nat.GCD.Fold using (eea-fold; eea-fold-unique; gcd-fold; gcd-fold-correct)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Algebra.Nat.GCD.Wedge
+open import Substrate.Algebra.CayleyDickson
 
 ------------------------------------------------------------------------
 -- ① THE eea-fold-transport ENGINE (the EEATrace analogue of 172's trace-fold-transport,
@@ -33,12 +37,12 @@ open import Substrate.Algebra.Nat.GCD.Fold using (eea-fold; eea-fold-unique; gcd
 eea-fold-transport :
   {T₁ T₂ : ℕ → ℕ → ℕ → Set}
   (bi₁ : (a : ℕ) → T₁ a 0 a)
-  (si₁ : {a g : ℕ} (b : ℕ) (w : Wedge⟦b7e6a995⟧ a (suc b)) → T₁ (suc b) (remainder w) g → T₁ a (suc b) g)
+  (si₁ : {a g : ℕ} (b : ℕ) (w : Wedge-GCD a (suc b)) → T₁ (suc b) (remainder w) g → T₁ a (suc b) g)
   (bi₂ : (a : ℕ) → T₂ a 0 a)
-  (si₂ : {a g : ℕ} (b : ℕ) (w : Wedge⟦b7e6a995⟧ a (suc b)) → T₂ (suc b) (remainder w) g → T₂ a (suc b) g)
+  (si₂ : {a g : ℕ} (b : ℕ) (w : Wedge-GCD a (suc b)) → T₂ (suc b) (remainder w) g → T₂ a (suc b) g)
   (φ  : {a b g : ℕ} → T₁ a b g → T₂ a b g)
   (φ-base : (a : ℕ) → φ (bi₁ a) ≡ bi₂ a)
-  (φ-step : {a g : ℕ} (b : ℕ) (w : Wedge⟦b7e6a995⟧ a (suc b)) (x : T₁ (suc b) (remainder w) g) →
+  (φ-step : {a g : ℕ} (b : ℕ) (w : Wedge-GCD a (suc b)) (x : T₁ (suc b) (remainder w) g) →
             φ (si₁ b w x) ≡ si₂ b w (φ x)) →
   {a b g : ℕ} (t : EEATrace a b g) →
   φ (eea-fold {T = T₁} bi₁ si₁ t) ≡ eea-fold {T = T₂} bi₂ si₂ t

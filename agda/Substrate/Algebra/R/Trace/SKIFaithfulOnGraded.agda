@@ -18,8 +18,7 @@
 
 module Substrate.Algebra.R.Trace.SKIFaithfulOnGraded where
 
-open import Substrate.Foundation.Eq  using (_≡_; refl; cong)
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Vec using (Vec; []; _∷_)
 open import Substrate.Algebra.Wedge.Graded using (GradedDivStr; GradedWedge; recon; gforget; gcell)
 open import Substrate.Algebra.Wedge.VecGraded using (vec-graded; vec-step; vec-cell; vec-forget)
@@ -27,6 +26,8 @@ open import Substrate.Algebra.Wedge.VecGraded using (vec-graded; vec-step; vec-c
 -- reuse the faithful generators (ADD 154): Gen, arity, gen→tm, Tm, apply-many.
 open import Substrate.Algebra.R.Trace.SKIFaithfulRb
   using (Gen; gI; gK; gS; arity; Tm; S; K; I; _∙_; gen→tm; apply-many)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- ① THE ARITY-GRADED CARRIER: vec-graded Tm — the argument list of a combinator is

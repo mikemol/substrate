@@ -18,14 +18,15 @@
 
 module Substrate.Category.UniversalProperty.ExtrudeSKICatOf where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Foundation.Product using (Σ; _,_)
 open import Substrate.Foundation.Unit using (⊤; tt)
-open import Substrate.Algebra.R.Trace.SKIShedDuality using (S; K; _∙_) renaming (Tm to Tm⟦533ef80d⟧)
+open import Substrate.Algebra.R.Trace.SKIShedDuality.Tm
 import Substrate.FUSep.ConversionCongruence as CC
 open import Substrate.Category.UniversalProperty.ExtrudeSKISetoid using (ski-ARS; _≋_; fix-law-≋)
 import Substrate.FUSep.ObsBisim as OB
 open import Substrate.Category.UniversalProperty.DiagonalYCombinator using (Y-of)
+open import Substrate.Foundation.Eq
+open import Substrate.Algebra.R.Trace.SKIShedDuality.Tm
 
 ------------------------------------------------------------------------
 -- ① THE OBSERVATION. For a proper observational quotient we need obs : Tm⟦533ef80d⟧ → Obs respecting convertibility
@@ -33,7 +34,7 @@ open import Substrate.Category.UniversalProperty.DiagonalYCombinator using (Y-of
 --    APPLICATIVE BISIMULATION (tail≋ under every application context) — SKI CONTEXTUAL equivalence, the
 --    coarsest sound quotient. (A finer obs — e.g. a normal-form head-symbol probe — refines it; scoped.)
 ------------------------------------------------------------------------
-obs⊤ : Tm⟦533ef80d⟧ → ⊤
+obs⊤ : Tm → ⊤
 obs⊤ _ = tt
 
 obs⊤-resp : ∀ {a b} → CC._≈_ ski-ARS a b → obs⊤ a ≡ obs⊤ b
@@ -41,13 +42,13 @@ obs⊤-resp _ = refl
 
 -- instantiate the repo's ObsBisim at SKI: the observational-equivalence quotient (CrossMul/HetQ pattern).
 -- ObsBisim's members live in an anonymous module _ (R)(Obs)(obs)(obs-resp) → apply them to those args.
-_≋ᴼ_ : Tm⟦533ef80d⟧ → Tm⟦533ef80d⟧ → Set
+_≋ᴼ_ : Tm → Tm → Set
 _≋ᴼ_ = OB._≋_ ski-ARS ⊤ obs⊤ obs⊤-resp
 
-≈⟹≋ᴼ : {a b : Tm⟦533ef80d⟧} → _≋_ a b → a ≋ᴼ b
+≈⟹≋ᴼ : {a b : Tm} → _≋_ a b → a ≋ᴼ b
 ≈⟹≋ᴼ = OB.≈⟹≋ ski-ARS ⊤ obs⊤ obs⊤-resp
 
-≋ᴼ-refl : {a : Tm⟦533ef80d⟧} → a ≋ᴼ a
+≋ᴼ-refl : {a : Tm} → a ≋ᴼ a
 ≋ᴼ-refl = OB.≋-refl ski-ARS ⊤ obs⊤ obs⊤-resp
 
 ------------------------------------------------------------------------
@@ -55,10 +56,10 @@ _≋ᴼ_ = OB._≋_ ski-ARS ⊤ obs⊤ obs⊤-resp
 --    convertibility maps into it (≈⟹≋ᴼ). This is Tm⟦533ef80d⟧-mod-observation as a genuine quotient equality, built
 --    from the given ARS via the CrossMul-style construction — no HIT, no fresh record.
 ------------------------------------------------------------------------
-ski-≋ : Tm⟦533ef80d⟧ → Tm⟦533ef80d⟧ → Set
+ski-≋ : Tm → Tm → Set
 ski-≋ = _≋ᴼ_
 
-ski-≋-refl : {a : Tm⟦533ef80d⟧} → ski-≋ a a
+ski-≋-refl : {a : Tm} → ski-≋ a a
 ski-≋-refl = ≋ᴼ-refl
 
 ------------------------------------------------------------------------
@@ -66,10 +67,10 @@ ski-≋-refl = ≋ᴼ-refl
 --    convertibility) via ≈⟹≋ᴼ (convertibility ⟹ observational equivalence): Y-of f ≋ᴼ f (Y-of f). So the
 --    extruder's fixpoint holds at the PROPER quotient equality — HasFix realized at ≋ᴼ.
 ------------------------------------------------------------------------
-fix-≋ᴼ : (f : Tm⟦533ef80d⟧) → ski-≋ (Y-of f) (f ∙ (Y-of f))
+fix-≋ᴼ : (f : Tm) → ski-≋ (Y-of f) (f ∙ (Y-of f))
 fix-≋ᴼ f = ≈⟹≋ᴼ (fix-law-≋ f)
 
-quotient-HasFix : (f : Tm⟦533ef80d⟧) → Σ Tm⟦533ef80d⟧ (λ v → ski-≋ v (f ∙ v))
+quotient-HasFix : (f : Tm) → Σ Tm (λ v → ski-≋ v (f ∙ v))
 quotient-HasFix f = (Y-of f) , fix-≋ᴼ f
 
 ------------------------------------------------------------------------

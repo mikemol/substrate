@@ -17,7 +17,12 @@
 
 module Substrate.Algebra.Nat.DivMod where
 
-open import Substrate.Algebra.Nat.DivMod.DivSuc
+open import Substrate.Foundation.Nat.Nat.DivSuc
 open import Substrate.Algebra.Nat.DivMod.Reconstruction
-open import Substrate.Algebra.Nat.Mod
-  using (_mod-suc_; mod-suc-bound)
+open import Substrate.Foundation.Nat.Nat.ModSuc
+open import Substrate.Algebra.Nat.Mod.ModSucBound
+open import Substrate.Algebra.Nat.Mod.ModSucId
+open import Substrate.Algebra.Nat.Mod.ModSucPeriodic
+open import Substrate.Algebra.Nat.Mod.ModSucSuc
+open import Substrate.Algebra.Nat.Mod.SucModSucLt
+open import Substrate.Algebra.Nat.Mod.SucModSucSelf

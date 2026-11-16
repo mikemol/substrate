@@ -9,7 +9,7 @@
 
 module Substrate.Cocycles.V4Signature.Codeword.ReservedToBivectorAffine.Shift where
 
-open import Substrate.Foundation.Bool using (false; true)
+open import Substrate.Foundation.Bool.Bool
 open import Substrate.Foundation.Product using (_,_)
 open import Substrate.Algebra.F2.HodgeDim4.Bivector using (Bivector)
 open import Substrate.Algebra.F2.Vector using (𝟎ⱽ; _+ⱽ_)

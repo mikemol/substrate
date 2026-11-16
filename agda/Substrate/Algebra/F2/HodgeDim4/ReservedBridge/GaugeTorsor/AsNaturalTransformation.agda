@@ -9,7 +9,7 @@
 
 open import Substrate.Foundation.Level using (Level)
 
-open import Substrate.Category.CategoryOf using (CategoryOf)
+open import Substrate.Category.CategoryOf.CategoryOf
 open import Substrate.Category.Functor using (Functor)
 open import Substrate.Category.NaturalTransformation
   using (NaturalTransformation)
@@ -28,4 +28,3 @@ module Substrate.Algebra.F2.HodgeDim4.ReservedBridge.GaugeTorsor.AsNaturalTransf
 -- AsNamed-family cone witness for substrate-naming a NaturalTransformation).
 open import Substrate.Category.NaturalTransformation.AsNamed
   C D F G GaugeAction public
-  renaming (named-NaturalTransformation to GaugeTorsor-AsNaturalTransformation)

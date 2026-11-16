@@ -30,16 +30,18 @@
 module Substrate.Algebra.F2.SymBilinForm.TensorProductBridge where
 
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Vec using (Vec; tabulate; lookup)
-open import Substrate.Foundation.Vec.Properties using (lookup∘tabulate; tabulate∘lookup)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; trans; cong)
+open import Substrate.Foundation.Vec.Properties.LookupComptabulate
 
-open import Substrate.Algebra.F2
+open import Substrate.Algebra.F2.F2
 open import Substrate.Algebra.F2.SymBilinForm.BilinForm using (BilinForm)
 open import Substrate.Algebra.F2.SymBilinForm.IsSymmetric using (IsSymmetric)
 open import Substrate.Category.TensorProduct using (TensorProduct)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- N-1: bilinform-to-tensor — embed a function-based BilinForm as a

@@ -17,10 +17,9 @@
 
 module Substrate.Algebra.Semiring.Contraction where
 
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Bool using (Bool; true; false)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Bool.Bool
 open import Substrate.Foundation.List using (List; []; _∷_)
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Algebra.Magma     using (Magma)
 open import Substrate.Algebra.Semigroup using (magma)
 open import Substrate.Algebra.Monoid    using (semigroup; ε)
@@ -28,7 +27,8 @@ open import Substrate.Algebra.Semiring  using (Semiring; +-monoid; *-monoid)
 open import Substrate.Algebra.Semiring.Instances
   using (ℕ-semiring; Bool-semiring; tropical-semiring; F₂-semiring)
 open import Substrate.Algebra.Semiring.NatInf using (ℕ∞; fin)
-open import Substrate.Algebra.F2 using (F₂; 𝟘; 𝟙)
+open import Substrate.Algebra.F2.F2
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- The tensor, parametric over the semiring: ⟨a,b⟩ = ⊕ᵢ (aᵢ ⊗ bᵢ).
@@ -52,7 +52,7 @@ module _ {A : Set} (S : Semiring A) where
 -- THE PLACEMENT: one tensor, four gauges — each reading by `refl`.
 ------------------------------------------------------------------------
 
--- ℕ count:  1·3 + 2·4 = 11  (number of weighted paths).
+-- ℕ count:  1·3 +F 2·4 = 11  (number of weighted paths).
 _ : contract ℕ-semiring (1 ∷ 2 ∷ []) (3 ∷ 4 ∷ []) ≡ 11
 _ = refl
 

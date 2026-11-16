@@ -22,10 +22,11 @@ module Substrate.Category.UniversalProperty.DiagonalPolishDerivative where
 -- illuminating framing, NOT a theorem of this slice; not enforced by the typechecker).
 -- Promoting the framing to a theorem would require coincidence with the classical topological CB-derivative (⟡diagonal-polish-faithful).
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _<_; z≤n; s≤s)
-open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.Foundation.Negation using (¬_)
+open import Substrate.Foundation.Nat.Lt
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Negation.Not
 open import Substrate.Foundation.Product using (Σ; _,_; _×_)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- ① POINTS = BAIRE SPACE ℕ → ℕ (a completed sequence — a FUNCTION, plain Set, NO coinduction).

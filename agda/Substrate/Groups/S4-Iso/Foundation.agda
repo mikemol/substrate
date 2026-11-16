@@ -16,8 +16,7 @@ open import Substrate.Axes.VOfAxis using (v-of-axis)
 open import Substrate.Axes.AxisOfV using (axis-of-v)
 open import Substrate.Axes.AxisRoundtrip using (axis-of-v-v-of-axis)
 open import Substrate.Axes.V4Roundtrip using (v-of-axis-axis-of-v)
-import Substrate.Groups.V4.Operations as V4
-open import Substrate.Groups.V4.Bijection using (V₄)
+open import Substrate.Groups.V4.Bijection.V4
 import Substrate.Groups.S3 as S₃
 import Substrate.Groups.Actions.S3-on-V4.Dispatch.Act as φ-Act
 import Substrate.Groups.Actions.S3-on-V4.Composition.ActDot as φ-ActDot
@@ -27,9 +26,21 @@ open import Substrate.Groups.V4-Embedding using (embed)
 open import Substrate.Groups.Symmetric.Permutation Axis
 open import Substrate.Groups.Symmetric.Eq Axis using (_≈_)
 open import Substrate.Groups.Symmetric.Permutation.Compose Axis using (_·_)
-open import Substrate.Foundation.Eq using (_≡_; trans; sym; cong; cong-trans)
 
-open import Substrate.Groups.S4-Iso.Embedding
+open import Substrate.Groups.S4-Iso.Embedding.CompositionalToPerm
+open import Substrate.Groups.S4-Iso.Embedding.CongV
+open import Substrate.Groups.S4-Iso.Embedding.EmbedS3
+open import Substrate.Groups.S4-Iso.Embedding.S3Apply
+open import Substrate.Groups.S4-Iso.Embedding.S3ApplyInvR
+open import Substrate.Groups.S4-Iso.Embedding.S3InvApply
+open import Substrate.Groups.S4-Iso.Embedding.S3InvApplyL
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.CongTrans
+open import Substrate.Category.Comonoid.Sites.V4
+import Substrate.Groups.V4.Operations as V4
 
 ------------------------------------------------------------------------
 -- embed-S₃ of S₃'s identity is the identity permutation (pointwise).

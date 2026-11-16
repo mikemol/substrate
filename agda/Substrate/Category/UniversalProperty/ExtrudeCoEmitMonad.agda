@@ -21,7 +21,6 @@
 
 module Substrate.Category.UniversalProperty.ExtrudeCoEmitMonad (O : Set) where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
 
 private variable A B C : Set
 

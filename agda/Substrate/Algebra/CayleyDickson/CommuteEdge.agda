@@ -17,19 +17,25 @@
 
 module Substrate.Algebra.CayleyDickson.CommuteEdge where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
 open import Substrate.Foundation.Product using (_,_; proj₂)
-open import Substrate.Foundation.Empty using (⊥)
-open import Substrate.Algebra.Q using (ℚ; num; 0ℚ; 1ℚ; -1ℚ)
+open import Substrate.Foundation.Empty.Bot
+open import Substrate.Algebra.Q.OneRat
+open import Substrate.Algebra.Q.OneRat2
+open import Substrate.Algebra.Q.Rat
+open import Substrate.Algebra.Q.ZeroRat
 open import Substrate.Algebra.Q.Mul using (_*ℚ_)
 open import Substrate.Algebra.Q.Neg using (-ℚ_)
-open import Substrate.Algebra.Z using (-ℤ_)
+open import Substrate.Algebra.Z.Int2
 open import Substrate.Algebra.Z.Mul using (_*ℤ_)
 open import Substrate.Algebra.Z.Properties.Mul using (neg-*-left)
 open import Substrate.Algebra.Q.Equiv using (_≈ℚ_)
 open import Substrate.Algebra.Q.Properties.Field using (*ℚ-comm; +ℚ-comm)
 open import Substrate.Algebra.Q.Properties.Congruence using (+ℚ-cong)
 open import Substrate.Algebra.CayleyDickson using (Carrier; ℂ#; ℍ#; 𝕆#; mul; ≈#; zero#; one#)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- ℚ negation respects ≈ℚ (a general Congruence lemma; the `sub`-component of

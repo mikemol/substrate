@@ -83,6 +83,9 @@ open import Substrate.Algebra.F2.HodgeDim4.HodgeStar.AsGaugeAction
 -- Underlying GL3F2 generators for completeness.
 open import Substrate.Algebra.GL3F2.MultiRouteEquivariance
   using (swap01-GL; cycle3-GL; singer-GL) public
+open import Substrate.Algebra.GL3F2.MultiRouteEquivariance.Cycle3GL
+open import Substrate.Algebra.GL3F2.MultiRouteEquivariance.SingerGL
+open import Substrate.Algebra.GL3F2.MultiRouteEquivariance.Swap01GL
 
 ------------------------------------------------------------------------
 -- 2. Capstone — the atlas in one place.

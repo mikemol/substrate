@@ -26,26 +26,27 @@
 
 module Substrate.Category.UniversalProperty.ExtrudeSelfInterp where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.Foundation.Product using (Σ; _,_; _×_)
-open import Substrate.Algebra.R.Trace.SKIShedDuality using (S; K; I; _∙_) renaming (Tm to Tm⟦533ef80d⟧)
+open import Substrate.Algebra.R.Trace.SKIShedDuality.Tm
 import Substrate.Algebra.R.Trace.SKIReductionToList as R
 open R using (_⇒_; β-I)
 open import Substrate.Foundation.RewriteConfluence (R._⇒_) using (_⇒*_; done; _◅_; Converge; CR)
 open import Substrate.Category.UniversalProperty.DiagonalYCombinator using (Y-of; Y-fix)
+open import Substrate.Foundation.Eq
+open import Substrate.Algebra.R.Trace.SKIShedDuality.Tm
+open import Substrate.Category.UniversalProperty.X8aSkiInstance
 
 ------------------------------------------------------------------------
 -- ① THE ENCODING is HOMOICONIC: SKI is its own metalanguage — a term IS its own code. (A richer Gödel/
 --    Mogensen quote is a scoped refinement; homoiconicity is the grounded, honest base case.)
 ------------------------------------------------------------------------
-⌜_⌝ : Tm⟦533ef80d⟧ → Tm⟦533ef80d⟧
+⌜_⌝ : Tm → Tm
 ⌜ M ⌝ = M
 
 ------------------------------------------------------------------------
 -- ② THE SELF-INTERPRETATION SPEC is CONFLUENCE-BASED, NOT DECIDABLE: M interprets its own code back to
 --    itself — a POSITIVE reduction, witnessed by the ARS. No predicate is decided; a reduction is EXHIBITED.
 ------------------------------------------------------------------------
-SelfInterprets : Tm⟦533ef80d⟧ → Set
+SelfInterprets : Tm → Set
 SelfInterprets M = (M ∙ ⌜ M ⌝) ⇒* M
 
 ------------------------------------------------------------------------
@@ -64,12 +65,12 @@ I-self = β-I I ◅ done        -- I ∙ ⌜I⌝ = I ∙ I ⇒ I (β-I), then do
 -- ski-CR : the substrate's SKI Church-Rosser for THIS reduction (RewriteConfluence.CR over R._⇒_) — the
 -- confluence "already provided" (proved via ParallelSKI's diamond / NewmanSKI's WCR+SN in the R-arc); the
 -- self-interpreter inherits it BY CONSTRUCTION, so carries-confluence is that inheritance, not a re-proof.
-carries-confluence : CR → (M : Tm⟦533ef80d⟧) {b c : Tm⟦533ef80d⟧} → (M ∙ ⌜ M ⌝) ⇒* b → (M ∙ ⌜ M ⌝) ⇒* c → Converge b c
+carries-confluence : CR → (M : Tm) {b c : Tm} → (M ∙ ⌜ M ⌝) ⇒* b → (M ∙ ⌜ M ⌝) ⇒* c → Converge b c
 carries-confluence ski-CR M = ski-CR
 
 -- in particular, the self-interpreter's result is UNIQUE up to convergence — the confluence-uniqueness
 -- property that stands in for (and is stronger than) decidability of the spec:
-self-result-unique : CR → (M : Tm⟦533ef80d⟧) → SelfInterprets M → {c : Tm⟦533ef80d⟧} → (M ∙ ⌜ M ⌝) ⇒* c → Converge M c
+self-result-unique : CR → (M : Tm) → SelfInterprets M → {c : Tm} → (M ∙ ⌜ M ⌝) ⇒* c → Converge M c
 self-result-unique ski-CR M si red = carries-confluence ski-CR M si red
 
 ------------------------------------------------------------------------
@@ -78,12 +79,12 @@ self-result-unique ski-CR M si red = carries-confluence ski-CR M si red
 --    construction — "the process of extrusion constructs the process of extrusion incrementally" (each ⇒
 --    step finite; the fixed point EXISTS, Lawvere-positive). No spook — the fixed point is CONSTRUCTED.
 ------------------------------------------------------------------------
-self-extrusion : (extruder : Tm⟦533ef80d⟧) → (Y-of extruder) ⇒* (extruder ∙ (Y-of extruder))
+self-extrusion : (extruder : Tm) → (Y-of extruder) ⇒* (extruder ∙ (Y-of extruder))
 self-extrusion extruder = Y-fix extruder
 
 -- and the self-extruded object carries confluence too (by ④, the same by-construction inheritance):
 self-extrusion-confluent :
-  CR → (extruder : Tm⟦533ef80d⟧) {b c : Tm⟦533ef80d⟧} →
+  CR → (extruder : Tm) {b c : Tm} →
   (Y-of extruder ∙ ⌜ Y-of extruder ⌝) ⇒* b → (Y-of extruder ∙ ⌜ Y-of extruder ⌝) ⇒* c → Converge b c
 self-extrusion-confluent ski-CR extruder = carries-confluence ski-CR (Y-of extruder)
 

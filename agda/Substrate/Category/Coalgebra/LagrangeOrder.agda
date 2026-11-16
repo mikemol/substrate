@@ -48,15 +48,18 @@
 module Substrate.Category.Coalgebra.LagrangeOrder where
 
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Nat using (ℕ; _*_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Times
 open import Substrate.Foundation.Level using (Level)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; trans; cong)
 
 open import Substrate.Category.Coalgebra
   using (Endomap; FixedPoint; fixed)
 open import Substrate.Category.Coalgebra.FiniteOrder
   using (iterate; HasOrder; HasOrder-multiple; FixedPoint→periodic)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Subst
 
 private
   variable
@@ -171,7 +174,6 @@ global-fixed-point→periodic global-fp i m =
 ------------------------------------------------------------------------
 
 open import Substrate.Foundation.Product using (Σ; _,_; _×_)
-open import Substrate.Foundation.Eq using (subst)
 
 HasLagrangeOrder-from-multiples :
   {X : Set ℓ} (n : ℕ) (α : Action n X) →

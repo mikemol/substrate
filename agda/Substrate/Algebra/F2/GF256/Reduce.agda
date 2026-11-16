@@ -10,12 +10,19 @@
 
 module Substrate.Algebra.F2.GF256.Reduce where
 
-open import Substrate.Algebra.F2 using (F₂; 𝟘; 𝟙; _+_; _·_; ·-absorbʳ)
+open import Substrate.Algebra.F2.AbsorbR
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.Op
+open import Substrate.Algebra.F2.PlusF
 open import Substrate.Algebra.F2.Vector using (Vector; _+ⱽ_; _*ₛ_; 𝟎ⱽ; +ⱽ-identityˡ;
   +ⱽ-comm; +ⱽ-assoc; *ₛ-distribˡ-+ⱽ; lookup-*ₛ; lookup-𝟎; ≡-from-lookup)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂)
 open import Substrate.Algebra.F2.GF256.Xtime using (xtime; xtime-+ⱽ; xtime-*ₛ)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
 
 reduce-mod-m : ∀ {n} → Vec F₂ n → Vector 8
 reduce-mod-m []      = 𝟎ⱽ
@@ -33,16 +40,16 @@ reduce-mod-m (a ∷ q) = (a ∷ 𝟎ⱽ) +ⱽ xtime (reduce-mod-m q)
   (trans (cong (λ t → a +ⱽ (t +ⱽ d)) (+ⱽ-comm b c))
   (trans (cong (a +ⱽ_) (+ⱽ-assoc c b d)) (sym (+ⱽ-assoc a c (b +ⱽ d))))))
 
--- A3a: additivity. base = sym +ⱽ-identityˡ; step = head-split + xtime-+ⱽ(IH) + 4-term rearrange.
+-- A3a: additivity. base = sym +ⱽ-identityˡ; step = head-split +F xtime-+ⱽ(IH) +F 4-term rearrange.
 reduce-+ⱽ : ∀ {n} (u v : Vec F₂ n) → reduce-mod-m (u +ⱽ v) ≡ reduce-mod-m u +ⱽ reduce-mod-m v
 reduce-+ⱽ []      []      = sym (+ⱽ-identityˡ 𝟎ⱽ)
 reduce-+ⱽ (a ∷ u) (b ∷ v) =
-  trans (cong₂ _+ⱽ_ (cong ((a + b) ∷_) (sym (+ⱽ-identityˡ 𝟎ⱽ)))
+  trans (cong₂ _+ⱽ_ (cong ((a +F b) ∷_) (sym (+ⱽ-identityˡ 𝟎ⱽ)))
                     (trans (cong xtime (reduce-+ⱽ u v))
                            (xtime-+ⱽ (reduce-mod-m u) (reduce-mod-m v))))
         (+ⱽ-rearrange (a ∷ 𝟎ⱽ) (b ∷ 𝟎ⱽ) (xtime (reduce-mod-m u)) (xtime (reduce-mod-m v)))
 
--- A3b: scalar-linearity. base = sym *ₛ-zeroʳ; step = head-split + xtime-*ₛ(IH) + *ₛ-distribˡ.
+-- A3b: scalar-linearity. base = sym *ₛ-zeroʳ; step = head-split +F xtime-*ₛ(IH) +F *ₛ-distribˡ.
 reduce-*ₛ : ∀ {n} (c : F₂) (v : Vec F₂ n) → reduce-mod-m (c *ₛ v) ≡ c *ₛ reduce-mod-m v
 reduce-*ₛ c []      = sym (*ₛ-zeroʳ c)
 reduce-*ₛ c (a ∷ v) =

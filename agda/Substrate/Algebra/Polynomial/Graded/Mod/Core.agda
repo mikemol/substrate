@@ -21,18 +21,34 @@
 
 module Substrate.Algebra.Polynomial.Graded.Mod.Core where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; s≤s; z≤n; s≤s-injective)
-  renaming (_<_ to _<ℕ_; _≤_ to _≤ℕ_)
-open import Substrate.Foundation.Nat.Properties.Add using () renaming (+-comm to +ℕ-comm)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Properties.Add.PlusAssoc
+open import Substrate.Foundation.Nat.Properties.Add.PlusComm
+open import Substrate.Foundation.Nat.Properties.Add.PlusIdentityL
+open import Substrate.Foundation.Nat.Properties.Add.PlusIdentityR
+open import Substrate.Foundation.Nat.Properties.Add.PlusSuc
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; replicate)
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Empty using (⊥)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂; subst)
-open import Substrate.Algebra.CommutativeRing using (CommutativeRing)
+open import Substrate.Algebra.CommutativeRing.Record
 import Substrate.Algebra.Polynomial.Graded.FromCommRing as F
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.Foundation.Eq.Subst
 
 module Over {A : Set} (CR : CommutativeRing A) (d : ℕ) (f-lo : Vec A (suc d)) where
   open F.Over CR   -- NON-public: Core re-exports only what Core defines
+  -- ⚑ Ⓑ8/Ⓡ2ᵈ FALLOUT, AND THE HONEST KIND: Ⓡ1 made `Graded.Defs`' re-opens BARE
+  -- (the emitter was manufacturing the banned `public`), so `_+P_` and `_·c_` no
+  -- longer arrive here through `F.Over`.  This module reaches `Defs` TRANSITIVELY
+  -- and so was not in the 16 `Graded.*` importers Ⓡ2ᵈ rewired — a topology
+  -- `rewire_fcr --siblings` correctly DECLINES (it finds no `import … as Defs`),
+  -- which is why these two lines are written rather than generated.
+  -- One error at :47 for a module that blocked 65 others.
+  open import Substrate.Algebra.Polynomial.Graded.Defs.PlusP _+_ 𝟘 𝟙
+  open import Substrate.Algebra.Polynomial.Graded.Defs.C _+_ _*_ 𝟘 𝟙
 
   private variable n m : ℕ
 
@@ -40,6 +56,10 @@ module Over {A : Set} (CR : CommutativeRing A) (d : ℕ) (f-lo : Vec A (suc d)) 
   +P-identityˡ : (v : Poly n) → (replicate n 𝟘) +P v ≡ v
   +P-identityˡ {n} v = nth-ext _ v (λ k →
     trans (nth-+P (replicate n 𝟘) v k)
+          -- ⚑ THE CARRIER'S `+-identityˡ`, NOT ℕ's.  `nth v k : A`.  The sweep
+          -- collapsed this the OPPOSITE way from `Laws/Comm`: there it rewrote
+          -- ℕ laws onto the carrier's; here it rewrote a CARRIER law onto ℕ's.
+          -- One sweep, both directions — so neither spelling is safe to assume.
           (trans (cong (_+ nth v k) (nth-replicate n k)) (+-identityˡ (nth v k))))
 
   +P-rearrange : (a b c e : Poly n) → (a +P b) +P (c +P e) ≡ (a +P c) +P (b +P e)

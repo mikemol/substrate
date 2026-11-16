@@ -17,16 +17,9 @@
 
 module Substrate.Algebra.Module.Free where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; replicate; zipWith; map)
-open import Substrate.Foundation.Eq using (_≡_)
 
-open import Substrate.Algebra.Magma using (Magma)
-open import Substrate.Algebra.Semigroup using (Semigroup; magma)
-open import Substrate.Algebra.Monoid using (Monoid; semigroup; ε)
-open import Substrate.Algebra.Ring using (Ring; semiring)
-open import Substrate.Algebra.Semiring using (+-monoid; *-monoid)
-open import Substrate.Algebra.Module using (Module)
 
 ------------------------------------------------------------------------
 -- 1. The FreeModule carrier.

@@ -19,12 +19,15 @@
 module Substrate.WitnessTower.M40NoIso where
 
 import Substrate.Groups.V4.Operations as V4
-open import Substrate.Groups.V4.Bijection using (V₄; e)
-open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym; cong)
-open import Substrate.Foundation.Empty using (⊥)
+open import Substrate.Groups.V4.Bijection.V4
+open import Substrate.Foundation.Empty.Bot
 open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂)
 open import Substrate.WitnessTower.M40Closure using (A4Z2; compose; ι; sq; no-order-4)
 open import Substrate.WitnessTower.M40Contrast using (fc; fc-order-4; fc-not-order-2)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Cong
 
 -- the order-relevant structure of an iso A₄×ℤ₂ ≅ S₄ = Sym(V₄).
 record A4Z2≅SymV4 : Set where

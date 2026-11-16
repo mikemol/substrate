@@ -18,11 +18,13 @@
 
 module Substrate.Algebra.Nat.Prime where
 
-open import Substrate.Foundation.Nat using (ℕ; _*_; _≤_)
-open import Substrate.Foundation.Eq using (_≡_)
+open import Substrate.Foundation.Nat.Le
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Times
 open import Substrate.Foundation.Product using (Σ; _,_; _×_)
 open import Substrate.Foundation.List using (List; []; _∷_; foldr)
 open import Substrate.Algebra.Nat.Divides.Type using (_∣_)
+open import Substrate.Foundation.Eq
 
 -- n is prime: n ≥ 2 and every divisor ≥ 2 is n itself.
 IsPrime : ℕ → Set

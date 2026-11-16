@@ -24,10 +24,10 @@ open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Literals using (₁)
 open import Substrate.Foundation.Product using (_,_)
 open import Substrate.Foundation.Level using (Level)
-open import Substrate.Foundation.Eq using (_≡_)
 
 open import Substrate.Category.Cone
 open import Substrate.Category.Equalizer using (Equalizer-Of; IsEqualised; equalizer-incl)
+open import Substrate.Foundation.Eq
 
 private
   variable

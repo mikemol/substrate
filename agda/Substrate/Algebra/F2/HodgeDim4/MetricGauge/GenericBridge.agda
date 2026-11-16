@@ -2,7 +2,7 @@
 -- Substrate.Algebra.F2.HodgeDim4.MetricGauge.GenericBridge
 --
 -- Bridges the dim-4 specific SymBilinForm-4 (Vector 10 packing) to the
--- generic SymBilinForm at n=4 (Fin 4 → Fin 4 → F₂ + symmetry).
+-- generic SymBilinForm at n=4 (Fin 4 → Fin 4 → F₂ +F symmetry).
 --
 -- Mirror of HodgeDim3.MetricGauge.GenericBridge at dim 4.
 --
@@ -46,10 +46,32 @@ open import Substrate.Foundation.Fin.Literals using (₀; ₁; ₂; ₃)
 open import Substrate.Foundation.Fin.Cover using (fin×fin-cover)
 open import Substrate.Foundation.Product using (_,_)
 open import Substrate.Foundation.Vec using ([]; _∷_; lookup)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; trans; cong; cong₂)
 
-open import Substrate.Algebra.F2
+open import Substrate.Algebra.F2.AbsorbL
+open import Substrate.Algebra.F2.AbsorbR
+open import Substrate.Algebra.F2.Assoc
+open import Substrate.Algebra.F2.Comm
+open import Substrate.Algebra.F2.Dec
+open import Substrate.Algebra.F2.DistribLPlus
+open import Substrate.Algebra.F2.DistribRPlus
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.F2Cases
+open import Substrate.Algebra.F2.Idempotent
+open import Substrate.Algebra.F2.IdentityL
+open import Substrate.Algebra.F2.IdentityR
+open import Substrate.Algebra.F2.InvOfOne
+open import Substrate.Algebra.F2.OneNeqZero
+open import Substrate.Algebra.F2.Op
+open import Substrate.Algebra.F2.Op2
+open import Substrate.Algebra.F2.PlusAssoc
+open import Substrate.Algebra.F2.PlusComm
+open import Substrate.Algebra.F2.PlusF
+open import Substrate.Algebra.F2.PlusIdentityL
+open import Substrate.Algebra.F2.PlusIdentityR
+open import Substrate.Algebra.F2.PlusInverseL
+open import Substrate.Algebra.F2.PlusInverseR
+open import Substrate.Algebra.F2.PlusSelfInverse
+open import Substrate.Algebra.F2.ZeroNeqOne
 open import Substrate.Algebra.F2.Vector
 open import Substrate.Algebra.F2.HodgeDim4.MetricGauge
   using (SymBilinForm-4; bilinear-form-of-4; metric-id-4;
@@ -74,6 +96,11 @@ open import Substrate.Algebra.F2.SymBilinForm.MetricId using () renaming (metric
 ------------------------------------------------------------------------
 
 open import Substrate.Algebra.F2.Vector.Universal using (sum-F₂; sum-F₂-cong)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
 SymBilinForm-4-to-generic : SymBilinForm-4 → BilinForm-generic 4
 -- Row 0
 SymBilinForm-4-to-generic M ₀ ₀                   = entry-a M
@@ -117,18 +144,18 @@ is-symmetric-bridged-4 M =
 -- h, i, j), v = (v₀, v₁, v₂, v₃), w = (w₀, w₁, w₂, w₃)) expands as
 -- left-assoc 4-row sum, each row's inner being left-assoc 4-term:
 --
---   (((v₀ · (((a·w₀ + e·w₁) + f·w₂) + g·w₃)
---      + v₁ · (((e·w₀ + b·w₁) + h·w₂) + i·w₃))
---      + v₂ · (((f·w₀ + h·w₁) + c·w₂) + j·w₃))
---      + v₃ · (((g·w₀ + i·w₁) + j·w₂) + d·w₃))
+--   (((v₀ · (((a·w₀ +F e·w₁) +F f·w₂) +F g·w₃)
+--      +F v₁ · (((e·w₀ +F b·w₁) +F h·w₂) +F i·w₃))
+--      +F v₂ · (((f·w₀ +F h·w₁) +F c·w₂) +F j·w₃))
+--      +F v₃ · (((g·w₀ +F i·w₁) +F j·w₂) +F d·w₃))
 --
 -- Generic bilinear-form-of (SymBilinForm-4-to-generic M) v w expands
 -- as a double sum-F₂; each row right-associated with trailing 𝟘:
 --
---   v₀ · (a·w₀ + (e·w₁ + (f·w₂ + (g·w₃ + 𝟘)))) +
---   (v₁ · (e·w₀ + (b·w₁ + (h·w₂ + (i·w₃ + 𝟘)))) +
---   (v₂ · (f·w₀ + (h·w₁ + (c·w₂ + (j·w₃ + 𝟘)))) +
---   (v₃ · (g·w₀ + (i·w₁ + (j·w₂ + (d·w₃ + 𝟘)))) + 𝟘)))
+--   v₀ · (a·w₀ +F (e·w₁ +F (f·w₂ +F (g·w₃ +F 𝟘)))) +F
+--   (v₁ · (e·w₀ +F (b·w₁ +F (h·w₂ +F (i·w₃ +F 𝟘)))) +F
+--   (v₂ · (f·w₀ +F (h·w₁ +F (c·w₂ +F (j·w₃ +F 𝟘)))) +F
+--   (v₃ · (g·w₀ +F (i·w₁ +F (j·w₂ +F (d·w₃ +F 𝟘)))) +F 𝟘)))
 --
 -- Bridge: per row, right-assoc-with-trailing-𝟘 → left-assoc-no-𝟘
 -- (drop +𝟘, then 2 +-assoc reassociations for 4-term inner).
@@ -147,39 +174,39 @@ bilinear-form-of-bridge-4
   where
     -- Canonical row form (right-assoc with trailing 𝟘 — matches RHS).
     row-canonical : (p q r s : F₂) → F₂
-    row-canonical p q r s = p + (q + (r + (s + 𝟘)))
+    row-canonical p q r s = p +F (q +F (r +F (s +F 𝟘)))
 
     -- Per-row bridge LHS-row → canonical.
-    -- LHS row: ((p + q) + r) + s; canonical: p + (q + (r + (s + 𝟘))).
+    -- LHS row: ((p +F q) +F r) +F s; canonical: p +F (q +F (r +F (s +F 𝟘))).
     row-LHS→canonical :
-      (p q r s : F₂) → ((p + q) + r) + s ≡ p + (q + (r + (s + 𝟘)))
+      (p q r s : F₂) → ((p +F q) +F r) +F s ≡ p +F (q +F (r +F (s +F 𝟘)))
     row-LHS→canonical p q r s =
-      trans (+-assoc (p + q) r s)
-      (trans (+-assoc p q (r + s))
-             (cong (p +_)
-                   (cong (q +_)
-                         (cong (r +_) (sym (+-identityʳ s))))))
+      trans (+-assoc (p +F q) r s)
+      (trans (+-assoc p q (r +F s))
+             (cong (p +F_)
+                   (cong (q +F_)
+                         (cong (r +F_) (sym (+-identityʳ s))))))
 
     row-bridge :
       (vᵢ p q r s : F₂) →
-      vᵢ · (((p + q) + r) + s) ≡ vᵢ · row-canonical p q r s
+      vᵢ · (((p +F q) +F r) +F s) ≡ vᵢ · row-canonical p q r s
     row-bridge vᵢ p q r s = cong (vᵢ ·_) (row-LHS→canonical p q r s)
 
     -- LHS → row-canonical-form: apply row-bridge to each of the 4 rows.
     LHS→canonical :
-      (((v₀ · (((a · w₀ + e · w₁) + f · w₂) + g · w₃)
-         + v₁ · (((e · w₀ + b · w₁) + h · w₂) + i · w₃))
-         + v₂ · (((f · w₀ + h · w₁) + c · w₂) + j · w₃))
-         + v₃ · (((g · w₀ + i · w₁) + j · w₂) + d · w₃))
+      (((v₀ · (((a · w₀ +F e · w₁) +F f · w₂) +F g · w₃)
+         +F v₁ · (((e · w₀ +F b · w₁) +F h · w₂) +F i · w₃))
+         +F v₂ · (((f · w₀ +F h · w₁) +F c · w₂) +F j · w₃))
+         +F v₃ · (((g · w₀ +F i · w₁) +F j · w₂) +F d · w₃))
       ≡
       (((v₀ · row-canonical (a · w₀) (e · w₁) (f · w₂) (g · w₃)
-         + v₁ · row-canonical (e · w₀) (b · w₁) (h · w₂) (i · w₃))
-         + v₂ · row-canonical (f · w₀) (h · w₁) (c · w₂) (j · w₃))
-         + v₃ · row-canonical (g · w₀) (i · w₁) (j · w₂) (d · w₃))
+         +F v₁ · row-canonical (e · w₀) (b · w₁) (h · w₂) (i · w₃))
+         +F v₂ · row-canonical (f · w₀) (h · w₁) (c · w₂) (j · w₃))
+         +F v₃ · row-canonical (g · w₀) (i · w₁) (j · w₂) (d · w₃))
     LHS→canonical =
-      cong₂ _+_
-        (cong₂ _+_
-          (cong₂ _+_ (row-bridge v₀ (a · w₀) (e · w₁) (f · w₂) (g · w₃))
+      cong₂ _+F_
+        (cong₂ _+F_
+          (cong₂ _+F_ (row-bridge v₀ (a · w₀) (e · w₁) (f · w₂) (g · w₃))
                      (row-bridge v₁ (e · w₀) (b · w₁) (h · w₂) (i · w₃)))
           (row-bridge v₂ (f · w₀) (h · w₁) (c · w₂) (j · w₃)))
         (row-bridge v₃ (g · w₀) (i · w₁) (j · w₂) (d · w₃))
@@ -191,17 +218,17 @@ bilinear-form-of-bridge-4
     row₂ = v₂ · row-canonical (f · w₀) (h · w₁) (c · w₂) (j · w₃)
     row₃ = v₃ · row-canonical (g · w₀) (i · w₁) (j · w₂) (d · w₃)
 
-    -- RHS canonical form (right-assoc 4 rows + trailing 𝟘):
-    --   row₀ + (row₁ + (row₂ + (row₃ + 𝟘)))
-    -- ≡ ((row₀ + row₁) + row₂) + row₃   [drop 𝟘, re-assoc twice]
+    -- RHS canonical form (right-assoc 4 rows +F trailing 𝟘):
+    --   row₀ +F (row₁ +F (row₂ +F (row₃ +F 𝟘)))
+    -- ≡ ((row₀ +F row₁) +F row₂) +F row₃   [drop 𝟘, re-assoc twice]
     RHS←canonical :
-      row₀ + (row₁ + (row₂ + (row₃ + 𝟘)))
-        ≡ ((row₀ + row₁) + row₂) + row₃
+      row₀ +F (row₁ +F (row₂ +F (row₃ +F 𝟘)))
+        ≡ ((row₀ +F row₁) +F row₂) +F row₃
     RHS←canonical =
-      trans (cong (row₀ +_)
-                  (cong (row₁ +_) (cong (row₂ +_) (+-identityʳ row₃))))
-      (trans (sym (+-assoc row₀ row₁ (row₂ + row₃)))
-             (sym (+-assoc (row₀ + row₁) row₂ row₃)))
+      trans (cong (row₀ +F_)
+                  (cong (row₁ +F_) (cong (row₂ +F_) (+-identityʳ row₃))))
+      (trans (sym (+-assoc row₀ row₁ (row₂ +F row₃)))
+             (sym (+-assoc (row₀ +F row₁) row₂ row₃)))
 
 ------------------------------------------------------------------------
 -- N-4: metric-id-4 bridge — the dim-4 metric-id-4 maps to the generic
@@ -269,7 +296,7 @@ bilinear-form-of-metric-id-4-bridge v w =
 --         = trans (·F-eq-metric-id-bilin-generic v w)
 --                 (sym (bilinear-form-of-metric-id-4-bridge v w))
 --
---   * Eventual congruence-act bridge at dim 4 (mirror of dim-3) +
+--   * Eventual congruence-act bridge at dim 4 (mirror of dim-3) +F
 --     congruence-compose-4 if dim-4 stabiliser work needs it.
 --
 --   * Σ-level coupling: with both dim-3 and dim-4 bridges in place,

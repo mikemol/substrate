@@ -28,16 +28,20 @@
 
 module Substrate.WitnessTower.Wedge.PyAstRewriteNormalize where
 
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Eq using (_≡_; trans)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Product using (proj₁; proj₂)
 open import Substrate.WitnessTower.Enumerate using (Perm)
-open import Substrate.WitnessTower.LehmerPath
-  using (decode; encode; decode-is-perm; decode-encode; encode-decode)
+open import Substrate.WitnessTower.LehmerPath.Decode
+open import Substrate.WitnessTower.LehmerPath.DecodeEncode
+open import Substrate.WitnessTower.LehmerPath.DecodeIsPerm
+open import Substrate.WitnessTower.LehmerPath.Encode
+open import Substrate.WitnessTower.LehmerPath.EncodeDecode2
 open import Substrate.WitnessTower.IsPermutation using (IsPerm)
-open import Substrate.WitnessTower.Wedge.OrientationRigCatSym using (Iso→IsPerm)
+open import Substrate.WitnessTower.Wedge.OrientationRigCatSym.IsoToIsPerm
 open import Substrate.WitnessTower.Wedge.PyAstRewrite using (PyRewrite)
 open import Substrate.WitnessTower.Wedge.PyAstRewriteSnRig using (Sₙ; interp; interp-is-decode; snEq)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
 
 -- THE NORMAL FORM: a permutation's canonical rewrite word. Reused verbatim — the tower's encode.
 normalize : {n : ℕ} (σ : Perm n) → IsPerm σ → PyRewrite n

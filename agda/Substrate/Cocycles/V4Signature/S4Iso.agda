@@ -40,7 +40,6 @@
 module Substrate.Cocycles.V4Signature.S4Iso where
 
 open import Substrate.Foundation.Product using (_,_)
-open import Substrate.Foundation.Eq using (_≡_)
 
 open import Substrate.Axes.Axis using (Axis)
 open import Substrate.Groups.Symmetric.Permutation Axis
@@ -52,6 +51,7 @@ open import Substrate.Cocycles.V4Signature.S4Iso.Anchor
 open import Substrate.Cocycles.V4Signature.S4Iso.Classify
 open import Substrate.Cocycles.V4Signature.S4Iso.Cases
 open import Substrate.Cocycles.V4Signature.S4Iso.Roundtrips
+open import Substrate.Foundation.Eq
 ------------------------------------------------------------------------
 -- TotalSpace ≃ S₄: the bijection packaged.
 --

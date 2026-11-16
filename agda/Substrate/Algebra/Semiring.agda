@@ -13,10 +13,10 @@
 
 module Substrate.Algebra.Semiring where
 
-open import Substrate.Foundation.Eq using (_≡_)
 open import Substrate.Algebra.Magma using (Magma)
 open import Substrate.Algebra.Semigroup using (Semigroup; magma)
 open import Substrate.Algebra.Monoid using (Monoid; semigroup; ε)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. The Semiring record.

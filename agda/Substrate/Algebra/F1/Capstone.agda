@@ -26,16 +26,6 @@
 
 module Substrate.Algebra.F1.Capstone where
 
-open import Substrate.Algebra.PointedSet
-  using (PointedSet; Carrier; base; ⊤-Pointed)
-open import Substrate.Algebra.PointedSet.Map
-  using (PointedSetMap; id-PointedSetMap; compose-PointedSetMap)
-open import Substrate.Algebra.F1.AsModule
-  using (F₁-Module; F₁-Module-Hom; id-F₁-Hom; compose-F₁-Hom)
-open import Substrate.Algebra.F1.GL
-  using (F₁ⁿ; GL-F₁; id-GL-F₁)
-open import Substrate.Algebra.Monoid
-  using (F₁-Monoid)
 
 ------------------------------------------------------------------------
 -- F₁-arc closure. The substrate now hosts F₁ in both views:

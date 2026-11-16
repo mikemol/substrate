@@ -12,7 +12,7 @@
 
 module Substrate.Algebra.F2.Polynomial.Utilities.Degree where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Maybe using (Maybe)
 
 open import Substrate.Algebra.F2.Polynomial using (Polynomial)

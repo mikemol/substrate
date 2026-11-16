@@ -25,7 +25,17 @@ cap-Z₂ = CoxeterGroupW.cap 1
 
 import Substrate.Groups.Coxeter.GroupFromCapability cap-Z₂ as Z₂G-GroupFromCapability
 
-open import Substrate.Groups.Coxeter.SemidirectProductGroup
+-- ⚑ A FIFTH DISSOLVED PARENT (Ⓐ¹⁴).  `Coxeter.SemidirectProductGroup` was split
+-- into `Private` (the two SetoidGroup projections) and `WithAction` (the whole
+-- semidirect-product construction), and BOTH lost the parent's six-parameter
+-- telescope — so neither bound `N-Carrier`/`G-N`/`H-Carrier`/`G-H`, which they
+-- reference throughout.  Restored from `--at 771283c8^`.
+--
+-- ⚑ The application moves to the LEAF: `WithAction` is no longer a submodule
+-- reached by opening the parent, it is a module in its own right taking the same
+-- six arguments.  The `_ _` holes are the carriers and equivalences agda infers
+-- from the two Group-bundles.
+open import Substrate.Groups.Coxeter.SemidirectProductGroup.WithAction
   _ _
   Z₃G-GroupFromCapability.Group-bundle  -- N (normal subgroup)
   _ _

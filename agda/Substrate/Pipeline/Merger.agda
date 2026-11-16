@@ -35,9 +35,8 @@ open import Substrate.Pipeline.Brick.Record using (Brick)
 open import Substrate.Pipeline.Brick.Type using (BrickType)
 
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.List using (List; []; _∷_)
-open import Substrate.Foundation.List.Length using (length)
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Pipeline.Brick
 

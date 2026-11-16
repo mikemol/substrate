@@ -18,8 +18,8 @@
 
 module Substrate.Algebra.F2.Linear.AsModuleHom where
 
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Algebra.F2.Linear using (Linear)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Algebra.F2.Linear.Linear
 open import Substrate.Algebra.F2.AsModule using (F₂-FreeModule)
 open import Substrate.Algebra.Module.Hom using (ModuleHom)
 

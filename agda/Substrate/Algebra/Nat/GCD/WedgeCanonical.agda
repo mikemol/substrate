@@ -7,7 +7,7 @@
 -- rather than prose (convergence-over-isolation).
 --
 -- For a fixed nonzero divisor `suc b`:
---   * F = recon-pair  : (q, r) ↦ q·(suc b) + r          — evaluate to the value
+--   * F = recon-pair  : (q, r) ↦ q·(suc b) ℕ+ r          — evaluate to the value
 --   * s = divide-pair : a ↦ (a div b, a mod b)           — the canonical r<b rep
 --   * retract = the wedge-eq read forward: recon-pair (divide-pair a) ≡ a
 -- so e = s∘F renormalises an un-normalised (q, r) pair to its r<(suc b) form,
@@ -20,19 +20,29 @@
 
 module Substrate.Algebra.Nat.GCD.WedgeCanonical where
 
-open import Substrate.Foundation.Nat     using (ℕ; suc; _*_; _+_)
-open import Substrate.Foundation.Eq      using (_≡_; sym)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Times
 open import Substrate.Foundation.Product using (_×_; _,_)
-open import Substrate.Algebra.Quotient
+open import Substrate.Algebra.Quotient.ApproxcanonicalEq
+open import Substrate.Algebra.Quotient.Canonical
+open import Substrate.Algebra.Quotient.CanonicalEqApprox
+open import Substrate.Algebra.Quotient.IdemCanonical
+open import Substrate.Algebra.Quotient.KerQuotient
+open import Substrate.Algebra.Quotient.KerRel
+open import Substrate.Algebra.Quotient.Quotient
+open import Substrate.Algebra.Quotient.SplitCanonical
 open import Substrate.Algebra.Nat.GCD.Wedge
   using (quotient; remainder; wedge-eq)
 open import Substrate.Algebra.Nat.GCD.ConstructWedge using (construct-wedge)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
 
 module _ (b : ℕ) where    -- the fixed divisor is (suc b)
 
   -- F: evaluate an un-normalised (quotient, remainder) pair to its value (recon).
   recon-pair : ℕ × ℕ → ℕ
-  recon-pair (q , r) = q * suc b + r
+  recon-pair (q , r) = q * suc b ℕ+ r
 
   -- s: the canonical division — the unique r < suc b representative.
   divide-pair : ℕ → ℕ × ℕ

@@ -30,7 +30,8 @@
 
 module Substrate.Category.UPArrowGraded where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- The upgraded universal arrow: carriers are grade-indexed PARAMETERS; the content is
@@ -59,7 +60,6 @@ trivial-UPᴳ C = mkUP (λ x → x)
 -- structure-respecting hypotheses exactly as OrientationUniversal.fold-unique does.
 ------------------------------------------------------------------------
 
-open import Substrate.Foundation.Eq using (_≡_)
 
 Determines : {Spec Sol : ℕ → Set} → UPArrowᴳ Spec Sol →
              ({n : ℕ} → Spec n → Sol n) → Set

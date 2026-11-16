@@ -6,11 +6,11 @@ module Substrate.Groups.Actions.S3-on-V4.Axioms.ActEpsilonN.OnCanonical where
 
 import Substrate.Groups.Coxeter.Cyclic.Existential 1 as Z₂E
 import Substrate.Groups.Coxeter.Cyclic.Existential 2 as Z₃E
-open import Substrate.Groups.V4.Bijection using (e)
+open import Substrate.Groups.V4.Bijection.V4
 open import Substrate.Foundation.Fin.Literals using (₁; ₂)
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Groups.Actions.S3-on-V4.Dispatch.ActOnCanonical using (act-on-canonical)
+open import Substrate.Foundation.Eq
 
 act-ε-N-on-canonical : ∀ {n h} → Z₃E.Canonical-ex n → Z₂E.Canonical-ex h →
                        act-on-canonical n h e ≡ e

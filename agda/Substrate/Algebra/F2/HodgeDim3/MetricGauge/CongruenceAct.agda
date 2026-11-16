@@ -13,7 +13,7 @@ module Substrate.Algebra.F2.HodgeDim3.MetricGauge.CongruenceAct where
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Literals using (₀; ₁; ₂)
 open import Substrate.Foundation.Vec using ([]; _∷_)
-open import Substrate.Algebra.F2.Linear using (Linear; apply)
+open import Substrate.Algebra.F2.Linear.Linear
 open import Substrate.Algebra.F2.Vector using (basis)
 open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.Type           using (SymBilinForm-3)
 open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.BilinearFormOf using (bilinear-form-of)

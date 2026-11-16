@@ -50,8 +50,6 @@
 module Substrate.Cocycles.V4Signature.S4Iso-Bridges where
 
 open import Substrate.Foundation.Product using (_,_; proj₁)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl)
 
 open import Substrate.Axes.Axis using (Axis; D; C; S; W)
 open import Substrate.Groups.Stab-S3-Extend using (extend)
@@ -67,6 +65,9 @@ open import Substrate.Cocycles.V4Signature.S4Iso.Anchor
 open import Substrate.Cocycles.V4Signature.Pairing.Type
 open import Substrate.Cocycles.V4Signature.Chirality.Type
 open import Substrate.Cocycles.V4Signature.OrbitKey-S3.OrbitKeyToS3
+open import Substrate.Foundation.Eq
+open import Substrate.Cocycles.V4Signature.OrbitKey-S3.S3Elements
+open import Substrate.Cocycles.V4Signature.S4Iso.StabElements
 
 ------------------------------------------------------------------------
 -- The bridge: for each OrbitKey, the named stab record agrees with

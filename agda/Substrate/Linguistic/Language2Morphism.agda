@@ -21,12 +21,12 @@
 
 module Substrate.Linguistic.Language2Morphism where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
 
 open import Substrate.Category.FreeOverBasis
   using (LanguageWitness)
 open import Substrate.Linguistic.Morphism
   using (LanguageMorphism; basis-map; carrier-map)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. The Language2Morphism record.

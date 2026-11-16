@@ -24,9 +24,11 @@
 module Substrate.Foundation.Fin.Iterate where
 
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Nat using (ℕ) renaming (_+_ to _ℕ+_; _*_ to _ℕ*_)
-open import Substrate.Foundation.Eq using (_≡_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Times
 import Substrate.Foundation.Function.Iterate as F
+open import Substrate.Foundation.Eq
 
 σ-iterate : ∀ {n} → ℕ → (Fin n → Fin n) → (Fin n → Fin n)
 σ-iterate {n} = F.iterate {Fin n}
@@ -61,5 +63,5 @@ opaque
 
 HasOrderPerm-multiple :
   ∀ {n} (σ : Fin n → Fin n) (k m : ℕ) →
-  HasOrderPerm σ k → HasOrderPerm σ (m ℕ* k)
+  HasOrderPerm σ k → HasOrderPerm σ (m * k)
 HasOrderPerm-multiple {n} = F.HasFixedOrder-multiple {Fin n}

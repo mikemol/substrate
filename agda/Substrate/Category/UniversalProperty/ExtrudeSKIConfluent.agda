@@ -22,9 +22,10 @@
 module Substrate.Category.UniversalProperty.ExtrudeSKIConfluent where
 
 open import Substrate.Foundation.Product using (Σ; _,_; _×_)
-open import Substrate.Algebra.R.Trace.SKIShedDuality using (S; K; I; _∙_) renaming (Tm to Tm⟦533ef80d⟧)
+open import Substrate.Algebra.R.Trace.SKIShedDuality.Tm
 import Substrate.Algebra.R.Trace.SKIReductionToList as R
 open import Substrate.Foundation.RewriteConfluence (R._⇒_) using (_⇒*_; done; Converge)
+open import Substrate.Algebra.R.Trace.SKIShedDuality.Tm
 
 ------------------------------------------------------------------------
 -- ① THE OBSERVATION IS THE COMMON REDUCT (Converge), NOT A DECISION. Two terms are observationally
@@ -32,17 +33,17 @@ open import Substrate.Foundation.RewriteConfluence (R._⇒_) using (_⇒*_; done
 --    reductions), never a decision procedure. Confluence (CR, proven for SKI) guarantees convertible
 --    terms converge — so ≈-invariance is a THEOREM, not a computation that must terminate.
 ------------------------------------------------------------------------
-reduct-obs : Tm⟦533ef80d⟧ → Tm⟦533ef80d⟧ → Set
+reduct-obs : Tm → Tm → Set
 reduct-obs a b = Converge a b       -- Σ d. (a ⇒* d) × (b ⇒* d)
 
 -- reflexivity: a term converges with itself (both reduce to it via done) — the observation is inhabited
 -- WITHOUT any normalization / decision. Divergent terms still converge with themselves (done needs no NF).
-reduct-refl : (a : Tm⟦533ef80d⟧) → reduct-obs a a
+reduct-refl : (a : Tm) → reduct-obs a a
 reduct-refl a = a , (done , done)
 
 -- a directed reduction gives convergence (b is the common reduct): a ⇒* b ⟹ Converge a b. So every
 -- reduction fact (incl. Y-of f ⇒* f (Y-of f), 248) yields the observation — no decision, just the reduct.
-⇒*→converge : {a b : Tm⟦533ef80d⟧} → a ⇒* b → reduct-obs a b
+⇒*→converge : {a b : Tm} → a ⇒* b → reduct-obs a b
 ⇒*→converge {a} {b} r = b , (r , done)
 
 ------------------------------------------------------------------------

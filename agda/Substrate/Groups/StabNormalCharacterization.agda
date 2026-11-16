@@ -36,12 +36,16 @@
 
 module Substrate.Groups.StabNormalCharacterization where
 
-open import Substrate.Foundation.Eq using (_≡_; sym; trans; cong)
 open import Substrate.Axes.Axis using (Axis)
 open import Substrate.Groups.Symmetric.Permutation Axis
 open import Substrate.Groups.Symmetric.Permutation.Compose Axis using (_·_)
 open import Substrate.Groups.Symmetric.Permutation.Inverse Axis using (_⁻¹)
 open import Substrate.Groups.SemidirectProduct.Stab
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Category.Coalgebra
 
 ------------------------------------------------------------------------
 -- The two conditions.

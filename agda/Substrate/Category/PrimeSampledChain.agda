@@ -48,11 +48,8 @@
 
 module Substrate.Category.PrimeSampledChain where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_; _≤_; z≤n; s≤s)
-open import Substrate.Foundation.List using (List; []; _∷_)
-open import Substrate.Foundation.List.Length using (length)
-open import Substrate.Foundation.Product using (_×_; _,_; Σ-syntax)
-open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Category.StochasticLens.Sites.ChainWalk
 
 ------------------------------------------------------------------------
 -- A prime pair gauge: (p, q) ∈ ℕ × ℕ with p < q small primes.
@@ -68,11 +65,11 @@ open PrimePair public
 ------------------------------------------------------------------------
 -- A crumb is a 2-bit value ∈ {0, 1, 2, 3}.
 
-record Crumb : Set where      -- ⟦shape:20f7bed4 value⟧
+record Crumb-PSC : Set where      -- ⟦shape:20f7bed4 value⟧
   field
     value : ℕ        -- value < 4 enforced by use
 
-open Crumb public
+open Crumb-PSC public
 
 ------------------------------------------------------------------------
 -- A three-crumb context is the triple sampled at offsets
@@ -80,9 +77,9 @@ open Crumb public
 
 record ThreeCrumbContext : Set where
   field
-    c-prev : Crumb     -- from chain symbol at position k - 1
-    c-p    : Crumb     -- from chain symbol at position k - p
-    c-q    : Crumb     -- from chain symbol at position k - q
+    c-prev : Crumb-PSC     -- from chain symbol at position k - 1
+    c-p    : Crumb-PSC     -- from chain symbol at position k - p
+    c-q    : Crumb-PSC     -- from chain symbol at position k - q
 
 open ThreeCrumbContext public
 
@@ -103,7 +100,7 @@ module _ (Chamber : Set) where
 
   record V4PartExtraction : Set where
     field
-      v4-part  : Chamber → Crumb
+      v4-part  : Chamber → Crumb-PSC
 
   open V4PartExtraction public
 

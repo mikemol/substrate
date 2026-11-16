@@ -18,7 +18,8 @@
 
 module Substrate.Linguistic.YonedaFull where
 
-open import Substrate.Linguistic.Roster using (Lang; witness-of)
+open import Substrate.Linguistic.Roster.Lang
+open import Substrate.Linguistic.Roster.WitnessOf
 open import Substrate.Linguistic.Morphism using (LanguageMorphism)
 open import Substrate.Linguistic.IdMorphism using (id-morphism)
 open import Substrate.Linguistic.Compose using (_∘L_)

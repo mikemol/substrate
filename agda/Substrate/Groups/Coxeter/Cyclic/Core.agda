@@ -12,26 +12,73 @@
 
 {-# OPTIONS --safe --without-K #-}
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _<_; _<?_; s≤s)
+open import Substrate.Foundation.Nat.Le
+open import Substrate.Foundation.Nat.Lt
+open import Substrate.Foundation.Nat.Lt2
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Nat.Properties.Order using (≤-suc-r; <-irrefl)
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.To
 open import Substrate.Foundation.Fin.Properties using (toℕ-bound)
-open import Substrate.Foundation.Eq using (_≡_; refl; cong; sym; trans; subst)
-open import Substrate.Foundation.Empty using (⊥-elim)
-open import Substrate.Foundation.Negation using (Dec; yes; no; ¬_)
+open import Substrate.Foundation.Empty.BotElim
+open import Substrate.Foundation.Negation.Dec
+open import Substrate.Foundation.Negation.Not
 open import Substrate.Foundation.Product using (_,_)
 
 open import Substrate.Groups.Coxeter.Word using (Word; []; _∷_; _++_)
 open import Substrate.Groups.Coxeter.Word.Length using (length)
 open import Substrate.Foundation.Fin.Iterate
   using (σ-iterate)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Subst
+open import Substrate.Groups.Coxeter.Cyclic.Base.Gen
+open import Substrate.Groups.Coxeter.Cyclic.Base.CanonicalAt
 
 module Substrate.Groups.Coxeter.Cyclic.Core (n : ℕ) where
 
-open import Substrate.Groups.Coxeter.Cyclic.Bridge n using (insert-power-advance; insert-power-eq; not-lt-eq-n; insert-power-wrap)
+-- ⚑ WAS `open import …Cyclic.Bridge n using (…4 names…)` — a module DISSOLVED by
+-- the ban-decompose commit (771283c8) into one leaf per theorem.  The split ran
+-- correctly; the REWIRE did not, so this line named a module with no file and the
+-- build reported [FileNotFound] here.  That is the `file-not-found` reservoir the
+-- re-export census warns about, arriving by the other route: not a retired
+-- conduit, but a decomposed parent whose consumer was never repointed.
+--
+-- ⚑ AND IT IS THE ROOT OF A 14-MODULE BLOCK.  Every Zn-Coxeter, -Fin and -Group
+-- module in the tree is `dependency`-failing behind this single line.
+open import Substrate.Groups.Coxeter.Cyclic.Bridge.InsertPowerAdvance n
+open import Substrate.Groups.Coxeter.Cyclic.Bridge.InsertPowerEq n
+open import Substrate.Groups.Coxeter.Cyclic.Bridge.NotLtEqN n
+open import Substrate.Groups.Coxeter.Cyclic.Bridge.InsertPowerWrap n
 open import Substrate.Groups.Coxeter.Cyclic.Base n using (power; insert; a; Gen; σ; c-here; σ-HasOrderPerm)
+-- ⛑ Ⓡ2ᵈ: the `Defs` LEAVES this shard cites, derived by
+-- `rewire_fcr --siblings Defs <file>` — a SET, not a prefix. `Defs`'s
+-- re-opens are bare (Ⓡ1), so a leaf-defined name no longer arrives
+-- through the root. Each leaf carries its OWN minimal telescope, so the
+-- argument lists differ by leaf and are read from each header.
+open import Substrate.Groups.Coxeter.Cyclic.Base.HasOrderPerm n
+open import Substrate.Groups.Coxeter.Cyclic.Base.Insert n
+open import Substrate.Groups.Coxeter.Cyclic.Base.Op n
+open import Substrate.Groups.Coxeter.Cyclic.Base.Power
 open import Substrate.Groups.Coxeter.Cyclic.Existential n
+-- ⚑⚑ `normalize` / `normalize-canonical` / `WithLemmas` CAME THROUGH A SECOND
+-- CONDUIT (Ⓑ2c-BRIDGE10″).  Pre-split, `Core` read `open import …Existential n
+-- public` and `Existential` in turn opened `ListPresentation` — so all three
+-- arrived two hops away, named nowhere.  `--provides` now shows `Existential`
+-- exporting six names, none of them these.
+--
+-- ⚑ AND `normalize` HAS NINE HOMES, so no tool could pick one: what makes it
+-- decidable is PROVENANCE, not the index — the pre-split parent's own comment
+-- ("Opens ListPresentation's outer module — provides normalize +
+-- normalize-canonical") names which of the nine this is.  That is the case
+-- `agda_defs <name>` correctly refuses and `--at <rev>` answers.
+-- ⚑ APPLIED to its five-parameter telescope (Gen, Canonical, canonical-ε,
+-- insert, insert-canonical) — the arguments the dissolved conduit was supplying
+-- invisibly.  Naming them here is the dependency becoming explicit.
+open import Substrate.Groups.Coxeter.ListPresentation
+  Gen Canonical-ex c-ε insert insert-canonical-ex
 
 ------------------------------------------------------------------------
 -- power-canonical-bounded: normalize fixes power words within bound.

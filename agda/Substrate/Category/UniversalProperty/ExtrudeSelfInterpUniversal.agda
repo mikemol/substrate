@@ -24,11 +24,12 @@
 
 module Substrate.Category.UniversalProperty.ExtrudeSelfInterpUniversal where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.Algebra.R.Trace.SKIShedDuality using (S; K; I; _∙_) renaming (Tm to Tm⟦533ef80d⟧)
+open import Substrate.Algebra.R.Trace.SKIShedDuality.Tm
 import Substrate.Algebra.R.Trace.SKIReductionToList as R
 open R using (_⇒_; β-I; β-K; β-S; cong-l; cong-r)
 open import Substrate.Foundation.RewriteConfluence (R._⇒_) using (_⇒*_; done; _◅_; Converge; CR)
+open import Substrate.Foundation.Eq
+open import Substrate.Algebra.R.Trace.SKIShedDuality.Tm
 
 ------------------------------------------------------------------------
 -- ① THE CODEC COSET as an interface (D-model-the-coset — model the SPACE of encodings, don't pick one). A
@@ -37,9 +38,9 @@ open import Substrate.Foundation.RewriteConfluence (R._⇒_) using (_⇒*_; done
 ------------------------------------------------------------------------
 record UniversalEncoding : Set where
   field
-    ⌜_⌝    : Tm⟦533ef80d⟧ → Tm⟦533ef80d⟧                              -- the quote (an actual encoding)
-    eval   : Tm⟦533ef80d⟧                                   -- the universal interpreter
-    decode : (M : Tm⟦533ef80d⟧) → (eval ∙ ⌜ M ⌝) ⇒* M       -- the universal decode LAW (positive, confluence-based)
+    ⌜_⌝    : Tm → Tm                              -- the quote (an actual encoding)
+    eval   : Tm                                   -- the universal interpreter
+    decode : (M : Tm) → (eval ∙ ⌜ M ⌝) ⇒* M       -- the universal decode LAW (positive, confluence-based)
 
   -- the self-interpreter DECODES ITS OWN CODE (metacircular) — from the law at M = eval:
   self-decode : (eval ∙ ⌜ eval ⌝) ⇒* eval
@@ -47,14 +48,14 @@ record UniversalEncoding : Set where
 
   -- it CARRIES CONFLUENCE BY CONSTRUCTION (given the system's SKI CR): eval ∙ ⌜M⌝'s reducts converge —
   -- confluence, not decidability, is the uniqueness the interpreter needs (266's method, at the interface):
-  carries-confluence : CR → {M b c : Tm⟦533ef80d⟧} → (eval ∙ ⌜ M ⌝) ⇒* b → (eval ∙ ⌜ M ⌝) ⇒* c → Converge b c
+  carries-confluence : CR → {M b c : Tm} → (eval ∙ ⌜ M ⌝) ⇒* b → (eval ∙ ⌜ M ⌝) ⇒* c → Converge b c
   carries-confluence cr = cr
 
 ------------------------------------------------------------------------
 -- ② THE NON-TRIVIAL INSTANCE (K-wrap) — beyond homoiconicity: ⌜M⌝ = K ∙ M (distinct quote), eval =
 --    S ∙ I ∙ (K ∙ I). The decode is an EXPLICIT reduction: (S∙I∙(K∙I))∙(K∙M) ⇒* M.
 ------------------------------------------------------------------------
-kwrap-decode : (M : Tm⟦533ef80d⟧) → ((S ∙ I ∙ (K ∙ I)) ∙ (K ∙ M)) ⇒* M
+kwrap-decode : (M : Tm) → ((S ∙ I ∙ (K ∙ I)) ∙ (K ∙ M)) ⇒* M
 kwrap-decode M =
   β-S I (K ∙ I) (K ∙ M)                          -- ⇒ (I∙(K∙M)) ∙ ((K∙I)∙(K∙M))
     ◅ cong-l ((K ∙ I) ∙ (K ∙ M)) (β-I (K ∙ M))    -- ⇒ (K∙M) ∙ ((K∙I)∙(K∙M))

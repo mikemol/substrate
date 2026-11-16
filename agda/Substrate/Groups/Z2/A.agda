@@ -13,6 +13,7 @@
 module Substrate.Groups.Z2.A where
 
 open import Substrate.Groups.Coxeter.Cyclic.Base 1
+open import Substrate.Groups.Coxeter.Cyclic.Base.Gen
 
 a₂ : Gen
 a₂ = a

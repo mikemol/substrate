@@ -23,8 +23,9 @@
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.Algebra.ExpLogCodec where
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
 
-open import Substrate.Foundation.Eq using (_≡_; cong)
 
 -- An exp⊣log codec into the multiplicative target (G, _·_, 𝟙) measured by _≈_.
 -- `expL` is the "exp" direction (L → G); the homomorphism laws are the content.

@@ -72,26 +72,5 @@
 
 module Substrate.Algebra.V-Arc.Capstone where
 
-open import Substrate.Algebra.SetoidGroup
-  using (SetoidGroup)
-open import Substrate.Algebra.SetoidGroup.Properties
-  using (module Props)
-open import Substrate.Algebra.SetoidGroup.Action
-  using (Action)
 -- Note: Substrate.Algebra.GroupAction also defines `Action` (the
 -- Group-on-≡ variant); consumers needing it import directly.
-open import Substrate.Algebra.Torsor
-  using (IsTorsorᴳ)
-open import Substrate.Algebra.IsomorphicCocycle
-  using (IsomorphicCocycleStructureᴳ)
-open import Substrate.Algebra.SemidirectProduct
-  using (SemidirectGroupObligation)
-open import Substrate.Algebra.Group.ToSetoid
-  using (to-setoid)
-open import Substrate.Foundation.Hedberg
-  using (DecidableEquality; Decidable⇒UIP)
-open import Substrate.Foundation.Bool.Properties
-  using (xor-assoc; xor-comm; xor-identityˡ;
-         xor-identityʳ; xor-same)
-open import Substrate.Foundation.Vec.Properties
-  using (≡-dec)

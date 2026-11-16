@@ -15,7 +15,7 @@
 module Substrate.Category.UniversalProperty.KleeneStencil where
 
 open import Substrate.Algebra.Wedge using (DivStr; Trace; ℕ-div)
-open import Substrate.Category.Allegory.Refinement using (_⊑ᶠ_)
+open import Substrate.Category.Allegory.Refinement.SqsubF
 open import Substrate.Algebra.Wedge.TraceMuStep using (Idx; Φ-step; TraceF)
 import Substrate.Algebra.Wedge.TraceKleeneColimit as Kμ
 import Substrate.Algebra.Wedge.TraceNuColimit as Kν

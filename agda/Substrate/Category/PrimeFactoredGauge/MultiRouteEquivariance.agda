@@ -40,7 +40,7 @@ module Substrate.Category.PrimeFactoredGauge.MultiRouteEquivariance where
 
 open import Substrate.Foundation.Level using (Level; _⊔_)
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂)
 
 open import Substrate.Category.GTorsor using (act; transitive)
@@ -48,6 +48,7 @@ open import Substrate.Category.SylowDecomposition
   using (SylowDecomposition; joint-generated; InGenerated)
 open import Substrate.Category.PrimeFactoredGauge
   using (PrimeFactoredGauge; factorization; torsor; atlas-decomposition)
+open import Substrate.Algebra.GL3F2
 
 private
   variable

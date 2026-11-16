@@ -7,16 +7,25 @@
 ------------------------------------------------------------------------
 
 module Substrate.Algebra.R.Trace.CFBezoutBridge.Properties where
+open import Substrate.Algebra.Z.Add
+open import Substrate.Algebra.Z.Sub
+open import Substrate.Algebra.Z.Mul
 
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Eq using (_≡_; refl; cong; cong₂; sym; trans)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Product using (_,_)
-open import Substrate.Algebra.Z using (ℤ; +_; -ℤ_; 0ℤ; 1ℤ)
-open import Substrate.Algebra.Z.Arithmetic using (_+ℤ_; _-ℤ_; _*ℤ_)
+open import Substrate.Algebra.Z.Int
+open import Substrate.Algebra.Z.Int2
+open import Substrate.Algebra.Z.OneInt
+open import Substrate.Algebra.Z.ZeroInt
+
 open import Substrate.Algebra.Z.Properties.MulFull using (*ℤ-identityˡ; *ℤ-zeroˡ)
 open import Substrate.Algebra.Z.Properties.Add using (+ℤ-identityˡ)
 open import Substrate.Algebra.Z.Properties.Mul using (neg-*-left; *ℤ-comm)
 open import Substrate.Algebra.R.Trace.CFBezoutBridge
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.Foundation.Eq.Trans
 
 bezout-step-is-Minv :
   (q : ℕ) (s' t' : ℤ) →

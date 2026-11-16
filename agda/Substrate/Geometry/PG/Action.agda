@@ -14,10 +14,16 @@
 
 module Substrate.Geometry.PG.Action where
 
-open import Substrate.Foundation.Nat using (suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Product using (_,_)
 
-open import Substrate.Algebra.F2.Linear
+open import Substrate.Algebra.F2.Linear.CompL
+open import Substrate.Algebra.F2.Linear.CompLAssoc
+open import Substrate.Algebra.F2.Linear.CompLIdentityL
+open import Substrate.Algebra.F2.Linear.CompLIdentityR
+open import Substrate.Algebra.F2.Linear.IdL
+open import Substrate.Algebra.F2.Linear.Linear
+open import Substrate.Algebra.F2.Linear.Preserves
 open import Substrate.Geometry.PG.Type using (PG)
 open import Substrate.Geometry.PG.Preserves using (Preserves-Nonzero)
 

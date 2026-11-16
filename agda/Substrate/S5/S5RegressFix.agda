@@ -22,6 +22,14 @@ import Substrate.S5.S5Fixpoint as S5Fixpoint
 open S5Fixpoint using (⊥; Dec; yes; no)
 open import Substrate.Foundation.Negation using (¬_)
 open import Substrate.Foundation.Product  using (_×_; _,_) renaming (proj₁ to fst; proj₂ to snd)
+open import Substrate.Foundation.Negation.Dec
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Negation.Not
+open import Substrate.Foundation.Empty.Bot
 
 module Regress
   (S : Set) (next : S → S) (fix? : (s : S) → Dec (next s ≡ s))

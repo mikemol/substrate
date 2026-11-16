@@ -7,7 +7,7 @@
 --
 -- The pieces line up exactly:
 --   • R = RealTrace is the TERMINAL COALGEBRA of the stream functor ℕ × − (proved
---     in `Final`: Lambek iso + `ana-unique`).
+--     in `Final`: Lambek iso ℕ+ `ana-unique`).
 --   • ℚ carries the EUCLID/GAUSS COALGEBRA `qStep` for the SAME functor: from
 --     (numerator, denominator) peel one EEA step — emit the CF digit ⌊a/b⌋ and
 --     present the remainder as the next num/den. That is ℚ's coalgebra structure.
@@ -26,7 +26,7 @@
 -- FINITE — so once the remainder hits 0 (the gcd / `base`), `qStep` junk-pads
 -- (emits the leftover and holds). Only the PREFIX up to the CF length is the
 -- rational; `convergent` at that depth recovers it exactly, and the padding is the
--- terminated tail (ℚ is really a coalgebra for ℕ × (1 + −); the `1` is the
+-- terminated tail (ℚ is really a coalgebra for ℕ × (1 ℕ+ −); the `1` is the
 -- termination R lacks). The unit (this brick) is proved on the prefix; the counit
 -- R → ℚ → R (the truncation, with residue = the tail beyond depth) and the
 -- triangle identities are the next brick.
@@ -36,22 +36,39 @@
 
 module Substrate.Algebra.R.Trace.RationalAdjunction where
 
-open import Substrate.Foundation.Nat     using (ℕ; zero; suc; _+_; _*_; _<_)
+open import Substrate.Foundation.Nat.Lt
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Times
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
 open import Substrate.Foundation.List    using (List; []; _∷_)
-open import Substrate.Foundation.Eq      using (_≡_; refl; sym; trans; cong; cong₂)
 
-open import Substrate.Foundation.Nat.Properties.Add using (+-comm)
+open import Substrate.Foundation.Nat.Properties.Add.PlusComm
 open import Substrate.Algebra.Nat.DivMod.Reconstruction using (div-mod-eq)
 open import Substrate.Algebra.Nat.GCD.Wedge    using (quotient; remainder; wedge-eq)
 open import Substrate.Algebra.Nat.GCD.EEATrace using (EEATrace; base; step)
 
-open import Substrate.Algebra.Nat.Mod          using (_mod-suc_; mod-suc-bound)
-open import Substrate.Algebra.Nat.DivMod.DivSuc using (_div-suc_)
-open import Substrate.Algebra.Nat.DivMod.Unique using (divmod-unique)
+open import Substrate.Foundation.Nat.Nat.ModSuc
+open import Substrate.Algebra.Nat.Mod.ModSucBound
+open import Substrate.Algebra.Nat.Mod.ModSucId
+open import Substrate.Algebra.Nat.Mod.ModSucPeriodic
+open import Substrate.Algebra.Nat.Mod.ModSucSuc
+open import Substrate.Algebra.Nat.Mod.SucModSucLt
+open import Substrate.Algebra.Nat.Mod.SucModSucSelf
+open import Substrate.Foundation.Nat.Nat.DivSuc
+open import Substrate.Algebra.Nat.DivMod.Unique.DivmodUnique
 open import Substrate.Algebra.R.Trace        using (RealTrace; head; tail; take; convergent; sqrt2)
-open import Substrate.Algebra.R.Trace.Bisim  using (_~_)
-open import Substrate.Algebra.R.Trace.Final  using (Coalg; ana; ana-head; ana-tail; ana-unique)
+open import Substrate.Algebra.R.Trace.Bisim.Op
+open import Substrate.Algebra.R.Trace.Final.Ana
+open import Substrate.Algebra.R.Trace.Final.AnaHead
+open import Substrate.Algebra.R.Trace.Final.AnaTail
+open import Substrate.Algebra.R.Trace.Final.AnaUnique
+open import Substrate.Algebra.R.Trace.Final.Coalg
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
 
 ------------------------------------------------------------------------
 -- ℚ's coalgebra structure: peel one EEA step. State = (numerator, denominator).
@@ -114,7 +131,7 @@ unit-drift : convergent 3 (qToR 3 1) ≡ (4 , 3)
 unit-drift = refl
 
 -- So the unit is exact ONLY at the CF-length depth; the general ∀q unit needs a
--- length function AND is broken by the junk-padded embedding (the `1 + −`
+-- length function AND is broken by the junk-padded embedding (the `1 ℕ+ −`
 -- termination R lacks — the residue we discarded by padding). The substrate-clean
 -- general unit lives over EEATrace, which HAS `base` (it does not pad); that bridge
 -- is the honest general theorem, NOT a coinductive freebie. (This is why the
@@ -133,24 +150,24 @@ morph-tail = ana-tail qStep
 
 ------------------------------------------------------------------------
 -- THE RIGHT WAY (user): don't fold globally with `convergent n` (it runs past the
--- CF length into the padding and drifts). Invert ONE `qStep` LOCALLY via the Wedge
--- a = q·b + r (`div-mod-eq`), and recurse. `reconStep` is that local inverse: from
--- the emitted digit q and the next state (b, r), rebuild (q·b + r, b) = the state.
+-- CF length into the padding and drifts). Invert ONE `qStep` LOCALLY via the Wedge-GCD
+-- a = q·b ℕ+ r (`div-mod-eq`), and recurse. `reconStep` is that local inverse: from
+-- the emitted digit q and the next state (b, r), rebuild (q·b ℕ+ r, b) = the state.
 ------------------------------------------------------------------------
 
 reconStep : ℕ → ℕ × ℕ → ℕ × ℕ
-reconStep q (b , r) = q * b + r , b
+reconStep q (b , r) = q * b ℕ+ r , b
 
 -- The LOCAL unit, GENERAL (∀ a b, not one case): reconStep inverts qStep exactly,
 -- by the division equation. No convergent, no padding, no drift. This is the body
 -- the full unit recurses — bottoming out at `base` (remainder 0), so it never
 -- reaches the padding that drifted the global form ([[feedback_never_discard_residue]]:
--- the residue r is exactly what `reconStep` keeps, the Wedge a = q·b + r).
+-- the residue r is exactly what `reconStep` keeps, the Wedge-GCD a = q·b ℕ+ r).
 qStep-recon : (a b : ℕ)
             → reconStep (proj₁ (qStep (a , suc b))) (proj₂ (qStep (a , suc b))) ≡ (a , suc b)
 qStep-recon a b =
   cong₂ _,_
-    (trans (+-comm ((a div-suc b) * suc b) (a mod-suc b)) (sym (div-mod-eq a b)))
+    (trans (+ℕ-comm ((a div-suc b) * suc b) (a mod-suc b)) (sym (div-mod-eq a b)))
     refl
 
 ------------------------------------------------------------------------
@@ -158,7 +175,7 @@ qStep-recon a b =
 -- on Wedge-valid states `r < b`: otherwise qStep renormalizes (the quotient
 -- absorbs the overflow), so reconStep is a section only on the r<b domain. So one
 -- Euclid step is an ISOMORPHISM exactly on `r < b` — which is precisely the
--- Wedge's `r<b` field. The Wedge IS that constrained step-iso. (Via divmod-unique:
+-- Wedge's `r<b` field. The Wedge-GCD IS that constrained step-iso. (Via divmod-unique:
 -- q·b+r determines (q,r) uniquely when r<b.)
 ------------------------------------------------------------------------
 
@@ -168,9 +185,9 @@ qStep∘reconStep q b r r<b =
   cong₂ _,_ (proj₁ du) (cong (suc b ,_) (proj₂ du))
   where
     n : ℕ
-    n = q * suc b + r
-    e : (n div-suc b) * suc b + (n mod-suc b) ≡ q * suc b + r
-    e = trans (+-comm ((n div-suc b) * suc b) (n mod-suc b)) (sym (div-mod-eq n b))
+    n = q * suc b ℕ+ r
+    e : (n div-suc b) * suc b ℕ+ (n mod-suc b) ≡ q * suc b ℕ+ r
+    e = trans (+ℕ-comm ((n div-suc b) * suc b) (n mod-suc b)) (sym (div-mod-eq n b))
     du : ((n div-suc b) ≡ q) × ((n mod-suc b) ≡ r)
     du = divmod-unique (n div-suc b) q (n mod-suc b) r b (mod-suc-bound n b) r<b e
 
@@ -178,10 +195,10 @@ qStep∘reconStep q b r r<b =
 -- THE FULL UNIT, ∀, by recursing the local step to `base` over the FINITE trace.
 -- `EEATrace a b g` is the terminating Euclid trace (it HAS `base`, so the recursion
 -- bottoms out — no padding, no drift). `reconstruct` folds it with `reconStep`,
--- using the digit (Wedge quotient) at each `step`; `eea-unit` proves it rebuilds
+-- using the digit (Wedge-GCD quotient) at each `step`; `eea-unit` proves it rebuilds
 -- exactly the (a, b) the trace started from — the division equation `wedge-eq` at
 -- every step. This is the general unit the global `convergent` could not give: the
--- "recurse" the user asked for, over the `1 + −` structure where it is faithful.
+-- "recurse" the user asked for, over the `1 ℕ+ −` structure where it is faithful.
 ------------------------------------------------------------------------
 
 reconstruct : {a b g : ℕ} → EEATrace a b g → ℕ × ℕ

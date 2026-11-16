@@ -31,7 +31,7 @@
 module Substrate.Category.S1-Lift where
 
 open import Substrate.Foundation.Level using (Level) renaming (suc to lsuc)
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 
 private
   variable

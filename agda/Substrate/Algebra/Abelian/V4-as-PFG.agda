@@ -21,10 +21,9 @@
 -- trivial: Groups.V4.Operations supplies _·_, ε, and inv=id/self-inverse).
 ------------------------------------------------------------------------
 
-open import Substrate.Foundation.Nat using (ℕ; suc; zero)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Product using (Σ; _,_)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
 open import Substrate.Category.GTorsor using (GTorsor; mkGTorsor)
 open import Substrate.Category.SylowDecomposition
   using (SylowDecomposition; mkSylowDecomposition; InGenerated)
@@ -32,6 +31,10 @@ open import Substrate.Category.PrimeFactoredGauge
   using (PrimeFactoredGauge; mkPFG)
 open import Substrate.Category.AbelianPFG
   using (AbelianPFG; mkAbelianPFG)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 module Substrate.Algebra.Abelian.V4-as-PFG
   -- the V₄ carrier and group data (Groups.V4.Operations supplies these)

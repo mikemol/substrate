@@ -24,14 +24,24 @@
 
 module Substrate.Logic.Evidence.Verdict.Properties where
 
-open import Substrate.Foundation.Bool using (true; false)
-open import Substrate.Foundation.Bool.Properties
-  using (∧-comm; ∨-comm; ∧-assoc; ∨-assoc; ∧-idem; ∨-idem; ∧-identityʳ; ∨-identityʳ)
-open import Substrate.Foundation.Eq
-  using (_≡_; _≢_; refl; sym; trans; cong; cong₂)
+open import Substrate.Foundation.Bool.Bool
+open import Substrate.Foundation.Bool.Properties.AndAssoc
+open import Substrate.Foundation.Bool.Properties.AndComm
+open import Substrate.Foundation.Bool.Properties.AndIdem
+open import Substrate.Foundation.Bool.Properties.AndIdentityR
+open import Substrate.Foundation.Bool.Properties.OrAssoc
+open import Substrate.Foundation.Bool.Properties.OrComm
+open import Substrate.Foundation.Bool.Properties.OrIdem
+open import Substrate.Foundation.Bool.Properties.OrIdentityR
 open import Substrate.Category.CommutativeMonoid using (CommutativeMonoid)
 
 open import Substrate.Logic.Evidence.Verdict
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Neq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
 
 ------------------------------------------------------------------------
 -- S5: both swaps are involutions.

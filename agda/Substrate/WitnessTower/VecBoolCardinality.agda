@@ -14,7 +14,7 @@
 --
 -- The count is the length of the full enumeration allVB n (every Bool-vector of
 -- length n). allVB (suc n) = (false ∷ each) ++ (true ∷ each), so the length
--- doubles: 2ⁿ + 2ⁿ = 2 · 2ⁿ = 2^(suc n). Pure induction, refl base.
+-- doubles: 2ⁿ ℕ+ 2ⁿ = 2 · 2ⁿ = 2^(suc n). Pure induction, refl base.
 --
 -- --safe --without-K. Verified on Agda 2.8.0.
 ------------------------------------------------------------------------
@@ -23,13 +23,20 @@
 
 module Substrate.WitnessTower.VecBoolCardinality where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _^_; _+_; _*_)
-open import Substrate.Foundation.Bool using (Bool; true; false)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Pow
+open import Substrate.Foundation.Nat.Times
+open import Substrate.Foundation.Bool.Bool
 open import Substrate.Foundation.Vec using (Vec; []; _∷_)
 open import Substrate.Foundation.List using (List; []; _∷_; _++_)
 open import Substrate.WitnessTower.Enumerate using (lengthL; mapL)
-open import Substrate.Foundation.Eq using (_≡_; refl; cong; cong₂; trans; sym)
 open import Substrate.Foundation.Nat.Properties.Mul using (*-identityˡ)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Sym
 
 ------------------------------------------------------------------------
 -- 1. The enumeration of all Bool-vectors of length n.
@@ -49,26 +56,26 @@ length-map f []       = refl
 length-map f (x ∷ xs) = cong suc (length-map f xs)
 
 length-++ : {A : Set} (xs ys : List A) →
-            lengthL (xs ++ ys) ≡ lengthL xs + lengthL ys
+            lengthL (xs ++ ys) ≡ lengthL xs ℕ+ lengthL ys
 length-++ []       ys = refl
 length-++ (x ∷ xs) ys = cong suc (length-++ xs ys)
 
 ------------------------------------------------------------------------
 -- 3. THE CARDINALITY: |Vec Bool n| = 2ⁿ. The enumeration has length 2ⁿ.
---    Step: length (allVB (suc n)) = 2ⁿ + 2ⁿ, and 2^(suc n) = 2 · 2ⁿ = 2ⁿ + 2ⁿ
---    (definitionally, since 2 * x = x + (1 * x) = x + (x + 0) = x + x).
+--    Step: length (allVB (suc n)) = 2ⁿ ℕ+ 2ⁿ, and 2^(suc n) = 2 · 2ⁿ = 2ⁿ ℕ+ 2ⁿ
+--    (definitionally, since 2 * x = x ℕ+ (1 * x) = x ℕ+ (x ℕ+ 0) = x ℕ+ x).
 ------------------------------------------------------------------------
 
--- 2ⁿ + 2ⁿ ≡ 2^(suc n). Since 2^(suc n) = 2 * 2ⁿ = 2ⁿ + (1 * 2ⁿ), close the
+-- 2ⁿ ℕ+ 2ⁿ ≡ 2^(suc n). Since 2^(suc n) = 2 * 2ⁿ = 2ⁿ ℕ+ (1 * 2ⁿ), close the
 -- residual 1 * 2ⁿ ≡ 2ⁿ with *-identityˡ.
-double-pow : (n : ℕ) → (2 ^ n) + (2 ^ n) ≡ 2 ^ suc n
-double-pow n = cong ((2 ^ n) +_) (sym (*-identityˡ (2 ^ n)))
+double-pow : (n : ℕ) → (2 ^ n) ℕ+ (2 ^ n) ≡ 2 ^ suc n
+double-pow n = cong ((2 ^ n) ℕ+_) (sym (*-identityˡ (2 ^ n)))
 
 card-VecBool : (n : ℕ) → lengthL (allVB n) ≡ 2 ^ n
 card-VecBool zero    = refl
 card-VecBool (suc n) =
   trans (length-++ (mapL (false ∷_) (allVB n)) (mapL (true ∷_) (allVB n)))
-        (trans (cong₂ _+_
+        (trans (cong₂ _ℕ+_
                  (trans (length-map (false ∷_) (allVB n)) (card-VecBool n))
                  (trans (length-map (true ∷_)  (allVB n)) (card-VecBool n)))
                (double-pow n))
@@ -98,11 +105,11 @@ card-reserved-core = card-VecBool 3
 --    5-tuple, Codeword.Type); this bijection lets |Codeword| = |Vec Bool 5| =
 --    32 (card-5) transport, and is the carrier the Reserved count rides on.
 --
---    HONEST SCOPE (◆AI-D4): this bridge + card-5 give |Codeword| = 32 as a
+--    HONEST SCOPE (◆AI-D4): this bridge ℕ+ card-5 give |Codeword| = 32 as a
 --    TERM. The full |Reserved| ≡ 8 additionally needs a filter-count (length
 --    of the isReserved-sublist of the enumeration) — a genuine build, NOT a
 --    pointer-tighten. That remainder is ◆AI-1b'' below; here the counting core
---    (card-reserved-core : |Vec Bool 3| = 8) + this bridge + card-5 are the
+--    (card-reserved-core : |Vec Bool 3| = 8) ℕ+ this bridge ℕ+ card-5 are the
 --    pieces it composes.
 ------------------------------------------------------------------------
 

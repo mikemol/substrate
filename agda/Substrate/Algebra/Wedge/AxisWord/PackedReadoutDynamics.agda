@@ -13,14 +13,15 @@
 
 module Substrate.Algebra.Wedge.AxisWord.PackedReadoutDynamics where
 
-open import Substrate.Foundation.Eq using (_≡_)
-open import Substrate.Foundation.Negation using (¬_; Dec)
+open import Substrate.Foundation.Negation.Dec
+open import Substrate.Foundation.Negation.Not
 open import Substrate.Foundation.Product using (Σ; _,_; _×_)
 open import Substrate.Foundation.List using (List; [])
 open import Substrate.Algebra.Wedge.AxisWord.PackedTree using (module PackedTree)
 open import Substrate.Algebra.Wedge.AxisWord.PackedRecall using (module PackedRecall)
 open import Substrate.Algebra.Wedge.AxisWord.PackedBulk using (module PackedBulk)
 open import Substrate.Algebra.Wedge.AxisWord.PackedReadout using (module PackedReadout)
+open import Substrate.Foundation.Eq
 
 module PackedReadoutDynamics {A : Set} (_≟A_ : (a b : A) → Dec (a ≡ b)) where
 

@@ -12,7 +12,7 @@
 
 module Substrate.Category.DiscreteFourierTransform.Category where
 
-open import Substrate.Foundation.Nat.Properties.Add using (+-assoc)
+open import Substrate.Foundation.Nat.Properties.Add.PlusAssoc
 open import Substrate.WitnessTower.Wedge.OrientationBimonoidal using (GradedAssocOver)
 open import Substrate.WitnessTower.Wedge.OrientationBimonoidal.Properties using (⊕-assoc-over)
 
@@ -20,5 +20,5 @@ open import Substrate.Category.DiscreteFourierTransform.Term using (dft-product)
 
 -- Associativity of composition = the tower's GradedAssocOver on the graded
 -- product. Unit laws are OrientationSum.⊕-unit-left / OrientationSumLaws.⊕-unit-right.
-dft-assoc : GradedAssocOver +-assoc dft-product
+dft-assoc : GradedAssocOver +ℕ-assoc dft-product
 dft-assoc = ⊕-assoc-over

@@ -12,6 +12,8 @@ module Substrate.Groups.Z4-Coxeter-Group where
 import Substrate.Groups.Z4-Coxeter as Z₄
 import Substrate.Groups.Capabilities.CoxeterGroup.Witness as CoxeterGroupW
 open Z₄ public using (Gen; a; c-pos)
+open import Substrate.Groups.Coxeter.Cyclic.Base.Gen
+open import Substrate.Groups.Coxeter.Cyclic.Existential
 cap-Z₄ = CoxeterGroupW.cap 3
 
 

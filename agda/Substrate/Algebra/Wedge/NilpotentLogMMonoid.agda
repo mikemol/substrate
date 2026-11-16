@@ -20,13 +20,23 @@
 
 module Substrate.Algebra.Wedge.NilpotentLogMMonoid where
 
-open import Substrate.Foundation.Eq  using (_≡_; refl; sym; trans; cong; subst)
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _<_; _<?_)
-open import Substrate.Foundation.Nat.Properties.Add using (+-comm; +-assoc; +-identityʳ)
+open import Substrate.Foundation.Nat.Lt
+open import Substrate.Foundation.Nat.Lt2
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Properties.Add.PlusAssoc
+open import Substrate.Foundation.Nat.Properties.Add.PlusComm
+open import Substrate.Foundation.Nat.Properties.Add.PlusIdentityR
 open import Substrate.Foundation.Maybe using (Maybe; just; nothing)
-open import Substrate.Foundation.Negation using (Dec; yes; no; ¬_)
-open import Substrate.Foundation.Empty using (⊥-elim)
+open import Substrate.Foundation.Negation.Dec
+open import Substrate.Foundation.Negation.Not
+open import Substrate.Foundation.Empty.BotElim
 open import Substrate.Algebra.Wedge.NilpotentFaithfulLogChart using (d; LogM; mulM)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Subst
 
 ------------------------------------------------------------------------
 -- ① ABSORPTION (nothing is the zero): both sides, by refl / case on the arg.
@@ -46,7 +56,7 @@ mulM-comm : (x y : LogM) → mulM x y ≡ mulM y x
 mulM-comm nothing  nothing  = refl
 mulM-comm nothing  (just _) = refl
 mulM-comm (just _) nothing  = refl
-mulM-comm (just i) (just j) with (i + j) <? suc d | (j + i) <? suc d | +-comm i j
+mulM-comm (just i) (just j) with (i ℕ+ j) <? suc d | (j ℕ+ i) <? suc d | +ℕ-comm i j
 ... | yes _  | yes _  | e = cong just e
 ... | no  _  | no  _  | _ = refl
 ... | yes p  | no ¬p  | e = ⊥-elim (¬p (subst (_< suc d) e p))
@@ -57,9 +67,9 @@ mulM-comm (just i) (just j) with (i + j) <? suc d | (j + i) <? suc d | +-comm i 
 -- j is a genuine live log (j < suc d). (On junk j ≥ suc d it FAILS — the residue.)
 ------------------------------------------------------------------------
 mulM-identityˡ-canonical : (j : ℕ) → j < suc d → mulM (just 0) (just j) ≡ just j
-mulM-identityˡ-canonical j lt with (0 + j) <? suc d
+mulM-identityˡ-canonical j lt with (0 ℕ+ j) <? suc d
 ... | yes _  = refl
-... | no ¬p  = ⊥-elim (¬p lt)          -- 0 + j = j < suc d, so this branch is impossible
+... | no ¬p  = ⊥-elim (¬p lt)          -- 0 ℕ+ j = j < suc d, so this branch is impossible
 
 -- and just 0 is a right identity for nothing (absorbing) and canonical just j.
 mulM-identityʳ-nothing : mulM nothing (just 0) ≡ nothing
@@ -72,9 +82,9 @@ mulM-identityʳ-nothing = refl
 -- Maybe (Fin (suc d)) — the junk just (≥ suc d) is not a Fin, so it can't arise.
 ------------------------------------------------------------------------
 identity-fails-on-junk : mulM (just 0) (just (suc d)) ≡ nothing
-identity-fails-on-junk with (0 + suc d) <? suc d
-... | yes p  = n≮n p                    -- 0 + suc d = suc d, suc d < suc d absurd
-  where open import Substrate.Foundation.Empty using (⊥)
+identity-fails-on-junk with (0 ℕ+ suc d) <? suc d
+... | yes p  = n≮n p                    -- 0 ℕ+ suc d = suc d, suc d < suc d absurd
+  where open import Substrate.Foundation.Empty.Bot
         n≮n : ∀ {n} {B : Set} → n < n → B
         n≮n {suc n} (Substrate.Foundation.Nat.s≤s q) = n≮n q
 ... | no  _  = refl

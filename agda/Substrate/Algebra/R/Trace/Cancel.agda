@@ -31,12 +31,14 @@
 
 module Substrate.Algebra.R.Trace.Cancel where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _∸_)
-open import Substrate.Foundation.Eq  using (_≡_; refl)
+open import Substrate.Foundation.Nat.Monus
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
 
 open import Substrate.Algebra.R.Trace       using (RealTrace; head; tail)
-open import Substrate.Algebra.R.Trace.Bisim using (_~_; head~; tail~)
+open import Substrate.Algebra.R.Trace.Bisim.Op
 open import Substrate.Algebra.R.Trace.StreamMap using (mapT)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- Two reversible INFINITE generators: add / subtract k at every digit.
@@ -45,16 +47,16 @@ open import Substrate.Algebra.R.Trace.StreamMap using (mapT)
 ------------------------------------------------------------------------
 
 bump : ℕ → RealTrace → RealTrace
-bump k = mapT (k +_)
+bump k = mapT (k ℕ+_)
 
 unbump : ℕ → RealTrace → RealTrace
 unbump k = mapT (_∸ k)
 
 ------------------------------------------------------------------------
--- The per-step inverse: (k + n) ∸ k = n.
+-- The per-step inverse: (k ℕ+ n) ∸ k = n.
 ------------------------------------------------------------------------
 
-+∸-cancel : (k n : ℕ) → (k + n) ∸ k ≡ n
++∸-cancel : (k n : ℕ) → (k ℕ+ n) ∸ k ≡ n
 +∸-cancel zero    n = refl
 +∸-cancel (suc k) n = +∸-cancel k n
 

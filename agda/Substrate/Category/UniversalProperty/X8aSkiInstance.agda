@@ -19,11 +19,11 @@
 module Substrate.Category.UniversalProperty.X8aSkiInstance where
 import Substrate.Foundation.RewriteConfluence
 
-open import Substrate.Foundation.Eq using (_≡_)
 open import Substrate.Foundation.Product using (Σ; _,_; _×_)
 open import Substrate.Category.UniversalProperty.ConfluenceUnique using (module CRUnique)
 open import Substrate.FUSep.FUSepQReduce
-  using (Reduce; _↦_; SN; sn-confluent) renaming (Tm to Tm⟦533ef80d⟧)  -- the SKI shedding system (⇒ is an explicit arg)
+  using (Reduce; _↦_; SN; sn-confluent) renaming (Tm-QReduce to Tm⟦533ef80d⟧)  -- the SKI shedding system (⇒ is an explicit arg)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- ① Enter FUSep's SKI shedding system at a classifier ⇒ (the wedge tags each term stop/shed),
@@ -49,7 +49,8 @@ module SkiNfUnique
   (wcr : let open Substrate.Foundation.RewriteConfluence (_↦_ ⇒) in {a b c : Tm⟦533ef80d⟧} → (_↦_ ⇒) a b → (_↦_ ⇒) a c → Converge b c)
   where
   open import Substrate.Foundation.RewriteConfluence (_↦_ ⇒) using (_⇒*_; Converge)
-  open import Substrate.Foundation.Eq using (sym; trans)
+  open import Substrate.Foundation.Eq.Sym
+  open import Substrate.Foundation.Eq.Trans
 
   -- a term is NORMAL when every reduction from it is trivial (returns it): b ⇒* d ⟹ d ≡ b.
   Normal : Tm⟦533ef80d⟧ → Set

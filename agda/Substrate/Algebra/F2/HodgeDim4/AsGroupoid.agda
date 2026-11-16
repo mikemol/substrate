@@ -10,7 +10,8 @@
 
 open import Substrate.Foundation.Level using (Level)
 
-open import Substrate.Category.CategoryOf using (CategoryOf)
+open import Substrate.Category.CategoryOf.CategoryOf
+open import Substrate.Probability.MarkovCategory
 
 module Substrate.Algebra.F2.HodgeDim4.AsGroupoid
   {ℓO ℓM : Level}

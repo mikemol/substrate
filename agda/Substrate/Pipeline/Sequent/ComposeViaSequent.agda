@@ -15,10 +15,10 @@ open import Substrate.Pipeline.Brick.Record using (Brick)
 open import Substrate.Pipeline.Brick.Type using (BrickType)
 
 open import Substrate.Foundation.Product using (_,_)
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Pipeline.Brick
 open import Substrate.Pipeline.Sequent.SequentType using (SequentType)
 open import Substrate.Pipeline.Sequent.Type using (Sequent)
+open import Substrate.Foundation.Eq
 
 -- ⟡set1-rp: telescope carriers for Brick (auto).
 private variable

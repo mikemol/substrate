@@ -15,7 +15,7 @@
 --     its `step-bezout` proof opens with `aeq = cong +_ (wedge-eq w)` — the SAME
 --     division equation, read over ℤ.
 --
--- CLAIM. At every `step b w rest` both folds consume the same Wedge field
+-- CLAIM. At every `step b w rest` both folds consume the same Wedge-GCD field
 -- `quotient w` as their transition digit (reconStep's q; step-bezout's q), and
 -- both are governed by the same `wedge-eq`. So the EEATrace is a fold target for
 -- ℕ×ℕ reconstruction AND for the Bézout witness; both are applications of the
@@ -31,10 +31,9 @@
 
 module Substrate.WitnessTower.EEAUnitBezout where
 
-open import Substrate.Foundation.Nat using (ℕ; suc)
-open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Product using (_×_; _,_)
-open import Substrate.Algebra.Nat.GCD.Wedge using (remainder) renaming (Wedge to Wedge⟦b7e6a995⟧; quotient to quotient⟦b7e6a995⟧)
+open import Substrate.Algebra.Nat.GCD.Wedge using (remainder) renaming (Wedge-GCD to Wedge-GCD; quotient to quotient)
 open import Substrate.Algebra.Nat.GCD.EEATrace using (EEATrace; base; step)
 open import Substrate.Algebra.Nat.GCD.GcdN using (gcd-ℕ)
 open import Substrate.Algebra.Nat.GCD.GcdTrace using (gcd-trace)
@@ -46,28 +45,30 @@ open import Substrate.Algebra.R.Trace.RationalAdjunction
 -- node (2): the Bézout witness and its fold.
 open import Substrate.Algebra.Z.Bezout
   using (BezoutℤWitness; bezout-ℤ; step-bezout)
+open import Substrate.Foundation.Eq
+open import Substrate.Algebra.Nat.GCD.Wedge
 
 ------------------------------------------------------------------------
 -- 1. THE SHARED STEP DIGIT. At a `step b w rest`, `reconstruct` applies
---    `reconStep` with the digit `quotient w` — the SAME Wedge field that
+--    `reconStep` with the digit `quotient w` — the SAME Wedge-GCD field that
 --    `step-bezout` names `q`. This is definitional (the fold body), so refl:
 --    both folds read their transition digit from the one Wedge.
 ------------------------------------------------------------------------
 
 reconstruct-step-digit :
-  {a g : ℕ} (b : ℕ) (w : Wedge⟦b7e6a995⟧ a (suc b)) (rest : EEATrace (suc b) (remainder w) g) →
-  reconstruct (step b w rest) ≡ reconStep (quotient⟦b7e6a995⟧ w) (reconstruct rest)
+  {a g : ℕ} (b : ℕ) (w : Wedge-GCD a (suc b)) (rest : EEATrace (suc b) (remainder w) g) →
+  reconstruct (step b w rest) ≡ reconStep (quotient w) (reconstruct rest)
 reconstruct-step-digit b w rest = refl
 
 ------------------------------------------------------------------------
 -- 2. THE SAME TRANSITION LAW. `step-bezout` transforms the recursive Bézout
---    witness through the SAME Wedge — its `q` is `quotient w` as well. Pinning
+--    witness through the SAME Wedge-GCD — its `q` is `quotient w` as well. Pinning
 --    the type makes the shared (b , w) interface explicit: both step functions
 --    take a `Wedge a (suc b)` and read `quotient w` off it.
 ------------------------------------------------------------------------
 
 bezout-step-shape :
-  {a g : ℕ} (b : ℕ) (w : Wedge⟦b7e6a995⟧ a (suc b)) →
+  {a g : ℕ} (b : ℕ) (w : Wedge-GCD a (suc b)) →
   BezoutℤWitness (suc b) (remainder w) g → BezoutℤWitness a (suc b) g
 bezout-step-shape = step-bezout
 

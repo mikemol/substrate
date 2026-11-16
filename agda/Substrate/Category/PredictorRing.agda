@@ -35,16 +35,16 @@
 
 module Substrate.Category.PredictorRing where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Product using (Σ-syntax; _,_; proj₂)
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Groups.Coxeter.Word
   using (Word; []; _∷_; _++_; ++-identity-left; ++-identity-right)
 open import Substrate.Category.FreeUniversalProperty.FreeMonoid
   using (MonoidOn; foldW; word-monoid)
 open import Substrate.Algebra.Semiring.NatInf
   using (ℕ∞; fin; ∞; _⊓_; ⊓-assoc; ⊓-identityˡ; ⊓-identityʳ)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- Abstract predictor structure.

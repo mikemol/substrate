@@ -11,10 +11,8 @@
 
 module Substrate.Cocycles.V4Signature.Codeword.ReservedToBivectorAffine.ShiftHom where
 
-open import Substrate.Foundation.Bool using (false; true)
+open import Substrate.Foundation.Bool.Bool
 open import Substrate.Foundation.Product using (_,_)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; trans; cong; cong-trans; sym-trans)
 open import Substrate.Algebra.F2.Vector
   using (_+ⱽ_; +ⱽ-identityˡ; +ⱽ-identityʳ; +ⱽ-assoc; +ⱽ-comm; +ⱽ-self-inverse)
 open import Substrate.Algebra.F2.HodgeDim4.SelfDual using (sd-pair-01-23; sd-pair-02-13)
@@ -22,6 +20,12 @@ open import Substrate.Cocycles.V4Signature.Codeword.ReservedToBivectorAffine.V4
   using (V₄; _+V₄_)
 open import Substrate.Cocycles.V4Signature.Codeword.ReservedToBivectorAffine.Shift
   using (shift)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.CongTrans
+open import Substrate.Foundation.Eq.SymTrans
 
 shift-hom : (v w : V₄) → shift (v +V₄ w) ≡ shift v +ⱽ shift w
 shift-hom (false , false) w = sym (+ⱽ-identityˡ (shift w))

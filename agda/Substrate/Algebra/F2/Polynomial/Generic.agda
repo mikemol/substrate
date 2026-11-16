@@ -20,14 +20,17 @@
 
 module Substrate.Algebra.F2.Polynomial.Generic where
 
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Nat.Properties.Add using () renaming (+-comm to +ℕ-comm; +-assoc to +ℕ-assoc)
-open import Substrate.Foundation.Eq using (_≡_; subst)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Properties.Add.PlusAssoc
+open import Substrate.Foundation.Nat.Properties.Add.PlusComm
+  renaming (+-comm to +ℕ-comm)
 open import Substrate.Algebra.F2.CommRing using (F₂-CommRing)
 import Substrate.Algebra.Polynomial.Graded.FromCommRing as F
 
 -- Poly n = Vec F₂ n ; _*P_, the ring laws (*P-comm, *P-assoc, …) all at A = F₂.
 open F.Over F₂-CommRing public
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Subst
 
 -- the full graded ring laws land at A=F₂ (witnesses, parallel to GF256/Poly):
 _ : (p q : Poly 3) (k : ℕ) → nth (p *P q) k ≡ convCoeff p q k

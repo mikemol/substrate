@@ -11,17 +11,25 @@
 module Substrate.Algebra.F2.Linear.FromImages.Permutation.IterateLift where
 
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Eq using (_≡_; refl; trans; cong)
+open import Substrate.Foundation.Nat.Nat
 
 open import Substrate.Algebra.F2.Vector
-open import Substrate.Algebra.F2.Linear
+open import Substrate.Algebra.F2.Linear.CompL
+open import Substrate.Algebra.F2.Linear.CompLAssoc
+open import Substrate.Algebra.F2.Linear.CompLIdentityL
+open import Substrate.Algebra.F2.Linear.CompLIdentityR
+open import Substrate.Algebra.F2.Linear.IdL
+open import Substrate.Algebra.F2.Linear.Linear
+open import Substrate.Algebra.F2.Linear.Preserves
 open import Substrate.Category.Coalgebra.FiniteOrder using (iterate)
 
 open import Substrate.Foundation.Fin.Iterate
   using (σ-iterate; HasOrderPerm)
 open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Linear
   using (basis-permutation-Linear; apply-basis-permutation-Linear)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- iterate-on-basis:

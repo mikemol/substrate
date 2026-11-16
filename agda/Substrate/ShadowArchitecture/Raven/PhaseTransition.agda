@@ -30,7 +30,18 @@ open import Substrate.ShadowArchitecture.Raven.PhaseTransition.PriorAñelé
 open import Substrate.ShadowArchitecture.Raven.PhaseTransition.HistoryPhaseAt
 open import Substrate.ShadowArchitecture.Raven.PhaseTransition.StanzaIndices
 open import Substrate.ShadowArchitecture.Raven.PhaseTransition.PerStanzaPhase
-open import Substrate.ShadowArchitecture.Raven.PhaseTransition.OpenOnPreVIII
-open import Substrate.ShadowArchitecture.Raven.PhaseTransition.NotOpenFromVIII
+-- ⚑ THREE OF THESE CHILDREN WERE THEMSELVES SPLIT, and this aggregator was never
+-- updated — `OpenOnPreVIII`, `NotOpenFromVIII` and `Monotone` are now DIRECTORIES
+-- of leaves with no module of their own, so all three imports were [FileNotFound].
+-- `rewire_to_leaves` declined: the sole importer of each is THIS file, its own
+-- would-be parent, which the tool's self-import exclusion correctly refuses to
+-- touch. Listing the grandchildren directly is the aggregator's job — it holds no
+-- content of its own, so nothing is lost by naming them one level deeper.
+open import Substrate.ShadowArchitecture.Raven.PhaseTransition.OpenOnPreVIII.Inject7To18
+open import Substrate.ShadowArchitecture.Raven.PhaseTransition.OpenOnPreVIII.OpenOnPreVIII
+open import Substrate.ShadowArchitecture.Raven.PhaseTransition.NotOpenFromVIII.Lift11To18
+open import Substrate.ShadowArchitecture.Raven.PhaseTransition.NotOpenFromVIII.NotOpenFromVIII
 open import Substrate.ShadowArchitecture.Raven.PhaseTransition.FirstLockupAtVIII
-open import Substrate.ShadowArchitecture.Raven.PhaseTransition.Monotone
+open import Substrate.ShadowArchitecture.Raven.PhaseTransition.Monotone.OrMonotoneRight
+open import Substrate.ShadowArchitecture.Raven.PhaseTransition.Monotone.PriorAelMonotone
+open import Substrate.ShadowArchitecture.Raven.PhaseTransition.Monotone.SeenMonotoneRaven

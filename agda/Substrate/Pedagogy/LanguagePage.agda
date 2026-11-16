@@ -22,10 +22,10 @@ open import Substrate.Groups.Coxeter.Word using (Word; []; _∷_)
 
 open import Substrate.Category.FreeOverBasis
   using (name)
-open import Substrate.Linguistic.Roster
-  using (Lang; witness-of; lojban; tokipona; solresol; kelen; lambda-lang; lie-lang)
-open import Substrate.Linguistic.RosettaTable
-  using (RosettaEntry; pair-entry)
+open import Substrate.Linguistic.Roster.Lang
+open import Substrate.Linguistic.Roster.WitnessOf
+open import Substrate.Linguistic.RosettaTable.PairEntry
+open import Substrate.Linguistic.RosettaTable.RosettaEntry
 
 open import Substrate.Pedagogy.MarkdownToken
   using (TextSymbol; txt-language-page)

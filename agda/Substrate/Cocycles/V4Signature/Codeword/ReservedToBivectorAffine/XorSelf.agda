@@ -10,8 +10,9 @@
 
 module Substrate.Cocycles.V4Signature.Codeword.ReservedToBivectorAffine.XorSelf where
 
-open import Substrate.Foundation.Bool using (Bool; true; false; _xor_)
-open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Bool.Bool
+open import Substrate.Foundation.Bool.Xor
+open import Substrate.Foundation.Eq
 
 xor-self : (a : Bool) → (a xor a) ≡ false
 xor-self false = refl

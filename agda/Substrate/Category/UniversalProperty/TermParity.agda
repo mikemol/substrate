@@ -22,11 +22,15 @@
 
 module Substrate.Category.UniversalProperty.TermParity where
 
-open import Substrate.Foundation.Bool using (Bool; true; false; not; _xor_)
-open import Substrate.Foundation.Eq   using (_≡_; refl; cong; trans)
+open import Substrate.Foundation.Bool.Bool
+open import Substrate.Foundation.Bool.Not
+open import Substrate.Foundation.Bool.Xor
 
 -- ⟡ta-upterm: the parity cochain flipped onto the Set₀ O-forms (UPTerm).
 open import Substrate.Category.UniversalProperty.Term using (UPTerm; []; _∷_; _++ᵤ_)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Trans
 
 not-xorˡ : (a b : Bool) → not (a xor b) ≡ (not a) xor b
 not-xorˡ true  true  = refl

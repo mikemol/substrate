@@ -3,13 +3,17 @@
 -- so each module's elaboration peak stays under the 128MB cap. Re-exported by
 -- `Substrate.Algebra.Polynomial.Graded` — the public API is unchanged.
 module Substrate.Algebra.Polynomial.Graded.Laws.Scalar where
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _≟_) renaming (_+_ to _ℕ+_)
-open import Substrate.Foundation.Nat.Properties.Add using () renaming (+-comm to +ℕ-comm; +-assoc to +ℕ-assoc)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Properties.Add.PlusAssoc
+open import Substrate.Foundation.Nat.Properties.Add.PlusComm
+open import Substrate.Foundation.Nat.Properties.Add.PlusIdentityL
+open import Substrate.Foundation.Nat.Properties.Add.PlusIdentityR
+open import Substrate.Foundation.Nat.Properties.Add.PlusSuc
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; replicate)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂; subst)
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Negation using (¬_; yes; no)
-open import Substrate.Foundation.Empty using (⊥-elim)
+open import Substrate.Foundation.Negation.Dec
+open import Substrate.Foundation.Negation.Not
+open import Substrate.Foundation.Empty.BotElim
 open import Substrate.Algebra.Module.Free.Basis using (basis-vec)
 open import Substrate.Algebra.Medial using (medial)
 import Substrate.Algebra.Polynomial.Graded.Base as Base
@@ -17,6 +21,12 @@ import Substrate.Algebra.Polynomial.Graded.Defs as A0
 import Substrate.Algebra.Polynomial.Graded.Laws.Nth as A1
 import Substrate.Algebra.Polynomial.Graded.Laws.Conv as A2
 import Substrate.Algebra.Polynomial.Graded.Laws.Distrib as A3
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.Foundation.Eq.Subst
 module Over {A : Set}
   (_+_ : A → A → A) (_*_ : A → A → A) (𝟘 𝟙 : A)
   (+-assoc     : (a b c : A) → (a + b) + c ≡ a + (b + c))
@@ -36,11 +46,25 @@ module Over {A : Set}
   -- 145KB, ~10KB/link) — AssocLinearP/Q/R sit at 61-65KB purely because they dropped it.
   -- This link now re-exports only what it defines.
   open A0.Over _+_ _*_ 𝟘 𝟙 +-assoc +-comm +-identityˡ +-identityʳ *-assoc *-comm *-identityˡ *-distribˡ *-absorbˡ *-absorbʳ
+  -- ⛑ Ⓡ2ᵈ: the `Defs` LEAVES this shard cites, derived by
+  -- `rewire_fcr --siblings Defs <file>` — a SET, not a prefix. `Defs`'s
+  -- re-opens are bare (Ⓡ1), so a leaf-defined name no longer arrives
+  -- through the root. Each leaf carries its OWN minimal telescope, so the
+  -- argument lists differ by leaf and are read from each header.
+  open import Substrate.Algebra.Polynomial.Graded.Defs.C _+_ _*_ 𝟘 𝟙
+  open import Substrate.Algebra.Polynomial.Graded.Defs.PlusP _+_ 𝟘 𝟙
+  open import Substrate.Algebra.Polynomial.Graded.Defs.TimesP _+_ _*_ 𝟘 𝟙
   open A1.Over _+_ _*_ 𝟘 𝟙 +-assoc +-comm +-identityˡ +-identityʳ *-assoc *-comm *-identityˡ *-distribˡ *-absorbˡ *-absorbʳ
   open A2.Over _+_ _*_ 𝟘 𝟙 +-assoc +-comm +-identityˡ +-identityʳ *-assoc *-comm *-identityˡ *-distribˡ *-absorbˡ *-absorbʳ
   open A3.Over _+_ _*_ 𝟘 𝟙 +-assoc +-comm +-identityˡ +-identityʳ *-assoc *-comm *-identityˡ *-distribˡ *-absorbˡ *-absorbʳ
   -- 5. Scalar-linearity (preserves-·c in each argument) + subst-linearity.
   swap-· : (a c x : A) → a * (c * x) ≡ c * (a * x)
+  -- ⚑ CARRIER `_*_`, NOT `_*P_` — and the signature above proves it: `swap-·` types
+  -- a, c AND x as `A`.  `_*P_` is polynomial multiplication (`Poly n → Poly m →
+  -- Poly (n + m)`), so `_*P x` demanded `x : Poly _` and failed [UnequalTerms]
+  -- `A !=< Vec A _m`.  Fifth instance of one class in this family: the ⟡graded-shard
+  -- split distributed a GRADED operator whose grade lives in a NAME SUFFIX, so every
+  -- shard boundary is a place the grade can be dropped silently.
   swap-· a c x = trans (sym (*-assoc a c x)) (trans (cong (_* x) (*-comm a c)) (*-assoc c a x))
 
   convCoeff-scalarˡ : (c : A) (p : Poly n) (q : Poly m) (k : ℕ)

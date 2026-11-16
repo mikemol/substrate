@@ -6,7 +6,7 @@
 -- structural PREREQUISITE for "pair is the universal bilinear map (unit of
 -- the ⊗-Hom adjunction)"; it does NOT by itself complete that claim. The
 -- universal property proper — bilinear maps ≅ basis-pair tables — is proved
--- in `Algebra.F2.Linear.BilinearFromImages` (existence) +
+-- in `Algebra.F2.Linear.BilinearFromImages` (existence) +F
 -- `Algebra.F2.Linear.BilinearUniversal` (uniqueness: `bilinear-extensionality`
 -- / `bilinear-from-images-unique`). So this slice establishes the structural
 -- PREREQUISITE (pair is bilinear); the full UP is those two cited modules.
@@ -28,22 +28,48 @@
 -- universal-property-of-tensor-product's structural content.
 -- Proving pair is bilinear is the PREREQUISITE for it being the universal
 -- bilinear map; the UP proper is `Algebra.F2.Linear.BilinearFromImages`
--- (existence) + `Algebra.F2.Linear.BilinearUniversal` (uniqueness).
+-- (existence) +F `Algebra.F2.Linear.BilinearUniversal` (uniqueness).
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.Category.TensorProduct.Bilinearity where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; lookup)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; trans; cong; cong₂)
 
-open import Substrate.Algebra.F2
+open import Substrate.Algebra.F2.AbsorbL
+open import Substrate.Algebra.F2.AbsorbR
+open import Substrate.Algebra.F2.Assoc
+open import Substrate.Algebra.F2.Comm
+open import Substrate.Algebra.F2.Dec
+open import Substrate.Algebra.F2.DistribLPlus
+open import Substrate.Algebra.F2.DistribRPlus
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.F2Cases
+open import Substrate.Algebra.F2.Idempotent
+open import Substrate.Algebra.F2.IdentityL
+open import Substrate.Algebra.F2.IdentityR
+open import Substrate.Algebra.F2.InvOfOne
+open import Substrate.Algebra.F2.OneNeqZero
+open import Substrate.Algebra.F2.Op
+open import Substrate.Algebra.F2.Op2
+open import Substrate.Algebra.F2.PlusAssoc
+open import Substrate.Algebra.F2.PlusComm
+open import Substrate.Algebra.F2.PlusF
+open import Substrate.Algebra.F2.PlusIdentityL
+open import Substrate.Algebra.F2.PlusIdentityR
+open import Substrate.Algebra.F2.PlusInverseL
+open import Substrate.Algebra.F2.PlusInverseR
+open import Substrate.Algebra.F2.PlusSelfInverse
+open import Substrate.Algebra.F2.ZeroNeqOne
 open import Substrate.Algebra.F2.Vector
 open import Substrate.Algebra.F2.AsModule using (*ₛ-distribʳ-+)
 open import Substrate.Category.TensorProduct using (TensorProduct; pair)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
 
 ------------------------------------------------------------------------
 -- N-1: _+T_-pattern — pattern-matching variant of TensorProduct
@@ -70,12 +96,12 @@ infixl 6 _+T_
 -- The substrate's Vector module provides `*ₛ-distribˡ-+ⱽ`. Re-aliased
 -- here for clarity at the bilinearity proofs.
 --
--- Plus: (a + b) *ₛ v ≡ a *ₛ v +ⱽ b *ₛ v (distributivity of scalar
+-- Plus: (a +F b) *ₛ v ≡ a *ₛ v +ⱽ b *ₛ v (distributivity of scalar
 -- addition over scalar multiplication). This is `*ₛ-distribʳ-+`
 -- in substrate. Let me derive it inline if not directly available.
 ------------------------------------------------------------------------
 
--- Ⓓ: (a + b) *ₛ v ≡ a *ₛ v +ⱽ b *ₛ v is AsModule's *ₛ-distribʳ-+ (the F₂
+-- Ⓓ: (a +F b) *ₛ v ≡ a *ₛ v +ⱽ b *ₛ v is AsModule's *ₛ-distribʳ-+ (the F₂
 -- module structure's home), imported above; it was re-proved here identically.
 
 ------------------------------------------------------------------------
@@ -88,14 +114,14 @@ infixl 6 _+T_
 -- Base case (v₁ = [] = v₂): both sides reduce to []. refl.
 --
 -- Step case (v₁ = a₁ ∷ p₁, v₂ = a₂ ∷ p₂):
---   pair ((a₁ + a₂) ∷ (p₁ +ⱽ p₂)) w
---     = ((a₁ + a₂) *ₛ w) ∷ pair (p₁ +ⱽ p₂) w
+--   pair ((a₁ +F a₂) ∷ (p₁ +ⱽ p₂)) w
+--     = ((a₁ +F a₂) *ₛ w) ∷ pair (p₁ +ⱽ p₂) w
 --   pair v₁ w +T pair v₂ w
 --     = ((a₁ *ₛ w) ∷ pair p₁ w) +T ((a₂ *ₛ w) ∷ pair p₂ w)
 --     = ((a₁ *ₛ w) +ⱽ (a₂ *ₛ w)) ∷ (pair p₁ w +T pair p₂ w)
 --
 -- Need:
---   * (a₁ + a₂) *ₛ w ≡ (a₁ *ₛ w) +ⱽ (a₂ *ₛ w)  [*ₛ-distribʳ-+]
+--   * (a₁ +F a₂) *ₛ w ≡ (a₁ *ₛ w) +ⱽ (a₂ *ₛ w)  [*ₛ-distribʳ-+]
 --   * pair (p₁ +ⱽ p₂) w ≡ pair p₁ w +T pair p₂ w  [IH]
 ------------------------------------------------------------------------
 
@@ -245,13 +271,13 @@ pair-*ₛ-right c (a ∷ p) w =
 -- Per [[feedback-categorical-name-first]]: bilinearity is the
 -- universal-property-of-tensor-product's structural content — the
 -- PREREQUISITE for pair being the universal bilinear map at (V, W); the full
--- UP = BilinearFromImages (existence) + BilinearUniversal (uniqueness).
+-- UP = BilinearFromImages (existence) +F BilinearUniversal (uniqueness).
 --
 -- Connection to Polynomial work: `outer` (Polynomial-level) and
 -- `pair` (TensorProduct-level) are definitionally equal (per
 -- Polynomial/TensorProductView). So `outer` is also bilinear:
 --   outer (v₁ +ⱽ v₂) w ≡ outer v₁ w +T outer v₂ w
--- (by chaining outer-is-pair + pair-+ⱽ-left).
+-- (by chaining outer-is-pair +F pair-+ⱽ-left).
 --
 -- This lifts substrate's polynomial multiplication to genuinely
 -- bilinear infrastructure — a step toward expressing *P as the
@@ -274,5 +300,5 @@ pair-*ₛ-right c (a ∷ p) w =
 --   * **Full IsBilinear record**: package the bilinearity claims
 --     as a single record `IsBilinear f` for any f : V → W → U,
 --     then prove `IsBilinear pair`. Universal property:
---     `Bilinear (V × W, U) ≅ Linear (V ⊗ W, U)` via pair + factor.
+--     `Bilinear (V × W, U) ≅ Linear (V ⊗ W, U)` via pair +F factor.
 ------------------------------------------------------------------------

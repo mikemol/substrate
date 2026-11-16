@@ -16,13 +16,13 @@
 
 module Substrate.Algebra.Q.Properties.Decidable.Fires where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.Foundation.Negation using (Dec; yes; no)
-open import Substrate.Foundation.Bool using (Bool; true; false)
-open import Substrate.Algebra.Z using (+_)
-open import Substrate.Algebra.Q using (mkℚ)
+open import Substrate.Foundation.Negation.Dec
+open import Substrate.Foundation.Bool.Bool
+open import Substrate.Algebra.Z.Int
+open import Substrate.Algebra.Q.Rat
 open import Substrate.Algebra.Q.Properties.Decidable.Key
 open import Substrate.Algebra.Q.Properties.Decidable.Decide
+open import Substrate.Foundation.Eq
 
 isYes : {A : Set} → Dec A → Bool
 isYes (yes _) = true

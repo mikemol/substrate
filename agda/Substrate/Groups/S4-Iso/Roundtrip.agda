@@ -10,11 +10,25 @@
 
 module Substrate.Groups.S4-Iso.Roundtrip where
 
-open import Substrate.Groups.SemidirectProduct.V
+open import Substrate.Groups.SemidirectProduct.V.NonDSends
+open import Substrate.Groups.SemidirectProduct.V.Private
+open import Substrate.Groups.SemidirectProduct.V.SelfToD
+open import Substrate.Groups.SemidirectProduct.V.VFor
+open import Substrate.Groups.SemidirectProduct.V.VForAnchor
+open import Substrate.Groups.SemidirectProduct.V.VForAnchorSends
+open import Substrate.Groups.SemidirectProduct.V.VOfAxisAnchor
+open import Substrate.Groups.SemidirectProduct.V.VOfAxisAnchorSends
+open import Substrate.Groups.SemidirectProduct.V.VOfAxisUnique
+open import Substrate.Groups.SemidirectProduct.V.VSendsD
 open import Substrate.Axes.Axis using (Axis; D)
-import Substrate.Groups.V4.Operations as V4
-open import Substrate.Groups.V4.Bijection
-open V4 using (V₄)
+open import Substrate.Groups.V4.Bijection.FromC
+open import Substrate.Groups.V4.Bijection.FromCCanonical
+open import Substrate.Groups.V4.Bijection.FromTo
+open import Substrate.Groups.V4.Bijection.Private
+open import Substrate.Groups.V4.Bijection.ToC
+open import Substrate.Groups.V4.Bijection.ToCCanonical
+open import Substrate.Groups.V4.Bijection.ToFromCanonical
+open import Substrate.Groups.V4.Bijection.V4
 import Substrate.Groups.S3 as S₃
 open import Substrate.Groups.V4-Embedding using (embed; embed-self-inverse)
 open import Substrate.Groups.Symmetric.Permutation Axis
@@ -23,15 +37,22 @@ open import Substrate.Groups.Symmetric.Permutation.Compose Axis using (_·_)
 open import Substrate.Groups.Symmetric.Permutation.Inverse Axis using (_⁻¹)
 open import Substrate.Groups.SemidirectProduct
   using (v-for; s-for; s-for-fixes-anchor)
-open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym; cong)
 
-open import Substrate.Groups.S4-Iso.Embedding
-  using (embed-S₃; compositional-to-perm)
+open import Substrate.Groups.S4-Iso.Embedding.CompositionalToPerm
+open import Substrate.Groups.S4-Iso.Embedding.EmbedS3
 open import Substrate.Groups.S4-Iso.Extract
   using (extract-s; perm-to-compositional)
 open import Substrate.Groups.S4-Iso.Foundation using (embed-S₃-ε)
 open import Substrate.Groups.S4-Iso.ExtractCorrect using (extract-s-correct)
 open import Substrate.Groups.SemidirectProduct.S
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Product
+open import Substrate.Category.Comonoid.Sites.V4
+import Substrate.Groups.V4.Operations as V4
+open V4 using (V₄)
 
 ------------------------------------------------------------------------
 -- compositional-to-perm ∘ perm-to-compositional ≈ id.

@@ -26,9 +26,12 @@
 
 module Substrate.Category.Allegory.Maps where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; subst)
 open import Substrate.Foundation.Product using (Σ; _,_; _×_; proj₁; proj₂)
 open import Substrate.Category.Allegory using (idR; _⨾_)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Subst
 
 ------------------------------------------------------------------------
 -- map = entire + deterministic relation = every fiber a singleton.

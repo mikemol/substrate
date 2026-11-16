@@ -24,14 +24,19 @@
 
 module Substrate.Category.UniversalProperty.ExtrudeMinimalCoalgebra where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; cong; trans)
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _*_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Times
 open import Substrate.Foundation.Function.Iterate
   using (iterate; iterate-add; HasFixedOrder; HasFixedOrder-multiple)
-open import Substrate.Algebra.R.Trace.SKIShedDuality using (_∙_) renaming (Tm to Tm⟦533ef80d⟧)
+open import Substrate.Algebra.R.Trace.SKIShedDuality.Tm
 import Substrate.Algebra.R.Trace.SKIReductionToList as R
 open import Substrate.Foundation.RewriteConfluence (R._⇒_) using (_⇒*_)
 open import Substrate.Category.UniversalProperty.DiagonalYCombinator using (Y-of; Y-fix)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Algebra.R.Trace.SKIShedDuality.Tm
+open import Substrate.Lifecycle.Fragment
 
 ------------------------------------------------------------------------
 -- ① THE HALT: the μ fixed point is STABLE under iteration. Once the step-function reaches a fixed point,
@@ -53,7 +58,7 @@ cycle-repeats f k m ord x = HasFixedOrder-multiple f k m ord x
 -- ③ THE EXTRUDER'S SELF-APPLICATION IS ITERATE — its fixed point is the μ (Y-of, 265). At the term level the
 --    fixed point is at ⇒* (reduction), not ≡ (iterate's stable point is the ≡-face of the same fixed point).
 ------------------------------------------------------------------------
-μ-iterate-fixpoint : (f : Tm⟦533ef80d⟧) → (Y-of f) ⇒* (f ∙ (Y-of f))
+μ-iterate-fixpoint : (f : Tm) → (Y-of f) ⇒* (f ∙ (Y-of f))
 μ-iterate-fixpoint f = Y-fix f
 
 ------------------------------------------------------------------------

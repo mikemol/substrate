@@ -9,11 +9,16 @@
 ------------------------------------------------------------------------
 
 module Substrate.Algebra.R.Trace.CFBezoutBridge where
+open import Substrate.Algebra.Z.Add
+open import Substrate.Algebra.Z.Mul
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Product using (_×_; _,_)
-open import Substrate.Algebra.Z using (ℤ; +_; -ℤ_; 0ℤ; 1ℤ)
-open import Substrate.Algebra.Z.Arithmetic using (_+ℤ_; _*ℤ_)
+open import Substrate.Algebra.Z.Int
+open import Substrate.Algebra.Z.Int2
+open import Substrate.Algebra.Z.OneInt
+open import Substrate.Algebra.Z.ZeroInt
+
 
 -- a 2×2 matrix over ℤ, and its action on a coefficient column (s, t).
 record Matℤ : Set where

@@ -21,7 +21,7 @@
 --       blockSum-compose : (σ⊕τ) ∘ (σ'⊕τ') = (σ∘σ') ⊕ (τ∘τ')       ( = gmap-∘ )
 --     Both via apply-injective (SnGroup faithfulness — pointwise on lookups),
 --     splitting each index by splitAt-view and discharging with
---     blockSum-inject/blockSum-raise + apply-id/apply-compose. Together
+--     blockSum-inject/blockSum-raise ℕ+ apply-id/apply-compose. Together
 --     (blockSum , blockSum-id , blockSum-compose) IS the ⊕-bifunctor:
 --     Perm _ × Perm _ → Perm _ functorial in both slots.
 --
@@ -34,7 +34,7 @@
 --     — reachable ONLY via the bifunctor (they are not braidings).
 --
 --   PART 3 — the concrete grade-3 gap-closure ⟨a0,a1⟩ = S₃, in the sibling
---     def-provider OrientationRigCatPermAdjClosure (data AdjGen + 6 witnesses).
+--     def-provider OrientationRigCatPermAdjClosure (data AdjGen ℕ+ 6 witnesses).
 --     Referenced here via the refl bridges adjT-is-a0 / adjT-is-a1, closing the
 --     argument: the bifunctor composites sᵢ ARE the adjacent transpositions that
 --     generate all of S₃. Gap closed: C₃ (braidings) ⊊ S₃ (adjacent transp.).
@@ -68,13 +68,13 @@
 
 module Substrate.WitnessTower.Wedge.OrientationRigCatPermBifunctor where
 
-open import Substrate.Foundation.Nat using (ℕ; _+_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Inject using (inject+)
 open import Substrate.Foundation.Fin.Raise using (raise)
 open import Substrate.Foundation.Fin.SplitAt.View using (splitAt-view; fromₗ; fromᵣ)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; lookup)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
 
 open import Substrate.WitnessTower.Enumerate using (Perm)
 open import Substrate.WitnessTower.FirstAppearance using (id-perm; compose)
@@ -82,6 +82,10 @@ open import Substrate.WitnessTower.SnGroup using (apply-injective; apply-compose
 open import Substrate.WitnessTower.Wedge.OrientationDistributor
   using (blockSum; blockSum-inject; blockSum-raise)
 open import Substrate.WitnessTower.Wedge.OrientationRigCatPermAdjClosure using (a0; a1)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- PART 1 — THE ⊕-BIFUNCTOR FUNCTORIALITY LAWS.
@@ -94,11 +98,11 @@ open import Substrate.WitnessTower.Wedge.OrientationRigCatPermAdjClosure using (
 ------------------------------------------------------------------------
 
 -- gmap-id : blockSum preserves identities.
-blockSum-id : ∀ {m n} → blockSum (id-perm m) (id-perm n) ≡ id-perm (m + n)
+blockSum-id : ∀ {m n} → blockSum (id-perm m) (id-perm n) ≡ id-perm (m ℕ+ n)
 blockSum-id {m} {n} = apply-injective aux
   where
-  aux : (k : Fin (m + n)) →
-        lookup (blockSum (id-perm m) (id-perm n)) k ≡ lookup (id-perm (m + n)) k
+  aux : (k : Fin (m ℕ+ n)) →
+        lookup (blockSum (id-perm m) (id-perm n)) k ≡ lookup (id-perm (m ℕ+ n)) k
   aux k with splitAt-view m {n} k
   ... | fromₗ j = trans (trans (blockSum-inject (id-perm m) (id-perm n) j)
                                (cong (inject+ n) (apply-id j)))
@@ -114,7 +118,7 @@ blockSum-compose :
     ≡ blockSum (compose σ σ') (compose τ τ')
 blockSum-compose {m} {n} σ σ' τ τ' = apply-injective aux
   where
-  aux : (k : Fin (m + n)) →
+  aux : (k : Fin (m ℕ+ n)) →
         lookup (compose (blockSum σ τ) (blockSum σ' τ')) k
           ≡ lookup (blockSum (compose σ σ') (compose τ τ')) k
   aux k with splitAt-view m {n} k
@@ -147,7 +151,7 @@ s₁ = suc zero ∷ zero ∷ []                       -- [1,0]
 -- sᵢ = id ⊕ s₁ ⊕ id : the adjacent transposition swapping positions i, i+1 of
 -- Fin ((i+2)+j). This is precisely "id-perm i ⊕ s₁ ⊕ id-perm j" with the
 -- Perm-side ⊕ = blockSum (Part 1). Reachable ONLY via the ⊕-bifunctor.
-adjT : (i j : ℕ) → Perm ((i + 2) + j)
+adjT : (i j : ℕ) → Perm ((i ℕ+ 2) ℕ+ j)
 adjT i j = blockSum (blockSum (id-perm i) s₁) (id-perm j)
 
 -- At grade 3 the two adjacent transpositions ARE a0 = [1,0,2] and a1 = [0,2,1]

@@ -16,13 +16,14 @@
 ------------------------------------------------------------------------
 module Substrate.Algebra.F2.GF256.Bridge where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; replicate)
-open import Substrate.Foundation.Eq using (_≡_; refl; cong; cong₂; trans; sym)
-open import Substrate.Algebra.F2 using (F₂; 𝟘; 𝟙; _+_; _·_)
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.Op
+open import Substrate.Algebra.F2.PlusF
 open import Substrate.Algebra.F2.CommRing using (F₂-CommRing)
 open import Substrate.Algebra.F2.Vector using (Vector; _+ⱽ_; 𝟎ⱽ; _*ₛ_)
-open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit.Base using (m-lo)
+open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit.Base.MLo
 open import Substrate.Algebra.F2.Polynomial using (_*P_; outer; anti-diag-sum) renaming (pad-end to pad-c)
 open import Substrate.Algebra.F2.GF256.Xtime using (xtime)
 open import Substrate.Algebra.F2.GF256.Reduce using (reduce-mod-m)
@@ -39,7 +40,14 @@ open ModCore.Over   F₂-CommRing 7 m-lo using (ytime; reduce-mod-f)
 open ModExpand.Over F₂-CommRing 7 m-lo renaming (hsum to hsum-g)
 open F.Over F₂-CommRing
   using (_+P_; _·c_; x-shift; shift-to-suc-on-left; pad-end)
-  renaming (_+_ to _+r_; _*_ to _·r_; outer to outer-g; anti-diag-sum to adg-g; _*P_ to _*Pg_)
+  renaming (_+F_ to _+r_; _*_ to _·r_; outer to outer-g; anti-diag-sum to adg-g; _*P_ to _*Pg_)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Algebra.Polynomial.Graded.FromCommRing.Times
+open import Substrate.Algebra.F2.Wedge
 
 ------------------------------------------------------------------------
 

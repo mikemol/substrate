@@ -22,10 +22,12 @@
 module Substrate.Category.BeckChevalley.Horizontal where
 
 open import Substrate.Foundation.Level using (Level)
-open import Substrate.Foundation.Eq
-  using (_≡_; trans; cong)
 
 open import Substrate.Category.BeckChevalley using (BCSquare; cell)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Linguistic.ClosureLog.ClosureSlice
 
 private
   variable

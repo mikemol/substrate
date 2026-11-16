@@ -16,7 +16,6 @@
 
 module Substrate.Algebra.Q.Linear.AsModuleHom where
 
-open import Substrate.Foundation.Nat using (ℕ)
 open import Substrate.Algebra.Q.Linear using (Linearℚ)
 open import Substrate.Algebra.Q.AsField using (ℚ-Field-Obligation)
 open import Substrate.Algebra.Q.AsModule using (module Lifters)

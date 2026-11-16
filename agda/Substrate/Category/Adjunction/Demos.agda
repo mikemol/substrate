@@ -22,20 +22,16 @@
 module Substrate.Category.Adjunction.Demos where
 
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; trans; cong)
 
 open import Substrate.Algebra.F2.Vector using (Vector; basis)
-open import Substrate.Algebra.F2.Linear using (Linear; apply)
+open import Substrate.Algebra.F2.Linear.Linear
 open import Substrate.Algebra.F2.Linear.FromImages
   using (linear-from-images; apply-linear-from-images-basis)
-open import Substrate.Algebra.F2.Linear.Universal
-  using (linear-extensionality)
 
 open import Substrate.Category.Adjunction
   using (IsLinearAdjunction; linear-adjunction; images-of-linear;
          linear-extension-unique)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- N-1: M-3.5 apply-linear-from-images-basis via adjunction.unit.

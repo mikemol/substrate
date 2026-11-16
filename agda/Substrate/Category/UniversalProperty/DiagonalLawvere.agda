@@ -17,13 +17,16 @@
 
 module Substrate.Category.UniversalProperty.DiagonalLawvere where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; cong)
-open import Substrate.Foundation.Empty using (⊥)
+open import Substrate.Foundation.Empty.Bot
 open import Substrate.Foundation.Product using (Σ; _,_)
-open import Substrate.Foundation.Negation using (¬_)
-open import Substrate.Foundation.Bool using (Bool; true; false; not)
+open import Substrate.Foundation.Negation.Not
+open import Substrate.Foundation.Bool.Bool
+open import Substrate.Foundation.Bool.Not
 open import Substrate.Category.Lawvere
   using (FixedPointFree; InvolutiveResidue; diag; diag-not-in-family; PointSurjective; lawvere-fixed-point)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- ① Bool IS a FixedPointFree / InvolutiveResidue (δ = not). This is the SET INSTANCE that the whole

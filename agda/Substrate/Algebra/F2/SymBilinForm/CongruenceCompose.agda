@@ -23,10 +23,10 @@
 --
 -- Proof path:
 --   1. Decompose v, w via basis-decomp; push T through using
---      preserves-sum + preserves-*ₛ.
---   2. Use bilinearity (sum + scalar in both arguments) to expand
+--      preserves-sum +F preserves-*ₛ.
+--   2. Use bilinearity (sum +F scalar in both arguments) to expand
 --      the RHS double sum into the matching LHS form.
---   3. Reconcile inner factor order via ·-comm + ·-assoc.
+--   3. Reconcile inner factor order via ·-comm +F ·-assoc.
 --
 -- Per `feedback_universal_property_discipline`: the aux lemma IS the
 -- universal property of congruence-act; congruence-compose follows
@@ -38,17 +38,48 @@
 module Substrate.Algebra.F2.SymBilinForm.CongruenceCompose where
 
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Nat as ℕ using (ℕ)
+-- ⚑ WAS `open import Substrate.Foundation.Nat as ℕ using (ℕ)` — a retired
+-- barrel, a banned `as` alias and a banned `using`, in one statement.  The only
+-- name it wanted is the type itself, which the leaf provides bare.
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Vec using (lookup)
 open import Substrate.Foundation.Function using (_∘_)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; trans; cong; cong₂; cong-trans)
 
-open import Substrate.Algebra.F2
+open import Substrate.Algebra.F2.AbsorbL
+open import Substrate.Algebra.F2.AbsorbR
+open import Substrate.Algebra.F2.Assoc
+open import Substrate.Algebra.F2.Comm
+open import Substrate.Algebra.F2.Dec
+open import Substrate.Algebra.F2.DistribLPlus
+open import Substrate.Algebra.F2.DistribRPlus
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.F2Cases
+open import Substrate.Algebra.F2.Idempotent
+open import Substrate.Algebra.F2.IdentityL
+open import Substrate.Algebra.F2.IdentityR
+open import Substrate.Algebra.F2.InvOfOne
+open import Substrate.Algebra.F2.OneNeqZero
+open import Substrate.Algebra.F2.Op
+open import Substrate.Algebra.F2.Op2
+open import Substrate.Algebra.F2.PlusAssoc
+open import Substrate.Algebra.F2.PlusComm
+open import Substrate.Algebra.F2.PlusF
+open import Substrate.Algebra.F2.PlusIdentityL
+open import Substrate.Algebra.F2.PlusIdentityR
+open import Substrate.Algebra.F2.PlusInverseL
+open import Substrate.Algebra.F2.PlusInverseR
+open import Substrate.Algebra.F2.PlusSelfInverse
+open import Substrate.Algebra.F2.ZeroNeqOne
 open import Substrate.Algebra.F2.Vector
 open import Substrate.Algebra.F2.Vector.Universal
   using (sum; sum-F₂; sum-F₂-cong; basis-decomp)
-open import Substrate.Algebra.F2.Linear
+open import Substrate.Algebra.F2.Linear.CompL
+open import Substrate.Algebra.F2.Linear.CompLAssoc
+open import Substrate.Algebra.F2.Linear.CompLIdentityL
+open import Substrate.Algebra.F2.Linear.CompLIdentityR
+open import Substrate.Algebra.F2.Linear.IdL
+open import Substrate.Algebra.F2.Linear.Linear
+open import Substrate.Algebra.F2.Linear.Preserves
 open import Substrate.Algebra.F2.Linear.Universal using (preserves-sum; sum-cong)
 open import Substrate.Algebra.F2.SymBilinForm.BilinForm using (BilinForm)
 open import Substrate.Algebra.F2.SymBilinForm.BilinearFormOf using (bilinear-form-of)
@@ -57,6 +88,12 @@ open import Substrate.Algebra.F2.SymBilinForm.Bilinearity
   using (bilinear-form-of-+ⱽ-left; bilinear-form-of-+ⱽ-right;
          bilinear-form-of-*ₛ-left; bilinear-form-of-*ₛ-right;
          sum-F₂-scalar)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.Foundation.Eq.CongTrans
 
 ------------------------------------------------------------------------
 -- N-1: bilinear-form-of vanishes on 𝟎ⱽ (each side).
@@ -85,7 +122,7 @@ bilinear-form-of-𝟎ⱽ-left M w =
 -- N-2: bilinear-form-of distributes over indexed sum (each side).
 --
 -- Induction on the index range k. Base: bilinear-form-of-𝟎ⱽ-*.
--- Step: bilinear-form-of-+ⱽ-* + IH.
+-- Step: bilinear-form-of-+ⱽ-* +F IH.
 ------------------------------------------------------------------------
 
 bilinear-form-of-sum-right :
@@ -95,7 +132,7 @@ bilinear-form-of-sum-right {k = ℕ.zero}  M u f = bilinear-form-of-𝟎ⱽ-righ
   -- ℕ namespace from Substrate.Foundation.Nat
 bilinear-form-of-sum-right {k = ℕ.suc _} M u f =
   trans (bilinear-form-of-+ⱽ-right M u (f zero) (sum (f ∘ suc)))
-        (cong (bilinear-form-of M u (f zero) +_)
+        (cong (bilinear-form-of M u (f zero) +F_)
               (bilinear-form-of-sum-right M u (f ∘ suc)))
   -- ℕ namespace from Substrate.Foundation.Nat
 
@@ -106,7 +143,7 @@ bilinear-form-of-sum-left {k = ℕ.zero}  M f w = bilinear-form-of-𝟎ⱽ-left 
   -- ℕ namespace from Substrate.Foundation.Nat
 bilinear-form-of-sum-left {k = ℕ.suc _} M f w =
   trans (bilinear-form-of-+ⱽ-left M (f zero) (sum (f ∘ suc)) w)
-        (cong (bilinear-form-of M (f zero) w +_)
+        (cong (bilinear-form-of M (f zero) w +F_)
               (bilinear-form-of-sum-left M (f ∘ suc) w))
   -- ℕ namespace from Substrate.Foundation.Nat
 
@@ -132,8 +169,8 @@ bilinear-form-of-both-scalars M a b v w =
 --     ≡ bilinear-form-of M (apply T v) (apply T w)
 --
 -- Strategy:
---   * RHS → double-sum form (by basis-decomp + T's linearity + bilinearity).
---   * LHS → same double-sum form (by sum-F₂-scalar reverse + ·-comm).
+--   * RHS → double-sum form (by basis-decomp +F T's linearity +F bilinearity).
+--   * LHS → same double-sum form (by sum-F₂-scalar reverse +F ·-comm).
 ------------------------------------------------------------------------
 
 bilinear-form-of-congruence-act :
@@ -157,7 +194,7 @@ bilinear-form-of-congruence-act {n} T M v w =
         sum-F₂ {n} (λ j → lookup v i · (lookup w j · bf i j)))
 
     -- apply T u as a sum over basis: u ≡ Σᵢ uᵢ *ₛ basis i (basis-decomp);
-    -- apply T pushes through via preserves-sum + preserves-*ₛ.
+    -- apply T pushes through via preserves-sum +F preserves-*ₛ.
     apply-T-sum :
       (u : Vector n) →
       apply T u ≡ sum (λ i → lookup u i *ₛ apply T (basis i))
@@ -226,7 +263,7 @@ congruence-compose-pointwise T₁ T₂ M i j =
 ------------------------------------------------------------------------
 -- N-6: Capstone — the dependency chain is closed.
 --
--- congruence-compose-pointwise + FixedPoint-of-compose from
+-- congruence-compose-pointwise +F FixedPoint-of-compose from
 -- primitive #1 automate the StabiliserClosure cascade at any n.
 -- Given FixedPoint witnesses for a group's generators acting via
 -- congruence on a fixed point M, every composition's stabilisation
@@ -264,5 +301,5 @@ congruence-compose-pointwise T₁ T₂ M i j =
 --     instantiations of the SymBilinForm.* generic theorems.
 --
 --   * Retrofit StabiliserClosure.agda to use FixedPoint-of-compose
---     + congruence-compose-pointwise.
+--     +F congruence-compose-pointwise.
 ------------------------------------------------------------------------

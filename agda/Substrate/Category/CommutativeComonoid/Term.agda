@@ -9,7 +9,7 @@
 
 module Substrate.Category.CommutativeComonoid.Term where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Category.Comonoid.Term
 -- CommutativeComonoidTerm IS a ComonoidTerm; cocommutativity is enforced at
 -- the GENERATOR level (each generator must commute with the carrier's swap

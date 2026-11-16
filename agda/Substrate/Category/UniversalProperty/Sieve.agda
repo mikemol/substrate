@@ -19,6 +19,7 @@ module Substrate.Category.UniversalProperty.Sieve where
 open import Substrate.Foundation.Unit using (⊤; tt)
 open import Substrate.Category.UniversalProperty.Term
   using (UPTerm; _++ᵤ_)
+open import Substrate.S5.Dedupe
 
 module _ (O : Set) (Hom : O → O → Set) where
 

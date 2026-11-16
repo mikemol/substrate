@@ -15,11 +15,20 @@
 
 module Substrate.Algebra.Quotient.CRT.Inverses where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _*_)
-open import Substrate.Foundation.Eq using (_≡_; refl; cong; trans)
-open import Substrate.Algebra.Nat.Mod using (_mod-suc_; suc-mod-suc-self)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Times
+open import Substrate.Foundation.Nat.Nat.ModSuc
+open import Substrate.Algebra.Nat.Mod.ModSucBound
+open import Substrate.Algebra.Nat.Mod.ModSucId
+open import Substrate.Algebra.Nat.Mod.ModSucPeriodic
+open import Substrate.Algebra.Nat.Mod.ModSucSuc
+open import Substrate.Algebra.Nat.Mod.SucModSucLt
+open import Substrate.Algebra.Nat.Mod.SucModSucSelf
 open import Substrate.Algebra.Nat.Mod.Homomorphism using (mod-mult-hom)
 open import Substrate.Algebra.Quotient.CRT.Idempotents using (CRTIdempotents)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Trans
 
 -- a multiple of the modulus is 0 mod the modulus: (suc n · k) mod (suc n) ≡ 0.
 -- (Ⓓ: the local suc-mod-self re-proved Nat.Mod's suc-mod-suc-self; use it.)

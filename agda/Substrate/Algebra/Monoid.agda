@@ -17,9 +17,9 @@
 
 module Substrate.Algebra.Monoid where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Algebra.Magma using (Magma)
 open import Substrate.Algebra.Semigroup using (Semigroup; magma; ·-assoc)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. The Monoid record.

@@ -10,7 +10,7 @@
 --   free monoid Word ⊤  ──quotient (parity)──▶  Z₂ = F₂
 --
 -- Carrier of the presented object is F₂ (whose +/assoc/identity ARE proved
--- in Algebra.F2), quotient = parity = the free extension foldW into (F₂,𝟘,+)
+-- in Algebra.F2), quotient = parity = the free extension foldW into (F₂,𝟘,+F)
 -- sending a ↦ 𝟙 (so quotient-hom is literally the free monoid's
 -- extend-preserves — reuse, not reproof). The relation a² = ε is
 -- LOAD-BEARING: the 𝟙·𝟙 case of factor-preservation is exactly where
@@ -18,7 +18,7 @@
 -- quotient half passes the same test the free F₂-module passed.
 --
 -- This is the Z₂ proof-of-concept for the cyclic family. GENERIC Z_m needs
--- the Fin mod-group-laws + power-periodicity + mod-addition-homomorphism
+-- the Fin mod-group-laws +F power-periodicity +F mod-addition-homomorphism
 -- (the EEA/CRT/Totient substrate), a number-theory arc not yet in-tree
 -- (Sites.Zn has add-mod but its laws are unproven). Z₂ works here because
 -- its carrier F₂ already has proven group structure.
@@ -29,14 +29,21 @@
 module Substrate.Category.PresentedUniversalProperty.CyclicZ2 where
 
 open import Substrate.Foundation.Unit using (⊤; tt)
-open import Substrate.Foundation.Eq using (_≡_; refl; cong; sym; trans)
 open import Substrate.Foundation.Product using (_,_; proj₁; proj₂)
-open import Substrate.Algebra.F2 using (F₂; 𝟘; 𝟙; _+_; +-assoc; +-identityˡ; +-identityʳ)
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.PlusAssoc
+open import Substrate.Algebra.F2.PlusF
+open import Substrate.Algebra.F2.PlusIdentityL
+open import Substrate.Algebra.F2.PlusIdentityR
 open import Substrate.Groups.Coxeter.Word using (Word; []; _∷_; _++_)
 open import Substrate.Category.FreeUniversalProperty.FreeMonoid
   using (MonoidOn; MonoidHom; monoid-class; word-monoid; foldW;
          word-extend-preserves)
 open import Substrate.Category.PresentedUniversalProperty using (PresentedUP)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
 
 ------------------------------------------------------------------------
 -- 1. The presentation data.
@@ -49,7 +56,7 @@ a² = tt ∷ tt ∷ []
 -- Z₂'s carrier is F₂ with its (proven) additive group structure.
 z2-monoid : MonoidOn F₂
 z2-monoid = record
-  { ε = 𝟘 ; _∙_ = _+_
+  { ε = 𝟘 ; _∙_ = _+F_
   ; ∙-assoc = +-assoc ; ε-left = +-identityˡ ; ε-right = +-identityʳ
   }
 
@@ -79,7 +86,7 @@ module _ {M : Set} (hM : MonoidOn M) (h : Word ⊤ → M)
   fac-pres : MonoidHom z2-monoid hM fac
   fac-pres = proj₁ h-hom , dist
     where
-      dist : (x y : F₂) → fac (x + y) ≡ (fac x ∙M fac y)
+      dist : (x y : F₂) → fac (x +F y) ≡ (fac x ∙M fac y)
       dist 𝟘 𝟘 = proj₂ h-hom [] []
       dist 𝟘 𝟙 = proj₂ h-hom [] a
       dist 𝟙 𝟘 = proj₂ h-hom a []

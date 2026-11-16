@@ -22,17 +22,25 @@
 
 module Substrate.Algebra.F2.Polynomial.Wedge.SBox where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Vec using (Vec; []; _∷_)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂)
-open import Substrate.Foundation.Bool using (Bool; true; false; _∧_)
-open import Substrate.Foundation.Negation using (¬_)
-open import Substrate.Foundation.Empty using (⊥-elim)
-import Substrate.Algebra.F2 as F2
-open import Substrate.Algebra.F2 using (_+_; 𝟘≢𝟙)
+open import Substrate.Foundation.Bool.And
+open import Substrate.Foundation.Bool.Bool
+open import Substrate.Foundation.Negation.Not
+open import Substrate.Foundation.Empty.BotElim
+-- ⚑ WAS `import Substrate.Algebra.F2 as F2` — retired barrel + banned alias.
+-- This file already reaches the four `GUnit/Base` leaves and `PlusF` directly,
+-- so the alias was the only thing still pointing at the retired module.
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.PlusF
+open import Substrate.Algebra.F2.ZeroNeqOne
 open import Substrate.Algebra.F2.CommRing using (F₂-CommRing)
-open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit.Base using (m-lo; is-zero8; all-vec; all-vec-sound)
-open import Substrate.Foundation.Bool.Properties using (∧-elimˡ; ∧-elimʳ)
+open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit.Base.AllVec
+open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit.Base.AllVecSound
+open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit.Base.IsZero8
+open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit.Base.MLo
+open import Substrate.Foundation.Bool.Properties.AndElimL
+open import Substrate.Foundation.Bool.Properties.AndElimR
 open import Substrate.Algebra.F2.Polynomial.Wedge.Inverse using (inv; inv-law)
 open import Substrate.Algebra.F2.Polynomial.Wedge.AsField using (is-zero8-sound; nonzero-bridge)
 import Substrate.Algebra.Polynomial.Graded.FromCommRing as F
@@ -42,22 +50,27 @@ import Substrate.Algebra.Polynomial.Graded.Quotient as Q
 open F.Over F₂-CommRing using (Poly; nth)
 open M.Over F₂-CommRing 7 m-lo using (oneC)
 open Q.Over F₂-CommRing 7 m-lo using (_*Q_; 𝟎C; *Q-assoc; *Q-identityˡ; *Q-identityʳ; *Q-zeroʳ)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
 
 -- decidable equality on bit vectors, and its soundness.
-_==F_ : F2.F₂ → F2.F₂ → Bool
-F2.𝟘 ==F F2.𝟘 = true
-F2.𝟙 ==F F2.𝟙 = true
+_==F_ : F₂ → F₂ → Bool
+𝟘 ==F 𝟘 = true
+𝟙 ==F 𝟙 = true
 _    ==F _    = false
-==F-sound : (x y : F2.F₂) → (x ==F y) ≡ true → x ≡ y
-==F-sound F2.𝟘 F2.𝟘 h = refl
-==F-sound F2.𝟙 F2.𝟙 h = refl
-==F-sound F2.𝟘 F2.𝟙 ()
-==F-sound F2.𝟙 F2.𝟘 ()
+==F-sound : (x y : F₂) → (x ==F y) ≡ true → x ≡ y
+==F-sound 𝟘 𝟘 h = refl
+==F-sound 𝟙 𝟙 h = refl
+==F-sound 𝟘 𝟙 ()
+==F-sound 𝟙 𝟘 ()
 
-vec-eq : {n : ℕ} → Vec F2.F₂ n → Vec F2.F₂ n → Bool
+vec-eq : {n : ℕ} → Vec F₂ n → Vec F₂ n → Bool
 vec-eq []       []       = true
 vec-eq (x ∷ xs) (y ∷ ys) = (x ==F y) ∧ vec-eq xs ys
-vec-eq-sound : {n : ℕ} (a b : Vec F2.F₂ n) → vec-eq a b ≡ true → a ≡ b
+vec-eq-sound : {n : ℕ} (a b : Vec F₂ n) → vec-eq a b ≡ true → a ≡ b
 vec-eq-sound []       []       h = refl
 vec-eq-sound (x ∷ xs) (y ∷ ys) h =
   cong₂ _∷_ (==F-sound x y (∧-elimˡ {x ==F y} h)) (vec-eq-sound xs ys (∧-elimʳ {x ==F y} h))
@@ -65,26 +78,26 @@ vec-eq-sound (x ∷ xs) (y ∷ ys) h =
 -- FIPS-197 §5.1.1 affine: bᵢ = aᵢ ⊕ a₍ᵢ₊₄₎ ⊕ a₍ᵢ₊₅₎ ⊕ a₍ᵢ₊₆₎ ⊕ a₍ᵢ₊₇₎ ⊕ cᵢ,  c = 0x63.
 affine : Poly 8 → Poly 8
 affine (a0 ∷ a1 ∷ a2 ∷ a3 ∷ a4 ∷ a5 ∷ a6 ∷ a7 ∷ []) =
-   (a0 + a4 + a5 + a6 + a7 + F2.𝟙) ∷
-   (a1 + a5 + a6 + a7 + a0 + F2.𝟙) ∷
-   (a2 + a6 + a7 + a0 + a1 + F2.𝟘) ∷
-   (a3 + a7 + a0 + a1 + a2 + F2.𝟘) ∷
-   (a4 + a0 + a1 + a2 + a3 + F2.𝟘) ∷
-   (a5 + a1 + a2 + a3 + a4 + F2.𝟙) ∷
-   (a6 + a2 + a3 + a4 + a5 + F2.𝟙) ∷
-   (a7 + a3 + a4 + a5 + a6 + F2.𝟘) ∷ []
+   (a0 +F a4 +F a5 +F a6 +F a7 +F 𝟙) ∷
+   (a1 +F a5 +F a6 +F a7 +F a0 +F 𝟙) ∷
+   (a2 +F a6 +F a7 +F a0 +F a1 +F 𝟘) ∷
+   (a3 +F a7 +F a0 +F a1 +F a2 +F 𝟘) ∷
+   (a4 +F a0 +F a1 +F a2 +F a3 +F 𝟘) ∷
+   (a5 +F a1 +F a2 +F a3 +F a4 +F 𝟙) ∷
+   (a6 +F a2 +F a3 +F a4 +F a5 +F 𝟙) ∷
+   (a7 +F a3 +F a4 +F a5 +F a6 +F 𝟘) ∷ []
 
 -- FIPS-197 §5.3.2 inverse affine: aᵢ = b₍ᵢ₊₂₎ ⊕ b₍ᵢ₊₅₎ ⊕ b₍ᵢ₊₇₎ ⊕ dᵢ,  d = 0x05.
 affine-inv : Poly 8 → Poly 8
 affine-inv (b0 ∷ b1 ∷ b2 ∷ b3 ∷ b4 ∷ b5 ∷ b6 ∷ b7 ∷ []) =
-   (b2 + b5 + b7 + F2.𝟙) ∷
-   (b3 + b6 + b0 + F2.𝟘) ∷
-   (b4 + b7 + b1 + F2.𝟙) ∷
-   (b5 + b0 + b2 + F2.𝟘) ∷
-   (b6 + b1 + b3 + F2.𝟘) ∷
-   (b7 + b2 + b4 + F2.𝟘) ∷
-   (b0 + b3 + b5 + F2.𝟘) ∷
-   (b1 + b4 + b6 + F2.𝟘) ∷ []
+   (b2 +F b5 +F b7 +F 𝟙) ∷
+   (b3 +F b6 +F b0 +F 𝟘) ∷
+   (b4 +F b7 +F b1 +F 𝟙) ∷
+   (b5 +F b0 +F b2 +F 𝟘) ∷
+   (b6 +F b1 +F b3 +F 𝟘) ∷
+   (b7 +F b2 +F b4 +F 𝟘) ∷
+   (b0 +F b3 +F b5 +F 𝟘) ∷
+   (b1 +F b4 +F b6 +F 𝟘) ∷ []
 
 -- patched GF(2⁸) inverse: 0 ↦ 0, else the multiplicative inverse (AI-8).
 pinv : Poly 8 → Poly 8
@@ -98,8 +111,8 @@ inv-sbox : Poly 8 → Poly 8
 inv-sbox b = pinv (affine-inv b)
 
 -- FIPS-197 sanity: S(00) = 0x63 = [1,1,0,0,0,1,1,0].
-sbox-00 : sbox (F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ [])
-        ≡ (F2.𝟙 ∷ F2.𝟙 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟙 ∷ F2.𝟙 ∷ F2.𝟘 ∷ [])
+sbox-00 : sbox (𝟘 ∷ 𝟘 ∷ 𝟘 ∷ 𝟘 ∷ 𝟘 ∷ 𝟘 ∷ 𝟘 ∷ 𝟘 ∷ [])
+        ≡ (𝟙 ∷ 𝟙 ∷ 𝟘 ∷ 𝟘 ∷ 𝟘 ∷ 𝟙 ∷ 𝟙 ∷ 𝟘 ∷ [])
 sbox-00 = refl
 
 -- affine round-trip: affine-inv ∘ affine ≡ id, by reflection (pure F₂; fast).

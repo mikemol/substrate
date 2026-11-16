@@ -23,10 +23,11 @@
 
 module Substrate.Conway.Order where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
 open import Substrate.Foundation.Product using (_×_; _,_)
 open import Substrate.Foundation.Unit using (⊤; tt)
-open import Substrate.Foundation.Empty using (⊥)
+open import Substrate.Foundation.Empty.Bot
 open import Substrate.Groups.Coxeter.Word using (Word; []; _∷_)
 open import Substrate.Conway.SurrealFinite using (SurrealFinite; ⟨_∣_⟩)
 
@@ -71,7 +72,7 @@ mutual
     × no-below f x ys
 
 ------------------------------------------------------------------------
--- 2. Unfueled order: default fuel is birthday-sum + 2.
+-- 2. Unfueled order: default fuel is birthday-sum ℕ+ 2.
 --
 -- Sufficient for meaningful recursion at finite birthday. The
 -- "+ 2" gives headroom for the constructor's outer step.
@@ -80,7 +81,7 @@ mutual
 _≤ⁿ_ :
   {m n : ℕ} →
   SurrealFinite (suc m) → SurrealFinite (suc n) → Set
-_≤ⁿ_ {m} {n} x y = x ≤ⁿ[ suc (suc (m + n)) ] y
+_≤ⁿ_ {m} {n} x y = x ≤ⁿ[ suc (suc (m ℕ+ n)) ] y
 
 ------------------------------------------------------------------------
 -- 3. Capstone for S4.

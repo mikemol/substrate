@@ -20,10 +20,10 @@
 
 module Substrate.Algebra.Q.Properties.AddMonoid where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
 open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂)
-open import Substrate.Foundation.Hedberg using (Decidable⇒UIP)
-open import Substrate.Algebra.Q using (ℚ; 0ℚ)
+open import Substrate.Foundation.Hedberg.DecidableUIP
+open import Substrate.Algebra.Q.Rat
+open import Substrate.Algebra.Q.ZeroRat
 open import Substrate.Algebra.Q.Add using (_+ℚ_)
 open import Substrate.Algebra.Q.Equiv using (_≈ℚ_; ≈ℚ-refl; ≈ℚ-sym; ≈ℚ-trans)
 open import Substrate.Algebra.Q.DecidableEq using (_≟ℚ_)
@@ -31,9 +31,15 @@ open import Substrate.Algebra.Q.Properties.Field
   using (+ℚ-assoc; +ℚ-identityˡ; +ℚ-identityʳ)
 open import Substrate.Algebra.Q.Properties.Congruence using (+ℚ-cong)
 open import Substrate.Algebra.Q.Reduce using (reduce)
-open import Substrate.Algebra.Q.Properties.Reduce using (≈-reduce)
-open import Substrate.Algebra.Q.Properties.Canonical using (reduce-respects-≈)
+open import Substrate.Algebra.Q.Properties.Reduce.ApproxReduce
+open import Substrate.Algebra.Q.Properties.Canonical.ReduceRespectsApprox
 open import Substrate.Algebra.Monoid using (Monoid)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Algebra.Magma
+open import Substrate.Algebra.Semigroup
 
 ------------------------------------------------------------------------
 -- The construction, ABSTRACT over the canonicaliser (never normalised).

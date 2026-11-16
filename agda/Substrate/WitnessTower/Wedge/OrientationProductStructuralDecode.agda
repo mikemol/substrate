@@ -6,9 +6,9 @@
 -- link that ⊗ˢ (OrientationProductStructural) computes the actual Perm product ⊗.
 --
 -- Route: the ⊗-combine characterization for ⊗ˢ (lookup at a combine index is the
--- combine of the factor lookups), then lookup-ext + combine-remQuot (as in
+-- combine of the factor lookups), then lookup-ext ℕ+ combine-remQuot (as in
 -- OrientationProductLaws.⊗-assoc). The characterization reduces, via the outer
--- ◂-recursion + the committed keystone (blockPunchIn-combine), to two GENERALIZED
+-- ◂-recursion ℕ+ the committed keystone (blockPunchIn-combine), to two GENERALIZED
 -- facts about `replay-aux` proven by induction on the length-k FRAGMENT (stated in
 -- toℕ, which sidesteps the fragment-grade / block-modulus mismatch):
 --   HEAD: the first k entries are the p·n-offset replay of decode l's values.
@@ -21,9 +21,15 @@
 
 module Substrate.WitnessTower.Wedge.OrientationProductStructuralDecode where
 
-open import Substrate.Foundation.Nat
-  using (ℕ; zero; suc; _+_; _*_; _≤_; _<_; z≤n; s≤s; s≤s-injective)
-open import Substrate.Foundation.Nat.Properties.Add using (+-comm; +-suc; +-assoc)
+open import Substrate.Foundation.Nat.Le
+open import Substrate.Foundation.Nat.Lt
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.SLesInjective
+open import Substrate.Foundation.Nat.Times
+open import Substrate.Foundation.Nat.Properties.Add.PlusAssoc
+open import Substrate.Foundation.Nat.Properties.Add.PlusComm
+open import Substrate.Foundation.Nat.Properties.Add.PlusSuc
 open import Substrate.Foundation.Nat.Properties.Order
   using (+-monoʳ-≤; +-mono-≤; *-monoˡ-≤; ≤-trans; m≤m+n; <-irrefl)
 open import Substrate.Foundation.Fin.Fin
@@ -36,27 +42,32 @@ open import Substrate.Foundation.Fin.Punctured using (punchIn)
 open import Substrate.Foundation.Fin.Combine using (combine)
 open import Substrate.Foundation.Fin.RemQuot using (remQuot)
 open import Substrate.Foundation.Fin.Combine.CombineRemQuotInverse using (combine-remQuot)
-open import Substrate.Foundation.Fin.Combine.Assoc using (toℕ-inject+; toℕ-raise; toℕ-combine)
+open import Substrate.Foundation.Fin.Combine.Assoc.ToNatCombine
 open import Substrate.Foundation.Vec using (lookup)
 open import Substrate.Foundation.Product using (proj₁; proj₂)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; subst)
-open import Substrate.Foundation.Sum using (_⊎_; inj₁; inj₂)
-open import Substrate.Foundation.Empty using (⊥-elim)
+open import Substrate.Foundation.Sum.Sum
+open import Substrate.Foundation.Empty.BotElim
 open import Substrate.WitnessTower.Enumerate using (Perm; insert-at)
 open import Substrate.WitnessTower.IsPermutation using (lookup-map)
 open import Substrate.WitnessTower.Decompose using (lookup-ext)
-open import Substrate.WitnessTower.LehmerPath using (LehmerPath; start; _◂_; decode)
+open import Substrate.WitnessTower.LehmerPath.Decode
+open import Substrate.WitnessTower.LehmerPath.LehmerPath
 open import Substrate.WitnessTower.Wedge.OrientationProduct using (_⊗_)
 open import Substrate.WitnessTower.Wedge.OrientationProductLaws using (⊗-combine)
 open import Substrate.WitnessTower.Wedge.OrientationProductStructural
   using (offsetDigit; replay-aux; _⊗ˢ_)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Subst
 
 ------------------------------------------------------------------------
--- 0. toℕ of the offset digit: p·n + toℕ q (fromℕ< round-trip).
+-- 0. toℕ of the offset digit: p·n ℕ+ toℕ q (fromℕ< round-trip).
 ------------------------------------------------------------------------
 
 toℕ-offsetDigit : ∀ {m} (p : Fin (suc m)) (n : ℕ) {k : ℕ} (q : Fin (suc k)) →
-                  toℕ (offsetDigit p n q) ≡ toℕ p * n + toℕ q
+                  toℕ (offsetDigit p n q) ≡ toℕ p * n ℕ+ toℕ q
 toℕ-offsetDigit p n q = toℕ-fromℕ< _
 
 ------------------------------------------------------------------------
@@ -107,7 +118,7 @@ lookup-insert-suc p σ i = lookup-map (punchIn p) σ i
 replay-head : ∀ {m} (p : Fin (suc m)) (n : ℕ) {k : ℕ}
               (l : LehmerPath k) (b : LehmerPath (m * n)) (j : Fin k) →
               toℕ (lookup (decode (replay-aux p n l b)) (inject+ (m * n) j))
-                ≡ toℕ p * n + toℕ (lookup (decode l) j)
+                ≡ toℕ p * n ℕ+ toℕ (lookup (decode l) j)
 replay-head p n start   b ()
 replay-head {m} p n (l ◂ q) b zero =
   trans (cong toℕ (lookup-insert-zero (offsetDigit p n q) (decode (replay-aux p n l b))))
@@ -115,39 +126,39 @@ replay-head {m} p n (l ◂ q) b zero =
 replay-head {m} p n (l ◂ q) b (suc j) =
   trans (cong toℕ (lookup-insert-suc D R (inject+ (m * n) j)))
         (trans punch-eq
-               (cong (λ z → toℕ p * n + toℕ z) (sym (lookup-insert-suc q (decode l) j))))
+               (cong (λ z → toℕ p * n ℕ+ toℕ z) (sym (lookup-insert-suc q (decode l) j))))
   where
   D = offsetDigit p n q
   R = decode (replay-aux p n l b)
   x = lookup R (inject+ (m * n) j)
   v = toℕ (lookup (decode l) j)
-  ihx : toℕ x ≡ toℕ p * n + v
+  ihx : toℕ x ≡ toℕ p * n ℕ+ v
   ihx = replay-head p n l b j
-  toℕD : toℕ D ≡ toℕ p * n + toℕ q
+  toℕD : toℕ D ≡ toℕ p * n ℕ+ toℕ q
   toℕD = toℕ-offsetDigit p n q
-  punch-eq : toℕ (punchIn D x) ≡ toℕ p * n + toℕ (punchIn q (lookup (decode l) j))
+  punch-eq : toℕ (punchIn D x) ≡ toℕ p * n ℕ+ toℕ (punchIn q (lookup (decode l) j))
   punch-eq with <-or-≥ v (toℕ q)
   ... | inj₁ lt =
     trans (toℕ-punchIn-< D x xltD)
-          (trans ihx (cong (λ z → toℕ p * n + z)
+          (trans ihx (cong (λ z → toℕ p * n ℕ+ z)
                            (sym (toℕ-punchIn-< q (lookup (decode l) j) lt))))
     where
-    mono : toℕ p * n + v < toℕ p * n + toℕ q
-    mono = subst (λ z → z ≤ toℕ p * n + toℕ q) (+-suc (toℕ p * n) v)
+    mono : toℕ p * n ℕ+ v < toℕ p * n ℕ+ toℕ q
+    mono = subst (λ z → z ≤ toℕ p * n ℕ+ toℕ q) (+ℕ-suc (toℕ p * n) v)
                  (+-monoʳ-≤ (toℕ p * n) lt)
     xltD : toℕ x < toℕ D
     xltD = subst (λ z → toℕ x < z) (sym toℕD)
-                 (subst (λ z → z < toℕ p * n + toℕ q) (sym ihx) mono)
+                 (subst (λ z → z < toℕ p * n ℕ+ toℕ q) (sym ihx) mono)
   ... | inj₂ ge =
     trans (toℕ-punchIn-≥ D x Dlex)
           (trans (cong suc ihx)
-                 (trans (sym (+-suc (toℕ p * n) v))
-                        (cong (λ z → toℕ p * n + z)
+                 (trans (sym (+ℕ-suc (toℕ p * n) v))
+                        (cong (λ z → toℕ p * n ℕ+ z)
                               (sym (toℕ-punchIn-≥ q (lookup (decode l) j) ge)))))
     where
     Dlex : toℕ D ≤ toℕ x
     Dlex = subst (λ z → toℕ D ≤ z) (sym ihx)
-                 (subst (λ z → z ≤ toℕ p * n + v) (sym toℕD)
+                 (subst (λ z → z ≤ toℕ p * n ℕ+ v) (sym toℕD)
                         (+-monoʳ-≤ (toℕ p * n) ge))
 
 ------------------------------------------------------------------------
@@ -158,7 +169,7 @@ replay-head {m} p n (l ◂ q) b (suc j) =
 blkShift : (off cnt w : ℕ) → ℕ
 blkShift off cnt w with <-or-≥ w off
 ... | inj₁ _ = w
-... | inj₂ _ = cnt + w
+... | inj₂ _ = cnt ℕ+ w
 
 blkShift-0 : (off w : ℕ) → blkShift off zero w ≡ w
 blkShift-0 off w with <-or-≥ w off
@@ -172,7 +183,7 @@ blkShift-< off cnt w lt with <-or-≥ w off
 ... | inj₁ _  = refl
 ... | inj₂ ge = ⊥-elim (<-irrefl w (≤-trans lt ge))
 
-blkShift-≥ : (off cnt w : ℕ) → off ≤ w → blkShift off cnt w ≡ cnt + w
+blkShift-≥ : (off cnt w : ℕ) → off ≤ w → blkShift off cnt w ≡ cnt ℕ+ w
 blkShift-≥ off cnt w ge with <-or-≥ w off
 ... | inj₁ lt = ⊥-elim (<-irrefl w (≤-trans lt ge))
 ... | inj₂ _  = refl
@@ -199,7 +210,7 @@ replay-tail {m} p n (_◂_ {k} l q) b i =
   ihy = replay-tail p n l b i
   q≤k : toℕ q ≤ k
   q≤k = s≤s-injective (toℕ-bound q)
-  toℕD : toℕ D ≡ off + toℕ q
+  toℕD : toℕ D ≡ off ℕ+ toℕ q
   toℕD = toℕ-offsetDigit p n q
   -- Case-split on the dichotomy inside a helper whose return type is FIXED
   -- (not `with`-abstracted), so blkShift-< / blkShift-≥ rewrite the goal cleanly.
@@ -218,16 +229,16 @@ replay-tail {m} p n (_◂_ {k} l q) b i =
       yltD : toℕ y < toℕ D
       yltD = subst (λ z → z < toℕ D) (sym ihyw) (≤-trans lt off≤D)
     helper (inj₂ ge) =
-      -- off ≤ w : y = k + w sits above D = off + toℕ q ; punch bumps by one.
+      -- off ≤ w : y = k ℕ+ w sits above D = off ℕ+ toℕ q ; punch bumps by one.
       trans (trans (toℕ-punchIn-≥ D y Dley) (cong suc ihykw))
             (sym (blkShift-≥ off (suc k) w ge))
       where
-      ihykw : toℕ y ≡ k + w
+      ihykw : toℕ y ≡ k ℕ+ w
       ihykw = trans ihy (blkShift-≥ off k w ge)
       Dley : toℕ D ≤ toℕ y
       Dley = subst (λ z → toℕ D ≤ z) (sym ihykw)
-                   (subst (λ z → z ≤ k + w) (sym toℕD)
-                          (subst (λ z → off + toℕ q ≤ z) (+-comm w k)
+                   (subst (λ z → z ≤ k ℕ+ w) (sym toℕD)
+                          (subst (λ z → off ℕ+ toℕ q ≤ z) (+ℕ-comm w k)
                                  (+-mono-≤ ge q≤k)))
 
 ------------------------------------------------------------------------
@@ -236,30 +247,30 @@ replay-tail {m} p n (_◂_ {k} l q) b i =
 ------------------------------------------------------------------------
 
 blockBound : ∀ {m n} (p : Fin (suc m)) (A : Fin m) (B : Fin n) →
-             toℕ A < toℕ p → toℕ A * n + toℕ B < toℕ p * n
+             toℕ A < toℕ p → toℕ A * n ℕ+ toℕ B < toℕ p * n
 blockBound {m} {n} p A B A<p =
-  subst (λ z → z ≤ toℕ p * n) (+-suc (toℕ A * n) (toℕ B))
+  subst (λ z → z ≤ toℕ p * n) (+ℕ-suc (toℕ A * n) (toℕ B))
         (≤-trans (+-monoʳ-≤ (toℕ A * n) (toℕ-bound B))
-                 (subst (λ z → z ≤ toℕ p * n) (sym (+-comm (toℕ A * n) n))
+                 (subst (λ z → z ≤ toℕ p * n) (sym (+ℕ-comm (toℕ A * n) n))
                         (*-monoˡ-≤ n A<p)))
 
 blkShift-combine : ∀ {m n} (p : Fin (suc m)) (A : Fin m) (B : Fin n) →
-                   blkShift (toℕ p * n) n (toℕ A * n + toℕ B)
-                     ≡ toℕ (punchIn p A) * n + toℕ B
+                   blkShift (toℕ p * n) n (toℕ A * n ℕ+ toℕ B)
+                     ≡ toℕ (punchIn p A) * n ℕ+ toℕ B
 blkShift-combine {m} {n} p A B with <-or-≥ (toℕ A) (toℕ p)
 ... | inj₁ A<p =
-      trans (blkShift-< (toℕ p * n) n (toℕ A * n + toℕ B) (blockBound p A B A<p))
-            (cong (λ z → z * n + toℕ B) (sym (toℕ-punchIn-< p A A<p)))
+      trans (blkShift-< (toℕ p * n) n (toℕ A * n ℕ+ toℕ B) (blockBound p A B A<p))
+            (cong (λ z → z * n ℕ+ toℕ B) (sym (toℕ-punchIn-< p A A<p)))
 ... | inj₂ p≤A =
-      trans (blkShift-≥ (toℕ p * n) n (toℕ A * n + toℕ B)
+      trans (blkShift-≥ (toℕ p * n) n (toℕ A * n ℕ+ toℕ B)
                         (≤-trans (*-monoˡ-≤ n p≤A) (m≤m+n (toℕ A * n) (toℕ B))))
-            (trans (sym (+-assoc n (toℕ A * n) (toℕ B)))
-                   (cong (λ z → z * n + toℕ B) (sym (toℕ-punchIn-≥ p A p≤A))))
+            (trans (sym (+ℕ-assoc n (toℕ A * n) (toℕ B)))
+                   (cong (λ z → z * n ℕ+ toℕ B) (sym (toℕ-punchIn-≥ p A p≤A))))
 
 ------------------------------------------------------------------------
 -- 8. THE ⊗-COMBINE CHARACTERIZATION for ⊗ˢ, then decode-agreement. Induction on
 --    l₁: the head (combine zero) via replay-head, the tail (combine suc) via
---    replay-tail + blkShift-combine + the outer IH. lookup-ext closes decode-⊗ˢ.
+--    replay-tail ℕ+ blkShift-combine ℕ+ the outer IH. lookup-ext closes decode-⊗ˢ.
 ------------------------------------------------------------------------
 
 ⊗ˢ-combine : ∀ {m n} (l₁ : LehmerPath m) (l₂ : LehmerPath n) (i : Fin m) (j : Fin n) →
@@ -277,7 +288,7 @@ blkShift-combine {m} {n} p A B with <-or-≥ (toℕ A) (toℕ p)
                (sym (lookup-insert-suc p (decode l₁) i)))))))
   where
   ihComb : toℕ (lookup (decode (l₁ ⊗ˢ l₂)) (combine i j))
-             ≡ toℕ (lookup (decode l₁) i) * n + toℕ (lookup (decode l₂) j)
+             ≡ toℕ (lookup (decode l₁) i) * n ℕ+ toℕ (lookup (decode l₂) j)
   ihComb = trans (cong toℕ (⊗ˢ-combine l₁ l₂ i j))
                  (toℕ-combine (lookup (decode l₁) i) (lookup (decode l₂) j))
 

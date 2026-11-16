@@ -12,13 +12,15 @@
 
 module Substrate.Algebra.GL3F2.SingerOrder.Iterate where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Eq using (_≡_; refl; trans; cong)
+open import Substrate.Foundation.Nat.Nat
 
-open import Substrate.Algebra.F2.Linear using (apply)
+open import Substrate.Algebra.F2.Linear.Linear
 open import Substrate.Algebra.F2.FanoPlane using (Point; point-to-vec; singer; singer-Linear)
 open import Substrate.Category.Coalgebra.FiniteOrder using (iterate)
 open import Substrate.Algebra.GL3F2.SingerOrder.Commutes using (singer-commutes)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 -- k-fold singer on Points.
 singer^ : ℕ → Point → Point

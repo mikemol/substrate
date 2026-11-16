@@ -10,11 +10,11 @@
 
 module Substrate.Algebra.F2.Polynomial.Utilities.LeadingPosition where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Vec using ([]; _∷_)
 open import Substrate.Foundation.Maybe using (Maybe; just; nothing)
 
-open import Substrate.Algebra.F2 using (𝟘; 𝟙)
+open import Substrate.Algebra.F2.F2
 open import Substrate.Algebra.F2.Polynomial using (Polynomial)
 
 leading-position-acc : ∀ {n} → Polynomial n → ℕ → Maybe ℕ → Maybe ℕ

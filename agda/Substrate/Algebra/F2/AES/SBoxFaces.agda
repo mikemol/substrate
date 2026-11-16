@@ -31,12 +31,11 @@
 
 module Substrate.Algebra.F2.AES.SBoxFaces where
 
-open import Substrate.Foundation.Bool using (Bool; false)
-open import Substrate.Foundation.Eq using (_≡_; cong)
+open import Substrate.Foundation.Bool.Bool
 open import Substrate.Algebra.F2.CommRing using (F₂-CommRing)
-open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit.Base using (m-lo; is-zero8)
+open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit.Base.IsZero8
+open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit.Base.MLo
 import Substrate.Algebra.Polynomial.Graded.FromCommRing as F
-import Substrate.Algebra.Polynomial.Graded.Mod as M
 import Substrate.Algebra.Polynomial.Graded.Quotient as Q
 import Substrate.Algebra.Polynomial.Graded.Div as D
 open F.Over F₂-CommRing using (Poly)
@@ -44,7 +43,10 @@ open M.Over F₂-CommRing 7 m-lo using (oneC)
 open Q.Over F₂-CommRing 7 m-lo using (_*Q_)
 open import Substrate.Algebra.F2.Polynomial.Wedge.SBox using (sbox; affine; pinv-nonzero)
 open import Substrate.Algebra.F2.Polynomial.Wedge.Inverse using (inv; inv-law; W)
+import Substrate.Algebra.Polynomial.Graded.Mod as M
 open import Substrate.Algebra.F2.Polynomial.Wedge.SBoxTable.Properties using (sbox-is-aes)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- The three faces, named in one place.

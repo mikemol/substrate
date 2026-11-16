@@ -8,13 +8,13 @@ module Substrate.Groups.Z-x-FreeCyclic-PhaseAdvance.Z3.AsSigma where
 
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Literals using (₁; ₂)
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Groups.Coxeter.Word using (Word)
 
 import Substrate.Groups.Coxeter.Cyclic.Base 2 as Z₃B
 import Substrate.Groups.Coxeter.Cyclic.Existential 2 as Z₃E
 import Substrate.Groups.Coxeter.Fin-from-Cyclic 2 as Z₃Fin
 open import Substrate.Algebra.Nat.CyclicSuc using (cyclic-suc)
+open import Substrate.Foundation.Eq
 
 phase-advance-Z₃-as-σ₃ :
   {w-p : Word Z₃B.Gen}

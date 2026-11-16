@@ -24,12 +24,12 @@
 
 module Substrate.Conway.IntegerEmbedding where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Groups.Coxeter.Word using (Word; []; _∷_)
 open import Substrate.Conway.SurrealFinite using (SurrealFinite; ⟨_∣_⟩)
 open import Substrate.Conway.Examples using (Zero; One; NegOne)
 open import Substrate.Conway.Neg using (-ⁿ_)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. Non-negative integer embedding.

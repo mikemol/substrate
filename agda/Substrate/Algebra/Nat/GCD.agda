@@ -2,7 +2,7 @@
 -- Substrate.Algebra.Nat.GCD
 --
 -- Substrate-native ℕ-level Greatest Common Divisor + Least Common
--- Multiple via the Wedge + EEATrace technique. File-per-lemma:
+-- Multiple via the Wedge-GCD + EEATrace technique. File-per-lemma:
 --
 --   GCD.Wedge             — modulo as a structural decomposition record.
 --   GCD.ConstructWedge    — bridge to substrate's DivMod.

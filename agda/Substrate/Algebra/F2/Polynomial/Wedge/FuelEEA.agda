@@ -8,7 +8,7 @@
 -- cross-session machinery.  It glues the landed pieces:
 --
 --   trim            — present each remainder as monic exact-degree (or zero)
---   step-bezout-poly — the back-substitution s·a + t·m = r at each step
+--   step-bezout-poly — the back-substitution s·a +F t·m = r at each step
 --   base/unit-bezout — the gcd-is-divisor / gcd-is-unit terminals
 --   bezout-cong-b    — transport a witness across a value-equal divisor
 --   monic-pres       — a monic full-length poly IS the divisor b-poly
@@ -25,11 +25,12 @@
 
 module Substrate.Algebra.F2.Polynomial.Wedge.FuelEEA where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Vec using (Vec; []; _∷_)
 open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
-import Substrate.Algebra.F2 as F2
+-- ⚑ WAS `import Substrate.Algebra.F2 as F2` — retired barrel + banned alias.
+-- The `F`/`CT` aliases below name LIVE parameterized modules and stay.
+open import Substrate.Algebra.F2.F2
 open import Substrate.Algebra.F2.CommRing using (F₂-CommRing)
 open import Substrate.Algebra.F2.Polynomial.Wedge.EEATrace
   using (QPoly; zero-q; divisor-q; div-rem)
@@ -43,18 +44,22 @@ import Substrate.Algebra.Polynomial.Graded.FromCommRing as F
 import Substrate.Algebra.Polynomial.Graded.Mod as M
 import Substrate.Algebra.Polynomial.Graded.Div as D
 open F.Over F₂-CommRing using (Poly; nth; convCoeff; +-identityʳ)
-open M.Over F₂-CommRing 0 (F2.𝟘 ∷ []) using (vinit; vlast)
+open M.Over F₂-CommRing 0 (𝟘 ∷ []) using (vinit; vlast)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 -- cross-instance transport: vlast/vinit agree across Div.Over instances
 -- (provable by induction; the projections reduce within each instance).
-vlast-cross : {d₀ d₁ : ℕ} (f₀ : Vec F2.F₂ (suc d₀)) (f₁ : Vec F2.F₂ (suc d₁))
-              {n : ℕ} (v : Vec F2.F₂ (suc n))
+vlast-cross : {d₀ d₁ : ℕ} (f₀ : Vec F₂ (suc d₀)) (f₁ : Vec F₂ (suc d₁))
+              {n : ℕ} (v : Vec F₂ (suc n))
             → M.Over.vlast F₂-CommRing d₀ f₀ v ≡ M.Over.vlast F₂-CommRing d₁ f₁ v
 vlast-cross f₀ f₁ {zero}  (x ∷ []) = refl
 vlast-cross f₀ f₁ {suc n} (x ∷ v)  = vlast-cross f₀ f₁ v
 
-vinit-cross : {d₀ d₁ : ℕ} (f₀ : Vec F2.F₂ (suc d₀)) (f₁ : Vec F2.F₂ (suc d₁))
-              {n : ℕ} (v : Vec F2.F₂ (suc n))
+vinit-cross : {d₀ d₁ : ℕ} (f₀ : Vec F₂ (suc d₀)) (f₁ : Vec F₂ (suc d₁))
+              {n : ℕ} (v : Vec F₂ (suc n))
             → M.Over.vinit F₂-CommRing d₀ f₀ v ≡ M.Over.vinit F₂-CommRing d₁ f₁ v
 vinit-cross f₀ f₁ {zero}  (x ∷ []) = refl
 vinit-cross f₀ f₁ {suc n} (x ∷ v)  = cong (x ∷_) (vinit-cross f₀ f₁ v)
@@ -62,12 +67,12 @@ vinit-cross f₀ f₁ {suc n} (x ∷ v)  = cong (x ∷_) (vinit-cross f₀ f₁ 
 -- THE FUEL-EEA: build the Bézout witness for inverting `a` modulo the divisor
 -- `divisor-q d f-lo`, by the extended Euclidean recursion.  Fuel bounds the
 -- degree-descent (a divisor of degree suc d needs ≤ suc d steps).
-fuel-bezout : ℕ → (a : QPoly) (d : ℕ) (f-lo : Vec F2.F₂ (suc d))
+fuel-bezout : ℕ → (a : QPoly) (d : ℕ) (f-lo : Vec F₂ (suc d))
             → Σ QPoly (BezoutNthWitness a (divisor-q d f-lo))
--- out of fuel (unreachable when fuel ≥ degree): the self-witness 𝟙·a + 0·b = a.
+-- out of fuel (unreachable when fuel ≥ degree): the self-witness 𝟙·a +F 0·b = a.
 fuel-bezout zero a d f-lo =
-  a , ((suc zero , (F2.𝟙 ∷ [])) , zero-q ,
-       (λ k → trans (+-identityʳ (convCoeff (F2.𝟙 ∷ []) (proj₂ a) k))
+  a , ((suc zero , (𝟙 ∷ [])) , zero-q ,
+       (λ k → trans (+-identityʳ (convCoeff (𝟙 ∷ []) (proj₂ a) k))
                     (convCoeff-one (proj₂ a) k)))
 fuel-bezout (suc fuel) a d f-lo with trim (suc d) (proj₂ (div-rem d f-lo a))
 ... | is-zero h =
@@ -80,8 +85,8 @@ fuel-bezout (suc fuel) a d f-lo with trim (suc d) (proj₂ (div-rem d f-lo a))
     (bezout-cong-b {b′ = div-rem d f-lo a} {g = suc zero , rr} hc (unit-bezout (divisor-q d f-lo) (suc zero , rr)))
 ... | is-monic (suc e′) rr hm hc =
   let g,sub = fuel-bezout fuel (divisor-q d f-lo) e′ (vinit rr)
-      hm′ = trans (vlast-cross (vinit rr) (F2.𝟘 ∷ []) rr) hm
-      hf′ = vinit-cross (vinit rr) (F2.𝟘 ∷ []) rr
+      hm′ = trans (vlast-cross (vinit rr) (𝟘 ∷ []) rr) hm
+      hf′ = vinit-cross (vinit rr) (𝟘 ∷ []) rr
   in proj₁ g,sub ,
      step-bezout-poly {g = proj₁ g,sub} d f-lo
        (bezout-cong-b {b′ = div-rem d f-lo a} {g = proj₁ g,sub}

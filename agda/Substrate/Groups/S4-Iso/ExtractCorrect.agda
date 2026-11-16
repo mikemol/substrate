@@ -18,12 +18,18 @@ import Substrate.Groups.S3 as S₃
 open import Substrate.Groups.Actions.S3-on-V4.Axioms.ActEpsilonN.EpsilonN
 open import Substrate.Groups.Symmetric.Permutation Axis
 open import Substrate.Groups.Symmetric.Eq Axis using (_≈_)
-open import Substrate.Foundation.Empty using (⊥; ⊥-elim)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; trans; sym; cong; sym-trans; trans-sym; cong-trans)
+open import Substrate.Foundation.Empty.Bot
+open import Substrate.Foundation.Empty.BotElim
 
-open import Substrate.Groups.S4-Iso.Embedding using (embed-S₃)
+open import Substrate.Groups.S4-Iso.Embedding.EmbedS3
 open import Substrate.Groups.S4-Iso.Extract using (extract-s; extract-s-from)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.SymTrans
+open import Substrate.Foundation.Eq.TransSym
+open import Substrate.Foundation.Eq.CongTrans
 
 ------------------------------------------------------------------------
 -- Permutation apply is injective (derived from inv-l).

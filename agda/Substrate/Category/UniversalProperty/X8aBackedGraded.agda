@@ -17,12 +17,17 @@
 module Substrate.Category.UniversalProperty.X8aBackedGraded where
 
 open import Substrate.Foundation.Product using (_,_)
-open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.Foundation.Negation using (¬_; Dec; yes; no)
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Negation.Dec
+open import Substrate.Foundation.Negation.Not
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Category.UPArrowGraded using (UPArrowᴳ; mkUP)
 open import Substrate.Category.UniversalProperty.BackedGraded using (BackedUPᴳ)
-open import Substrate.S5.S5Fixpoint using (module Machine)
+-- ⚑ `Machine` → `FixpointMachine`: renamed at source after it collided with
+-- `S5Verdict.Machine` ([ShadowedModule]).  Three genuinely different machines
+-- share that name; this is the `next : S → S` one with a decidable fixpoint
+-- probe, which is what this module instantiates over ℕ.
+open import Substrate.S5.S5Fixpoint using (module FixpointMachine)
+open import Substrate.Foundation.Eq
 
 -- the concrete extruder machine over ℕ: `next` = predecessor (its fixpoint is 0).
 next : ℕ → ℕ
@@ -33,7 +38,7 @@ fix? : (s : ℕ) → Dec (next s ≡ s)
 fix? zero    = yes refl
 fix? (suc n) = no λ ()
 
-open Machine ℕ next fix? using (run)
+open FixpointMachine ℕ next fix? using (run)
 
 -- FUEL IS THE GRADE: solve {n} = run n (run the reduction n steps to the fixpoint).
 x8a-arrowᴳ : UPArrowᴳ (λ _ → ℕ) (λ _ → ℕ)

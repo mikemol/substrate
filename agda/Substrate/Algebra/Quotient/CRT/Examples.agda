@@ -12,12 +12,12 @@
 
 module Substrate.Algebra.Quotient.CRT.Examples where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Foundation.Product using (_,_)
 open import Substrate.Algebra.Quotient.CRT using (CRT-Witness; combine)
 open import Substrate.Algebra.Quotient.CRT.FromIdempotents using (crt-witness)
 open import Substrate.Algebra.Quotient.CRT.Inverses
   using (ModInverses; idempotents-from-inverses)
+open import Substrate.Foundation.Eq
 
 -- the modular inverses for (M,N) = (3,5): 5·2 ≡ 1 mod 3, 3·2 ≡ 1 mod 5.
 inv-3-5 : ModInverses 2 4

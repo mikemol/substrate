@@ -10,11 +10,7 @@
 
 module Substrate.Foundation.Fin.To where
 
-open import Substrate.Foundation.Nat
-  renaming (_<_ to _<ℕ_; _≤_ to _≤ℕ_)
-open import Substrate.Foundation.Eq
-open import Substrate.Foundation.Empty
-open import Substrate.Foundation.Negation
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
 
 

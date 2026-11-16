@@ -29,12 +29,12 @@
 
 module Substrate.Category.UniversalProperty.InteropGraded where
 
-open import Substrate.Foundation.Nat using (ℕ; _*_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Times
 open import Substrate.Foundation.Nat.Properties.Mul using (*-assoc)
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Fin.To
 open import Substrate.Foundation.Fin.Combine using (combine)
-open import Substrate.Foundation.Fin.Combine.Assoc using (combine-assoc)
+open import Substrate.Foundation.Fin.Combine.Assoc.CombineAssoc
 open import Substrate.WitnessTower.Wedge.OrientationBimonoidal
   using (GradedProductOver; GradedAssocOver; u; _∧_)
 

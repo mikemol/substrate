@@ -22,6 +22,7 @@ open import Substrate.Category.Strict2Monoid.DirectProduct using (direct-product
 
 import Substrate.Groups.Z3-Coxeter-Strict2Monoid as Z₃-S2M
 import Substrate.Groups.FreeCyclic-Coxeter-Strict2Monoid as F-S2M
+open import Substrate.Category.Strict2Monoid.FromCoxeter
 
 ------------------------------------------------------------------------
 -- The DirectProduct instance.

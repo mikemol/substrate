@@ -23,19 +23,26 @@
 
 module Substrate.Logic.Evidence.GValueAsQ where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _*_; _+_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Times
 open import Substrate.Foundation.Nat.Properties.Mul using (*-comm; *-assoc)
-open import Substrate.Foundation.Nat.Properties.Add using (+-comm)
-open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym; cong; cong₂)
-open import Substrate.Algebra.Z using (ℤ; +_; -suc_; 1ℤ)
-open import Substrate.Algebra.Z.Mul using (_*ℤ_)
+open import Substrate.Foundation.Nat.Properties.Add.PlusComm
+open import Substrate.Algebra.Z.Int
 open import Substrate.Algebra.Z.Properties.MulFull using (*ℤ-identityˡ; *ℤ-identityʳ)
-open import Substrate.Algebra.Q using (ℚ; mkℚ; 1ℚ)
+open import Substrate.Algebra.Q.OneRat
+open import Substrate.Algebra.Q.Rat
 open import Substrate.Algebra.Q.Mul using (_*ℚ_)
 open import Substrate.Algebra.Q.Arithmetic using (_+ℚ_)
 open import Substrate.Algebra.Q.Properties.Field using (+ℚ-comm; +ℚ-assoc)
 open import Substrate.Algebra.Q.Equiv using (_≈ℚ_)
-open import Substrate.Foundation.Empty using (⊥)
+open import Substrate.Foundation.Empty.Bot
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.Algebra.Q.Add
 
 ------------------------------------------------------------------------
 -- A G-value: a POSITIVE rational scalar (suc na')/(suc db) ∈ (0,∞).
@@ -72,11 +79,11 @@ gvalue-antipode na' db =
 -- parallel conductance = Σ = ℚ addition (Kirchhoff's parallel rule).
 ------------------------------------------------------------------------
 
--- G_OR(G₁,G₂) = G₁ + G₂  (parallel conductance).
+-- G_OR(G₁,G₂) = G₁ ℕ+ G₂  (parallel conductance).
 gor : ℚ → ℚ → ℚ
 gor a b = a +ℚ b
 
--- commutative + associative over ≈ℚ — the parallel-conductance comm. semigroup
+-- commutative ℕ+ associative over ≈ℚ — the parallel-conductance comm. semigroup
 -- (the laws are ℚ's, derived in Q.Properties.Field; here they ARE G_OR's laws).
 gor-comm : (a b : ℚ) → gor a b ≈ℚ gor b a
 gor-comm = +ℚ-comm
@@ -111,7 +118,7 @@ gand a b = (a *ℚ b) *ℚ recip (a +ℚ b)
 ------------------------------------------------------------------------
 -- DeMorgan EXACT:  G_NOT(G_OR(G₁,G₂)) ≈ G_AND(G_NOT G₁, G_NOT G₂).
 -- Cross-multiplication reduces it to a ℕ identity: the two channel-sums
--- S = n₁d₂ + n₂d₁ and T = d₁n₂ + d₂n₁ agree up to *-comm and +-comm.
+-- S = n₁d₂ ℕ+ n₂d₁ and T = d₁n₂ ℕ+ d₂n₁ agree up to *-comm and +-comm.
 ------------------------------------------------------------------------
 
 demorgan : (na'₁ db₁ na'₂ db₂ : ℕ) →
@@ -124,10 +131,10 @@ demorgan na'₁ db₁ na'₂ db₂ = cong +_ demorgan-ℕ
     DD NN S T : ℕ
     DD = d₁ * d₂        -- numerator of both sides
     NN = n₁ * n₂
-    S  = n₁ * d₂ + n₂ * d₁     -- denom of LHS  (G_OR's numerator)
-    T  = d₁ * n₂ + d₂ * n₁     -- the AND-side channel sum
+    S  = n₁ * d₂ ℕ+ n₂ * d₁     -- denom of LHS  (G_OR's numerator)
+    T  = d₁ * n₂ ℕ+ d₂ * n₁     -- the AND-side channel sum
     T≡S : T ≡ S
-    T≡S = trans (cong₂ _+_ (*-comm d₁ n₂) (*-comm d₂ n₁)) (+-comm (n₂ * d₁) (n₁ * d₂))
+    T≡S = trans (cong₂ _ℕ+_ (*-comm d₁ n₂) (*-comm d₂ n₁)) (+ℕ-comm (n₂ * d₁) (n₁ * d₂))
     demorgan-ℕ : DD * (NN * T) ≡ (DD * NN) * S
     demorgan-ℕ = trans (cong (λ z → DD * (NN * z)) T≡S) (sym (*-assoc DD NN S))
 
@@ -158,7 +165,7 @@ demorgan na'₁ db₁ na'₂ db₂ = cong +_ demorgan-ℕ
 ------------------------------------------------------------------------
 
 open import Substrate.Foundation.Unit using (⊤)
-open import Substrate.Category.CategoryOf using (CategoryOf)
+open import Substrate.Category.CategoryOf.CategoryOf
 open import Substrate.Category.Delooping using (deloop)
 open import Substrate.Algebra.Q.Properties.AddMonoid using (+ℚ-reduced-Monoid; ℚ/≈)
 

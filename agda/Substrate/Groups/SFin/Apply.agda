@@ -8,11 +8,11 @@
 
 module Substrate.Groups.SFin.Apply where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Eq using (_≡_)
 import Substrate.Groups.Symmetric.Permutation as SymP
 open import Substrate.Groups.SFin.Permutation using (Permutation)
+open import Substrate.Foundation.Eq
 
 apply : {n : ℕ} → Permutation n → Fin n → Fin n
 apply {n} = SymP.Permutation.apply

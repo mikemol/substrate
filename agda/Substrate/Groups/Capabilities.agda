@@ -49,7 +49,7 @@ open import Substrate.Groups.Capabilities.PhaseProjection using (PhaseProjection
 import Substrate.Groups.Capabilities.PhaseProjection.Witness as PhaseProjectionW
 open import Substrate.Groups.Capabilities.Strict2Monoid using (Strict2MonoidCapability)
 import Substrate.Groups.Capabilities.Strict2Monoid.Witness as Strict2MonoidW
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Groups.Coxeter.Word using (Word)
 import Substrate.Groups.Coxeter.Cyclic.Base as B
 import Substrate.Groups.Coxeter.Cyclic.Existential as E

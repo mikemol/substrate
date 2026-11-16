@@ -6,13 +6,13 @@
 
 module Substrate.Groups.Z-x-FreeCyclic-Recovery.Z4.EmbedDot where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Groups.Coxeter.Word using (Word)
 
 import Substrate.Groups.Capabilities.xFreeCyclic.Witness as xFreeCyclicW
 import Substrate.Groups.Coxeter.Cyclic.Base 3 as ZB
 import Substrate.Groups.Coxeter.Cyclic.Core 3 as ZCore
 open import Substrate.Groups.Z-x-FreeCyclic-Recovery.Z4.Embed using (embed-Z₄)
+open import Substrate.Foundation.Eq
 cap = xFreeCyclicW.cap 3
 
 

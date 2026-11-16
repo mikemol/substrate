@@ -26,9 +26,10 @@ module Substrate.Category.UniversalProperty.DiagonalEscape where
 -- illuminating framing, NOT a theorem of this slice; not enforced by the typechecker).
 -- Promoting the framing to a theorem would require the formal tie to the classical diagonal (⟡diagonal-lawvere-coalg).
 
-open import Substrate.Foundation.Bool using (Bool; true; false; not)
-open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.Foundation.Negation using (¬_)
+open import Substrate.Foundation.Bool.Bool
+open import Substrate.Foundation.Bool.Not
+open import Substrate.Foundation.Negation.Not
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- ① THE COMMITTED OBJECT: `not` is FIXED-POINT-FREE on Bool — the diagonal's lever. A singular

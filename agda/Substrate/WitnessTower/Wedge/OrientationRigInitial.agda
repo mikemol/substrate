@@ -30,26 +30,28 @@
 
 module Substrate.WitnessTower.Wedge.OrientationRigInitial where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Times
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Inject using (inject+)
-open import Substrate.Foundation.Eq using (_≡_)
-open import Substrate.WitnessTower.LehmerPath using (LehmerPath; start; _◂_)
+open import Substrate.WitnessTower.LehmerPath.LehmerPath
 open import Substrate.WitnessTower.Wedge.OrientationSum using (_⊕_)
 open import Substrate.WitnessTower.Wedge.OrientationProductStructural using (_⊗ˢ_)
 open import Substrate.WitnessTower.Wedge.OrientationUniversal
   using (LehmerAlgebra; base; step; fold; fold-unique; fold-⊕)
 open import Substrate.WitnessTower.Wedge.OrientationRigUniversal using (replayᶜ; fold-⊗)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
--- 1. A RigAlgebra: the ◂-tower + ⊕/⊗ + the coherence laws fold-⊕/fold-⊗ consume. Carrier a
+-- 1. A RigAlgebra: the ◂-tower ℕ+ ⊕/⊗ ℕ+ the coherence laws fold-⊕/fold-⊗ consume. Carrier a
 --    PARAMETER (Set, not Set₁). Each law field is exactly a fold-⊕ / fold-⊗ hypothesis.
 ------------------------------------------------------------------------
 
 record RigAlgebra (C : ℕ → Set) : Set where
   field
     alg       : LehmerAlgebra C
-    _⊕ᶜ_      : ∀ {i j} → C i → C j → C (i + j)
+    _⊕ᶜ_      : ∀ {i j} → C i → C j → C (i ℕ+ j)
     ⊕ᶜ-base   : ∀ {n} (y : C n) → (base alg ⊕ᶜ y) ≡ y
     ⊕ᶜ-step   : ∀ {m n} (x : C m) (p : Fin (suc m)) (y : C n) →
                 (step alg x p ⊕ᶜ y) ≡ step alg (x ⊕ᶜ y) (inject+ n p)

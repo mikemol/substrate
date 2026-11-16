@@ -31,10 +31,11 @@
 
 module Substrate.Lojban.Word (Gismu : Set) where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; cong)
 open import Substrate.Groups.Coxeter.Word
   using (Word; []; _∷_; _++_; ++-assoc; ++-identity-left; ++-identity-right)
 open import Substrate.Category.FreeUniversalProperty.FreeMonoid using (MonoidOn)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- 1. LojbanWord : a word over the gismu generator alphabet.

@@ -9,7 +9,7 @@
 -- SEMIRING (no negation): the substrate's sub-free coordinate (cf. the
 -- Matrix-Tree sub-free Kirchhoff solve, Φ1′).
 --
--- THEOREM `geom-factor`:   𝟙 + x · (Σ_{i<n} xⁱ)  ≡  (Σ_{i<n} xⁱ) + xⁿ
+-- THEOREM `geom-factor`:   𝟙 ℕ+ x · (Σ_{i<n} xⁱ)  ≡  (Σ_{i<n} xⁱ) ℕ+ xⁿ
 --   This is the subtraction-free form of  (x − 𝟙) · Σ_{i<n} xⁱ = xⁿ − 𝟙
 --   (the geometric-sum / cyclotomic factorization). Specialise at the orbit
 --   operator with xⁿ = 𝟙 to get  x · Φ ≡ Φ  i.e. (x − 𝟙)·Φ_p(x) = 0 — the
@@ -22,19 +22,25 @@
 -- GAP (named, NOT built here — borrowed-name discipline): the general
 -- x^L − 1 = ∏_{m|L} Φ_m for COMPOSITE L (the full f072 face-action generality)
 -- needs the divisor recursion / polynomial division — deferred to Ⓕ.face.
--- This module proves the prime + geometric-sum core, which is what Ⓕ.mult needs.
+-- This module proves the prime ℕ+ geometric-sum core, which is what Ⓕ.mult needs.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.Algebra.Polynomial.Cyclotomic where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_)
-open import Substrate.Foundation.Eq using (_≡_; refl; cong; trans; sym)
-open import Substrate.Foundation.Nat.Properties.Add
-  using (+-assoc; +-identityˡ; +-identityʳ)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Times
+open import Substrate.Foundation.Nat.Properties.Add.PlusAssoc
+open import Substrate.Foundation.Nat.Properties.Add.PlusIdentityL
+open import Substrate.Foundation.Nat.Properties.Add.PlusIdentityR
 open import Substrate.Foundation.Nat.Properties.Mul
   using (*-distribˡ-+; *-zeroʳ)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Sym
 
 ------------------------------------------------------------------------
 -- Over any commutative semiring (flat bundle, friction-free — the
@@ -81,8 +87,8 @@ module Over {A : Set}
 -- Concrete witness: the commutative semiring ℕ (Σ_{i<n} xⁱ ∈ ℕ).
 ------------------------------------------------------------------------
 
-module ℕ-cyclotomic = Over _+_ _*_ 0 1 +-assoc +-identityˡ +-identityʳ *-distribˡ-+ *-zeroʳ
+module ℕ-cyclotomic = Over _ℕ+_ _*_ 0 1 +ℕ-assoc +ℕ-identityˡ +ℕ-identityʳ *-distribˡ-+ *-zeroʳ
 
--- e.g. Σ_{i<2} xⁱ = 1 + x; the factor identity holds: 1 + x·(1+x) = (1+x) + x².
-_ : (x : ℕ) → 1 + (x * ℕ-cyclotomic.geomSum x 2) ≡ ℕ-cyclotomic.geomSum x 2 + (ℕ-cyclotomic._^_ x 2)
+-- e.g. Σ_{i<2} xⁱ = 1 ℕ+ x; the factor identity holds: 1 ℕ+ x·(1+x) = (1+x) ℕ+ x².
+_ : (x : ℕ) → 1 ℕ+ (x * ℕ-cyclotomic.geomSum x 2) ≡ ℕ-cyclotomic.geomSum x 2 ℕ+ (ℕ-cyclotomic._^_ x 2)
 _ = λ x → ℕ-cyclotomic.geom-factor x 2

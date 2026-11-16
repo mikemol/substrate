@@ -10,7 +10,7 @@
 
 module Substrate.Algebra.Q.Sub where
 
-open import Substrate.Algebra.Q using (ℚ)
+open import Substrate.Algebra.Q.Rat
 open import Substrate.Algebra.Q.Add using (_+ℚ_)
 open import Substrate.Algebra.Q.Neg using (-ℚ_)
 

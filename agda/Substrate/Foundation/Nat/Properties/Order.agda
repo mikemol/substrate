@@ -9,9 +9,14 @@
 
 module Substrate.Foundation.Nat.Properties.Order where
 
-open import Substrate.Foundation.Nat
-  using (ℕ; zero; suc; _+_; _*_; _≤_; _<_; s≤s; z≤n)
-open import Substrate.Foundation.Empty using (⊥)
+open import Substrate.Foundation.Nat.Le
+open import Substrate.Foundation.Nat.Lt
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Times
+open import Substrate.Foundation.Empty.Bot
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
 
 ≤-suc-r : ∀ {m n} → m ≤ n → m ≤ suc n
 ≤-suc-r z≤n       = z≤n
@@ -58,9 +63,9 @@ open import Substrate.Foundation.Empty using (⊥)
 -- branch of `suc (a mod-suc b) <? suc b`), the remainder is exactly b.
 ------------------------------------------------------------------------
 
-open import Substrate.Foundation.Empty using (⊥; ⊥-elim)
-open import Substrate.Foundation.Negation using (¬_)
-open import Substrate.Foundation.Eq using (_≡_; refl; cong)
+open import Substrate.Foundation.Empty.Bot
+open import Substrate.Foundation.Empty.BotElim
+open import Substrate.Foundation.Negation.Not
 
 ≤-tight : (m b : ℕ) → suc m ≤ suc b → ¬ (suc m ≤ b) → m ≡ b
 ≤-tight zero    zero    _         _      = refl
@@ -73,11 +78,11 @@ open import Substrate.Foundation.Eq using (_≡_; refl; cong)
 -- Additive order: a summand is ≤ the sum. (The chirality pair.)
 ------------------------------------------------------------------------
 
-m≤m+n : (m n : ℕ) → m ≤ m + n
+m≤m+n : (m n : ℕ) → m ≤ m ℕ+ n
 m≤m+n zero    n = z≤n
 m≤m+n (suc m) n = s≤s (m≤m+n m n)
 
-n≤m+n : (m n : ℕ) → n ≤ m + n
+n≤m+n : (m n : ℕ) → n ≤ m ℕ+ n
 n≤m+n zero    n = ≤-refl n
 n≤m+n (suc m) n = ≤-suc-r (n≤m+n m n)
 
@@ -85,15 +90,15 @@ n≤m+n (suc m) n = ≤-suc-r (n≤m+n m n)
 -- Monotonicity: right-summand and left-factor preserve ≤.
 ------------------------------------------------------------------------
 
-+-monoʳ-≤ : (k : ℕ) {m n : ℕ} → m ≤ n → k + m ≤ k + n
++-monoʳ-≤ : (k : ℕ) {m n : ℕ} → m ≤ n → k ℕ+ m ≤ k ℕ+ n
 +-monoʳ-≤ zero    p = p
 +-monoʳ-≤ (suc k) p = s≤s (+-monoʳ-≤ k p)
 
-+-monoˡ-≤ : (k : ℕ) {m n : ℕ} → m ≤ n → m + k ≤ n + k
++-monoˡ-≤ : (k : ℕ) {m n : ℕ} → m ≤ n → m ℕ+ k ≤ n ℕ+ k
 +-monoˡ-≤ k z≤n     = n≤m+n _ k
 +-monoˡ-≤ k (s≤s p) = s≤s (+-monoˡ-≤ k p)
 
-+-mono-≤ : {m n p q : ℕ} → m ≤ n → p ≤ q → m + p ≤ n + q
++-mono-≤ : {m n p q : ℕ} → m ≤ n → p ≤ q → m ℕ+ p ≤ n ℕ+ q
 +-mono-≤ {n = n} {p = p} mn pq = ≤-trans (+-monoˡ-≤ p mn) (+-monoʳ-≤ n pq)
 
 *-monoˡ-≤ : (n : ℕ) {r b : ℕ} → r ≤ b → r * n ≤ b * n

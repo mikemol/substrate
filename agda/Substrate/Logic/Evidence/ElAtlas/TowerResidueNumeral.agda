@@ -25,12 +25,18 @@
 
 module Substrate.Logic.Evidence.ElAtlas.TowerResidueNumeral where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.Algebra.Nat.Mod using (_mod-suc_)
+open import Substrate.Foundation.Nat.Nat.ModSuc
+open import Substrate.Algebra.Nat.Mod.ModSucBound
+open import Substrate.Algebra.Nat.Mod.ModSucId
+open import Substrate.Algebra.Nat.Mod.ModSucPeriodic
+open import Substrate.Algebra.Nat.Mod.ModSucSuc
+open import Substrate.Algebra.Nat.Mod.SucModSucLt
+open import Substrate.Algebra.Nat.Mod.SucModSucSelf
 open import Substrate.Algebra.Wedge.Mul using (Nilpotent)
 open import Substrate.Algebra.Wedge.CrossMul using (cross; Coherent)
 open import Substrate.Logic.Evidence.ElAtlas.CenterIsStarNumeral
   using (ℤ8-mul; numeral-mix; obstruction-cross; graded-obstruction; 2-degree-3; clean-cross)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. The residue-carrying CrossMix IS numeral-mix; the tower's prime-2 residue

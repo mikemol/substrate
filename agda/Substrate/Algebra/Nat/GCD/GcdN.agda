@@ -8,7 +8,7 @@
 
 module Substrate.Algebra.Nat.GCD.GcdN where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Product using (proj₁)
 open import Substrate.Algebra.Nat.GCD.ComputeTrace using (compute-trace)
 

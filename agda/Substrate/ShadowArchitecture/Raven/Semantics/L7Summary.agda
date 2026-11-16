@@ -13,14 +13,14 @@
 
 module Substrate.ShadowArchitecture.Raven.Semantics.L7Summary where
 
-open import Substrate.Foundation.Bool using (Bool; true; false)
+open import Substrate.Foundation.Bool.Bool
 open import Substrate.Foundation.Product using (_×_; _,_)
-open import Substrate.Foundation.Eq using (_≡_)
 
 open import Substrate.ShadowArchitecture.FanoLabeling using (L₇)
 open import Substrate.ShadowArchitecture.Persistence using (Cotype)
 open import Substrate.ShadowArchitecture.Raven.Semantics.Cotypes
 open import Substrate.ShadowArchitecture.Raven.Semantics.L7Population
+open import Substrate.Foundation.Eq
 
 L₇-population-summary :
     -- pre-lockup

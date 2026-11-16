@@ -20,10 +20,12 @@
 
 module Substrate.Linguistic.YonedaEmbedding where
 
-open import Substrate.Linguistic.Roster using (Lang; witness-of)
+open import Substrate.Linguistic.Roster.Lang
+open import Substrate.Linguistic.Roster.WitnessOf
 open import Substrate.Linguistic.Morphism using (LanguageMorphism)
 open import Substrate.Linguistic.HomFunctor
   using (Hom-contra; Hom-contra-map)
+open import Substrate.Category.UniversalProperty.ExtrudeSetoidFunctor
 
 ------------------------------------------------------------------------
 -- 1. The Yoneda embedding よ.
@@ -97,7 +99,7 @@ record PresheafMorphism
 -- PresheafMorphism instance.
 ------------------------------------------------------------------------
 
-open import Substrate.Linguistic.Roster using (lojban)
+open import Substrate.Linguistic.Roster.Lang
 open import Substrate.Linguistic.IdMorphism using (id-morphism)
 
 -- The identity Yoneda morphism よ(L) ⇒ よ(L) (induced by id : L → L).

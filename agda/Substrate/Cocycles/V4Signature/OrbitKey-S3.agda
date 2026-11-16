@@ -32,4 +32,7 @@ open import Substrate.Cocycles.V4Signature.OrbitKey-S3.OrbitKeyToS3
 open import Substrate.Cocycles.V4Signature.OrbitKey-S3.S3ToOrbitKey
 open import Substrate.Cocycles.V4Signature.OrbitKey-S3.OrbitKeyRoundTrip
 open import Substrate.Cocycles.V4Signature.OrbitKey-S3.SFinApplyInj
-open import Substrate.Cocycles.V4Signature.OrbitKey-S3.SFinRoundTrip
+open import Substrate.Cocycles.V4Signature.OrbitKey-S3.SFinRoundTrip.OrbitKeyToS3OfS3ToOrbitKey
+open import Substrate.Cocycles.V4Signature.OrbitKey-S3.SFinRoundTrip.TwoNeq0
+open import Substrate.Cocycles.V4Signature.OrbitKey-S3.SFinRoundTrip.TwoNeq1
+open import Substrate.Cocycles.V4Signature.OrbitKey-S3.SFinRoundTrip.ZeroNeq1

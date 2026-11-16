@@ -17,13 +17,14 @@
 
 module Substrate.Algebra.Wedge.AxisWord.PackedBulk where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; cong)
-open import Substrate.Foundation.Negation using (Dec)
+open import Substrate.Foundation.Negation.Dec
 open import Substrate.Foundation.Product using (Σ; _,_; _×_)
 open import Substrate.Foundation.List using (List; []; _∷_; _++_)
 open import Substrate.Algebra.Wedge.AxisWord.PackedTree using (module PackedTree)
 open import Substrate.Algebra.Wedge.AxisWord.PackedRecall using (module PackedRecall)
 open import Substrate.Algebra.Wedge.AxisWord.PackedInvariant using (module PackedInvariant)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
 
 module PackedBulk {A : Set} (_≟A_ : (a b : A) → Dec (a ≡ b)) where
 

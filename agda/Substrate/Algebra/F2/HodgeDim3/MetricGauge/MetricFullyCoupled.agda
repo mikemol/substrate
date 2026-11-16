@@ -10,10 +10,10 @@
 module Substrate.Algebra.F2.HodgeDim3.MetricGauge.MetricFullyCoupled where
 
 open import Substrate.Foundation.Vec using ([]; _∷_)
-open import Substrate.Foundation.Eq  using (refl)
-open import Substrate.Algebra.F2     using (𝟘; 𝟙)
+open import Substrate.Algebra.F2.F2
 open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.Type          using (SymBilinForm-3)
 open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.NonDegenerate using (NonDegenerate)
+open import Substrate.Foundation.Eq
 
 metric-fully-coupled : SymBilinForm-3
 metric-fully-coupled = 𝟙 ∷ 𝟘 ∷ 𝟘 ∷ 𝟙 ∷ 𝟙 ∷ 𝟙 ∷ []

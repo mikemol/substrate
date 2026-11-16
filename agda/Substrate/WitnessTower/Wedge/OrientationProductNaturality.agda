@@ -18,18 +18,22 @@
 
 module Substrate.WitnessTower.Wedge.OrientationProductNaturality where
 
-open import Substrate.Foundation.Nat using (ℕ; _*_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Times
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Combine using (combine)
 open import Substrate.Foundation.Fin.RemQuot using (remQuot)
 open import Substrate.Foundation.Vec using (lookup)
-open import Substrate.Foundation.Vec.Properties using (lookup∘tabulate)
+open import Substrate.Foundation.Vec.Properties.LookupComptabulate
 open import Substrate.Foundation.Product using (proj₁; proj₂)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
 open import Substrate.WitnessTower.Enumerate using (Perm)
 open import Substrate.WitnessTower.Wedge.OrientationProduct using (_⊗_)
 open import Substrate.WitnessTower.Wedge.OrientationProductComm using (factorSwap; factorSwap-combine)
 open import Substrate.WitnessTower.Wedge.OrientationProductLaws using (⊗-combine)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 ⊗-comm-nat : ∀ {m n} (σ : Perm m) (τ : Perm n) (k : Fin (m * n)) →
              lookup (τ ⊗ σ) (factorSwap m n k) ≡ factorSwap m n (lookup (σ ⊗ τ) k)

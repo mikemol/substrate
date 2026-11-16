@@ -10,8 +10,8 @@
 -- the CONCATENATION side of that bisimulation, generically over the generator:
 --
 --   the word `gᵏ` IS `pow g k` (k-fold composition in the tower's build), and word-concatenation
---   `_Zn-++_` IS the tower's `compose` — `pow-hom : pow g (a + b) ≡ compose (pow g a) (pow g b)`, the
---   homomorphism (ℕ, +) → (⟨g⟩, compose). Instantiated at any order-n generator g (canonically the
+--   `_Zn-++_` IS the tower's `compose` — `pow-hom : pow g (a ℕ+ b) ≡ compose (pow g a) (pow g b)`, the
+--   homomorphism (ℕ, ℕ+) → (⟨g⟩, compose). Instantiated at any order-n generator g (canonically the
 --   n-cycle) this is Zₙ ⊆ Sₙ; the free/ℤ part is grounded here, the finite wrap is the order relation.
 --
 -- Method: ExtrudeSKIKFaces ("an attribute IS its build-trace") — but at the GROWTH level (the piece that
@@ -29,12 +29,16 @@
 
 module Substrate.WitnessTower.CyclicGrounding where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
-open import Substrate.Foundation.Eq  using (_≡_; refl; sym; trans; cong)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
 open import Substrate.WitnessTower.Enumerate using (Perm)
 open import Substrate.WitnessTower.FirstAppearance using (compose; id-perm)
 open import Substrate.WitnessTower.SnGroup
   using (apply; apply-compose; apply-id; apply-injective; compose-id-left)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- ① compose is associative — read off the ACTION via SnGroup's faithfulness (`apply-injective`) and
@@ -58,14 +62,14 @@ pow g (suc k) = compose g (pow g k)
 
 ------------------------------------------------------------------------
 -- ③ THE BISIMILARITY: word-CONCATENATION IS the build's COMPOSE. `pow g` is a monoid homomorphism
---    (ℕ, +, 0) → (⟨g⟩, compose, id) — the grounding of xFreeCyclic's `_Zn-++_` as the tower's `compose`.
+--    (ℕ, ℕ+, 0) → (⟨g⟩, compose, id) — the grounding of xFreeCyclic's `_Zn-++_` as the tower's `compose`.
 --    So the abstract cyclic word-op need never be recomputed: it is read off the build.
 ------------------------------------------------------------------------
 pow-zero : {n : ℕ} (g : Perm n) → pow g zero ≡ id-perm n
 pow-zero g = refl
 
 pow-hom : {n : ℕ} (g : Perm n) (a b : ℕ) →
-          pow g (a + b) ≡ compose (pow g a) (pow g b)
+          pow g (a ℕ+ b) ≡ compose (pow g a) (pow g b)
 pow-hom g zero    b = sym (compose-id-left (pow g b))
 pow-hom g (suc a) b = trans (cong (compose g) (pow-hom g a b))
                             (sym (compose-assoc g (pow g a) (pow g b)))

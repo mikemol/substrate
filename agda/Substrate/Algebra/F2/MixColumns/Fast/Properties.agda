@@ -13,15 +13,21 @@
 module Substrate.Algebra.F2.MixColumns.Fast.Properties where
 
 open import Substrate.Foundation.Vec using (Vec; []; _∷_)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂)
 open import Substrate.Algebra.F2.Vector using (Vector; _+ⱽ_)
-open import Substrate.Algebra.F2.GF256.Mul using (gmul; gmul-comm)
-open import Substrate.Algebra.F2.GF256.MulLaws using (gmul-identityˡ)
+open import Substrate.Algebra.F2.GF256.Mul.Gmul
+open import Substrate.Algebra.F2.GF256.Mul.GmulComm
+open import Substrate.Algebra.F2.GF256.MulLaws.GmulIdentityL
 open import Substrate.Algebra.F2.MixColumns.Base using (c01; c02; c03)
 open import Substrate.Algebra.F2.MixColumns.Scale using (gmul-c02; gmul-c03)
 open import Substrate.Algebra.F2.MixColumns.Proof using (mix; inv; mixcolumns-round-trip)
 open import Substrate.Algebra.F2.GF256.XtimeTable using (xtime-tab; xtime-tab≡xtime)
 open import Substrate.Algebra.F2.MixColumns.Fast using (mix-fast)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.FUSep.FUSepQHexagon.Private
 
 -- the three coefficient bridges (xtime-tab form ≡ the gmul product `mix` uses).
 xt-c02 : (a : Vector 8) → xtime-tab a ≡ gmul c02 a

@@ -19,6 +19,12 @@ module Substrate.S5.S5Carrier where
 open import Substrate.S5.S5Verdict
   using (_≡_; refl; sym; trans; cong; ℕ; zero; suc; final; stepped; _+_; List; []; _∷_; sum)
   renaming (Progress to Progress⟦cbe99ef5⟧)
+open import Substrate.Foundation.List
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
 
 ------------------------------------------------------------------------
 -- The SECTION: the classification read off the suspended carrier. `val` is

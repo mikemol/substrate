@@ -22,7 +22,7 @@
 
 module Substrate.Category.LinearAlgebra where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
 
 ------------------------------------------------------------------------

@@ -17,14 +17,15 @@
 
 module Substrate.Category.UniversalProperty.NuBackedGraded where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _≟_)
+open import Substrate.Foundation.Nat.Dec
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Product using (_×_; _,_)
 open import Substrate.Algebra.Wedge using (DivStr; quot; rem; ℕ-div; fromℕ-Wedge) renaming (Wedge to Wedgeℕ)
 open import Substrate.Algebra.Nat.GCD.ConstructWedge using (construct-wedge)
 open import Substrate.Algebra.Wedge.Coalgebra using (WedgeCoalg; divide)
 open import Substrate.Category.UPArrowGraded using (UPArrowᴳ; mkUP)
 open import Substrate.Category.UniversalProperty.BackedGraded using (BackedUPᴳ)
+open import Substrate.Foundation.Eq
 
 -- the concrete canonical ℕ-div coalgebra (self-contained, not the retiring NuRegistryEntry).
 wedge-zero : (a : ℕ) → Wedgeℕ ℕ-div a 0

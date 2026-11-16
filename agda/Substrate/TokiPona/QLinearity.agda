@@ -18,8 +18,7 @@
 
 module Substrate.TokiPona.QLinearity where
 
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Nat.Nat
 
 open import Substrate.TokiPona.QSemanticSpace using (QSemVec; ∅-Q)
 open import Substrate.TokiPona.QModifierBilinear
@@ -37,6 +36,7 @@ open import Substrate.TokiPona.Particles using (MarkerSet; no-markers; merge-mar
 ------------------------------------------------------------------------
 
 open import Substrate.TokiPona.Particles using (merge-no-markersˡ)
+open import Substrate.Foundation.Eq
 record QLinearity (m : ℕ) : Set where
   field
     -- Interpretation under modifier composition.

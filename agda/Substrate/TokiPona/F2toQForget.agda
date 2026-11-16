@@ -13,12 +13,13 @@
 
 module Substrate.TokiPona.F2toQForget where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; map)
-open import Substrate.Foundation.Eq using (_≡_; refl)
 
-open import Substrate.Algebra.F2 using (F₂; 𝟘; 𝟙)
-open import Substrate.Algebra.Q using (ℚ; 0ℚ; 1ℚ)
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.Q.OneRat
+open import Substrate.Algebra.Q.Rat
+open import Substrate.Algebra.Q.ZeroRat
 
 -- F₂-side imports
 open import Substrate.Algebra.F2.Vector as F2V
@@ -27,6 +28,7 @@ open import Substrate.Algebra.F2.Vector as F2V
 
 -- ℚ-side imports
 open import Substrate.TokiPona.QSemanticSpace using (QSemVec)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. The forgetful map on scalars.

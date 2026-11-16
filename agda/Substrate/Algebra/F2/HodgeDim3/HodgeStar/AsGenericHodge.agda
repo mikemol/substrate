@@ -22,7 +22,7 @@ module Substrate.Algebra.F2.HodgeDim3.HodgeStar.AsGenericHodge where
 open import Substrate.Foundation.Fin.Literals using (₁)
 
 open import Substrate.Algebra.F2.Vector using (Vector)
-open import Substrate.Algebra.F2.Linear using (apply)
+open import Substrate.Algebra.F2.Linear.Linear
 open import Substrate.Algebra.F2.HodgeDim3.HodgeStar
   using (hodge-star-3; hodge-involution-3)
 

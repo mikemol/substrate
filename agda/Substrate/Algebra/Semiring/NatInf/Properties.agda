@@ -15,29 +15,34 @@
 
 module Substrate.Algebra.Semiring.NatInf.Properties where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; cong; cong₂; trans)
-open import Substrate.Foundation.Nat using (ℕ; _+_)
-open import Substrate.Foundation.Nat.Properties.Add
-  using (+-assoc; +-identityʳ; +-comm)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Properties.Add.PlusAssoc
+open import Substrate.Foundation.Nat.Properties.Add.PlusComm
+open import Substrate.Foundation.Nat.Properties.Add.PlusIdentityR
 open import Substrate.Algebra.Semiring.NatInf
   using (ℕ∞; fin; ∞; minℕ; +-distribˡ-minℕ; _⊓_; _⊕_)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.Foundation.Eq.Trans
 
 ------------------------------------------------------------------------
--- ⊕ associativity and right identity (need +-assoc / +-identityʳ).
+-- ⊕ associativity and right identity (need +ℕ-assoc / +ℕ-identityʳ).
 ------------------------------------------------------------------------
 
 ⊕-assoc : (x y z : ℕ∞) → (x ⊕ y) ⊕ z ≡ x ⊕ (y ⊕ z)
 ⊕-assoc ∞       _       _       = refl
 ⊕-assoc (fin _) ∞       _       = refl
 ⊕-assoc (fin _) (fin _) ∞       = refl
-⊕-assoc (fin a) (fin b) (fin c) = cong fin (+-assoc a b c)
+⊕-assoc (fin a) (fin b) (fin c) = cong fin (+ℕ-assoc a b c)
 
 ⊕-identityʳ : (x : ℕ∞) → x ⊕ fin 0 ≡ x
-⊕-identityʳ (fin a) = cong fin (+-identityʳ a)
+⊕-identityʳ (fin a) = cong fin (+ℕ-identityʳ a)
 ⊕-identityʳ ∞       = refl
 
 ------------------------------------------------------------------------
--- Right-distributivity of ⊕ over ⊓ (needs +-comm to conjugate the
+-- Right-distributivity of ⊕ over ⊓ (needs +ℕ-comm to conjugate the
 -- left version proved in NatInf).
 ------------------------------------------------------------------------
 
@@ -48,10 +53,10 @@ open import Substrate.Algebra.Semiring.NatInf
 ⊕-distribʳ-⊓ (fin _) (fin _) ∞       = refl
 ⊕-distribʳ-⊓ (fin a) (fin b) (fin c) = cong fin (right-distrib a b c)
   where
-    -- minℕ a b + c ≡ minℕ (a+c) (b+c): the left distribution conjugated
+    -- minℕ a b ℕ+ c ≡ minℕ (a+c) (b+c): the left distribution conjugated
     -- by commutativity.
-    right-distrib : (a b c : ℕ) → minℕ a b + c ≡ minℕ (a + c) (b + c)
+    right-distrib : (a b c : ℕ) → minℕ a b ℕ+ c ≡ minℕ (a ℕ+ c) (b ℕ+ c)
     right-distrib a b c =
-      trans (+-comm (minℕ a b) c)
+      trans (+ℕ-comm (minℕ a b) c)
             (trans (+-distribˡ-minℕ c a b)
-                   (cong₂ minℕ (+-comm c a) (+-comm c b)))
+                   (cong₂ minℕ (+ℕ-comm c a) (+ℕ-comm c b)))

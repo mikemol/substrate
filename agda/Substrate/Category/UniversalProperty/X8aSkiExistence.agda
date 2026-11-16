@@ -19,13 +19,18 @@
 module Substrate.Category.UniversalProperty.X8aSkiExistence where
 
 open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂)
-open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.Foundation.Negation using (¬_; Dec; yes; no)
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Negation.Dec
+open import Substrate.Foundation.Negation.Not
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Category.UniversalProperty using (UPArrowP; mkUP; SourceP; TargetP; WitnessP)
 open import Substrate.Category.UniversalProperty.Vacuity using (Contentful)
-open import Substrate.S5.S5Fixpoint using (module Machine)
-open import Substrate.FUSep.FUSepQReduce using (stop; shed; Reduce) renaming (Step to Step⟦c0e06c56⟧; Tm to Tm⟦533ef80d⟧)
+-- ⚑ `Machine` → `FixpointMachine`, renamed at source after a [ShadowedModule]
+-- collision with `S5Verdict.Machine`.  (Cf. line below: `Step⟦c0e06c56⟧` /
+-- `Tm⟦533ef80d⟧` are the same disambiguation problem solved the shape-gate way,
+-- where the colliding names are DATA rather than modules.)
+open import Substrate.S5.S5Fixpoint using (module FixpointMachine)
+open import Substrate.FUSep.FUSepQReduce using (stop; shed; Reduce) renaming (Step to Step⟦c0e06c56⟧; Tm-QReduce to Tm⟦533ef80d⟧)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- ① THE SKI STEP FUNCTION from a classifier ⇒ : Reduce (stop/shed tag). next steps to the
@@ -52,7 +57,9 @@ module SkiRun
   ... | stop    = yes refl
   ... | shed t' = no (fpf t t' eq)
 
-  open Machine Tm⟦533ef80d⟧ next fix? using (run) public
+  -- ⚑ The trailing `public` is a re-export and belongs to Ⓑ2; left in place so
+  -- this repair does not unbind this module's consumers mid-sweep.
+  open FixpointMachine Tm⟦533ef80d⟧ next fix? using (run) public
 
 ------------------------------------------------------------------------
 -- ② THE SKI EXISTENCE UP: mirrors x8a-UP (212) at the SKI carrier. Source = (fuel , term);

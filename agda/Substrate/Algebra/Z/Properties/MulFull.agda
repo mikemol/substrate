@@ -13,18 +13,29 @@
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.Algebra.Z.Properties.MulFull where
+open import Substrate.Algebra.Z.Add
+open import Substrate.Algebra.Z.Mul
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_)
-open import Substrate.Foundation.Nat.Properties.Add using (+-identityʳ; +-suc)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Times
+open import Substrate.Foundation.Nat.Properties.Add.PlusIdentityR
+open import Substrate.Foundation.Nat.Properties.Add.PlusSuc
 open import Substrate.Foundation.Nat.Properties.Mul using (*-zeroʳ)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂)
-open import Substrate.Algebra.Z using (ℤ; +_; -suc_; -ℤ_; -ℤ-involutive)
-open import Substrate.Algebra.Z.Arithmetic using (_⊖_; _+ℤ_; _*ℤ_)
+open import Substrate.Algebra.Z.Int
+open import Substrate.Algebra.Z.Int2
+open import Substrate.Algebra.Z.IntInvolutive
+
 open import Substrate.Algebra.Z.Properties.Mul
   using (*ℤ-comm; neg-*-left; *ℤ-assoc-pos-pos; neg-pos-as-⊖; neg-add;
          distribˡ-scalar)
 open import Substrate.Algebra.Z.Properties.Add using (⊖-+pos; +ℤ-comm)
 open import Substrate.Foundation.Nat.Properties.Cancel using (+-cancelˡ; *-cancelʳ-suc)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
 
 ------------------------------------------------------------------------
 -- 1. Negation pulls out of the right factor too.
@@ -40,17 +51,17 @@ neg-*-right x y =
 ------------------------------------------------------------------------
 
 *ℤ-identityˡ : (x : ℤ) → (+ 1) *ℤ x ≡ x
-*ℤ-identityˡ (+ n)    = cong +_ (+-identityʳ n)
-*ℤ-identityˡ (-suc n) = cong (λ z → -ℤ (+ z)) (+-identityʳ (suc n))
+*ℤ-identityˡ (+ n)    = cong +_ (+ℕ-identityʳ n)
+*ℤ-identityˡ (-suc n) = cong (λ z → -ℤ (+ z)) (+ℕ-identityʳ (suc n))
 
 *ℤ-identityʳ : (x : ℤ) → x *ℤ (+ 1) ≡ x
 *ℤ-identityʳ x = trans (*ℤ-comm x (+ 1)) (*ℤ-identityˡ x)
 
-*ℤ-zeroˡ : (x : ℤ) → (+ 0) *ℤ x ≡ + 0
+*ℤ-zeroˡ : (x : ℤ) → (+ 0) *ℤ x ≡ (+ 0)
 *ℤ-zeroˡ (+ n)    = refl
 *ℤ-zeroˡ (-suc n) = refl
 
-*ℤ-zeroʳ : (x : ℤ) → x *ℤ (+ 0) ≡ + 0
+*ℤ-zeroʳ : (x : ℤ) → x *ℤ (+ 0) ≡ (+ 0)
 *ℤ-zeroʳ (+ m)    = cong +_ (*-zeroʳ m)
 *ℤ-zeroʳ (-suc m) = cong (λ z → -ℤ (+ z)) (*-zeroʳ (suc m))
 
@@ -95,7 +106,7 @@ neg-+ℤ (-suc m) (+ n)    =
   trans (neg-⊖ n (suc m))
         (sym (trans (cong ((+ suc m) +ℤ_) (neg-pos-as-⊖ n))
                     (trans (+ℤ-comm (+ suc m) (0 ⊖ n)) (⊖-+pos 0 n (suc m)))))
-neg-+ℤ (-suc m) (-suc n) = cong (λ z → + suc z) (sym (+-suc m n))
+neg-+ℤ (-suc m) (-suc n) = cong (λ z → + suc z) (sym (+ℕ-suc m n))
 
 ------------------------------------------------------------------------
 -- 5. Full distributivity (all sign cases).

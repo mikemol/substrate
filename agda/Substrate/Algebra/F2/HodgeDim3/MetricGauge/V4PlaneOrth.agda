@@ -40,10 +40,32 @@ open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.Type using (SymBilinForm-
 open import Substrate.Foundation.Product using (_×_; _,_)
 open import Substrate.Foundation.Fin.Literals using (₀; ₁; ₂; ₃)
 open import Substrate.Foundation.Vec using ([]; _∷_)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl)
 
-open import Substrate.Algebra.F2
+open import Substrate.Algebra.F2.AbsorbL
+open import Substrate.Algebra.F2.AbsorbR
+open import Substrate.Algebra.F2.Assoc
+open import Substrate.Algebra.F2.Comm
+open import Substrate.Algebra.F2.Dec
+open import Substrate.Algebra.F2.DistribLPlus
+open import Substrate.Algebra.F2.DistribRPlus
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.F2Cases
+open import Substrate.Algebra.F2.Idempotent
+open import Substrate.Algebra.F2.IdentityL
+open import Substrate.Algebra.F2.IdentityR
+open import Substrate.Algebra.F2.InvOfOne
+open import Substrate.Algebra.F2.OneNeqZero
+open import Substrate.Algebra.F2.Op
+open import Substrate.Algebra.F2.Op2
+open import Substrate.Algebra.F2.PlusAssoc
+open import Substrate.Algebra.F2.PlusComm
+open import Substrate.Algebra.F2.PlusF
+open import Substrate.Algebra.F2.PlusIdentityL
+open import Substrate.Algebra.F2.PlusIdentityR
+open import Substrate.Algebra.F2.PlusInverseL
+open import Substrate.Algebra.F2.PlusInverseR
+open import Substrate.Algebra.F2.PlusSelfInverse
+open import Substrate.Algebra.F2.ZeroNeqOne
 open import Substrate.Algebra.F2.Vector
 open import Substrate.Algebra.F2.HodgeDim3.MetricGauge
 open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.MetricOrthogonality
@@ -61,6 +83,7 @@ open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.MetricOrthogonality
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Category.Pullback
   using (Wide-Meet)
+open import Substrate.Foundation.Eq
 M-orth-to-V4Plane : SymBilinForm-3 → Vector 3 → Set
 M-orth-to-V4Plane M v =
   metric-orthogonal M v (𝟙 ∷ 𝟘 ∷ 𝟘 ∷ []) ×
@@ -111,11 +134,11 @@ e₃-NOT-orth-e₀-under-metric-fully-coupled = refl
 -- Verification:
 --   bilinear-form-of metric-fully-coupled (1,0,1) (1,0,0):
 --     metric-fully-coupled = (a=1, b=0, c=0, d=1, e=1, f=1)
---     = 1·(1·1 + 1·0 + 1·0) + 0·(1·1+0·0+1·0) + 1·(1·1+1·0+0·0)
---     = 1·1 + 0 + 1·1 = 1 + 1 = 0 ✓
+--     = 1·(1·1 +F 1·0 +F 1·0) +F 0·(1·1+0·0+1·0) +F 1·(1·1+1·0+0·0)
+--     = 1·1 +F 0 +F 1·1 = 1 +F 1 = 0 ✓
 --   bilinear-form-of metric-fully-coupled (1,0,1) (0,1,0):
---     = 1·(1·0+1·1+1·0) + 0·... + 1·(1·0+1·1+0·0)
---     = 1·1 + 0 + 1·1 = 0 ✓
+--     = 1·(1·0+1·1+1·0) +F 0·... +F 1·(1·0+1·1+0·0)
+--     = 1·1 +F 0 +F 1·1 = 0 ✓
 ------------------------------------------------------------------------
 
 1-0-1-orth-V4Plane-under-metric-fully-coupled :

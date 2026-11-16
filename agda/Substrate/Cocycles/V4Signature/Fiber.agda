@@ -16,11 +16,11 @@
 module Substrate.Cocycles.V4Signature.Fiber where
 
 open import Substrate.Cocycle using (IsTorsor)
-open import Substrate.Groups.V4.Bijection using (V₄)
-open import Substrate.Foundation.Eq using (_≡_)
+open import Substrate.Groups.V4.Bijection.V4
 open import Substrate.Cocycles.V4Signature.OrbitKey.Type using (OrbitKey)
 open import Substrate.Cocycles.V4Signature.V4GroupSetoid using (V₄-Group-Setoid)
 open import Substrate.Cocycles.V4Signature.V4IsTorsor    using (V4-is-torsor)
+open import Substrate.Foundation.Eq
 
 Fiber : OrbitKey → Set
 Fiber _ = V₄

@@ -25,12 +25,11 @@
 
 module Substrate.WitnessTower.EEAFoldTable where
 
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.List using (List; []; _∷_)
 open import Substrate.Foundation.Product using (_,_)
 open import Substrate.Algebra.Nat.GCD.EEATrace using (EEATrace)
-open import Substrate.Algebra.Nat.GCD.Wedge using () renaming (quotient to quotient⟦b7e6a995⟧)
+open import Substrate.Algebra.Nat.GCD.Wedge using () renaming (quotient to quotient)
 open import Substrate.Algebra.Nat.GCD.Fold using (eea-fold)
 open import Substrate.Algebra.Nat.GCD.GcdN using (gcd-ℕ)
 open import Substrate.Algebra.Nat.GCD.GcdTrace using (gcd-trace; coprime-trace)
@@ -38,6 +37,8 @@ open import Substrate.Algebra.Z.Bezout using (BezoutℤWitness; bezout-ℤ)
 open import Substrate.Algebra.R.Trace using (digits-of-EEA; take)
 open import Substrate.Algebra.R.Trace.RationalAdjunction using (qToRℚ)
 open import Substrate.WitnessTower.EEATower using (cf-length; digit-agreement)
+open import Substrate.Foundation.Eq
+open import Substrate.Algebra.Nat.GCD.Wedge
 
 ------------------------------------------------------------------------
 -- ONE trace: the EEA of (3, 2). Its target index IS the gcd.
@@ -66,7 +67,7 @@ fold-bezout = bezout-ℤ t
 ------------------------------------------------------------------------
 
 digits-as-fold : ∀ {a b g} → EEATrace a b g → List ℕ
-digits-as-fold = eea-fold {T = λ _ _ _ → List ℕ} (λ _ → []) (λ _ w rest → quotient⟦b7e6a995⟧ w ∷ rest)
+digits-as-fold = eea-fold {T = λ _ _ _ → List ℕ} (λ _ → []) (λ _ w rest → quotient w ∷ rest)
 
 digits-is-catamorphism : digits-of-EEA t ≡ digits-as-fold t
 digits-is-catamorphism = refl

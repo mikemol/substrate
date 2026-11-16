@@ -25,15 +25,16 @@
 
 module Substrate.Category.DiscreteFourierTransform.Term where
 
-open import Substrate.Foundation.Nat using (ℕ; suc; _+_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Eq using (_≡_)
-open import Substrate.WitnessTower.LehmerPath using (LehmerPath; start; _◂_)
+open import Substrate.WitnessTower.LehmerPath.LehmerPath
 open import Substrate.WitnessTower.Wedge.OrientationSum using (_⊕_)
 open import Substrate.WitnessTower.Wedge.OrientationUniversal
   using (LehmerAlgebra; fold; fold-unique)
 open import Substrate.WitnessTower.Wedge.OrientationBimonoidal using (GradedProductOver)
 open import Substrate.WitnessTower.Wedge.OrientationBimonoidal.Properties using (⊕-over)
+open import Substrate.Foundation.Eq
 
 -- The DFT term carrier: the free graded tower of combined generators.
 DFTTerm : ℕ → Set
@@ -43,13 +44,13 @@ DFTTerm = LehmerPath
 []ᶠ : DFTTerm 0
 []ᶠ = start
 
-_++ᶠ_ : {m n : ℕ} → DFTTerm m → DFTTerm n → DFTTerm (m + n)
+_++ᶠ_ : {m n : ℕ} → DFTTerm m → DFTTerm n → DFTTerm (m ℕ+ n)
 _++ᶠ_ = _⊕_
 
 infixr 4 _++ᶠ_
 
 -- The graded product on terms IS the tower's ⊕-over : GradedProductOver.
-dft-product : GradedProductOver _+_ 0 DFTTerm
+dft-product : GradedProductOver _ℕ+_ 0 DFTTerm
 dft-product = ⊕-over
 
 -- The semantics is the UNIQUE fold into any LehmerAlgebra target: base = the

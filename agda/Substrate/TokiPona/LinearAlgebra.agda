@@ -39,10 +39,8 @@
 
 module Substrate.TokiPona.LinearAlgebra where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; trans; cong)
 
 open import Substrate.Algebra.F2.Vector using (basis)
 open import Substrate.TokiPona.SemanticSpace using (SemVec)
@@ -52,11 +50,14 @@ open import Substrate.TokiPona.NimiSpace
   using (nimi-as-vector; nimi-from-index; from-index∘index;
          module WithTarget)
 
-open import Substrate.Algebra.F2.Linear using (Linear; apply)
+open import Substrate.Algebra.F2.Linear.Linear
 open import Substrate.Category.FreeLinearization
   using (FreeLinearization)
 open import Substrate.Category.FreeLinearization.FromImages
   using (free-linearize)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- 1. The Toki-Pona-side universal property statement.

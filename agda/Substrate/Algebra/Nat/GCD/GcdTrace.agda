@@ -18,12 +18,13 @@
 
 module Substrate.Algebra.Nat.GCD.GcdTrace where
 
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Eq using (_≡_; subst)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Product using (proj₂)
 open import Substrate.Algebra.Nat.GCD.EEATrace using (EEATrace)
 open import Substrate.Algebra.Nat.GCD.ComputeTrace using (compute-trace)
 open import Substrate.Algebra.Nat.GCD.GcdN using (gcd-ℕ)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Subst
 
 gcd-trace : (a b : ℕ) → EEATrace a b (gcd-ℕ a b)
 gcd-trace a b = proj₂ (compute-trace a b)

@@ -14,10 +14,10 @@
 
 module Substrate.Logic.Evidence.Graded where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
 
 open import Substrate.Logic.Evidence.Verdict using (Evidence; _∧E_; _∨E_)
 open import Substrate.Logic.Evidence.Warrant using (Warrant; _⊓w_)
+open import Substrate.Foundation.Eq
 
 infix 4 _at_
 

@@ -16,22 +16,29 @@
 
 module Substrate.WitnessTower.DuplicateFree where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Sucinjective
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; map)
 open import Substrate.Foundation.List using (List; []; _∷_; _++_)
-open import Substrate.Foundation.Eq using (_≡_; refl; cong; cong₂; sym; subst; trans)
-open import Substrate.Foundation.Negation using (¬_)
-open import Substrate.Foundation.Empty using (⊥)
+open import Substrate.Foundation.Negation.Not
+open import Substrate.Foundation.Empty.Bot
 open import Substrate.Foundation.Product using (Σ; _,_; _×_)
-open import Substrate.Foundation.Sum using (_⊎_; inj₁; inj₂; [_,_])
+open import Substrate.Foundation.Sum.Op
+open import Substrate.Foundation.Sum.Sum
 open import Substrate.Foundation.Fin.Punctured using (punchIn)
 
 open import Substrate.WitnessTower.Enumerate
   using (Perm; perms; insert-at; mapL; concatMapL; all-positions)
 open import Substrate.WitnessTower.IsPermutation using (punchIn-injective)
 open import Substrate.WitnessTower.Complete using (_∈_; here; there)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Subst
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Category.SylowDecomposition
 
 ------------------------------------------------------------------------
 -- 0. Vec ∷-injectivity (private upstream) + map injective.

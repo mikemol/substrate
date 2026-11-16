@@ -8,7 +8,7 @@
 
 module Substrate.Groups.Symmetric.Permutation.SFinCompose where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
 import Substrate.Groups.Symmetric.Permutation.Compose as SymComp
 open import Substrate.Groups.SFin.Permutation using (Permutation)

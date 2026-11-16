@@ -32,7 +32,7 @@
 
 open import Substrate.Foundation.Level using (Level)
 
-open import Substrate.Category.CategoryOf using (CategoryOf)
+open import Substrate.Category.CategoryOf.CategoryOf
 open import Substrate.Category.Functor using (Functor)
 
 module Substrate.Category.AutomorphismGroup.AsFunctor
@@ -56,7 +56,6 @@ module Substrate.Category.AutomorphismGroup.AsFunctor
 
 open import Substrate.Category.Functor.AsNamed
   CarrierCat GroupCat Aut public
-  renaming (named-Functor to Aut-Functor)
 
 ------------------------------------------------------------------------
 -- 2. Capstone — Aut as M1 Functor.

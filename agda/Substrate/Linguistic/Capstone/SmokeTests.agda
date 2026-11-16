@@ -9,16 +9,16 @@
 
 module Substrate.Linguistic.Capstone.SmokeTests where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Category.FreeOverBasis
   using (class; Free-monoid; Free-F2-module; Free-cyclic;
          Free-relation; Free-CCC; Free-Lie)
-open import Substrate.Lojban.AsFreeOverBasis using (lojban-witness)
-open import Substrate.TokiPona.AsFreeOverBasis using (tokipona-witness)
+open import Substrate.Lojban.AsFreeOverBasis.LojbanWitness
+open import Substrate.TokiPona.AsFreeOverBasis.TokiponaWitness
 open import Substrate.Solresol.Fragment.Witness using (solresol-witness)
-open import Substrate.Kelen.Fragment using (kelen-witness)
-open import Substrate.Lambda.Fragment using (lambda-witness)
+open import Substrate.Kelen.Fragment.KelenWitness
+open import Substrate.Lambda.Fragment.LambdaWitness
 open import Substrate.Invented.LieFragment using (lie-witness)
+open import Substrate.Foundation.Eq
 
 lojban-in-Free-monoid : class lojban-witness ≡ Free-monoid
 lojban-in-Free-monoid = refl

@@ -22,8 +22,11 @@
 ------------------------------------------------------------------------
 
 module Substrate.Category.UniversalProperty.UniquenessStencilAbstract where
+open import Substrate.Foundation.Eq
+open import Substrate.WitnessTower.Wedge.OrientationRigCatSymUP
+open import Substrate.Category.PresentedUniversalProperty.SnAbelianizationZ2
+open import Substrate.Category.UPArrowGraded
 
-open import Substrate.Foundation.Eq using (_≡_)
 
 ------------------------------------------------------------------------
 -- ① THE POLYMORPHIC LAYER SHAPES. A layer is a uniqueness statement RELATIVE TO a target

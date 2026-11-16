@@ -8,11 +8,11 @@
 -- `rkmid`/`rk10`, so the schedule is never forced as a chain.
 ------------------------------------------------------------------------
 module Substrate.Algebra.F2.AES.KAT.KeyPins where
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Algebra.F2.AES.KeySchedule
   using (nextRoundKey; rc1; rc2; rc3; rc4; rc5; rc6; rc7; rc8; rc9; rc10)
 open import Substrate.Algebra.F2.AES.KAT using (to-state; key-C1)
 open import Substrate.Algebra.F2.AES.KAT.Trace
+open import Substrate.Foundation.Eq
 
 opaque
   unfolding nextRoundKey

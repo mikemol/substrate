@@ -6,11 +6,11 @@
 --
 -- Names the commutativity obligation for Conway addition. The
 -- empty-L/empty-R case discharges structurally to both being
--- ⟨ [] ∣ [] ⟩; the typing requires a subst on +-comm to align
+-- ⟨ [] ∣ [] ⟩; the typing requires a subst on +ℕ-comm to align
 -- birthday indices.
 --
 -- Per [[feedback-coalgebraic-not-consumer-driven]]: signature lands
--- + obligation named. Full inductive proof deferred to per-
+-- ℕ+ obligation named. Full inductive proof deferred to per-
 -- arithmetic Conway sliced (requires recursive addition's full
 -- definition).
 ------------------------------------------------------------------------
@@ -19,12 +19,14 @@
 
 module Substrate.Conway.AddComm where
 
-open import Substrate.Foundation.Nat using (ℕ; suc; _+_)
-open import Substrate.Foundation.Nat.Properties.Add using (+-comm)
-open import Substrate.Foundation.Eq
-  using (_≡_; cong; subst)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Properties.Add.PlusComm
 open import Substrate.Conway.SurrealFinite using (SurrealFinite)
-open import Substrate.Conway.AddGeneral using (ConwayAddType)
+open import Substrate.Conway.AddGeneral.ConwayAddType
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Subst
 
 ------------------------------------------------------------------------
 -- 1. The commutativity obligation.
@@ -44,7 +46,7 @@ ConwayAddCommutativity add =
   (a : SurrealFinite (suc m))
   (b : SurrealFinite (suc n)) →
   add m n a b
-    ≡ subst SurrealFinite (cong suc (+-comm n m)) (add n m b a)
+    ≡ subst SurrealFinite (cong suc (+ℕ-comm n m)) (add n m b a)
 
 ------------------------------------------------------------------------
 -- 2. Capstone for G3.

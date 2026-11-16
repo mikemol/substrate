@@ -38,10 +38,11 @@
 
 module Substrate.Category.SymmetricMonoidal where
 
-open import Substrate.Foundation.Level using (Level; _⊔_) renaming (suc to lsuc)
-open import Substrate.Foundation.Eq using (_≡_)
+open import Substrate.Foundation.Level using (Level; _⊔_)
 
-open import Substrate.Category.CategoryOf using (CategoryOf)
+open import Substrate.Category.CategoryOf.CategoryOf
+open import Substrate.Foundation.Eq
+open import Substrate.Probability.MarkovCategory
 
 private
   variable

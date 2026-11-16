@@ -21,11 +21,11 @@
 
 module Substrate.WitnessTower.Wedge.OrientationRigInstance where
 
-open import Substrate.Foundation.Nat using (ℕ; suc; _*_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Times
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Unit using (⊤; tt)
-open import Substrate.Foundation.Eq using (_≡_; refl; cong)
-open import Substrate.WitnessTower.LehmerPath using (LehmerPath; start; _◂_)
+open import Substrate.WitnessTower.LehmerPath.LehmerPath
 open import Substrate.WitnessTower.Wedge.OrientationSum using (_⊕_)
 open import Substrate.WitnessTower.Wedge.OrientationProductStructural
   using (_⊗ˢ_; replay-aux; offsetDigit)
@@ -33,6 +33,8 @@ open import Substrate.WitnessTower.Wedge.OrientationUniversal
   using (LehmerAlgebra; base; step; fold)
 open import Substrate.WitnessTower.Wedge.OrientationRigUniversal using (replayᶜ)
 open import Substrate.WitnessTower.Wedge.OrientationRigInitial using (RigAlgebra)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
 
 -- the identity algebra on LehmerPath (base=start, step=◂).
 idAlg : LehmerAlgebra LehmerPath

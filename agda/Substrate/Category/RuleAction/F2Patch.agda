@@ -10,7 +10,7 @@
 
 module Substrate.Category.RuleAction.F2Patch where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.List using (List; [])
 open import Substrate.Foundation.Product using (_×_)
 

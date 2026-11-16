@@ -26,12 +26,11 @@ module Substrate.Cocycles.V4Signature.Pairing.Structural where
 
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Literals using (₂)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl)
 
 open import Substrate.Foundations.Bijection
 open import Substrate.Algebra.F2.V4-Nonzero
 open import Substrate.Cocycles.V4Signature.Pairing.Type using (Pairing; α-pair; β-pair; γ-pair)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- Forward: Pairing → V4-Nonzero.

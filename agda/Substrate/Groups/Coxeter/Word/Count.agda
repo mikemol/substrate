@@ -8,7 +8,7 @@
 --
 -- Per [[expose-generator-not-orbit]]: the orbit was Word-Count-A vs
 -- Word-Count-B vs length, each hand-rolled with its own distributivity
--- proof. This module IS the generator-weighted count + its monoid
+-- proof. This module IS the generator-weighted count ℕ+ its monoid
 -- homomorphism property, derived once and parametric in the selector.
 ------------------------------------------------------------------------
 
@@ -16,11 +16,16 @@
 
 module Substrate.Groups.Coxeter.Word.Count where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
-open import Substrate.Foundation.Nat.Properties.Add using (+-assoc)
-open import Substrate.Foundation.Eq using (_≡_; refl; cong; trans; sym)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Properties.Add.PlusAssoc
 
 open import Substrate.Groups.Coxeter.Word
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Algebra.Wedge.BinMul.Sel
 
 ------------------------------------------------------------------------
 -- count-by sel w = Σ_{g in w} sel g.
@@ -33,18 +38,18 @@ open import Substrate.Groups.Coxeter.Word
 
 count-by : ∀ {A} (sel : A → ℕ) → Word A → ℕ
 count-by sel []      = zero
-count-by sel (g ∷ w) = sel g + count-by sel w
+count-by sel (g ∷ w) = sel g ℕ+ count-by sel w
 
 ------------------------------------------------------------------------
--- count-by is a monoid homomorphism (Word A, ++, []) → (ℕ, +, 0).
+-- count-by is a monoid homomorphism (Word A, ++, []) → (ℕ, ℕ+, 0).
 ------------------------------------------------------------------------
 
 count-by-distrib : ∀ {A} (sel : A → ℕ) (a b : Word A) →
-                   count-by sel (a ++ b) ≡ count-by sel a + count-by sel b
+                   count-by sel (a ++ b) ≡ count-by sel a ℕ+ count-by sel b
 count-by-distrib sel []      b = refl
 count-by-distrib sel (g ∷ a) b =
-  trans (cong (sel g +_) (count-by-distrib sel a b))
-        (sym (+-assoc (sel g) (count-by sel a) (count-by sel b)))
+  trans (cong (sel g ℕ+_) (count-by-distrib sel a b))
+        (sym (+ℕ-assoc (sel g) (count-by sel a) (count-by sel b)))
 
 count-by-[] : ∀ {A} (sel : A → ℕ) → count-by sel [] ≡ zero
 count-by-[] _ = refl

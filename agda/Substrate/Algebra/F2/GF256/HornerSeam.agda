@@ -15,17 +15,20 @@
 ------------------------------------------------------------------------
 module Substrate.Algebra.F2.GF256.HornerSeam where
 
-open import Substrate.Foundation.Eq using (_≡_; trans; cong)
 open import Substrate.Algebra.F2.CommRing using (F₂-CommRing)
 open import Substrate.Algebra.F2.Vector using (Vector)
-open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit.Base using (m-lo)
+open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit.Base.MLo
 open import Substrate.Algebra.F2.Polynomial using (_*P_)
-open import Substrate.Algebra.F2.GF256.Mul using (gmul)
+open import Substrate.Algebra.F2.GF256.Mul.Gmul
 open import Substrate.Algebra.F2.GF256.Bridge using (reduce-eq; *P-eq)
 import Substrate.Algebra.Polynomial.Graded.Mod as Mod
 import Substrate.Algebra.Polynomial.Graded.Quotient as Quot
 open Mod.Over F₂-CommRing 7 m-lo using (reduce-mod-f)
 open Quot.Over F₂-CommRing 7 m-lo using (_*Q_)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Algebra.Polynomial.Graded.Mod.Core
 
 -- ★★ THE SEAM CLOSED: the field's multiply (SubBytes) IS GF256's (MixColumns).
 *Q-is-gmul : (a b : Vector 8) → a *Q b ≡ gmul a b

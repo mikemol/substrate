@@ -22,7 +22,7 @@
 
 open import Substrate.Foundation.Level using (Level)
 
-open import Substrate.Category.CategoryOf using (CategoryOf)
+open import Substrate.Category.CategoryOf.CategoryOf
 open import Substrate.Category.Functor using (Functor)
 
 module Substrate.Category.CartanType.AsCoxeter.Functor
@@ -40,7 +40,6 @@ module Substrate.Category.CartanType.AsCoxeter.Functor
 
 open import Substrate.Category.Functor.AsNamed
   CartanCat CoxeterCat Cartan→Coxeter public
-  renaming (named-Functor to Cartan-AsCoxeter-Functor)
 ------------------------------------------------------------------------
 -- 2. Capstone — chirality completion of M8.
 --

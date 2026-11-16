@@ -20,12 +20,12 @@
 
 module Substrate.Algebra.R.Trace.SKIAllegoryFixpoints where
 
-open import Substrate.Foundation.Eq  using (_≡_; refl)
 open import Substrate.Algebra.Wedge using (DivStr; z; Trace; done; more; trace-fold; trace-fold-unique)
 open import Substrate.Algebra.R.Trace using (RealTrace; head; tail)
-open import Substrate.Algebra.R.Trace.Bisim using (_~_; ~-refl)
-open import Substrate.Algebra.R.Trace.Final using (Coalg; ana; ana-unique)
-open import Substrate.Category.Allegory.Refinement using (isSingleton)
+open import Substrate.Algebra.R.Trace.Bisim.Op
+open import Substrate.Algebra.R.Trace.Bisim.Refl
+open import Substrate.Algebra.R.Trace.Final.AnaUnique
+open import Substrate.Category.Allegory.Refinement.IsSingleton
 
 -- the μ/ν universal properties are GENERIC over any DivStr / Coalg — instantiate
 -- at the SKI carrier by supplying its DivStr (the ADD-153 combinator-DivStr is one
@@ -71,7 +71,7 @@ open import Substrate.Category.Allegory.Refinement using (isSingleton)
 -- specific-Φ iso stays the substrate's own IDENTIFIED-NOT-YET-PROVEN obligation.
 -- isSingleton (the map readout) records the deterministic-fiber condition (ALG-5).
 ------------------------------------------------------------------------
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 
 -- the map/relation readout is available (a fiber family is map-like iff subsingleton):
 map-readout : (ℕ → Set) → Set

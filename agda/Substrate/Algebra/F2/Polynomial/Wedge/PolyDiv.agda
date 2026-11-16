@@ -20,15 +20,14 @@
 
 module Substrate.Algebra.F2.Polynomial.Wedge.PolyDiv where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Vec using (Vec; []; _∷_)
 open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂)
-open import Substrate.Algebra.F2 using (F₂)
+open import Substrate.Algebra.F2.F2
 open import Substrate.Algebra.F2.CommRing using (F₂-CommRing)
 open import Substrate.Algebra.Wedge
   using (DivStr; Trace; done; more; collapse; collapse-fold; collapse-fold≡collapse; quot; rem)
-  renaming (Wedge to Wedge⟦478f66a6⟧)   -- specialize the colliding name by shape
+     -- specialize the colliding name by shape
 import Substrate.Algebra.Polynomial.Graded.FromCommRing as F
 import Substrate.Algebra.Polynomial.Graded.Mod as M
 import Substrate.Algebra.Polynomial.Graded.Quotient as Q
@@ -40,19 +39,24 @@ open import Substrate.Algebra.F2.Polynomial.Wedge.EEAFold
 import Substrate.Algebra.Polynomial.Graded.PolyDivWedge as PDW
 
 -- the F₂ coefficient machinery — the SAME instantiation Graded.Div uses.
-open F.Over F₂-CommRing using (Poly; nth; convCoeff; _+_)
+open F.Over F₂-CommRing using (Poly; nth; convCoeff; _+F_)
 
 ------------------------------------------------------------------------
 -- 1-3. SINGLE SOURCE (Ⓢ.single-source): F₂[x] division-as-wedge IS the F₂
 --      instance of the CR-generic poly-wedge (Graded.PolyDivWedge). buildPoly /
 --      recon-poly / Poly-div / step-wedge are DERIVED from it, not duplicated —
 --      so they are ONE symbol and the F₂ ≡ generic identity is `refl` by
---      construction. This resolves the cross-module non-defeq + funext-block that
+--      construction. This resolves the cross-module non-defeq +F funext-block that
 --      blocked Ⓐ.gfinv-generic (memory feedback_derive_dont_duplicate_single_source).
 ------------------------------------------------------------------------
 
 open PDW.Over F₂-CommRing
   using (buildPoly; buildPoly-correct; recon-poly; Poly-div; step-wedge)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
 
 ------------------------------------------------------------------------
 -- 4. THE COLLAPSE: the polynomial Euclidean trace IS a generic trace.
@@ -120,7 +124,7 @@ module _ (d : ℕ) (f-lo : Vec F₂ (suc d)) where
 -- 6. WHY BÉZOUT DOES NOT COLLAPSE TO A BARE-TRACE FOLD (the monic boundary).
 --
 -- gcd-fold collapses (above) because its target — the index g — is INDEPENDENT
--- of the divmod step structure. Bézout's target (BezoutNthWitness: s·a + t·b ≡ g
+-- of the divmod step structure. Bézout's target (BezoutNthWitness: s·a +F t·b ≡ g
 -- coefficient-wise) is NOT: its correctness uses `recon-nth` ∀k, which needs the
 -- divisor's monic (d, f-lo) data. A wedge's `wedge-eq` only pins coefficients for
 -- k < |a| (a QPoly ≡ cannot constrain k beyond the length), so the bare wedge is

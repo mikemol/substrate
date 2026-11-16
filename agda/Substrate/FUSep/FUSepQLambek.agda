@@ -24,9 +24,25 @@
 
 module Substrate.FUSep.FUSepQLambek where
 
-open import Substrate.Foundation.Eq   using (_≡_; refl)
 open import Substrate.Foundation.List using (List; [])
-open import Substrate.FUSep.FUSepQCyc using (Stream; hd; tl; _~ₛ_; hd~; tl~; ~-refl; ~-sym; ~-trans; cyc; cyc-go; cyc-loop~const; cyc~const; const)
+-- ⚑ `FUSepQCyc` (the parent) IS DISSOLVED. `rewire_to_leaves` mapped 11 of the 14
+-- names and refused on `tl`/`tl~`, reporting them as having no home — which is a
+-- fact about `def_index`, not the substrate. `tl` is a RECORD FIELD declared on a
+-- SHARED LINE (`FUSepQCyc/Stream.agda:23`: `field hd : A ; tl : Stream A`), and the
+-- index caught `hd` but not its line-mate. Same blind-spot class as generalizable
+-- `variable`s: the index does not carry every binding form, so an absence in it is
+-- never evidence of absence in the tree.
+open import Substrate.FUSep.FUSepQCyc.Stream
+open import Substrate.FUSep.FUSepQCyc.Op
+open import Substrate.FUSep.FUSepQCyc.Refl
+open import Substrate.FUSep.FUSepQCyc.Sym
+open import Substrate.FUSep.FUSepQCyc.Trans
+open import Substrate.FUSep.FUSepQCyc.Cyc
+open import Substrate.FUSep.FUSepQCyc.CycGo
+open import Substrate.FUSep.FUSepQCyc.CycLoopconst
+open import Substrate.FUSep.FUSepQCyc.Cycconst
+open import Substrate.FUSep.FUSepQCyc.Const
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- THE STREAM FUNCTOR S X = A × X (the cyc/RealTrace functor). Its terminal
@@ -103,7 +119,7 @@ module _ {A : Set} (x : A) where
 -- carrier's equality), so the carrier is a fixed point. Here the carrier equality
 -- is bisimilarity ~ (the R-side / greatest-fixed-point equality).
 ------------------------------------------------------------------------
-record LambekFix (X : Set) (FX : Set)      -- ⟦shape:7156b836 (_≈X_,struct,inv⟧
+record LambekFix-FUSep (X : Set) (FX : Set)      -- ⟦shape:7156b836 (_≈X_,struct,inv⟧
                  (_≈X_ : X → X → Set) : Set where
   field
     struct   : X → FX               -- the coalgebra structure map (out)
@@ -111,9 +127,9 @@ record LambekFix (X : Set) (FX : Set)      -- ⟦shape:7156b836 (_≈X_,struct,i
     out-into : (y : FX) → struct (inv y) ≡ y     -- ≡ one way
     into-out : (x : X) → inv (struct x) ≈X x     -- ≈ the other (coinductive, ~)
 
--- Stream A IS a LambekFix (up to bisimilarity): the terminal coalgebra as a
+-- Stream A IS a LambekFix-FUSep (up to bisimilarity): the terminal coalgebra as a
 -- fixed point, packaged. This is the R-side / greatest fixed point of the tower.
-stream-lambek : {A : Set} → LambekFix (Stream A) (A × Stream A) _~ₛ_
+stream-lambek : {A : Set} → LambekFix-FUSep (Stream A) (A × Stream A) _~ₛ_
 stream-lambek = record
   { struct = out ; inv = into
   ; out-into = lambek-out-into ; into-out = lambek-into-out }

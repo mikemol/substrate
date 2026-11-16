@@ -27,12 +27,12 @@
 
 module Substrate.Category.CompressionAtlas where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.List using (List; []; _∷_)
 open import Substrate.Foundation.List.Length using (length)
-open import Substrate.Foundation.Product using (_×_; _,_)
-open import Substrate.Foundation.Bool using (Bool; true; false)
-open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Bool.Bool
+open import Substrate.Foundation.Eq
+open import Substrate.Category.Allegory.Policy.Corpus
 
 ------------------------------------------------------------------------
 -- Corpus identifier and predictor identifier are kept abstract; a

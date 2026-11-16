@@ -20,13 +20,14 @@
 
 module Substrate.Algebra.R.Trace.Windowed where
 
-open import Substrate.Foundation.Nat     using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.List    using (List)
 open import Substrate.Foundation.Product using (_×_; proj₁; proj₂)
-open import Substrate.Foundation.Eq      using (_≡_; cong)
 
 open import Substrate.Algebra.Nat.GCD.ComputeTrace using (compute-trace)
 open import Substrate.Algebra.R.Trace using (RealTrace; convergent; digits-of-EEA)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- The wrapper: feed x's n-th convergent (p, q) to the kernel K, take the result's

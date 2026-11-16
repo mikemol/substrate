@@ -19,9 +19,9 @@
 --
 -- This file provides:
 --   * `SelfDual-Pred` — the predicate form.
---   * Three canonical self-dual generators (sd-pair-01-23, etc.) +
+--   * Three canonical self-dual generators (sd-pair-01-23, etc.) +F
 --     refl-or-near-refl proofs that each is self-dual.
---   * Closure properties (sum + scalar multiple of self-dual bivectors
+--   * Closure properties (sum +F scalar multiple of self-dual bivectors
 --     is self-dual) — deferred unless a consumer needs them.
 ------------------------------------------------------------------------
 
@@ -30,16 +30,49 @@
 module Substrate.Algebra.F2.HodgeDim4.SelfDual where
 
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; trans; cong; cong₂)
 
-open import Substrate.Algebra.F2
+open import Substrate.Algebra.F2.AbsorbL
+open import Substrate.Algebra.F2.AbsorbR
+open import Substrate.Algebra.F2.Assoc
+open import Substrate.Algebra.F2.Comm
+open import Substrate.Algebra.F2.Dec
+open import Substrate.Algebra.F2.DistribLPlus
+open import Substrate.Algebra.F2.DistribRPlus
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.F2Cases
+open import Substrate.Algebra.F2.Idempotent
+open import Substrate.Algebra.F2.IdentityL
+open import Substrate.Algebra.F2.IdentityR
+open import Substrate.Algebra.F2.InvOfOne
+open import Substrate.Algebra.F2.OneNeqZero
+open import Substrate.Algebra.F2.Op
+open import Substrate.Algebra.F2.Op2
+open import Substrate.Algebra.F2.PlusAssoc
+open import Substrate.Algebra.F2.PlusComm
+open import Substrate.Algebra.F2.PlusF
+open import Substrate.Algebra.F2.PlusIdentityL
+open import Substrate.Algebra.F2.PlusIdentityR
+open import Substrate.Algebra.F2.PlusInverseL
+open import Substrate.Algebra.F2.PlusInverseR
+open import Substrate.Algebra.F2.PlusSelfInverse
+open import Substrate.Algebra.F2.ZeroNeqOne
 open import Substrate.Algebra.F2.Vector
-open import Substrate.Algebra.F2.Linear
+open import Substrate.Algebra.F2.Linear.CompL
+open import Substrate.Algebra.F2.Linear.CompLAssoc
+open import Substrate.Algebra.F2.Linear.CompLIdentityL
+open import Substrate.Algebra.F2.Linear.CompLIdentityR
+open import Substrate.Algebra.F2.Linear.IdL
+open import Substrate.Algebra.F2.Linear.Linear
+open import Substrate.Algebra.F2.Linear.Preserves
 open import Substrate.Algebra.F2.Linear.FromImages
   using (apply-linear-from-images-basis)
 open import Substrate.Algebra.F2.HodgeDim4.Bivector
 open import Substrate.Algebra.F2.HodgeDim4.HodgeStar
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
 
 ------------------------------------------------------------------------
 -- The self-dual predicate.
@@ -55,13 +88,13 @@ SelfDual-Pred ω = apply hodge-star ω ≡ ω
 -- span the 3-dim self-dual subspace (2³ = 8 elements).
 ------------------------------------------------------------------------
 
-sd-pair-01-23 : Bivector            -- e₀ ∧ e₁ + e₂ ∧ e₃
+sd-pair-01-23 : Bivector            -- e₀ ∧ e₁ +F e₂ ∧ e₃
 sd-pair-01-23 = basis b₀₁ +ⱽ basis b₂₃
 
-sd-pair-02-13 : Bivector            -- e₀ ∧ e₂ + e₁ ∧ e₃
+sd-pair-02-13 : Bivector            -- e₀ ∧ e₂ +F e₁ ∧ e₃
 sd-pair-02-13 = basis b₀₂ +ⱽ basis b₁₃
 
-sd-pair-03-12 : Bivector            -- e₀ ∧ e₃ + e₁ ∧ e₂
+sd-pair-03-12 : Bivector            -- e₀ ∧ e₃ +F e₁ ∧ e₂
 sd-pair-03-12 = basis b₀₃ +ⱽ basis b₁₂
 
 ------------------------------------------------------------------------

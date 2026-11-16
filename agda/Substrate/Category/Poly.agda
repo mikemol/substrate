@@ -28,11 +28,11 @@
 module Substrate.Category.Poly where
 
 open import Substrate.Foundation.Product using (Σ; _,_; _×_; proj₁; proj₂)
-open import Substrate.Foundation.Sum using (_⊎_; inj₁; inj₂)
-open import Substrate.Foundation.Unit.Polymorphic using (⊤; tt)
-open import Substrate.Foundation.Empty.Polymorphic using (⊥)
-open import Substrate.Foundation.Level using (Level; _⊔_) renaming (suc to lsuc)
-open import Substrate.Foundation.Eq using (_≡_)
+open import Substrate.Foundation.Sum.Sum
+open import Substrate.Foundation.Unit.Polymorphic using (⊤ᵖ; tt)
+open import Substrate.Foundation.Empty.Polymorphic using (⊥ᵖ)
+open import Substrate.Foundation.Level using (Level; _⊔_)
+open import Substrate.Foundation.Eq
 
 private
   variable
@@ -144,19 +144,19 @@ P ⊗ᴾ Q = record {}
 ------------------------------------------------------------------------
 -- PF9: The constant polynomial y ↦ A.
 --
--- Constant A = Σ (a : A) → (⊥ → y) = A.
+-- Constant A = Σ (a : A) → (⊥ᵖ → y) = A.
 -- Positions = A, Directions a = ⊥.
 
-const-poly : (A : Set ℓ) → Poly A (λ _ → ⊥)
+const-poly : (A : Set ℓ) → Poly A (λ _ → ⊥ᵖ)
 const-poly A = record {}
 
 ------------------------------------------------------------------------
 -- PF10: The identity polynomial y ↦ y.
 --
--- Identity = Σ (a : ⊤) → (⊤ → y) = y.
--- Positions = ⊤, Directions tt = ⊤.
+-- Identity = Σ (a : ⊤ᵖ) → (⊤ᵖ → y) = y.
+-- Positions = ⊤ᵖ, Directions tt = ⊤.
 
-identity-poly : Poly {ℓ} ⊤ (λ _ → ⊤)
+identity-poly : Poly {ℓ} ⊤ᵖ (λ _ → ⊤ᵖ)
 identity-poly = record {}
 
 ------------------------------------------------------------------------

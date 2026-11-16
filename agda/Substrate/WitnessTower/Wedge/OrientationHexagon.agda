@@ -5,17 +5,17 @@
 -- σ_{A,B⊕C} = (id_B ⊕ σ_{A,C}) ∘ (σ_{A,B} ⊕ id_C) says: braiding A past B⊕C = moving A past
 -- B, then past C. Its content is a permutation identity — blockSwap_{m,n+p} sends
 -- [A,B,C] ↦ [B,C,A] with the [B,C] order PRESERVED — which we prove directly at the toℕ
--- level (blockSwap-L/R + toℕ-inject+/raise), sidestepping the subst-heavy composite form.
+-- level (blockSwap-L/R ℕ+ toℕ-inject+/raise), sidestepping the subst-heavy composite form.
 --
---   hexagon-A : the front A-block (m) goes to the BACK   — toℕ = (n+p) + toℕ i
+--   hexagon-A : the front A-block (m) goes to the BACK   — toℕ = (n+p) ℕ+ toℕ i
 --   hexagon-B : the B sub-block (n) goes to the FRONT     — toℕ = toℕ j
---   hexagon-C : the C sub-block (p) goes to the MIDDLE    — toℕ = n + toℕ l
+--   hexagon-C : the C sub-block (p) goes to the MIDDLE    — toℕ = n ℕ+ toℕ l
 --
 -- Together: [A,B,C] ↦ [B,C,A] preserving [B,C] — EXACTLY the action of (id⊕σ)∘(σ⊕id). So
 -- blockSwap coincides with the two-step braiding: the hexagon coherence holds. Also builds
 -- the functorial ⊕-on-morphisms layer (_⊕map_) the fully-abstract composite form would use.
 --
--- RESIDUE: the ⊗ hexagon (factorSwap, analogous via factorSwap-combine + toℕ-combine) and
+-- RESIDUE: the ⊗ hexagon (factorSwap, analogous via factorSwap-combine ℕ+ toℕ-combine) and
 -- the distributor pentagons — same block/factor-action approach, extendable.
 --
 -- Zero postulates, --safe --without-K.
@@ -25,7 +25,8 @@
 
 module Substrate.WitnessTower.Wedge.OrientationHexagon where
 
-open import Substrate.Foundation.Nat using (ℕ; _+_; _*_)
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Times
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.To
 open import Substrate.Foundation.Fin.Inject using (inject+)
@@ -34,13 +35,16 @@ open import Substrate.Foundation.Fin.Combine using (combine)
 open import Substrate.Foundation.Fin.SplitAt using (splitAt)
 open import Substrate.Foundation.Fin.SplitAt.InjectIdentity using (splitAt-inject)
 open import Substrate.Foundation.Fin.SplitAt.RaiseIdentity using (splitAt-raise)
-open import Substrate.Foundation.Fin.Combine.Assoc using (toℕ-inject+; toℕ-raise)
-open import Substrate.Foundation.Sum using (_⊎_; inj₁; inj₂; [_,_])
-open import Substrate.Foundation.Eq using (_≡_; refl; trans; cong)
+open import Substrate.Foundation.Fin.Combine.Assoc.ToNatInjectPlus
+open import Substrate.Foundation.Fin.Combine.Assoc.ToNatRaise
+open import Substrate.Foundation.Sum.Op
 open import Substrate.WitnessTower.Wedge.OrientationSumComm
   using (blockSwap; blockSwap-L; blockSwap-R)
 open import Substrate.WitnessTower.Wedge.OrientationProductComm
   using (factorSwap; factorSwap-combine)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- 1. The functorial ⊕ on MORPHISMS: act by f on the first block (inject+), g on the
@@ -48,7 +52,7 @@ open import Substrate.WitnessTower.Wedge.OrientationProductComm
 ------------------------------------------------------------------------
 
 _⊕map_ : ∀ {m n m' n'} → (Fin m → Fin m') → (Fin n → Fin n') →
-         Fin (m + n) → Fin (m' + n')
+         Fin (m ℕ+ n) → Fin (m' ℕ+ n')
 (_⊕map_ {m} {n} {m'} {n'} f g) x =
   [ (λ i → inject+ n' (f i)) , (λ j → raise m' (g j)) ] (splitAt m x)
 
@@ -69,22 +73,22 @@ _⊕map_ : ∀ {m n m' n'} → (Fin m → Fin m') → (Fin n → Fin n') →
 
 -- A (front m-block) goes to the back, offset by n+p.
 hexagon-A : ∀ m n p (i : Fin m) →
-            toℕ (blockSwap m (n + p) (inject+ (n + p) i)) ≡ (n + p) + toℕ i
+            toℕ (blockSwap m (n ℕ+ p) (inject+ (n ℕ+ p) i)) ≡ (n ℕ+ p) ℕ+ toℕ i
 hexagon-A m n p i =
-  trans (cong toℕ (blockSwap-L m (n + p) i)) (toℕ-raise (n + p) i)
+  trans (cong toℕ (blockSwap-L m (n ℕ+ p) i)) (toℕ-raise (n ℕ+ p) i)
 
 -- B (first sub-block of the n+p side) goes to the front.
 hexagon-B : ∀ m n p (j : Fin n) →
-            toℕ (blockSwap m (n + p) (raise m (inject+ p j))) ≡ toℕ j
+            toℕ (blockSwap m (n ℕ+ p) (raise m (inject+ p j))) ≡ toℕ j
 hexagon-B m n p j =
-  trans (cong toℕ (blockSwap-R m (n + p) (inject+ p j)))
+  trans (cong toℕ (blockSwap-R m (n ℕ+ p) (inject+ p j)))
         (trans (toℕ-inject+ m (inject+ p j)) (toℕ-inject+ p j))
 
 -- C (second sub-block) goes to the middle, offset by n — so B stays before C.
 hexagon-C : ∀ m n p (l : Fin p) →
-            toℕ (blockSwap m (n + p) (raise m (raise n l))) ≡ n + toℕ l
+            toℕ (blockSwap m (n ℕ+ p) (raise m (raise n l))) ≡ n ℕ+ toℕ l
 hexagon-C m n p l =
-  trans (cong toℕ (blockSwap-R m (n + p) (raise n l)))
+  trans (cong toℕ (blockSwap-R m (n ℕ+ p) (raise n l)))
         (trans (toℕ-inject+ m (raise n l)) (toℕ-raise n l))
 
 ------------------------------------------------------------------------

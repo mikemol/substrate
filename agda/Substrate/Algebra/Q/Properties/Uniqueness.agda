@@ -14,13 +14,21 @@
 
 module Substrate.Algebra.Q.Properties.Uniqueness where
 
-open import Substrate.Foundation.Nat using (ℕ; suc; _*_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Times
 open import Substrate.Foundation.Nat.Properties.Cancel using (suc-injective)
-open import Substrate.Foundation.Eq using (_≡_; sym; trans; cong; cong₂)
-open import Substrate.Algebra.Q using (ℚ; mkℚ; num; den-1; denominator)
+open import Substrate.Algebra.Q.Denominator
+open import Substrate.Algebra.Q.Rat
 open import Substrate.Algebra.Q.Equiv using (_≈ℚ_)
-open import Substrate.Algebra.Q.Reduction using (abs-ℤ)
+open import Substrate.Algebra.Q.Reduction.AbsInt
 open import Substrate.Algebra.Q.Properties.Abs using (abs-*ℤ-pos; ℤ-sign-mag)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.Algebra.Q.JacobianEvalCD
+open import Substrate.Foundation.Nat.SucInjective
 
 mag-cross-of-≈ : (p q : ℚ) → p ≈ℚ q →
                  abs-ℤ (num p) * denominator q ≡ abs-ℤ (num q) * denominator p

@@ -9,7 +9,8 @@
 
 module Substrate.Cocycles.V4Signature.Codeword.ReservedToBivectorAffine.V4 where
 
-open import Substrate.Foundation.Bool using (Bool; _xor_)
+open import Substrate.Foundation.Bool.Bool
+open import Substrate.Foundation.Bool.Xor
 open import Substrate.Foundation.Product using (_×_; _,_)
 
 V₄ : Set

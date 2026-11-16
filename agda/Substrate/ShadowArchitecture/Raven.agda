@@ -6,7 +6,7 @@
 --
 -- Submodules:
 --
---   Grammar        — DSL: KelenRelation (pa/ñi/se/la), Terminal
+--   Grammar        — DSL: KelenRelation (pa/ñi/se/la), Terminal-Raven
 --                    (awen-taso / añelē / other-attr), L7-Body-Reference,
 --                    Line, Stanza.
 --

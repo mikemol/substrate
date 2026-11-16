@@ -26,14 +26,18 @@
 
 module Substrate.Category.UniversalProperty.ExtrudeReductionReversal where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; cong)
 open import Substrate.Foundation.Iff using (_⇔_; ⇔-refl)
-open import Substrate.Algebra.R.Trace.SKIShedDuality using (S; K; I; _∙_) renaming (Tm to Tm⟦533ef80d⟧)
+open import Substrate.Algebra.R.Trace.SKIShedDuality.Tm
+  renaming (Tm to Tm⟦533ef80d⟧)
 import Substrate.Algebra.R.Trace.SKIReductionToList as R
 open R using (_⇒_)
 -- forward reduction (the FOLD): a ⇒* b collapses a down to b
 open import Substrate.Foundation.RewriteConfluence (R._⇒_)
-  using () renaming (_⇒*_ to _⇒*_; done to fdone; _◅_ to _f◅_)
+  using () renaming ( done to fdone)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.WellFounded
 
 ------------------------------------------------------------------------
 -- ① THE CONSTRUCTION (COFACE) STEP is the TIME-REVERSAL of reduction: b ⇐ a means "b is built from a" =
@@ -44,7 +48,7 @@ _⇐_ : Tm⟦533ef80d⟧ → Tm⟦533ef80d⟧ → Set
 b ⇐ a = a ⇒ b        -- construction: b is a coface-expansion whose reduct is... no — b is built, a reduces to b
 
 open import Substrate.Foundation.RewriteConfluence (_⇐_)
-  using () renaming (_⇒*_ to _⇐*_; done to cdone; _◅_ to _c◅_)
+  using () renaming ( done to cdone)
 
 -- re-export the construction closure as a top-level name (a coface/build path from the root up):
 Constructs : Tm⟦533ef80d⟧ → Tm⟦533ef80d⟧ → Set

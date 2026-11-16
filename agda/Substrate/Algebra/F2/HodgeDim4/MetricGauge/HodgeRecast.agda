@@ -25,7 +25,7 @@
 -- (sum-F₂ over Fin 4, right-associated with trailing 𝟘) and RHS
 -- (bilinear-form-of-4 metric-id-4 expansion, left-associated with
 -- residual +𝟘's after Agda's pattern reductions), bridge through
--- canonical form `((v₀·w₀ + v₁·w₁) + v₂·w₂) + v₃·w₃` via +-assoc and
+-- canonical form `((v₀·w₀ +F v₁·w₁) +F v₂·w₂) +F v₃·w₃` via +-assoc and
 -- +-identityʳ chains.
 ------------------------------------------------------------------------
 
@@ -34,10 +34,32 @@
 module Substrate.Algebra.F2.HodgeDim4.MetricGauge.HodgeRecast where
 
 open import Substrate.Foundation.Vec using ([]; _∷_)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; trans; cong; cong₂)
 
-open import Substrate.Algebra.F2
+open import Substrate.Algebra.F2.AbsorbL
+open import Substrate.Algebra.F2.AbsorbR
+open import Substrate.Algebra.F2.Assoc
+open import Substrate.Algebra.F2.Comm
+open import Substrate.Algebra.F2.Dec
+open import Substrate.Algebra.F2.DistribLPlus
+open import Substrate.Algebra.F2.DistribRPlus
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.F2Cases
+open import Substrate.Algebra.F2.Idempotent
+open import Substrate.Algebra.F2.IdentityL
+open import Substrate.Algebra.F2.IdentityR
+open import Substrate.Algebra.F2.InvOfOne
+open import Substrate.Algebra.F2.OneNeqZero
+open import Substrate.Algebra.F2.Op
+open import Substrate.Algebra.F2.Op2
+open import Substrate.Algebra.F2.PlusAssoc
+open import Substrate.Algebra.F2.PlusComm
+open import Substrate.Algebra.F2.PlusF
+open import Substrate.Algebra.F2.PlusIdentityL
+open import Substrate.Algebra.F2.PlusIdentityR
+open import Substrate.Algebra.F2.PlusInverseL
+open import Substrate.Algebra.F2.PlusInverseR
+open import Substrate.Algebra.F2.PlusSelfInverse
+open import Substrate.Algebra.F2.ZeroNeqOne
 open import Substrate.Algebra.F2.Vector
 open import Substrate.Algebra.F2.Vector.DotProduct using (_·F_)
 open import Substrate.Algebra.F2.HodgeDim4.MetricGauge
@@ -48,16 +70,16 @@ open import Substrate.Algebra.F2.HodgeDim4.MetricGauge
 -- At n=4, the standard dot product `_·F_` equals
 -- `bilinear-form-of-4 metric-id-4`.
 --
--- Both sides unfold to v₀·w₀ + v₁·w₁ + v₂·w₂ + v₃·w₃ after F₂
+-- Both sides unfold to v₀·w₀ +F v₁·w₁ +F v₂·w₂ +F v₃·w₃ after F₂
 -- arithmetic. LHS comes from sum-F₂ over Fin 4 (right-assoc with
 -- trailing 𝟘); RHS comes from bilinear-form-of-4 instantiated at
 -- metric-id-4's all-ones diagonal (left-assoc with residual +𝟘's
--- after Agda's `𝟘 + y = y`, `𝟙 · y = y`, and `𝟘 · _ = 𝟘` reductions).
+-- after Agda's `𝟘 +F y = y`, `𝟙 · y = y`, and `𝟘 · _ = 𝟘` reductions).
 ------------------------------------------------------------------------
 
 -- DEMOTED to instantiation. The original ~50-LoC LHS→canonical /
 -- RHS←canonical bridging proof at dim 4 (per-row residual-𝟘
--- cleanups + outer assoc/identity manipulations) is now a one-line
+-- cleanups +F outer assoc/identity manipulations) is now a one-line
 -- corollary of the generic HodgeRecast (`·F-eq-metric-id-bilin-generic`
 -- in Substrate.Algebra.F2.SymBilinForm.HodgeRecast) chained with the
 -- bilinear-form-of-metric-id-4-bridge from GenericBridge.
@@ -69,6 +91,11 @@ open import Substrate.Algebra.F2.SymBilinForm.HodgeRecast
   using (·F-eq-metric-id-bilin-generic)
 open import Substrate.Algebra.F2.HodgeDim4.MetricGauge.GenericBridge
   using (bilinear-form-of-metric-id-4-bridge)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
 
 ·F-eq-metric-id-4-bilin :
   (v w : Vector 4) → v ·F w ≡ bilinear-form-of-4 metric-id-4 v w
@@ -132,8 +159,8 @@ e₀-perp-e₁-via-·F-at-dim-4 = refl
 --
 --   * MetricOrthogonality-4: define `metric-orthogonal-4 M v w =
 --     bilinear-form-of-4 M v w ≡ 𝟘`. Dim-4 analog of the dim-3
---     MetricOrthogonality slice. One-line definition + recast
---     lemmas + concrete demos.
+--     MetricOrthogonality slice. One-line definition +F recast
+--     lemmas +F concrete demos.
 --
 --   * Metric-parametric Bivector / HodgeStar / SelfDual at dim 4:
 --     lift the existing implicit metric-id-4 dependence to

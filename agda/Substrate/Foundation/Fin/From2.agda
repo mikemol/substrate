@@ -10,14 +10,12 @@
 
 module Substrate.Foundation.Fin.From2 where
 
-open import Substrate.Foundation.Nat
-  renaming (_<_ to _<ℕ_; _≤_ to _≤ℕ_)
-open import Substrate.Foundation.Eq
-open import Substrate.Foundation.Empty
-open import Substrate.Foundation.Negation
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Le
+open import Substrate.Foundation.Nat.Lt
 open import Substrate.Foundation.Fin.Fin
 
 
-fromℕ< : {m n : ℕ} → m <ℕ n → Fin n
+fromℕ< : {m n : ℕ} → m < n → Fin n
 fromℕ< {zero}  {suc _} _ = zero
-fromℕ< {suc _} {suc _} (Substrate.Foundation.Nat.s≤s p) = suc (fromℕ< p)
+fromℕ< {suc _} {suc _} (s≤s p) = suc (fromℕ< p)

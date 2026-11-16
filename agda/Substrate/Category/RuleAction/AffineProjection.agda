@@ -9,7 +9,7 @@
 
 module Substrate.Category.RuleAction.AffineProjection where
 
-open import Substrate.Foundation.Nat using (ℕ; zero)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Maybe using (Maybe; nothing)
 
 record AffineProjection : Set where

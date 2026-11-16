@@ -24,13 +24,13 @@
 module Substrate.Algebra.Wedge.Trace.Residues where
 
 open import Substrate.Foundation.List using (List; []; _∷_)
-open import Substrate.Foundation.Eq using (_≡_)
-open import Substrate.Foundation.Empty using (⊥)
-open import Substrate.Foundation.Sum using (_⊎_)
+open import Substrate.Foundation.Empty.Bot
+open import Substrate.Foundation.Sum.Sum
 open import Substrate.Foundation.Product using (Σ; _,_)
 open import Substrate.Algebra.Wedge using (DivStr; Trace; done; more; rem)
 open import Substrate.Category.Lawvere
   using (FixedPointFree; TorsorAtom; prove-or-correct; e)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. The residues a trace sheds — the remainder at each step, any carrier.

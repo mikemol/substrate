@@ -13,12 +13,16 @@
 
 module Substrate.Algebra.Nat.Divides.Antisym where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _*_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Times
 open import Substrate.Foundation.Nat.Properties.Mul using (*-zeroʳ; *-identityˡ; *-assoc)
 open import Substrate.Foundation.Nat.Properties.Cancel using (*-cancelʳ-suc)
-open import Substrate.Foundation.Eq using (_≡_; sym; trans; cong)
 open import Substrate.Algebra.Nat.Divides.Type using (_∣_; divides)
 open import Substrate.Algebra.Nat.Divides.One using (*≡1ʳ)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 ∣-antisym : {a b : ℕ} → a ∣ b → b ∣ a → a ≡ b
 ∣-antisym {zero}   (divides k b≡k0) _                   = sym (trans b≡k0 (*-zeroʳ k))

@@ -24,22 +24,26 @@
 module Substrate.Category.ConjugationCoalgebra.Examples.V4 where
 
 open import Substrate.Foundation.Level using (0ℓ)
-open import Substrate.Foundation.Empty using (⊥)
-open import Substrate.Foundation.Sum using (_⊎_; inj₁; inj₂)
+open import Substrate.Foundation.Empty.Bot
+open import Substrate.Foundation.Sum.Sum
 open import Substrate.Foundation.Product using (∃-syntax; _,_)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong₂; subst)
-open import Substrate.Groups.V4.Bijection using (V₄; e; α; β; γ)
-open import Substrate.Groups.V4.Operations using (_·_; ε; inv; v4-cover; v4×v4-cover)
+open import Substrate.Groups.V4.Bijection.V4
+open import Substrate.Groups.V4.Operations using (_·₄_; ε; inv; v4-cover; v4×v4-cover)
 open import Substrate.Category.ConjugationCoalgebra using (ConjugationCoalgebra)
 open import Substrate.Category.ConjugationCoalgebra.Simplicity using (module Recognizer)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.Foundation.Eq.Subst
 
 ------------------------------------------------------------------------
 -- V₄ is abelian and exponent-2, so conjugation is the identity:
---   (g · h) · g⁻¹ ≡ h         (here g⁻¹ = inv g = g)
+--   (g ·₄ h) ·₄ g⁻¹ ≡ h         (here g⁻¹ = inv g = g)
 -- proved by the 4×4 cover (each cell reduces definitionally).
 ------------------------------------------------------------------------
 
-conj-trivial : (g h : V₄) → (g · h) · inv g ≡ h
+conj-trivial : (g h : V₄) → (g ·₄ h) ·₄ inv g ≡ h
 conj-trivial = v4×v4-cover _
   ( (refl , refl , refl , refl)
   , (refl , refl , refl , refl)
@@ -52,7 +56,7 @@ conj-trivial = v4×v4-cover _
 -- rep = id, in-class c h = c ≡ h).
 ------------------------------------------------------------------------
 
-V4-coalg : ConjugationCoalgebra V₄ _·_ ε inv V₄ (λ c → c) (λ c h → c ≡ h)
+V4-coalg : ConjugationCoalgebra V₄ _·₄_ ε inv V₄ (λ c → c) (λ c h → c ≡ h)
 V4-coalg = record
   { in-class-rep = λ c → refl
   ; conjugation-respects-class =
@@ -71,11 +75,11 @@ mem-α x = (x ≡ e) ⊎ (x ≡ α)
 
 -- Closure under the operation: the {e,α} block multiplies into itself
 -- (e·e=e, e·α=α, α·e=α, α·α=e), so the products land back in {e,α}.
-mem-α-· : {a b : V₄} → mem-α a → mem-α b → mem-α (a · b)
-mem-α-· (inj₁ a≡e) (inj₁ b≡e) = inj₁ (cong₂ _·_ a≡e b≡e)
-mem-α-· (inj₁ a≡e) (inj₂ b≡α) = inj₂ (cong₂ _·_ a≡e b≡α)
-mem-α-· (inj₂ a≡α) (inj₁ b≡e) = inj₂ (cong₂ _·_ a≡α b≡e)
-mem-α-· (inj₂ a≡α) (inj₂ b≡α) = inj₁ (cong₂ _·_ a≡α b≡α)
+mem-α-· : {a b : V₄} → mem-α a → mem-α b → mem-α (a ·₄ b)
+mem-α-· (inj₁ a≡e) (inj₁ b≡e) = inj₁ (cong₂ _·₄_ a≡e b≡e)
+mem-α-· (inj₁ a≡e) (inj₂ b≡α) = inj₂ (cong₂ _·₄_ a≡e b≡α)
+mem-α-· (inj₂ a≡α) (inj₁ b≡e) = inj₂ (cong₂ _·₄_ a≡α b≡e)
+mem-α-· (inj₂ a≡α) (inj₂ b≡α) = inj₁ (cong₂ _·₄_ a≡α b≡α)
 
 -- ⟡set1-paydown: `member` is now a parameter of NormalSubgroup, so the type
 -- is `NormalSubgroup mem-α` and the record literal drops the `member` field.
@@ -113,10 +117,10 @@ V4-not-simple = witness→¬simple V4-witness
 -- are singletons, but it shows the machinery composes on a real group.
 ------------------------------------------------------------------------
 
-conj-e : (c : V₄) → (e · c) · inv e ≡ c
+conj-e : (c : V₄) → (e ·₄ c) ·₄ inv e ≡ c
 conj-e = v4-cover _ (refl , refl , refl , refl)
 
-V4-orbit : (c h : V₄) → c ≡ h → ∃[ g ] (((g · c) · inv g) ≡ h)
+V4-orbit : (c h : V₄) → c ≡ h → ∃[ g ] (((g ·₄ c) ·₄ inv g) ≡ h)
 V4-orbit c h c≡h = e , trans (conj-e c) c≡h
 
 

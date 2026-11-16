@@ -15,14 +15,18 @@
 
 module Substrate.Algebra.Wedge.AxisWord.PackedSize where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _≤_; z≤n; s≤s)
-open import Substrate.Foundation.Eq using (_≡_; refl; cong)
-open import Substrate.Foundation.Negation using (¬_; Dec; yes; no)
-open import Substrate.Foundation.Sum using (_⊎_; inj₁; inj₂)
+open import Substrate.Foundation.Nat.Le
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Negation.Dec
+open import Substrate.Foundation.Negation.Not
+open import Substrate.Foundation.Sum.Sum
 open import Substrate.Foundation.List using ([]; _∷_)
 open import Substrate.Algebra.Wedge.AxisWord.PackedNode using (module PackedNode)
 open import Substrate.Algebra.Wedge.AxisWord.PackedTree using (module PackedTree)
 open import Substrate.Algebra.Wedge.AxisWord.PackedRecall using (module PackedRecall)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
 
 module PackedSize {A : Set} (_≟A_ : (a b : A) → Dec (a ≡ b)) where
 
@@ -41,7 +45,7 @@ module PackedSize {A : Set} (_≟A_ : (a b : A) → Dec (a ≡ b)) where
 
   size : Tower → ℕ
   size []          = zero
-  size (nd ∷ rest) = entries nd + size rest
+  size (nd ∷ rest) = entries nd ℕ+ size rest
 
   ------------------------------------------------------------------------
   -- 3. The Artin capacity, numerically: a node holds at most two.
@@ -84,5 +88,5 @@ module PackedSize {A : Set} (_≟A_ : (a b : A) → Dec (a ≡ b)) where
   ... | yes _ | _     = inj₁ refl
   ... | no _  | yes _ = inj₁ refl
   ... | no _  | no _  with insert-size x rest
-  ...   | inj₁ eq = inj₁ (cong (entries (full a b d) +_) eq)
-  ...   | inj₂ eq = inj₂ (cong (entries (full a b d) +_) eq)
+  ...   | inj₁ eq = inj₁ (cong (entries (full a b d) ℕ+_) eq)
+  ...   | inj₂ eq = inj₂ (cong (entries (full a b d) ℕ+_) eq)

@@ -20,17 +20,15 @@
 
 module Substrate.Algebra.Wedge.FourPointGroupoid where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Algebra.Group using (Group; monoid)
 open import Substrate.Category.Delooping using (deloop)
 open import Substrate.Category.DeloopingGroup using (deloop-group-isGroupoid)
 open import Substrate.Category.Iso using (IsGroupoid)
-open import Substrate.Groups.V4.Bijection using (V₄; e; α; β; γ)
+open import Substrate.Groups.V4.Bijection.V4
 open import Substrate.Groups.V4.Bundle using (V₄-Group)
-open import Substrate.Groups.V4.Operations using () renaming (inv to v4-inv)
-open import Substrate.Groups.V4.Bijection using (to-c)
+open import Substrate.Groups.V4.Operations
+open import Substrate.Groups.V4.Bijection.ToC
 open import Substrate.Groups.Coxeter.Word using (_++_)
-open import Substrate.Foundation.Eq using (trans; cong; sym)
 open import Substrate.Algebra.Wedge.FourPointV4 using (Square; rowSwap; colSwap; klein-rot)
 open import Substrate.Algebra.Wedge.FourPointReflection using (wordAct; wordAct-hom)
 
@@ -48,6 +46,10 @@ open import Substrate.Algebra.Wedge.FourPointReflection using (wordAct; wordAct-
 
 open import Substrate.Algebra.Wedge.FourPointV4
   using (rowSwap-inv; colSwap-inv; klein-rot-inv)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Sym
 BV₄-isGroupoid : IsGroupoid (deloop (monoid V₄-Group))
 BV₄-isGroupoid = deloop-group-isGroupoid V₄-Group
 

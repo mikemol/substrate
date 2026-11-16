@@ -21,11 +21,11 @@
 
 module Substrate.Conway.Neg where
 
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Groups.Coxeter.Word using (Word; []; _∷_)
 open import Substrate.Conway.SurrealFinite using (SurrealFinite; ⟨_∣_⟩)
 open import Substrate.Conway.Examples using (Zero; One; NegOne)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. Mutual negation and neg-Word.
@@ -71,7 +71,7 @@ mutual
   -ⁿ-involutive ⟨ L ∣ R ⟩ =
     cong₂ ⟨_∣_⟩ (neg-Word-involutive L) (neg-Word-involutive R)
     where
-      open import Substrate.Foundation.Eq using (cong₂)
+      open import Substrate.Foundation.Eq.Cong2
 
   neg-Word-involutive :
     {m : ℕ} (w : Word (SurrealFinite m)) → neg-Word (neg-Word w) ≡ w

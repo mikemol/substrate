@@ -19,10 +19,9 @@ module Substrate.Algebra.F2.HodgeDim3.MetricGauge.CongruenceIdToMixed where
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Literals using (₀; ₁; ₂; ₃; ₄; ₅)
 open import Substrate.Foundation.Vec using ([]; _∷_; lookup)
-open import Substrate.Foundation.Eq  using (_≡_; trans; cong)
-open import Substrate.Algebra.F2 using (𝟘; 𝟙)
+open import Substrate.Algebra.F2.F2
 open import Substrate.Algebra.F2.Vector using (basis; ≡-from-lookup)
-open import Substrate.Algebra.F2.Linear using (apply)
+open import Substrate.Algebra.F2.Linear.Linear
 open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.BilinearFormOf
   using (bilinear-form-of)
 open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.CongruenceAct
@@ -33,6 +32,9 @@ open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.TIdToMixed
   using (T-id-to-mixed; T-on-e₀; T-on-e₁; T-on-e₂)
 open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.BilinearFormSteps
   using (diag-bf-step; off-diag-bf-step)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 congruence-id-to-mixed :
   congruence-act T-id-to-mixed metric-id ≡ metric-mixed

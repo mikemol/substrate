@@ -40,11 +40,10 @@
 
 module Substrate.Algebra.Q.QToRCrossMix where
 
-open import Substrate.Foundation.Nat     using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Product using (_×_; _,_)
-open import Substrate.Foundation.Eq      using (_≡_; refl)
 
-open import Substrate.Algebra.Z using (ℤ; +_)
+open import Substrate.Algebra.Z.Int
 
 -- LEVEL 6 — the coalgebra unfold / convergent reconstruction (re-exported).
 open import Substrate.Algebra.R.Trace using (RealTrace; convergent)
@@ -52,10 +51,12 @@ open import Substrate.Algebra.R.Trace.RationalAdjunction
   using (qStep; qToRℚ; qToR)
 
 -- LEVEL 5 — the cross-codec structure of ℚ-equality (re-exported).
-open import Substrate.Algebra.Q using (ℚ; mkℚ; num; denominator)
+open import Substrate.Algebra.Q.Denominator
+open import Substrate.Algebra.Q.Rat
 open import Substrate.Algebra.Q.HetCrossMix
   using (ℚ-crossmix; ⊗-crossmix; cross-is-viaBridges; ≈ℚ-is-crossmix)
 open import Substrate.Algebra.Wedge.CrossMul using (cross)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. RE-EXPORT BOTH HALVES at this leaf, so a reader sees the one step under

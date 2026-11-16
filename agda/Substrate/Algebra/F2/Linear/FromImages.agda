@@ -8,7 +8,7 @@
 -- prescription (uniqueness by M-3.5 linear-extensionality).
 --
 -- Construction: apply v = sum (λ i → lookup v i *ₛ images i). All
--- linearity proofs follow from the F₂ algebra of *ₛ over +ⱽ + sum
+-- linearity proofs follow from the F₂ algebra of *ₛ over +ⱽ +F sum
 -- distribution, packaged here as small helpers.
 --
 -- (Originally-planned M-5 = F₂-affine subspaces deferred; not
@@ -19,18 +19,54 @@
 
 module Substrate.Algebra.F2.Linear.FromImages where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; lookup)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; trans; cong; cong₂; cong-trans; sym-trans; trans-sym)
 
-open import Substrate.Algebra.F2
+open import Substrate.Algebra.F2.AbsorbL
+open import Substrate.Algebra.F2.AbsorbR
+open import Substrate.Algebra.F2.Assoc
+open import Substrate.Algebra.F2.Comm
+open import Substrate.Algebra.F2.Dec
+open import Substrate.Algebra.F2.DistribLPlus
+open import Substrate.Algebra.F2.DistribRPlus
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.F2Cases
+open import Substrate.Algebra.F2.Idempotent
+open import Substrate.Algebra.F2.IdentityL
+open import Substrate.Algebra.F2.IdentityR
+open import Substrate.Algebra.F2.InvOfOne
+open import Substrate.Algebra.F2.OneNeqZero
+open import Substrate.Algebra.F2.Op
+open import Substrate.Algebra.F2.Op2
+open import Substrate.Algebra.F2.PlusAssoc
+open import Substrate.Algebra.F2.PlusComm
+open import Substrate.Algebra.F2.PlusF
+open import Substrate.Algebra.F2.PlusIdentityL
+open import Substrate.Algebra.F2.PlusIdentityR
+open import Substrate.Algebra.F2.PlusInverseL
+open import Substrate.Algebra.F2.PlusInverseR
+open import Substrate.Algebra.F2.PlusSelfInverse
+open import Substrate.Algebra.F2.ZeroNeqOne
 open import Substrate.Algebra.F2.Vector
 open import Substrate.Algebra.F2.Vector.Universal
-open import Substrate.Algebra.F2.Linear
+open import Substrate.Algebra.F2.Linear.CompL
+open import Substrate.Algebra.F2.Linear.CompLAssoc
+open import Substrate.Algebra.F2.Linear.CompLIdentityL
+open import Substrate.Algebra.F2.Linear.CompLIdentityR
+open import Substrate.Algebra.F2.Linear.IdL
+open import Substrate.Algebra.F2.Linear.Linear
+open import Substrate.Algebra.F2.Linear.Preserves
 open import Substrate.Algebra.F2.Linear.Universal using (sum-cong)
 open import Substrate.Algebra.F2.AsModule using (*ₛ-distribʳ-+)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.Foundation.Eq.CongTrans
+open import Substrate.Foundation.Eq.SymTrans
+open import Substrate.Foundation.Eq.TransSym
 
 ------------------------------------------------------------------------
 -- Small F₂-Vector helpers (factored for clarity; promoted to
@@ -54,7 +90,7 @@ open import Substrate.Algebra.F2.AsModule using (*ₛ-distribʳ-+)
   (sym-trans (cong (c ·_) (lookup-*ₛ d v i))
              (sym (lookup-*ₛ c (d *ₛ v) i)))))
 
--- Ⓓ: (a + b) *ₛ v ≡ a *ₛ v +ⱽ b *ₛ v is AsModule's *ₛ-distribʳ-+ (the F₂
+-- Ⓓ: (a +F b) *ₛ v ≡ a *ₛ v +ⱽ b *ₛ v is AsModule's *ₛ-distribʳ-+ (the F₂
 -- module structure's home), imported above; it was re-proved here identically.
 
 ------------------------------------------------------------------------
@@ -72,21 +108,21 @@ sum-+ⱽ-distrib {suc _} f g =
              (swap-+ⱽ (f fzero) (g fzero) (sum (λ ix → f (fsuc ix))) (sum (λ ix → g (fsuc ix))))
   where
     -- (a +ⱽ b) +ⱽ (c +ⱽ d) ≡ (a +ⱽ c) +ⱽ (b +ⱽ d), via lookup-componentwise
-    -- + F₂ associativity / commutativity.
+    -- +F F₂ associativity / commutativity.
     swap-+ⱽ : ∀ {m} (a b c d : Vector m) →
               ((a +ⱽ b) +ⱽ (c +ⱽ d)) ≡ ((a +ⱽ c) +ⱽ (b +ⱽ d))
     swap-+ⱽ a b c d = ≡-from-lookup _ _ (λ i →
       let la = lookup a i; lb = lookup b i
           lc = lookup c i; ld = lookup d i
       in trans (lookup-+ⱽ (a +ⱽ b) (c +ⱽ d) i)
-         (trans (cong₂ _+_ (lookup-+ⱽ a b i) (lookup-+ⱽ c d i))
-         (trans (+-assoc la lb (lc + ld))
-         (cong-trans (la +_) (sym (+-assoc lb lc ld))
-         (cong-trans (λ z → la + (z + ld)) (+-comm lb lc)
-         (cong-trans (la +_) (+-assoc lc lb ld)
-         (sym-trans (+-assoc la lc (lb + ld))
+         (trans (cong₂ _+F_ (lookup-+ⱽ a b i) (lookup-+ⱽ c d i))
+         (trans (+-assoc la lb (lc +F ld))
+         (cong-trans (la +F_) (sym (+-assoc lb lc ld))
+         (cong-trans (λ z → la +F (z +F ld)) (+-comm lb lc)
+         (cong-trans (la +F_) (+-assoc lc lb ld)
+         (sym-trans (+-assoc la lc (lb +F ld))
                 (sym (trans (lookup-+ⱽ (a +ⱽ c) (b +ⱽ d) i)
-                            (cong₂ _+_ (lookup-+ⱽ a c i) (lookup-+ⱽ b d i)))))))))))
+                            (cong₂ _+F_ (lookup-+ⱽ a c i) (lookup-+ⱽ b d i)))))))))))
 
 ------------------------------------------------------------------------
 -- Scalar pulls through sum.
@@ -113,8 +149,8 @@ sum-F₂-basis-collapse :
   ∀ {k} (i : Fin k) (g : Fin k → F₂) →
   sum-F₂ (λ j → lookup (basis i) j · g j) ≡ g i
 sum-F₂-basis-collapse {suc k} fzero g =
-  cong-trans (_+ tail-sum) (·-identityˡ (g fzero))
-  (cong-trans (g fzero +_) (zero-tail g)
+  cong-trans (_+F tail-sum) (·-identityˡ (g fzero))
+  (cong-trans (g fzero +F_) (zero-tail g)
          (+-identityʳ (g fzero)))
   where
     tail-sum : F₂
@@ -126,12 +162,12 @@ sum-F₂-basis-collapse {suc k} fzero g =
       sum-F₂ {k} (λ j' → lookup (𝟎ⱽ {k}) j' · g (fsuc j')) ≡ 𝟘
     zero-tail {zero}    _ = refl
     zero-tail {suc k'} g =
-      cong-trans (_+ sum-F₂ {k'} (λ j' → lookup (𝟎ⱽ {k'}) j' · g (fsuc (fsuc j'))))
+      cong-trans (_+F sum-F₂ {k'} (λ j' → lookup (𝟎ⱽ {k'}) j' · g (fsuc (fsuc j'))))
                  (·-absorbˡ (g (fsuc fzero)))
       (trans (+-identityˡ _)
              (zero-tail (λ ix → g (fsuc ix))))
 sum-F₂-basis-collapse {suc k} (fsuc i) g =
-  cong-trans (_+ sum-F₂ {k} (λ j → lookup (basis i) j · g (fsuc j)))
+  cong-trans (_+F sum-F₂ {k} (λ j → lookup (basis i) j · g (fsuc j)))
              (·-absorbˡ (g fzero))
   (trans (+-identityˡ _)
          (sum-F₂-basis-collapse i (λ ix → g (fsuc ix))))

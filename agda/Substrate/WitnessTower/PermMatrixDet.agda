@@ -40,19 +40,18 @@
 
 module Substrate.WitnessTower.PermMatrixDet where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Op
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; lookup)
-open import Substrate.Foundation.Negation using (Dec; yes; no)
+open import Substrate.Foundation.Negation.Dec
 open import Substrate.Foundation.Fin.RemQuot using (remQuot)
 open import Substrate.Foundation.Product using (proj₁; proj₂)
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.WitnessTower.Enumerate using (Perm)
 open import Substrate.WitnessTower.TowerCocycleGraded using (signF)
 import Substrate.WitnessTower.LeibnizDet as LD
 
-open import Substrate.Algebra.Z using (ℤ; +_; -suc_)
+open import Substrate.Algebra.Z.Int
 open import Substrate.Algebra.Semiring.Instances.Z using (ℤ-semiring; mul-sign-computes)
 
 ------------------------------------------------------------------------
@@ -64,10 +63,11 @@ open import Substrate.Algebra.Semiring.Instances.Z using (ℤ-semiring; mul-sign
 
 open LD.Det ℤ ℤ-semiring using (Mat)
 open LD.Det.WithSign ℤ ℤ-semiring (-suc 0) mul-sign-computes using (det; signVal)
+open import Substrate.Foundation.Eq
 
 Pmat : {n : ℕ} → Perm n → Mat n
 Pmat {n} σ k with proj₁ (remQuot {n} n k) | proj₂ (remQuot {n} n k)
-... | i | j with j ≟ lookup σ i
+... | i | j with j ≟ᶠ lookup σ i
 ...   | yes _ = + 1
 ...   | no  _ = + 0
 

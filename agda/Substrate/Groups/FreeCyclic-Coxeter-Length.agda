@@ -24,12 +24,13 @@
 
 module Substrate.Groups.FreeCyclic-Coxeter-Length where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; cong; trans)
+open import Substrate.Foundation.Nat.Nat
 
 import Substrate.Groups.FreeCyclic-Coxeter as F
 open import Substrate.Groups.Coxeter.Word using (Word; []; _∷_)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Trans
 
 ------------------------------------------------------------------------
 -- N-1: length-of-word — extract the ℕ value from a FreeCyclic word.

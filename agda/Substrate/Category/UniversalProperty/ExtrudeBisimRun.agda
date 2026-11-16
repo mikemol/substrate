@@ -23,12 +23,16 @@
 
 module Substrate.Category.UniversalProperty.ExtrudeBisimRun where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; subst; cong)
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.List using (List; []; _∷_)
-open import Substrate.Algebra.R.Trace.SKIShedDuality using () renaming (Tm to Tm⟦533ef80d⟧)
+
 open import Substrate.Category.UniversalProperty.ExtrudeMinimalRun using (step)
 open import Substrate.Category.UniversalProperty.ExtrudeStepDecidable using (HeadShape; head-shape)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Subst
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Algebra.R.Trace.SKIShedDuality.Tm
 
 ------------------------------------------------------------------------
 -- ① THE COINDUCTIVE REDUCTION STREAM: at each step, the within-step OBSERVATION (obs = head-shape) and the
@@ -42,7 +46,7 @@ record RedTrace : Set where
 open RedTrace public
 
 -- unfold a term into its reduction stream: observe head-shape, bleed step (guarded corecursion):
-run-trace : Tm⟦533ef80d⟧ → RedTrace
+run-trace : Tm → RedTrace
 obs  (run-trace t) = head-shape t
 more (run-trace t) = run-trace (step t)
 
@@ -67,7 +71,7 @@ more≈ (≈-refl s) = ≈-refl (more s)
 --    trace BISIMILAR TO ITS OWN TAIL — the residue coincides with the trace itself. This is the run's `loop`
 --    (a residue recurred), witnessed by bisimilarity, NOT by a total equality decision.
 ------------------------------------------------------------------------
-loop-from-fixed : (t : Tm⟦533ef80d⟧) → step t ≡ t → run-trace t ≈ more (run-trace t)
+loop-from-fixed : (t : Tm) → step t ≡ t → run-trace t ≈ more (run-trace t)
 loop-from-fixed t p = subst (λ s → run-trace t ≈ run-trace s) (sym p) (≈-refl (run-trace t))
 -- more (run-trace t) = run-trace (step t) (definitional); step t ≡ t transports ≈-refl to the lasso.
 

@@ -26,6 +26,11 @@
 module Substrate.S5.S5Nerve where
 
 open import Substrate.S5.S5Verdict using (_≡_; refl; sym; trans; cong)
+open import Substrate.Foundation.Eq
+open import Substrate.Algebra.Z.ZRingNorm
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
 
 -- the window monoid (the structure T-compose checks for the runner). PINNED as
 -- MonoidR: bundled M/_∙_/ε/laws — a distinct shape from Semigroup-based Algebra.Monoid.

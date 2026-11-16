@@ -30,15 +30,17 @@
 
 module Substrate.Category.ChainDecomposition where
 
-open import Substrate.Foundation.Level using (Level; _⊔_) renaming (suc to lsuc)
+open import Substrate.Foundation.Level using (Level; _⊔_)
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; lookup)
-open import Substrate.Foundation.Eq using (_≡_; refl)
 
 open import Substrate.Category.SylowDecomposition
   using (SylowDecomposition)
+open import Substrate.Foundation.Eq
+open import Substrate.Algebra.GL3F2
+open import Substrate.Category.PrimeFactoredGauge
 
 ------------------------------------------------------------------------
 -- 1. ChainDecomposition — the costructure.

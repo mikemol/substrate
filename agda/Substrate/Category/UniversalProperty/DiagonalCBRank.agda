@@ -28,11 +28,12 @@ module Substrate.Category.UniversalProperty.DiagonalCBRank where
 -- illuminating framing, NOT a theorem of this slice; not enforced by the typechecker).
 -- Promoting the framing to a theorem would require the identification of this schema with the classical Cantor-Bendixson rank (⟡diagonal-polish-derivative / -exists).
 
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Level using (Level; _⊔_) renaming (zero to lzero; suc to lsuc)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Level using (Level; _⊔_) renaming ( suc to lsuc)
 open import Substrate.Foundation.Product using (Σ; _,_; _×_)
 open import Substrate.Category.UniversalProperty.DiagonalOrdinal
   using (Ord; zero; suc; lim; _<_; no-largest)
+open import Substrate.Category.UniversalProperty.DiagonalPolishDerivative
 
 -- a "subset" of the space X is a predicate.
 Pred : ∀ {ℓ} → Set → Set (lsuc ℓ)

@@ -2,7 +2,7 @@
 -- Substrate.Foundation.Vec
 --
 -- Substrate-native length-indexed vectors. Phase 2: native datatype
--- + the standard operations (replicate / lookup / zipWith / map /
+-- ℕ+ the standard operations (replicate / lookup / zipWith / map /
 -- _++_ / head / tail / foldr / foldl / reverse / length).
 --
 -- Universe-polymorphic: Vec lives at any Level. Existing callers that
@@ -16,7 +16,8 @@
 
 module Substrate.Foundation.Vec where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Level using (Level; _⊔_)
 
@@ -67,7 +68,7 @@ tail (_ ∷ xs) = xs
 
 infixr 5 _++_
 
-_++_ : {A : Set ℓ} {m n : ℕ} → Vec A m → Vec A n → Vec A (m + n)
+_++_ : {A : Set ℓ} {m n : ℕ} → Vec A m → Vec A n → Vec A (m ℕ+ n)
 []       ++ ys = ys
 (x ∷ xs) ++ ys = x ∷ (xs ++ ys)
 
@@ -84,6 +85,6 @@ foldl B f z (x ∷ xs) = foldl (λ k → B (suc k)) f (f z x) xs
 length : {A : Set ℓ} {n : ℕ} → Vec A n → ℕ
 length {n = n} _ = n
 
--- `reverse` requires `n + 0 ≡ n` / `n + suc m ≡ suc (n + m)` index
+-- `reverse` requires `n ℕ+ 0 ≡ n` / `n ℕ+ suc m ≡ suc (n ℕ+ m)` index
 -- transports not yet in scope at this slice; reverse stays in
 -- Phase-2B's NatProperties-aware Foundation.Vec.Properties.

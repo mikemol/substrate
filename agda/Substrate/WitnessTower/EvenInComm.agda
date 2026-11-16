@@ -21,12 +21,12 @@
 
 module Substrate.WitnessTower.EvenInComm where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Eq using (_≡_)
 open import Substrate.WitnessTower.Wedge.OrientationRigCatPermCoxeterGeneral using (inj1)
-open import Substrate.WitnessTower.Wedge.OrientationRigCatPermCoxeterBraid using (Sep)
+open import Substrate.WitnessTower.Wedge.OrientationRigCatPermCoxeterBraid.Sep
 open import Substrate.Groups.Coxeter.Word using (Word; []; _∷_)
+open import Substrate.Foundation.Eq
 
 -- the trichotomy of a pair of adjacent-transposition gen-indices.
 data Tri : {m : ℕ} (i j : Fin m) → Set where

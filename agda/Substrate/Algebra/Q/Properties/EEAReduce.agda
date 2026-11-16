@@ -28,11 +28,11 @@
 
 module Substrate.Algebra.Q.Properties.EEAReduce where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym)
+open import Substrate.Foundation.Nat.Nat
 
-open import Substrate.Algebra.Z using (ℤ; +_)
-open import Substrate.Algebra.Q using (ℚ; mkℚ; num; denominator)
+open import Substrate.Algebra.Z.Int
+open import Substrate.Algebra.Q.Denominator
+open import Substrate.Algebra.Q.Rat
 
 open import Substrate.Algebra.Nat.GCD.EEATrace using (EEATrace)
 open import Substrate.Algebra.Nat.GCD.GcdN using (gcd-ℕ)
@@ -41,10 +41,13 @@ open import Substrate.Algebra.Nat.GCD.Fold using (gcd-fold; gcd-fold-correct)
 open import Substrate.Algebra.Nat.Divides.Type using (_∣_; divides)
 open import Substrate.Algebra.Nat.GCD.GcdDividesLeft using (gcd-divides-left)
 open import Substrate.Algebra.Nat.GCD.GcdDividesRight using (gcd-divides-right)
-open import Substrate.Algebra.Nat.GCD.CFInjective using (cf-injective)
+open import Substrate.Algebra.Nat.GCD.CFInjective.CfInjective
 
-open import Substrate.Algebra.Q.Reduction using (abs-ℤ; gcd-of-ℚ; is-reduced)
-open import Substrate.Algebra.Q.Reduce using (reduce)
+open import Substrate.Algebra.Q.Reduction.AbsInt
+open import Substrate.Algebra.Q.Reduction.GcdOfRat
+open import Substrate.Algebra.Q.Reduction.IsReduced
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
 
 ------------------------------------------------------------------------
 -- 1. THE BRIDGE LEMMA. The number `reduce` divides by — `gcd-of-ℚ q` — is the

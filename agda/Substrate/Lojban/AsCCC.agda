@@ -39,12 +39,9 @@
 
 module Substrate.Lojban.AsCCC where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Vec using (Vec)
-  renaming ([] to []ᵥ; _∷_ to _∷ᵥ_)
-open import Substrate.Foundation.Level using (Level; _⊔_)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; cong; sym)
+  renaming ([] to []ᵥ)
 
 open import Substrate.Groups.Coxeter.Word using ([]; _∷_)
 open import Substrate.Lojban.Gismu using (Gismu)
@@ -55,6 +52,10 @@ open import Substrate.Lojban.WordAlgebra
 
 open import Substrate.Category.OpcodeAlgebra
   using (OpcodeAlgebra; mkAlgebra; OpcodeCategory; substrate-native; execute)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Algebra.F2.AES.Round
 
 ------------------------------------------------------------------------
 -- 1. The endo-monoid on a state carrier.

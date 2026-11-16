@@ -20,18 +20,22 @@
 
 module Substrate.Algebra.Nat.GCD.ComputeTraceStep where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _<_)
+open import Substrate.Foundation.Nat.Lt
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.List using (_∷_)
-open import Substrate.Foundation.Eq using (_≡_; refl; trans; cong)
 open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂)
 open import Substrate.Foundation.WellFounded using (Acc; acc)
-open import Substrate.Algebra.Nat.WellFounded using (<-wellFounded)
+open import Substrate.Algebra.Nat.WellFounded.LtWellFounded
 open import Substrate.Algebra.Nat.GCD.Wedge
-  using (quotient; remainder; r<b) renaming (Wedge to Wedge⟦b7e6a995⟧)
+  using (quotient; remainder; r<b) renaming (Wedge-GCD to Wedge-GCD)
 open import Substrate.Algebra.Nat.GCD.ConstructWedge using (construct-wedge)
 open import Substrate.Algebra.Nat.GCD.EEATrace using (EEATrace; step)
 open import Substrate.Algebra.Nat.GCD.ComputeTrace using (compute-trace-acc; compute-trace)
 open import Substrate.Algebra.Wedge.Shape using (ℕ-shape)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Algebra.CayleyDickson
 
 -- RESULT-IRRELEVANCE: the worker's output does not depend on the Acc witness.
 cta-irr : (a b : ℕ) (p q : Acc _<_ b) →
@@ -66,7 +70,7 @@ compute-trace-step a b = cta-step a b (<-wellFounded (suc b))
 -- The INTERIOR recurrence: shape peels the leading quotient off a `step`.
 -- Refl on the EEATrace constructor (the same fact the keystone induction uses).
 shape-step : {a b′ g : ℕ}
-             (w : Wedge⟦b7e6a995⟧ a (suc b′)) (sub : EEATrace (suc b′) (remainder w) g) →
+             (w : Wedge-GCD a (suc b′)) (sub : EEATrace (suc b′) (remainder w) g) →
              ℕ-shape (step b′ w sub) ≡ quotient w ∷ ℕ-shape sub
 shape-step w sub = refl
 

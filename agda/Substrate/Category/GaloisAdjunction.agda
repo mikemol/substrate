@@ -37,11 +37,10 @@
 module Substrate.Category.GaloisAdjunction where
 
 open import Substrate.Foundation.Level using (Level; _⊔_) renaming (suc to lsuc)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl)
 
 open import Substrate.Category.PresentedGroup using (PresentedGroup)
 open import Substrate.Category.ConjugationCoalgebra using (ConjugationCoalgebra)
+open import Substrate.Foundation.Eq
 
 private
   variable

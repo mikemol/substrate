@@ -36,7 +36,9 @@ module Substrate.Category.Coalgebra where
 
 open import Substrate.Foundation.Level using (Level; _⊔_)
 open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; trans; cong)
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 private
   variable

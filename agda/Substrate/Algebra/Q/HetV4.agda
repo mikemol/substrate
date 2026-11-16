@@ -28,8 +28,8 @@
 
 module Substrate.Algebra.Q.HetV4 where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Algebra.Q.HetBasis using (HetQ; hnum; hden; module CrossEq)
+open import Substrate.Foundation.Eq
 
 module _
   {A R : Set}

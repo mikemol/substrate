@@ -29,10 +29,13 @@
 
 module Substrate.Algebra.Wedge.Compose where
 
-open import Substrate.Foundation.Eq using (_≡_; sym; trans; cong)
 open import Substrate.Algebra.Wedge
   using (DivStr; z; recon; quot; rem; wedge-eq)
-  renaming (Wedge to Wedge⟦478f66a6⟧)   -- specialize the colliding name by shape
+  renaming (Wedge to Wedge)   -- specialize the colliding name by shape
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- 1. The two laws a carrier needs to host the wedge category.
@@ -57,7 +60,7 @@ ReconUnit D one = ∀ x → recon D one x (z D) ≡ x
 -- composition of wedges: quotients multiply (quantify), remainders
 -- accumulate through recon (exchange).
 wedge-∘ : {C : Set} {D : DivStr C} {_⊗_ : C → C → C} → ReconLinear D _⊗_ → {a b c : C} →
-          Wedge⟦478f66a6⟧ D a b → Wedge⟦478f66a6⟧ D b c → Wedge⟦478f66a6⟧ D a c
+          Wedge D a b → Wedge D b c → Wedge D a c
 wedge-∘ {D = D} {_⊗_ = _⊗_} lin {c = c} w₁ w₂ = record
   { quot     = quot w₁ ⊗ quot w₂
   ; rem      = recon D (quot w₁) (rem w₂) (rem w₁)
@@ -68,6 +71,6 @@ wedge-∘ {D = D} {_⊗_ = _⊗_} lin {c = c} w₁ w₂ = record
   }
 
 -- the identity wedge a ⟶ a: the (one, z) corner.
-wedge-id : {C : Set} {D : DivStr C} {one : C} → ReconUnit D one → (a : C) → Wedge⟦478f66a6⟧ D a a
+wedge-id : {C : Set} {D : DivStr C} {one : C} → ReconUnit D one → (a : C) → Wedge D a a
 wedge-id {D = D} {one = one} unit a =
   record { quot = one ; rem = z D ; wedge-eq = sym (unit a) }

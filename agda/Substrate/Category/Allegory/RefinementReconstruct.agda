@@ -25,9 +25,11 @@
 
 module Substrate.Category.Allegory.RefinementReconstruct where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Category.Allegory.Refinement
-  using (Refinement; iterate; _⊑ᶠ_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Category.Allegory.Refinement.Iterate
+open import Substrate.Category.Allegory.Refinement.Refinement
+open import Substrate.Category.Allegory.Refinement.SqsubF
+open import Substrate.Algebra.F2.AES.KAT.Pre
 -- (Refinement is a vestigial record now — Φ and mono are its params, nothing to open)
 
 -- THE RICH Set₀ RECONSTRUCTION: the grade EXPOSED as a graded family. C : ℕ → Set

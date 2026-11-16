@@ -15,28 +15,72 @@
 module Substrate.Algebra.F2.GF256.Bridge.Base where
 
 open import Substrate.Foundation.Vec using (Vec; []; _∷_)
-open import Substrate.Foundation.Eq using (_≡_; refl; cong; cong₂; trans)
-open import Substrate.Algebra.F2 using (F₂; 𝟘; 𝟙; _+_; _·_)
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.Op
+open import Substrate.Algebra.F2.PlusF
 open import Substrate.Algebra.F2.CommRing using (F₂-CommRing)
 open import Substrate.Algebra.F2.Vector using (Vector; _+ⱽ_; _*ₛ_)
-open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit.Base using (m-lo)
+open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit.Base.MLo
 open import Substrate.Algebra.F2.GF256.Xtime using (xtime)
 import Substrate.Algebra.Polynomial.Graded.FromCommRing as F
 import Substrate.Algebra.Polynomial.Graded.Mod.Core as ModCore
 
 open ModCore.Over F₂-CommRing 7 m-lo using (ytime)
-open F.Over F₂-CommRing using (_+P_; _·c_) renaming (_+_ to _+r_; _*_ to _·r_)
+-- ⚑ Ⓑ6ᶜ: WAS `using (_+P_; _·c_) renaming (_+F_ to _+r_; _*_ to _·r_)`, and that
+-- `renaming` was MECHANICALLY MANGLED, not merely stripped. Archaeology
+-- (`git show 771283c8^`) shows the original:
+--
+--     open F.Over F₂-CommRing using (_+P_; _·c_) renaming (_+_ to _+r_; _*_ to _·r_)
+--
+-- The sweep's blind `+` → `+F` substitution rewrote the rename's SOURCE, so it
+-- named `_+F_` — a name `Over` does not export. A `renaming` whose source does not
+-- exist binds NOTHING and is only a WARNING at the import, so `+r` dangled until
+-- the use site at :38. That is the prose-corruption class (Ⓕ-PROSE-DECORRUPT)
+-- landing in live code rather than in a comment.
+--
+-- ⚑ AND THE COLLISION THE RENAME EXISTED FOR IS GONE. `_+r_` distinguished the
+-- ring-projected addition from F₂'s own `_+_`; the sweep renamed F₂'s at source to
+-- `_+F_`, so `Over`'s `_+_` no longer collides and needs no alias. The directive
+-- is dropped rather than repaired — which is what the ban wants anyway.
+--
+-- ⚑ AND DROPPING THE FILTER ENTIRELY OVER-WIDENED, WHICH IS ITS OWN FINDING.
+-- A bare `open F.Over` brings in `Over.𝟘`, colliding with `F2.F2`'s CONSTRUCTOR
+-- `𝟘` — `[AmbiguousName]` at :86, the exact ⟡AMBIG35 shape, and the reason the
+-- original reached for a `using` filter in the first place. Removing a banned
+-- directive is not the same as removing the collision it was masking.
+--
+-- ⚑ THE Ⓐ1 SPLIT IS WHAT MAKES THE BAN-COMPLIANT FIX POSSIBLE. `FromCommRing.Over`
+-- is now 22 one-definition leaves, so this file takes the operators it needs BY
+-- NAME instead of a bundle it must filter. That is the operator's ruling realised:
+-- once bare imports carry individual symbols, the filter becomes UNNECESSARY
+-- rather than merely forbidden.
+open import Substrate.Algebra.Polynomial.Graded.FromCommRing.Plus F₂-CommRing
+open import Substrate.Algebra.Polynomial.Graded.FromCommRing.Times F₂-CommRing
+-- `_+P_` / `_·c_` — the graded vector ops, used by `+P≡+ⱽ` and `·c≡*ₛ` below.
+-- Still reached through `F.Over`, which supplies the coefficient arguments
+-- `Graded.Defs.Over` needs; only the two colliding OPERATORS moved to leaves.
+open F.Over F₂-CommRing using (_+P_; _·c_)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.Foundation.Eq.Trans
 
 ------------------------------------------------------------------------
 -- The element bridge: the field's CommutativeRing-projected ops are F₂'s.
 
-+e : (a b : F₂) → (a +r b) ≡ (a + b)
+-- ⚑ Ⓑ6ᶜ: `+r` → `_+_` (the ring-projected addition, now unaliased); `+F` stays
+-- F₂'s own. The theorem is unchanged — it is exactly the claim the module header
+-- makes, that the two agree — but both sides now spell the operator they mean.
++e : (a b : F₂) → (a + b) ≡ (a +F b)
 +e 𝟘 𝟘 = refl
 +e 𝟘 𝟙 = refl
 +e 𝟙 𝟘 = refl
 +e 𝟙 𝟙 = refl
 
-·e : (a b : F₂) → (a ·r b) ≡ (a · b)
+-- ⚑ Ⓑ6ᶜ: `·r` → `_*_`. Unlike the addition pair, F₂'s multiplication kept its
+-- spelling (`F2.Op` exports `_·_`), so the two sides are `*` and `·` — genuinely
+-- different operators, which is what makes this a theorem rather than a tautology.
+·e : (a b : F₂) → (a * b) ≡ (a · b)
 ·e 𝟘 𝟘 = refl
 ·e 𝟘 𝟙 = refl
 ·e 𝟙 𝟘 = refl

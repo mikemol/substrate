@@ -20,7 +20,8 @@
 
 module Substrate.Category.Comonoid where
 
-open import Substrate.Foundation.Level using (Level) renaming (suc to lsuc)
+open import Substrate.Foundation.Level using (Level)
+open import Substrate.Algebra.R.Trace.DetValSign
 
 private
   variable

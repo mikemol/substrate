@@ -10,7 +10,7 @@
 --     bounded-monus lemma (k∸a)∸(k∸b) ≡ b∸a).
 --   * the coordinate-BOUND invariant `hilbert-bounded` (coords < 2ⁿ), which feeds D's
 --     isometry.
---   * `Cont` (consecutive points adjacent) + `Cont-app` gluing the four isometric
+--   * `Cont` (consecutive points adjacent) ℕ+ `Cont-app` gluing the four isometric
 --     sub-curves, the 3 quadrant seams = 1 (computed from entry/exit).
 -- THEOREM `hilbert-continuous` : Cont (hilbert n) for EVERY n — the 2D Hilbert curve
 -- is continuous at all orders (generalizing the concrete hilbert-2-continuous). Done.
@@ -20,17 +20,29 @@
 
 module Substrate.Algebra.CayleyDickson.Hilbert2DContinuous where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _∸_; _≤_; _<_; z≤n; s≤s)
+open import Substrate.Foundation.Nat.Le
+open import Substrate.Foundation.Nat.Lt
+open import Substrate.Foundation.Nat.Monus
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
 open import Substrate.Foundation.Nat.Properties.Sub using (m∸m≡0; ∸-∸-cancel; ∸-≤-self)
-open import Substrate.Foundation.Nat.Properties.Add using (+-suc; +-identityʳ; +-comm)
+open import Substrate.Foundation.Nat.Properties.Add.PlusComm
+open import Substrate.Foundation.Nat.Properties.Add.PlusIdentityR
+open import Substrate.Foundation.Nat.Properties.Add.PlusSuc
 open import Substrate.Foundation.Nat.Properties.Order
   using (≤-refl; ≤-suc-r; ≤-trans; ≤-<-trans; <-suc-self; m≤m+n; +-monoˡ-≤)
 open import Substrate.Foundation.Unit using (⊤; tt)
-open import Substrate.Foundation.Eq using (_≡_; refl; cong; cong₂; trans; sym; subst)
 open import Substrate.Foundation.List using (List; []; _∷_; _++_)
 open import Substrate.Foundation.Product using (Σ; _×_; _,_; proj₁; proj₂)
 open import Substrate.Algebra.CayleyDickson.Hilbert2D
   using (Pt; pow2; mapL; hilbert; manh)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Subst
+open import Substrate.WitnessTower.M40Closure
 
 ------------------------------------------------------------------------
 -- 1. first / last of a point-list, and how they pass through ++ and mapL.
@@ -86,9 +98,9 @@ hilbert-entry n with hilbert-head n
 A : Pt → Pt
 A p = (proj₂ p , proj₁ p)                              -- transpose (entry rotation)
 B C D : ℕ → Pt → Pt
-B s p = (proj₁ p , proj₂ p + s)                        -- shift up
-C s p = (proj₁ p + s , proj₂ p + s)                    -- shift up-right
-D s p = (((s + s) ∸ 1) ∸ proj₂ p , (s ∸ 1) ∸ proj₁ p)  -- anti-diagonal reflect (exit rotation)
+B s p = (proj₁ p , proj₂ p ℕ+ s)                        -- shift up
+C s p = (proj₁ p ℕ+ s , proj₂ p ℕ+ s)                    -- shift up-right
+D s p = (((s ℕ+ s) ∸ 1) ∸ proj₂ p , (s ∸ 1) ∸ proj₁ p)  -- anti-diagonal reflect (exit rotation)
 
 0∸n≡0 : (n : ℕ) → zero ∸ n ≡ 0
 0∸n≡0 zero    = refl
@@ -98,9 +110,9 @@ D s p = (((s + s) ∸ 1) ∸ proj₂ p , (s ∸ 1) ∸ proj₁ p)  -- anti-diago
 ≤→∸≡0 {n = n} z≤n = 0∸n≡0 n
 ≤→∸≡0 (s≤s p)     = ≤→∸≡0 p
 
-∸-+-cancel : (a b s : ℕ) → (a + s) ∸ (b + s) ≡ a ∸ b
-∸-+-cancel a b zero    = cong₂ _∸_ (+-identityʳ a) (+-identityʳ b)
-∸-+-cancel a b (suc s) = trans (cong₂ _∸_ (+-suc a s) (+-suc b s)) (∸-+-cancel a b s)
+∸-+-cancel : (a b s : ℕ) → (a ℕ+ s) ∸ (b ℕ+ s) ≡ a ∸ b
+∸-+-cancel a b zero    = cong₂ _∸_ (+ℕ-identityʳ a) (+ℕ-identityʳ b)
+∸-+-cancel a b (suc s) = trans (cong₂ _∸_ (+ℕ-suc a s) (+ℕ-suc b s)) (∸-+-cancel a b s)
 
 -- reflection preserves the (one-sided) gap: for a,b ≤ k, (k∸a)∸(k∸b) ≡ b∸a.
 monus-reflect : (k a b : ℕ) → a ≤ k → b ≤ k → (k ∸ a) ∸ (k ∸ b) ≡ b ∸ a
@@ -113,38 +125,38 @@ monus-reflect (suc k) (suc a)  (suc b)  (s≤s a≤k) (s≤s b≤k) = monus-refl
 
 ------------------------------------------------------------------------
 -- 4. Each transform is a Manhattan ISOMETRY (so a sub-curve stays continuous).
---    manh p q = adist (x p)(x q) + adist (y p)(y q), adist a b = (a∸b)+(b∸a).
+--    manh p q = adist (x p)(x q) ℕ+ adist (y p)(y q), adist a b = (a∸b)ℕ+(b∸a).
 ------------------------------------------------------------------------
 
 adist : ℕ → ℕ → ℕ
-adist a b = (a ∸ b) + (b ∸ a)
+adist a b = (a ∸ b) ℕ+ (b ∸ a)
 
-adist-+s : (a b s : ℕ) → adist (a + s) (b + s) ≡ adist a b
-adist-+s a b s = cong₂ _+_ (∸-+-cancel a b s) (∸-+-cancel b a s)
+adist-+s : (a b s : ℕ) → adist (a ℕ+ s) (b ℕ+ s) ≡ adist a b
+adist-+s a b s = cong₂ _ℕ+_ (∸-+-cancel a b s) (∸-+-cancel b a s)
 
 adist-reflect : (k a b : ℕ) → a ≤ k → b ≤ k → adist (k ∸ a) (k ∸ b) ≡ adist a b
 adist-reflect k a b a≤k b≤k =
-  trans (cong₂ _+_ (monus-reflect k a b a≤k b≤k) (monus-reflect k b a b≤k a≤k))
-        (+-comm (b ∸ a) (a ∸ b))
+  trans (cong₂ _ℕ+_ (monus-reflect k a b a≤k b≤k) (monus-reflect k b a b≤k a≤k))
+        (+ℕ-comm (b ∸ a) (a ∸ b))
 
 manh-A : (p q : Pt) → manh (A p) (A q) ≡ manh p q
-manh-A p q = +-comm (adist (proj₂ p) (proj₂ q)) (adist (proj₁ p) (proj₁ q))
+manh-A p q = +ℕ-comm (adist (proj₂ p) (proj₂ q)) (adist (proj₁ p) (proj₁ q))
 
 manh-B : (s : ℕ) (p q : Pt) → manh (B s p) (B s q) ≡ manh p q
-manh-B s p q = cong (adist (proj₁ p) (proj₁ q) +_) (adist-+s (proj₂ p) (proj₂ q) s)
+manh-B s p q = cong (adist (proj₁ p) (proj₁ q) ℕ+_) (adist-+s (proj₂ p) (proj₂ q) s)
 
 manh-C : (s : ℕ) (p q : Pt) → manh (C s p) (C s q) ≡ manh p q
-manh-C s p q = cong₂ _+_ (adist-+s (proj₁ p) (proj₁ q) s) (adist-+s (proj₂ p) (proj₂ q) s)
+manh-C s p q = cong₂ _ℕ+_ (adist-+s (proj₁ p) (proj₁ q) s) (adist-+s (proj₂ p) (proj₂ q) s)
 
 -- D needs the coordinate bounds (coords < s) so the reflections don't truncate.
 manh-D : (s : ℕ) (p q : Pt) →
          proj₁ p < s → proj₂ p < s → proj₁ q < s → proj₂ q < s →
          manh (D s p) (D s q) ≡ manh p q
 manh-D s p q x₁ y₁ x₂ y₂ =
-  trans (cong₂ _+_ (adist-reflect ((s + s) ∸ 1) (proj₂ p) (proj₂ q)
+  trans (cong₂ _ℕ+_ (adist-reflect ((s ℕ+ s) ∸ 1) (proj₂ p) (proj₂ q)
                       (<⇒≤∸1 (≤-trans y₁ (m≤m+n s s))) (<⇒≤∸1 (≤-trans y₂ (m≤m+n s s))))
                    (adist-reflect (s ∸ 1) (proj₁ p) (proj₁ q) (<⇒≤∸1 x₁) (<⇒≤∸1 x₂)))
-        (+-comm (adist (proj₂ p) (proj₂ q)) (adist (proj₁ p) (proj₁ q)))
+        (+ℕ-comm (adist (proj₂ p) (proj₂ q)) (adist (proj₁ p) (proj₁ q)))
 
 ------------------------------------------------------------------------
 -- 5. The coordinate-BOUND invariant: every point of hilbert n has coords < 2ⁿ
@@ -174,35 +186,35 @@ pow2-pos (suc n) = ≤-trans (pow2-pos n) (m≤m+n (pow2 n) (pow2 n))
 m∸1<m : (m : ℕ) → 1 ≤ m → m ∸ 1 < m
 m∸1<m (suc m) _ = <-suc-self m
 
-<-weaken : {x s : ℕ} → x < s → x < s + s
+<-weaken : {x s : ℕ} → x < s → x < s ℕ+ s
 <-weaken {x} {s} x<s = ≤-trans x<s (m≤m+n s s)
 
-+s-< : {x s : ℕ} → x < s → x + s < s + s
++s-< : {x s : ℕ} → x < s → x ℕ+ s < s ℕ+ s
 +s-< {x} {s} x<s = +-monoˡ-≤ s x<s
 
-A-bound : (s : ℕ) (p : Pt) → InB s p → InB (s + s) (A p)
+A-bound : (s : ℕ) (p : Pt) → InB s p → InB (s ℕ+ s) (A p)
 A-bound s p (x< , y<) = <-weaken y< , <-weaken x<
 
-B-bound : (s : ℕ) (p : Pt) → InB s p → InB (s + s) (B s p)
+B-bound : (s : ℕ) (p : Pt) → InB s p → InB (s ℕ+ s) (B s p)
 B-bound s p (x< , y<) = <-weaken x< , +s-< y<
 
-C-bound : (s : ℕ) (p : Pt) → InB s p → InB (s + s) (C s p)
+C-bound : (s : ℕ) (p : Pt) → InB s p → InB (s ℕ+ s) (C s p)
 C-bound s p (x< , y<) = +s-< x< , +s-< y<
 
-D-bound : (s : ℕ) → 1 ≤ s → (p : Pt) → InB s p → InB (s + s) (D s p)
+D-bound : (s : ℕ) → 1 ≤ s → (p : Pt) → InB s p → InB (s ℕ+ s) (D s p)
 D-bound s 1≤s p (x< , y<) =
-    ≤-<-trans (∸-≤-self ((s + s) ∸ 1) (proj₂ p)) (m∸1<m (s + s) (≤-trans 1≤s (m≤m+n s s)))
+    ≤-<-trans (∸-≤-self ((s ℕ+ s) ∸ 1) (proj₂ p)) (m∸1<m (s ℕ+ s) (≤-trans 1≤s (m≤m+n s s)))
   , ≤-trans (≤-<-trans (∸-≤-self (s ∸ 1) (proj₁ p)) (m∸1<m s 1≤s)) (m≤m+n s s)
 
 -- every point of hilbert n is in bounds 2ⁿ.
 hilbert-bounded : (n : ℕ) → AllInB (pow2 n) (hilbert n)
 hilbert-bounded zero    = (s≤s z≤n , s≤s z≤n) , tt
 hilbert-bounded (suc n) =
-  AllInB-++ (s + s) (mapL A h) _ (AllInB-mapL A s (s + s) h (A-bound s) bh)
-  (AllInB-++ (s + s) (mapL (B s) h) _ (AllInB-mapL (B s) s (s + s) h (B-bound s) bh)
-  (AllInB-++ (s + s) (mapL (C s) h) (mapL (D s) h)
-             (AllInB-mapL (C s) s (s + s) h (C-bound s) bh)
-             (AllInB-mapL (D s) s (s + s) h (D-bound s (pow2-pos n)) bh)))
+  AllInB-++ (s ℕ+ s) (mapL A h) _ (AllInB-mapL A s (s ℕ+ s) h (A-bound s) bh)
+  (AllInB-++ (s ℕ+ s) (mapL (B s) h) _ (AllInB-mapL (B s) s (s ℕ+ s) h (B-bound s) bh)
+  (AllInB-++ (s ℕ+ s) (mapL (C s) h) (mapL (D s) h)
+             (AllInB-mapL (C s) s (s ℕ+ s) h (C-bound s) bh)
+             (AllInB-mapL (D s) s (s ℕ+ s) h (D-bound s (pow2-pos n)) bh)))
   where s = pow2 n
         h = hilbert n
         bh = hilbert-bounded n
@@ -225,7 +237,7 @@ hilbert-exit zero    = refl
 hilbert-exit (suc n) =
   trans (lastP-hilbert-suc n)
   (trans (cong (D (pow2 n)) (hilbert-exit n))
-         (cong (λ z → ((pow2 n + pow2 n) ∸ 1 , z)) (m∸m≡0 (pow2 n ∸ 1))))
+         (cong (λ z → ((pow2 n ℕ+ pow2 n) ∸ 1 , z)) (m∸m≡0 (pow2 n ∸ 1))))
 
 ------------------------------------------------------------------------
 -- 7. Continuity: consecutive points are adjacent (Manhattan 1). The four
@@ -240,17 +252,17 @@ sm∸m≡1 (suc m) = sm∸m≡1 m
 m∸pred≡1 : (s : ℕ) → 1 ≤ s → s ∸ (s ∸ 1) ≡ 1
 m∸pred≡1 (suc m) _ = sm∸m≡1 m
 
-pred-+ : (a b : ℕ) → 1 ≤ a → (a ∸ 1) + b ≡ (a + b) ∸ 1
+pred-+ : (a b : ℕ) → 1 ≤ a → (a ∸ 1) ℕ+ b ≡ (a ℕ+ b) ∸ 1
 pred-+ (suc a) b _ = refl
 
 adist-self : (x : ℕ) → adist x x ≡ 0
-adist-self x = cong₂ _+_ (m∸m≡0 x) (m∸m≡0 x)
+adist-self x = cong₂ _ℕ+_ (m∸m≡0 x) (m∸m≡0 x)
 
 adist-pred : (s : ℕ) → 1 ≤ s → adist (s ∸ 1) s ≡ 1
-adist-pred s 1≤s = cong₂ _+_ (≤→∸≡0 (∸-≤-self s 1)) (m∸pred≡1 s 1≤s)
+adist-pred s 1≤s = cong₂ _ℕ+_ (≤→∸≡0 (∸-≤-self s 1)) (m∸pred≡1 s 1≤s)
 
 adist-pred′ : (s : ℕ) → 1 ≤ s → adist s (s ∸ 1) ≡ 1
-adist-pred′ s 1≤s = cong₂ _+_ (m∸pred≡1 s 1≤s) (≤→∸≡0 (∸-≤-self s 1))
+adist-pred′ s 1≤s = cong₂ _ℕ+_ (m∸pred≡1 s 1≤s) (≤→∸≡0 (∸-≤-self s 1))
 
 Cont : List Pt → Set
 Cont []           = ⊤
@@ -305,12 +317,12 @@ hilbert-continuous (suc n) with hilbert-head n
     seam-BC : manh (lastP (mapL (B s) z0)) (C s (0 , 0)) ≡ 1
     seam-BC = trans (cong (λ w → manh w (C s (0 , 0))) (lastP-mapL (B s) (0 , 0) ys))
               (trans (cong (λ w → manh (B s w) (C s (0 , 0))) exitY)
-              (trans (cong (adist (s ∸ 1) s +_) (adist-self s))
-              (trans (+-identityʳ (adist (s ∸ 1) s)) (adist-pred s (pow2-pos n)))))
+              (trans (cong (adist (s ∸ 1) s ℕ+_) (adist-self s))
+              (trans (+ℕ-identityʳ (adist (s ∸ 1) s)) (adist-pred s (pow2-pos n)))))
     seam-CD : manh (lastP (mapL (C s) z0)) (D s (0 , 0)) ≡ 1
     seam-CD = trans (cong (λ w → manh w (D s (0 , 0))) (lastP-mapL (C s) (0 , 0) ys))
               (trans (cong (λ w → manh (C s w) (D s (0 , 0))) exitY)
-              (trans (cong (_+ adist s (s ∸ 1))
-                        (trans (cong (λ w → adist w ((s + s) ∸ 1)) (pred-+ s s (pow2-pos n)))
-                               (adist-self ((s + s) ∸ 1))))
+              (trans (cong (_ℕ+ adist s (s ∸ 1))
+                        (trans (cong (λ w → adist w ((s ℕ+ s) ∸ 1)) (pred-+ s s (pow2-pos n)))
+                               (adist-self ((s ℕ+ s) ∸ 1))))
                      (adist-pred′ s (pow2-pos n))))

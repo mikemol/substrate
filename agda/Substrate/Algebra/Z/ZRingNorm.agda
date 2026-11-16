@@ -11,13 +11,15 @@
 -- structural recursion (each case one local ring lemma — bounded memory).
 -- A ℤ ring identity `a ≡ b` is then: reflect both, check `norm eₐ ≡ norm e_b`
 -- (refl — same canonical), and `⟦eₐ⟧ ≡ evalC(norm eₐ) ≡ evalC(norm e_b) ≡ ⟦e_b⟧`.
--- No hand trace; no balloon.  This LAYER 1: data + interpretation + arithmetic.
+-- No hand trace; no balloon.  This LAYER 1: data ℕ+ interpretation ℕ+ arithmetic.
 ------------------------------------------------------------------------
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; lookup)
-open import Substrate.Algebra.Z using (ℤ; +_; -suc_; 0ℤ)
+open import Substrate.Algebra.Z.Int
+open import Substrate.Algebra.Z.ZeroInt
 open import Substrate.Algebra.Z.Add using (_+ℤ_)
 open import Substrate.Algebra.Z.Mul using (_*ℤ_)
 open import Substrate.Algebra.Z.JacobianResidue using (𝔹; tt; ff; and; eqℕ)
@@ -40,7 +42,7 @@ infixl 6 _⊕_
 infixl 7 _⊗_
 
 ------------------------------------------------------------------------
--- ② exponent vectors + monomials + canonical forms.
+-- ② exponent vectors ℕ+ monomials ℕ+ canonical forms.
 ------------------------------------------------------------------------
 
 Exps : Set
@@ -104,7 +106,7 @@ unitE i = unitE′ i
 
 addE : {n : ℕ} → Vec ℕ n → Vec ℕ n → Vec ℕ n
 addE []       []       = []
-addE (a ∷ as) (b ∷ bs) = (a + b) ∷ addE as bs
+addE (a ∷ as) (b ∷ bs) = (a ℕ+ b) ∷ addE as bs
 
 eqE : {n : ℕ} → Vec ℕ n → Vec ℕ n → 𝔹
 eqE []       []       = tt

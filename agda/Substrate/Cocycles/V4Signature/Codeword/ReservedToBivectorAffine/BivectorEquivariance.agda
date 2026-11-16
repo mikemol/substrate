@@ -9,9 +9,8 @@
 
 module Substrate.Cocycles.V4Signature.Codeword.ReservedToBivectorAffine.BivectorEquivariance where
 
-open import Substrate.Foundation.Bool using (Bool)
+open import Substrate.Foundation.Bool.Bool
 open import Substrate.Foundation.Product using (_,_)
-open import Substrate.Foundation.Eq using (_≡_; sym; trans; cong)
 open import Substrate.Algebra.F2.HodgeDim4.Bivector using (Bivector)
 open import Substrate.Algebra.F2.Vector using (+ⱽ-assoc; +ⱽ-comm)
 open import Substrate.Algebra.F2.Vector using (_+ⱽ_)
@@ -19,6 +18,10 @@ open import Substrate.Cocycles.V4Signature.Codeword.ReservedToBivectorAffine.Shi
   using (shift)
 open import Substrate.Cocycles.V4Signature.Codeword.ReservedToBivectorAffine.ShiftHom
   using (shift-hom)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 bivector-equivariance :
   (a b b₀ b₁ : Bool) (β₂ : Bivector) →

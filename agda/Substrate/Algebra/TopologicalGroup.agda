@@ -17,10 +17,10 @@
 
 module Substrate.Algebra.TopologicalGroup where
 
-open import Substrate.Foundation.Level using (Level) renaming (suc to lsuc)
-open import Substrate.Foundation.Eq using (_≡_)
+open import Substrate.Foundation.Level using (Level)
 
 open import Substrate.Algebra.Group
+open import Substrate.Foundation.Eq
 
 -- A topological group: a group + a topology (here abstracted as a
 -- relation between elements — discrete topology by default).

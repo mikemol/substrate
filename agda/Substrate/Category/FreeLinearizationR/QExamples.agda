@@ -13,17 +13,19 @@
 
 module Substrate.Category.FreeLinearizationR.QExamples where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Eq using (_≡_; refl)
 
-open import Substrate.Algebra.Q using (ℚ; 0ℚ; 1ℚ; mkℚ)
-open import Substrate.Algebra.Z using (ℤ; +_)
+open import Substrate.Algebra.Q.OneRat
+open import Substrate.Algebra.Q.Rat
+open import Substrate.Algebra.Q.ZeroRat
+open import Substrate.Algebra.Z.Int
 open import Substrate.Algebra.Q.Vector using (Vector; basis-ℚ)
 open import Substrate.Algebra.Q.Linear using (Linearℚ; id-LQ; apply)
 open import Substrate.Algebra.Q.AsLinearAlgebra using (ℚ-LinearAlgebra)
 open import Substrate.Category.LinearAlgebra using (LinearAlgebra)
-open import Substrate.Category.FreeLinearizationR using (FreeLinearizationR)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Vec
 
 ------------------------------------------------------------------------
 -- 1. ℚ-Vector at dimension 3 with rational entries.

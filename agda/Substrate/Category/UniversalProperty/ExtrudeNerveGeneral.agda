@@ -21,28 +21,29 @@
 
 module Substrate.Category.UniversalProperty.ExtrudeNerveGeneral where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.Algebra.R.Trace.SKIShedDuality using (S; K; I; _∙_) renaming (Tm to Tm⟦533ef80d⟧)
+open import Substrate.Algebra.R.Trace.SKIShedDuality.Tm
 import Substrate.Algebra.R.Trace.SKIReductionToList as R
 open R using (_⇒_; β-I; β-K; β-S; cong-l; cong-r)
 open import Substrate.Foundation.RewriteConfluence (R._⇒_) using (_⇒*_; done; _◅_)
+open import Substrate.Foundation.Eq
+open import Substrate.Algebra.R.Trace.SKIShedDuality.Tm
 
 ------------------------------------------------------------------------
 -- ① THE CLASSIFICATION: a one-step reduction is a FACE (β-I/β-K — drop, 269), a DEGENERACY (β-S — duplicate,
 --    271), or a CONGRUENCE-LIFT (cong-l/cong-r — a nerve op at an inner position). This is the nerve-op type.
 ------------------------------------------------------------------------
-data NerveOp : {a b : Tm⟦533ef80d⟧} → (a ⇒ b) → Set where
-  face-I  : (x : Tm⟦533ef80d⟧)             → NerveOp (β-I x)            -- delAt 0            (269)
-  face-K  : (x y : Tm⟦533ef80d⟧)           → NerveOp (β-K x y)          -- delAt 1 ∘ delAt 0  (269)
-  degen-S : (x y z : Tm⟦533ef80d⟧)         → NerveOp (β-S x y z)        -- the s-degeneracy   (271)
-  lift-l  : {f f' : Tm⟦533ef80d⟧} (g : Tm⟦533ef80d⟧) (r : f ⇒ f') → NerveOp r → NerveOp (cong-l g r)  -- inner, left
-  lift-r  : (f : Tm⟦533ef80d⟧) {g g' : Tm⟦533ef80d⟧} (r : g ⇒ g') → NerveOp r → NerveOp (cong-r f r)  -- inner, right
+data NerveOp : {a b : Tm} → (a ⇒ b) → Set where
+  face-I  : (x : Tm)             → NerveOp (β-I x)            -- delAt 0            (269)
+  face-K  : (x y : Tm)           → NerveOp (β-K x y)          -- delAt 1 ∘ delAt 0  (269)
+  degen-S : (x y z : Tm)         → NerveOp (β-S x y z)        -- the s-degeneracy   (271)
+  lift-l  : {f f' : Tm} (g : Tm) (r : f ⇒ f') → NerveOp r → NerveOp (cong-l g r)  -- inner, left
+  lift-r  : (f : Tm) {g g' : Tm} (r : g ⇒ g') → NerveOp r → NerveOp (cong-r f r)  -- inner, right
 
 ------------------------------------------------------------------------
 -- ② EVERY one-step reduction IS a nerve op (total classification — the reduction relation lives entirely in
 --    the nerve). By induction on the reduction: base cases are the three β-rules, congruences lift recursively.
 ------------------------------------------------------------------------
-classify : {a b : Tm⟦533ef80d⟧} (r : a ⇒ b) → NerveOp r
+classify : {a b : Tm} (r : a ⇒ b) → NerveOp r
 classify (β-I x)      = face-I x
 classify (β-K x y)    = face-K x y
 classify (β-S x y z)  = degen-S x y z
@@ -53,11 +54,11 @@ classify (cong-r f r) = lift-r f r (classify r)
 -- ③ EVERY reduction PATH is a NERVE PATH — a list of nerve ops (each step classified). So the whole ⇒*
 --    reduction is a path through the tower's nerve, at every position.
 ------------------------------------------------------------------------
-data NervePath : {a b : Tm⟦533ef80d⟧} → (a ⇒* b) → Set where
-  ε   : {a : Tm⟦533ef80d⟧} → NervePath (done {a = a})
-  _▷_ : {a b c : Tm⟦533ef80d⟧} {r : a ⇒ b} {rs : b ⇒* c} → NerveOp r → NervePath rs → NervePath (r ◅ rs)
+data NervePath : {a b : Tm} → (a ⇒* b) → Set where
+  ε   : {a : Tm} → NervePath (done {a = a})
+  _▷_ : {a b c : Tm} {r : a ⇒ b} {rs : b ⇒* c} → NerveOp r → NervePath rs → NervePath (r ◅ rs)
 
-classify* : {a b : Tm⟦533ef80d⟧} (rs : a ⇒* b) → NervePath rs
+classify* : {a b : Tm} (rs : a ⇒* b) → NervePath rs
 classify* done       = ε
 classify* (r ◅ rest) = classify r ▷ classify* rest
 

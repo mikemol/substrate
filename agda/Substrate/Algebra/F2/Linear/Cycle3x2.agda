@@ -22,15 +22,41 @@ module Substrate.Algebra.F2.Linear.Cycle3x2 where
 
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using (_∷_; []; lookup)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; cong)
 
-open import Substrate.Algebra.F2
+open import Substrate.Algebra.F2.AbsorbL
+open import Substrate.Algebra.F2.AbsorbR
+open import Substrate.Algebra.F2.Assoc
+open import Substrate.Algebra.F2.Comm
+open import Substrate.Algebra.F2.Dec
+open import Substrate.Algebra.F2.DistribLPlus
+open import Substrate.Algebra.F2.DistribRPlus
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.F2Cases
+open import Substrate.Algebra.F2.Idempotent
+open import Substrate.Algebra.F2.IdentityL
+open import Substrate.Algebra.F2.IdentityR
+open import Substrate.Algebra.F2.InvOfOne
+open import Substrate.Algebra.F2.OneNeqZero
+open import Substrate.Algebra.F2.Op
+open import Substrate.Algebra.F2.Op2
+open import Substrate.Algebra.F2.PlusAssoc
+open import Substrate.Algebra.F2.PlusComm
+open import Substrate.Algebra.F2.PlusF
+open import Substrate.Algebra.F2.PlusIdentityL
+open import Substrate.Algebra.F2.PlusIdentityR
+open import Substrate.Algebra.F2.PlusInverseL
+open import Substrate.Algebra.F2.PlusInverseR
+open import Substrate.Algebra.F2.PlusSelfInverse
+open import Substrate.Algebra.F2.ZeroNeqOne
 open import Substrate.Algebra.F2.Vector
-open import Substrate.Algebra.F2.Linear using (Linear; apply)
+open import Substrate.Algebra.F2.Linear.Linear
 open import Substrate.Algebra.F2.Linear.Cyclotomic using (ΦL)
 open import Substrate.Algebra.F2.Linear.Kernel using (inKer)
 open import Substrate.Algebra.F2.Linear.KernelSpan using (KernelDim)
 open import Substrate.Algebra.F2.Linear.Cycle3 using (+-swap; b-eq)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- σ₆ = two disjoint 3-cycles (rotate each block of 3); refl-linear.
@@ -53,7 +79,7 @@ open import Substrate.Algebra.F2.Linear.Cycle3 using (+-swap; b-eq)
 
 into : Linear 4 6
 into = record
-  { apply        = λ { (a ∷ b ∷ c ∷ d ∷ []) → a ∷ (a + b) ∷ b ∷ c ∷ (c + d) ∷ d ∷ [] }
+  { apply        = λ { (a ∷ b ∷ c ∷ d ∷ []) → a ∷ (a +F b) ∷ b ∷ c ∷ (c +F d) ∷ d ∷ [] }
   ; preserves-+  = λ { (a ∷ b ∷ c ∷ d ∷ []) (g ∷ h ∷ i ∷ j ∷ []) →
       ≡-from-lookup _ _ (λ { zero → refl
                            ; (suc zero) → +-swap a b g h

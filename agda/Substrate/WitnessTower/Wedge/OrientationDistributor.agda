@@ -6,11 +6,11 @@
 -- orderings (interleaved vs separated blocks), related by the distribute iso δ — so the
 -- distributor is up-to-iso (r = δ ≠ id), like the commutativities.
 --
---   blockSum σ τ : Perm (m + n)                    -- the Perm-side ⊕ (= decode∘⊕, rig-7)
---   δ m n p      : Fin (m·(n+p)) → Fin (m·n + m·p)  -- the distribute iso r
+--   blockSum σ τ : Perm (m ℕ+ n)                    -- the Perm-side ⊕ (= decode∘⊕, rig-7)
+--   δ m n p      : Fin (m·(n+p)) → Fin (m·n ℕ+ m·p)  -- the distribute iso r
 --   dist-nat     : lookup (blockSum (σ⊗τ) (σ⊗υ)) (δ m n p k) ≡ δ m n p (lookup (σ ⊗ blockSum τ υ) k)
 --
--- This file (part 1): blockSum + its lookup characterization, and δ + its block-lemmas
+-- This file (part 1): blockSum ℕ+ its lookup characterization, and δ ℕ+ its block-lemmas
 -- (δ-inject/raise). The naturality dist-nat is in .Naturality (def/proof split — this
 -- exports blockSum, a def).
 --
@@ -21,7 +21,9 @@
 
 module Substrate.WitnessTower.Wedge.OrientationDistributor where
 
-open import Substrate.Foundation.Nat using (ℕ; _+_; _*_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Times
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Inject using (inject+)
 open import Substrate.Foundation.Fin.Raise using (raise)
@@ -34,20 +36,25 @@ open import Substrate.Foundation.Fin.SplitAt.RaiseIdentity using (splitAt-raise)
 open import Substrate.Foundation.Fin.SplitAt.View using (splitAt-view; fromₗ; fromᵣ)
 open import Substrate.Foundation.Fin.Combine.CombineRemQuotInverse using (combine-remQuot)
 open import Substrate.Foundation.Vec using (lookup; tabulate)
-open import Substrate.Foundation.Vec.Properties using (lookup∘tabulate)
-open import Substrate.Foundation.Sum using (_⊎_; inj₁; inj₂; [_,_])
+open import Substrate.Foundation.Vec.Properties.LookupComptabulate
+open import Substrate.Foundation.Sum.Op
+open import Substrate.Foundation.Sum.Sum
 open import Substrate.Foundation.Product using (_,_; proj₁; proj₂)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; subst)
 open import Substrate.WitnessTower.Enumerate using (Perm)
 open import Substrate.WitnessTower.Wedge.OrientationProduct using (_⊗_)
 open import Substrate.WitnessTower.Wedge.OrientationProductLaws using (⊗-combine)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Subst
 
 ------------------------------------------------------------------------
 -- 1. blockSum — the Perm-side ⊕ (the block-sum permutation). First block ordered by σ
 --    (values stay low, inject+), second by τ (values stay high, raise).
 ------------------------------------------------------------------------
 
-blockSum : ∀ {m n} → Perm m → Perm n → Perm (m + n)
+blockSum : ∀ {m n} → Perm m → Perm n → Perm (m ℕ+ n)
 blockSum {m} {n} σ τ =
   tabulate (λ k → [ (λ i → inject+ n (lookup σ i)) , (λ j → raise m (lookup τ j)) ] (splitAt m k))
 
@@ -70,8 +77,8 @@ blockSum-raise {m} {n} σ τ j =
 --    an n-part (i,j) goes to the first output block, a p-part (i,l) to the second.
 ------------------------------------------------------------------------
 
-δ : ∀ m n p → Fin (m * (n + p)) → Fin (m * n + m * p)
-δ m n p k with remQuot {m} (n + p) k
+δ : ∀ m n p → Fin (m * (n ℕ+ p)) → Fin (m * n ℕ+ m * p)
+δ m n p k with remQuot {m} (n ℕ+ p) k
 ... | (i , k') with splitAt n {p} k'
 ...   | inj₁ j = inject+ (m * p) (combine i j)
 ...   | inj₂ l = raise (m * n) (combine i l)
@@ -80,30 +87,30 @@ blockSum-raise {m} {n} σ τ j =
 δ-inject : ∀ m n p (i : Fin m) (j : Fin n) →
            δ m n p (combine i (inject+ p j)) ≡ inject+ (m * p) (combine i j)
 δ-inject m n p i j
-  rewrite remQuot-combine {m} {n + p} i (inject+ p j) | splitAt-inject n {p} j = refl
+  rewrite remQuot-combine {m} {n ℕ+ p} i (inject+ p j) | splitAt-inject n {p} j = refl
 
 δ-raise : ∀ m n p (i : Fin m) (l : Fin p) →
           δ m n p (combine i (raise n l)) ≡ raise (m * n) (combine i l)
 δ-raise m n p i l
-  rewrite remQuot-combine {m} {n + p} i (raise n l) | splitAt-raise n {p} l = refl
+  rewrite remQuot-combine {m} {n ℕ+ p} i (raise n l) | splitAt-raise n {p} l = refl
 
 ------------------------------------------------------------------------
 -- 3. THE DISTRIBUTOR NATURALITY. δ intertwines σ ⊗ (blockSum τ υ) with blockSum (σ⊗τ)
 --    (σ⊗υ). Cases on which block k's second factor is in (splitAt-view): each side
---    reduces, via δ-inject/raise + ⊗-combine + blockSum-inject/raise, to the SAME
+--    reduces, via δ-inject/raise ℕ+ ⊗-combine ℕ+ blockSum-inject/raise, to the SAME
 --    inject+/raise of combine (σ·i) (τ·j / υ·l).
 ------------------------------------------------------------------------
 
-dist-nat : ∀ {m n p} (σ : Perm m) (τ : Perm n) (υ : Perm p) (k : Fin (m * (n + p))) →
+dist-nat : ∀ {m n p} (σ : Perm m) (τ : Perm n) (υ : Perm p) (k : Fin (m * (n ℕ+ p))) →
            lookup (blockSum (σ ⊗ τ) (σ ⊗ υ)) (δ m n p k)
              ≡ δ m n p (lookup (σ ⊗ blockSum τ υ) k)
 dist-nat {m} {n} {p} σ τ υ k =
   subst (λ z → lookup (blockSum (σ ⊗ τ) (σ ⊗ υ)) (δ m n p z)
                  ≡ δ m n p (lookup (σ ⊗ blockSum τ υ) z))
-        (combine-remQuot m (n + p) k)
-        (aux (proj₁ (remQuot {m} (n + p) k)) (proj₂ (remQuot {m} (n + p) k)))
+        (combine-remQuot m (n ℕ+ p) k)
+        (aux (proj₁ (remQuot {m} (n ℕ+ p) k)) (proj₂ (remQuot {m} (n ℕ+ p) k)))
   where
-  aux : (i : Fin m) (k' : Fin (n + p)) →
+  aux : (i : Fin m) (k' : Fin (n ℕ+ p)) →
         lookup (blockSum (σ ⊗ τ) (σ ⊗ υ)) (δ m n p (combine i k'))
           ≡ δ m n p (lookup (σ ⊗ blockSum τ υ) (combine i k'))
   aux i k' with splitAt-view n {p} k'

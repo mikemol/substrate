@@ -9,26 +9,36 @@
 
 module Substrate.Algebra.R.Trace.NewmanKI.Properties where
 
-open import Substrate.Foundation.Eq  using (_≡_; refl; sym; trans; cong)
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _<_; s≤s; z≤n; _≤_)
-open import Substrate.Foundation.Nat.Properties.Add using (+-comm)
+open import Substrate.Foundation.Nat.Le
+open import Substrate.Foundation.Nat.Lt
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Properties.Add.PlusComm
 open import Substrate.Foundation.Nat.Properties.Order using (≤-refl; ≤-<-trans; m≤m+n; n≤m+n; +-monoʳ-≤; ≤-trans)
 open import Substrate.Foundation.Product using (Σ; _,_; _×_)
 open import Substrate.Foundation.WellFounded using (Acc; acc)
-open import Substrate.Algebra.Nat.WellFounded using (<-wellFounded)
-open import Substrate.Algebra.R.Trace.NewmanKI
+open import Substrate.Algebra.Nat.WellFounded.LtWellFounded
+open import Substrate.Algebra.R.Trace.NewmanKI.Op
+open import Substrate.Algebra.R.Trace.NewmanKI.Size
+open import Substrate.Algebra.R.Trace.SKIShedDuality.Tm
 
 ------------------------------------------------------------------------
 -- 3. Every step strictly shrinks size (⟹ SN). β-K DELETES y: size x < size ((K∙x)∙y).
 ------------------------------------------------------------------------
 open import Substrate.Foundation.RewriteConfluence _⇒_
   using (_⇒*_; done; _◅_; _++*_; Converge; WCR; CR; SN; newman)
-+-monoʳ-< : (k : ℕ) {m n : ℕ} → m < n → (k + m) < (k + n)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Algebra.F2.AES.KAT.Round1
+open import Substrate.Algebra.F2.AES.KAT.Round2
++-monoʳ-< : (k : ℕ) {m n : ℕ} → m < n → (k ℕ+ m) < (k ℕ+ n)
 +-monoʳ-< zero    m<n = m<n
 +-monoʳ-< (suc k) m<n = s≤s (+-monoʳ-< k m<n)
 
-+-monoˡ-< : {m n : ℕ} (k : ℕ) → m < n → (m + k) < (n + k)
-+-monoˡ-< {m}{n} k m<n rewrite +-comm m k | +-comm n k = +-monoʳ-< k m<n
++-monoˡ-< : {m n : ℕ} (k : ℕ) → m < n → (m ℕ+ k) < (n ℕ+ k)
++-monoˡ-< {m}{n} k m<n rewrite +ℕ-comm m k | +ℕ-comm n k = +-monoʳ-< k m<n
 
 step-size< : {a b : Tm} → a ⇒ b → size b < size a
 step-size< (β-I x)      = s≤s (n≤m+n 1 (size x))
@@ -46,7 +56,7 @@ sn : (a : Tm) → Acc (λ x y → y ⇒ x) a
 sn a = acc-from-size a (<-wellFounded (size a))
 
 ------------------------------------------------------------------------
--- 5. WCR (Newman API + congruence closure), then the critical pairs.
+-- 5. WCR (Newman API ℕ+ congruence closure), then the critical pairs.
 ------------------------------------------------------------------------
 
 cong-l* : {f f' : Tm} (g : Tm) → f ⇒* f' → (f ∙ g) ⇒* (f' ∙ g)

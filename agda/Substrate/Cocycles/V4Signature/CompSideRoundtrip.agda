@@ -44,15 +44,14 @@
 
 module Substrate.Cocycles.V4Signature.CompSideRoundtrip where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; cong)
 open import Substrate.Foundation.Product using (_,_; proj₁; proj₂; _×_)
 
 import Substrate.Groups.S4-Composed as S4C
 import Substrate.Groups.S3          as S₃
-open import Substrate.Groups.V4.Bijection using (V₄)
+open import Substrate.Groups.V4.Bijection.V4
 
 open import Substrate.Groups.S4-Iso.Extract   using (perm-to-compositional)
-open import Substrate.Groups.S4-Iso.Embedding using (compositional-to-perm)
+open import Substrate.Groups.S4-Iso.Embedding.CompositionalToPerm
 open import Substrate.Axes.Axis
 open import Substrate.Groups.Symmetric.Permutation Axis
 open import Substrate.Groups.Symmetric.Eq Axis
@@ -68,6 +67,9 @@ open import Substrate.Groups.Symmetric.Eq Axis
 -- back to identity as the hypotheses.
 
 open import Substrate.Category.ResidueCompensation using (ResidueCompensation; FullResidueCompensation)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Cocycles.V4Signature.VRecovers
 module _
   (v-recovers :
      (v : V₄) (s : S₃.Carrier) →

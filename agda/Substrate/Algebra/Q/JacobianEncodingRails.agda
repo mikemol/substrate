@@ -26,8 +26,7 @@
 
 module Substrate.Algebra.Q.JacobianEncodingRails where
 
-open import Substrate.Foundation.Eq using (_≡_; cong)
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.List using (List)
 open import Substrate.Foundation.Product using (_×_; _,_)
 open import Substrate.Algebra.Z.MPolyNormalize using (normalize)
@@ -36,6 +35,8 @@ open import Substrate.Algebra.Z.JacobianResidue as R
   using (MPoly; Mono; Term; term; mapL)
 open import Substrate.Algebra.Q.JacobianEncodingNormalize
   using (Cᴹf₁; Cᴹf₂; Cᴹf₃; bridge₁; bridge₂; bridge₃)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- The rail codec: split every ℤ coefficient into ℕ × ℕ ⟨pos, neg⟩.

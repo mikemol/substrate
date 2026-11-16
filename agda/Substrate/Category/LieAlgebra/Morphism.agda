@@ -27,11 +27,10 @@
 module Substrate.Category.LieAlgebra.Morphism where
 
 open import Substrate.Foundation.Level using (Level; _⊔_)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl)
 
 open import Substrate.Category.LieAlgebra using (LieAlgebra)
 open import Substrate.Category.Morphism using (Morphism; mkMorphism)
+open import Substrate.Foundation.Eq
 
 private
   variable

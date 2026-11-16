@@ -25,7 +25,8 @@ module Substrate.Category.UniversalProperty.DiagonalOrdinal where
 -- illuminating framing, NOT a theorem of this slice; not enforced by the typechecker).
 -- Promoting the framing to a theorem would require the identification with an adversary's actual ordinal/CB rank (⟡diagonal-cb-rank et seq.).
 
-open import Substrate.Foundation.Nat using (ℕ) renaming (zero to Nzero; suc to Nsuc)
+open import Substrate.Foundation.Nat.Nat
+  renaming (zero to Nzero; suc to Nsuc)
 open import Substrate.Foundation.Product using (Σ; _,_)
 
 ------------------------------------------------------------------------

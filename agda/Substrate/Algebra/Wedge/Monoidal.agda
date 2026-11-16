@@ -26,9 +26,9 @@
 -- BOTH FACES of Mac Lane coherence are closed here: the PENTAGON
 -- (associativity, §4) and the TRIANGLE (unit, §6) — the unit object `⊤-div`,
 -- the unitors λ/ρ, and the triangle identity, all `refl` (⊤ is a no-field
--- record, so it too has η). Pentagon + triangle is exactly Mac Lane's
+-- record, so it too has η). Pentagon +F triangle is exactly Mac Lane's
 -- coherence hypothesis: the sphere is fully closed. §8 adds the SYMMETRY
--- (the braiding σ : A⊗B ≅ B⊗A) + its hexagon, making this a SYMMETRIC
+-- (the braiding σ : A⊗B ≅ B⊗A) +F its hexagon, making this a SYMMETRIC
 -- monoidal structure — and that braiding IS the twist of the twisted arrow
 -- category (its two directions = the two twist conventions; no choice to make).
 --
@@ -43,9 +43,8 @@
 
 module Substrate.Algebra.Wedge.Monoidal where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; cong₂)
 open import Substrate.Foundation.Unit using (⊤; tt)
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
 open import Substrate.Algebra.Wedge using (DivStr; ℕ-div)
 open import Substrate.Algebra.Wedge.Cross using (_⊗ᴰ_)
@@ -54,10 +53,12 @@ open import Substrate.Algebra.Wedge.Bridge
 open import Substrate.Algebra.Wedge.Correspondence using (_⊚_)
 open import Substrate.Algebra.Wedge.Iso
   using (WedgeIso; fwd; bwd; bwd∘fwd; fwd∘bwd)
-open import Substrate.Algebra.F2 using (F₂)
-open import Substrate.Algebra.Z using (ℤ)
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.Z.Int
 open import Substrate.Algebra.F2.Wedge using (F₂-div)
 open import Substrate.Algebra.Z.Wedge using (ℤ-div)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong2
 
 ------------------------------------------------------------------------
 -- 1. The tensor on morphisms — the bifunctor on bridges (and on the groupoid).
@@ -197,7 +198,7 @@ triangle A B x = refl
 --    say they cohere with every bridge between objects. Both sides reshuffle
 --    to the same projection tree with the component bridges applied → refl.
 --    Together with §4/§6 this makes (DivStr, _⊗ᴰ_, ⊤-div, α, λ, ρ) a genuine
---    monoidal structure (natural isos + coherence), not just a pile of isos.
+--    monoidal structure (natural isos +F coherence), not just a pile of isos.
 ------------------------------------------------------------------------
 
 assoc-nat : {CA CA′ CB CB′ CC CC′ : Set}

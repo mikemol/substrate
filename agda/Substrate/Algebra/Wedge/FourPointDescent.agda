@@ -23,14 +23,18 @@
 
 module Substrate.Algebra.Wedge.FourPointDescent where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
 open import Substrate.Groups.Coxeter.Word using (Word; []; _∷_)
 open import Substrate.Groups.V4-Coxeter
-open import Substrate.Groups.V4.Bijection using (from-c; to-from-canonical)
+open import Substrate.Groups.V4.Bijection.FromC
+open import Substrate.Groups.V4.Bijection.ToFromCanonical
 open import Substrate.Algebra.Wedge.FourPointV4
   using (Square; rowSwap; colSwap; rowSwap-inv; colSwap-inv; row-col-commute)
 open import Substrate.Algebra.Wedge.FourPointReflection using (genAct; wordAct)
 open import Substrate.Algebra.Wedge.FourPointGroupoid using (act; act-via-word)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 module _ {C : Set} where
 
@@ -40,7 +44,7 @@ module _ {C : Set} where
   --    the Coxeter relation it triggers.
   ------------------------------------------------------------------------
 
-  wordAct-insert : (g : Gen) {w : Word Gen} (c : Canonical-V4 w) (s : Square {C}) →
+  wordAct-insert : (g : Gen-V4) {w : Word Gen-V4} (c : Canonical-V4 w) (s : Square {C}) →
                    wordAct (insert g w) s ≡ genAct g (wordAct w s)
   wordAct-insert A c-ε  s = refl                                    -- insert A [] = A∷[]
   wordAct-insert A c-A  s = sym (rowSwap-inv s)                     -- A² = ε
@@ -56,7 +60,7 @@ module _ {C : Set} where
   -- 2. wordAct is invariant under normalization (normalize = insert-fold).
   ------------------------------------------------------------------------
 
-  wordAct-normalize : (w : Word Gen) (s : Square {C}) →
+  wordAct-normalize : (w : Word Gen-V4) (s : Square {C}) →
                       wordAct (normalize w) s ≡ wordAct w s
   wordAct-normalize []      s = refl
   wordAct-normalize (g ∷ w) s =
@@ -69,7 +73,7 @@ module _ {C : Set} where
   --    representation IS the delooped groupoid's action, and conversely.
   ------------------------------------------------------------------------
 
-  wordAct-descends : (w : Word Gen) (s : Square {C}) →
+  wordAct-descends : (w : Word Gen-V4) (s : Square {C}) →
                      wordAct w s ≡ act (from-c w) s
   wordAct-descends w s =
     sym (trans (act-via-word (from-c w) s)

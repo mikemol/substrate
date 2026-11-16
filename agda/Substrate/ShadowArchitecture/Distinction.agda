@@ -28,16 +28,15 @@
 module Substrate.ShadowArchitecture.Distinction where
 open import Substrate.Algebra.F2.FanoPlane using (Point; point-to-vec; FanoLine; line-points)
 
-open import Substrate.Foundation.Bool using (true)
+open import Substrate.Foundation.Bool.Bool
 open import Substrate.Foundation.Product using (_×_; _,_)
 open import Substrate.Foundation.Unit using (⊤; tt)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl)
 
 open import Substrate.Algebra.F2.Vector using (Vector; _+ⱽ_)
 
 open import Substrate.ShadowArchitecture.FanoLabeling
-open import Substrate.ShadowArchitecture.Duality using (normal-vector; dual-line)
+open import Substrate.ShadowArchitecture.Duality.DualLine
+open import Substrate.ShadowArchitecture.Duality.NormalVector
 open import Substrate.ShadowArchitecture.Weight
   using (point-orbit; line-orbit; Orbit)
 open import Substrate.ShadowArchitecture.Mode
@@ -48,6 +47,7 @@ open import Substrate.ShadowArchitecture.Charter
   using (Cell; cell; op-cell; Realizability; realizable;
          PassesFourGates; PassesFourPlusOne;
          four-gate-proof; four-plus-one-proof)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- Names for the six audited distinctions.

@@ -30,7 +30,7 @@
 -- ONE NAMED GAP remains (borrowed-name discipline — NOT overclaimed): the SPECTRAL
 -- grounding — that mult2/2 IS the multiplicity of Φ_p in the cycle-space operator's
 -- char poly — is the cotype's PROBE-verified input (linear algebra over a field
--- absent); this module formalizes the COUNTING structure + the FaceCount base + the
+-- absent); this module formalizes the COUNTING structure ℕ+ the FaceCount base ℕ+ the
 -- closed-form/fibered/nullity renderings, not the spectral derivation.
 -- The fiber weight (p−1) is the degree of Φ_p (Algebra.Polynomial.Cyclotomic,
 -- Ⓕ.cyclotomic); the /2 is the reality involution ζ ↔ ζ⁻¹ on its roots.
@@ -40,14 +40,20 @@
 
 module Substrate.WitnessTower.PhiMultiplicity where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_; _∸_)
-open import Substrate.Foundation.Eq using (_≡_; refl; cong; trans; sym)
-open import Substrate.Foundation.Nat.Properties.Add using (+-comm)
+open import Substrate.Foundation.Nat.Monus
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Times
+open import Substrate.Foundation.Nat.Properties.Add.PlusComm
 open import Substrate.Foundation.Nat.Properties.Mul
   using (*-identityˡ; *-identityʳ; *-comm; *-assoc; *-distribˡ-+)
 open import Substrate.Foundation.Nat.Properties.SubMul
   using (*-distribˡ-∸; +-∸-cancelˡ; *-sucʳ)
 open import Substrate.WitnessTower.FaceCount using (faces; cone-step)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Sym
 
 ------------------------------------------------------------------------
 -- 1. The FaceCount base: the rung-n simplex has n·(n+1)/2 edges, i.e.
@@ -57,13 +63,13 @@ open import Substrate.WitnessTower.FaceCount using (faces; cone-step)
 faces-edges : (n : ℕ) → 2 * faces n 1 ≡ n * suc n
 faces-edges zero    = refl
 faces-edges (suc n) =
-  trans (cong (2 *_) (cone-step n 0))                              -- 2·faces(suc n)1 = 2·(faces n 1 + suc n)
-  (trans (*-distribˡ-+ 2 (faces n 1) (suc n))                      -- = 2·faces n 1 + 2·suc n
-  (trans (cong (_+ (2 * suc n)) (faces-edges n))                   -- = n·suc n + 2·suc n
-  (trans (cong (_+ (2 * suc n)) (*-comm n (suc n)))                -- = suc n·n + 2·suc n
-  (trans (cong ((suc n * n) +_) (*-comm 2 (suc n)))                -- = suc n·n + suc n·2
+  trans (cong (2 *_) (cone-step n 0))                              -- 2·faces(suc n)1 = 2·(faces n 1 ℕ+ suc n)
+  (trans (*-distribˡ-+ 2 (faces n 1) (suc n))                      -- = 2·faces n 1 ℕ+ 2·suc n
+  (trans (cong (_ℕ+ (2 * suc n)) (faces-edges n))                   -- = n·suc n ℕ+ 2·suc n
+  (trans (cong (_ℕ+ (2 * suc n)) (*-comm n (suc n)))                -- = suc n·n ℕ+ 2·suc n
+  (trans (cong ((suc n * n) ℕ+_) (*-comm 2 (suc n)))                -- = suc n·n ℕ+ suc n·2
   (trans (sym (*-distribˡ-+ (suc n) n 2))                          -- = suc n·(n+2)
-         (cong (suc n *_) (+-comm n 2)))))))                       -- = suc n·suc(suc n)
+         (cong (suc n *_) (+ℕ-comm n 2)))))))                       -- = suc n·suc(suc n)
 
 ------------------------------------------------------------------------
 -- 2. The doubled Φ_p multiplicity (f090_2_generalized closed form) and the
@@ -109,25 +115,25 @@ mult2-expand p n =
   (trans (cong (n * (n * p) ∸_) (*-identityʳ n))         -- = n·(n·p) ∸ n
          (cong (_∸ n) (trans (sym (*-assoc n n p)) (*-comm (n * n) p))))  -- = p·(n·n) ∸ n
 
--- the join-correction term:  (p+1)·n ≡ p·n + n.
-pp1*n : (p n : ℕ) → (p + 1) * n ≡ p * n + n
+-- the join-correction term:  (p+1)·n ≡ p·n ℕ+ n.
+pp1*n : (p n : ℕ) → (p ℕ+ 1) * n ≡ p * n ℕ+ n
 pp1*n p n =
-  trans (*-comm (p + 1) n)
+  trans (*-comm (p ℕ+ 1) n)
   (trans (*-distribˡ-+ n p 1)
-  (trans (cong (n * p +_) (*-identityʳ n))
-         (cong (_+ n) (*-comm n p))))
+  (trans (cong (n * p ℕ+_) (*-identityʳ n))
+         (cong (_ℕ+ n) (*-comm n p))))
 
 -- the fibered count over FaceCount, expanded:  2p·faces n 1 ∸ (p+1)·n ≡ p·(n·n) ∸ n.
-gross-expand : (p n : ℕ) → 2 * p * faces n 1 ∸ (p + 1) * n ≡ p * (n * n) ∸ n
+gross-expand : (p n : ℕ) → 2 * p * faces n 1 ∸ (p ℕ+ 1) * n ≡ p * (n * n) ∸ n
 gross-expand p n =
-  trans (cong (_∸ (p + 1) * n) (gross2-faces p n))                       -- p·(n·suc n) ∸ (p+1)·n
-  (trans (cong (λ z → p * z ∸ (p + 1) * n) (*-sucʳ n n))                  -- p·(n + n·n) ∸ (p+1)·n
-  (trans (cong (_∸ (p + 1) * n) (*-distribˡ-+ p n (n * n)))               -- (p·n + p·(n·n)) ∸ (p+1)·n
-  (trans (cong ((p * n + p * (n * n)) ∸_) (pp1*n p n))                    -- ∸ (p·n + n)
+  trans (cong (_∸ (p ℕ+ 1) * n) (gross2-faces p n))                       -- p·(n·suc n) ∸ (p+1)·n
+  (trans (cong (λ z → p * z ∸ (p ℕ+ 1) * n) (*-sucʳ n n))                  -- p·(n ℕ+ n·n) ∸ (p+1)·n
+  (trans (cong (_∸ (p ℕ+ 1) * n) (*-distribˡ-+ p n (n * n)))               -- (p·n ℕ+ p·(n·n)) ∸ (p+1)·n
+  (trans (cong ((p * n ℕ+ p * (n * n)) ∸_) (pp1*n p n))                    -- ∸ (p·n ℕ+ n)
          (+-∸-cancelˡ (p * n) (p * (n * n)) n))))                         -- cancel p·n → p·(n·n) ∸ n
 
 -- THE f090_2_tower claim, ∀n: the closed-form multiplicity IS the FaceCount-fibered count.
-mult2-fibered : (p n : ℕ) → mult2 p n ≡ 2 * p * faces n 1 ∸ (p + 1) * n
+mult2-fibered : (p n : ℕ) → mult2 p n ≡ 2 * p * faces n 1 ∸ (p ℕ+ 1) * n
 mult2-fibered p n = trans (mult2-expand p n) (sym (gross-expand p n))
 
 ------------------------------------------------------------------------

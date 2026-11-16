@@ -43,8 +43,6 @@
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.List using (List; []; _∷_)
 open import Substrate.Foundation.Product using (Σ; _,_)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; trans; cong)
 
 open import Substrate.Algebra.GL3F2 using (GL3F2; _·G_; id-GL)
 open import Substrate.Algebra.GL3F2.SylowDecomposition
@@ -54,6 +52,10 @@ open import Substrate.Algebra.GL3F2.AsPresented
 open import Substrate.Category.SylowDecomposition using (InGenerated)
 open import Substrate.Category.SylowDecomposition.FromWord
   using (evaluate-word; word-to-InGenerated)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 module Substrate.Algebra.GL3F2.JointGenViaPresentation
   -- The representation: every GL3F2 element has a word in the 3

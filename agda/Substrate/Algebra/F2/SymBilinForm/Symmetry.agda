@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------
 -- Substrate.Algebra.F2.SymBilinForm.Symmetry
 --
--- Symmetry properties of generic bilinear-form-of + congruence-act:
+-- Symmetry properties of generic bilinear-form-of +F congruence-act:
 --
 --   * sum-swap — Fubini for sum-F₂: the order of nested finite sums
 --     is interchangeable.
@@ -11,11 +11,11 @@
 --     symmetry: T^T M T is symmetric when M is.
 --
 -- Closes the deferred gap from CongruenceCompose's capstone:
--- congruence-act fully respects the SymBilinForm structure (data +
+-- congruence-act fully respects the SymBilinForm structure (data +F
 -- symmetry property).
 --
 -- After this slice: congruence-act lifts to the SymBilinForm
--- Σ-subtype (BilinForm + IsSymmetric) without breaking symmetry.
+-- Σ-subtype (BilinForm +F IsSymmetric) without breaking symmetry.
 -- The infrastructure (especially bilinear-form-of-sym-arg) also
 -- unblocks the dim-3 / dim-4 congruence-act-bridge slices, which
 -- in turn unlock StabiliserClosure-style demotions.
@@ -31,16 +31,38 @@
 module Substrate.Algebra.F2.SymBilinForm.Symmetry where
 
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Vec using (lookup)
 open import Substrate.Foundation.Function using (_∘_)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; trans; cong; cong₂)
 
-open import Substrate.Algebra.F2
+open import Substrate.Algebra.F2.AbsorbL
+open import Substrate.Algebra.F2.AbsorbR
+open import Substrate.Algebra.F2.Assoc
+open import Substrate.Algebra.F2.Comm
+open import Substrate.Algebra.F2.Dec
+open import Substrate.Algebra.F2.DistribLPlus
+open import Substrate.Algebra.F2.DistribRPlus
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.F2Cases
+open import Substrate.Algebra.F2.Idempotent
+open import Substrate.Algebra.F2.IdentityL
+open import Substrate.Algebra.F2.IdentityR
+open import Substrate.Algebra.F2.InvOfOne
+open import Substrate.Algebra.F2.OneNeqZero
+open import Substrate.Algebra.F2.Op
+open import Substrate.Algebra.F2.Op2
+open import Substrate.Algebra.F2.PlusAssoc
+open import Substrate.Algebra.F2.PlusComm
+open import Substrate.Algebra.F2.PlusF
+open import Substrate.Algebra.F2.PlusIdentityL
+open import Substrate.Algebra.F2.PlusIdentityR
+open import Substrate.Algebra.F2.PlusInverseL
+open import Substrate.Algebra.F2.PlusInverseR
+open import Substrate.Algebra.F2.PlusSelfInverse
+open import Substrate.Algebra.F2.ZeroNeqOne
 open import Substrate.Algebra.F2.Vector
 open import Substrate.Algebra.F2.Vector.Universal using (sum-F₂; sum-F₂-cong)
-open import Substrate.Algebra.F2.Linear using (Linear; apply)
+open import Substrate.Algebra.F2.Linear.Linear
 open import Substrate.Algebra.F2.SymBilinForm.BilinForm using (BilinForm)
 open import Substrate.Algebra.F2.SymBilinForm.BilinearFormOf using (bilinear-form-of)
 open import Substrate.Algebra.F2.SymBilinForm.CongruenceAct using (congruence-act)
@@ -49,6 +71,11 @@ open import Substrate.Algebra.F2.SymBilinForm.Bilinearity
   using (sum-F₂-+-distribute; sum-F₂-scalar)
 open import Substrate.Algebra.F2.SymBilinForm.HodgeRecast
   using (sum-of-zeros)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
 
 ------------------------------------------------------------------------
 -- N-1: sum-swap — Fubini for sum-F₂.
@@ -62,8 +89,8 @@ open import Substrate.Algebra.F2.SymBilinForm.HodgeRecast
 --   n=0: LHS = 𝟘 (empty sum); RHS = sum-F₂ {m} (λ _ → 𝟘) ≡ 𝟘 by
 --     sum-of-zeros. Bridge via sym.
 --
---   n=suc: LHS unfolds to (sum_m of f zero) + (sum-swap rec at n).
---     RHS at suc unfolds to sum_m of (f zero + sum_n of f-suc-i).
+--   n=suc: LHS unfolds to (sum_m of f zero) +F (sum-swap rec at n).
+--     RHS at suc unfolds to sum_m of (f zero +F sum_n of f-suc-i).
 --     Bridge via sum-F₂-+-distribute on the inner +.
 ------------------------------------------------------------------------
 
@@ -73,7 +100,7 @@ sum-swap :
     ≡ sum-F₂ {m} (λ j → sum-F₂ {n} (λ i → f i j))
 sum-swap {zero}  {m} f = sym (sum-of-zeros {m})
 sum-swap {suc n} {m} f =
-  trans (cong (sum-F₂ {m} (λ j → f zero j) +_)
+  trans (cong (sum-F₂ {m} (λ j → f zero j) +F_)
               (sum-swap {n} {m} (λ i j → f (suc i) j)))
         (sym (sum-F₂-+-distribute
                 (λ j → f zero j)
@@ -85,7 +112,7 @@ sum-swap {suc n} {m} f =
 --   a · (b · c) ≡ c · (b · a)
 --
 -- Used in bilinear-form-of-sym-arg to rearrange vᵢ · (M(j,i) · wⱼ)
--- into wⱼ · (M(j,i) · vᵢ). Direct chain using ·-assoc + ·-comm.
+-- into wⱼ · (M(j,i) · vᵢ). Direct chain using ·-assoc +F ·-comm.
 ------------------------------------------------------------------------
 
 ·-shuffle-acb : (a b c : F₂) → a · (b · c) ≡ c · (b · a)
@@ -181,10 +208,10 @@ is-symmetric-congruence-act T M sym-M i j =
 --   * **congruence-act-bridge-3** at dim 3: extends bilinear-form-of-
 --     bridge-3 to congruence-act. The lower-triangular bridge cases
 --     (where the dim-3 packing folds entries by symmetry) rely on
---     `bilinear-form-of-sym-arg` + `is-symmetric-bridged-3` to swap
+--     `bilinear-form-of-sym-arg` +F `is-symmetric-bridged-3` to swap
 --     argument order in the generic evaluation. Unlocks
 --     StabiliserClosure (166 LoC) demotion via FixedPoint-of-compose
---     + congruence-compose-pointwise.
+--     +F congruence-compose-pointwise.
 --
 --   * **congruence-act-bridge-4** at dim 4: analogous slice for dim 4.
 --

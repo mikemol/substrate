@@ -21,11 +21,14 @@
 
 module Substrate.Algebra.Wedge.Product.Term where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_)
-open import Substrate.Foundation.Eq using (_≡_; refl; cong)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Times
 -- ⟡set1-paydown: GradedProduct's carrier family is now its param, so the old
 -- `C P` projection becomes the (implicit) module param C threaded here.
 open import Substrate.Algebra.Wedge.Product using (GradedProduct; u; _∧_; gpower)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- 1. The free graded monoid term: leaves (kept factors), the empty term,
@@ -35,7 +38,7 @@ open import Substrate.Algebra.Wedge.Product using (GradedProduct; u; _∧_; gpow
 data WedgeTerm {C : ℕ → Set} (P : GradedProduct C) : ℕ → Set where
   leaf : {i : ℕ} → C i → WedgeTerm P i
   nil  : WedgeTerm P 0
-  _⊗_  : {i j : ℕ} → WedgeTerm P i → WedgeTerm P j → WedgeTerm P (i + j)
+  _⊗_  : {i j : ℕ} → WedgeTerm P i → WedgeTerm P j → WedgeTerm P (i ℕ+ j)
 
 ------------------------------------------------------------------------
 -- 2. eval — the only forgetful step: collapse the bracketing to the value.

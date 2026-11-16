@@ -62,19 +62,20 @@
 
 module Substrate.Category.ConjugationCoalgebra.Simplicity where
 
-open import Substrate.Foundation.Level using (0ℓ)
-open import Substrate.Foundation.Empty using (⊥; ⊥-elim)
-open import Substrate.Foundation.Sum using (_⊎_; inj₁; inj₂)
+open import Substrate.Foundation.Empty.Bot
+open import Substrate.Foundation.Sum.Sum
 open import Substrate.Foundation.Unit using (⊤; tt)
 open import Substrate.Foundation.Product using (∃-syntax; _,_)
-open import Substrate.Foundation.Negation using (Dec; yes; no; dec-¬; from-¬¬)
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Negation.Dec
+open import Substrate.Foundation.Negation.DecNot
+open import Substrate.Foundation.Negation.FromNotNot
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Fin.Op3
 open import Substrate.Foundation.Fin.Exists using (Fin-∃?)
-open import Substrate.Foundation.Eq using (sym; subst)
 open import Substrate.Algebra.Bijection using (_↔_)
 open import Substrate.Category.ConjugationCoalgebra using (ConjugationCoalgebra)
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Subst
 
 ------------------------------------------------------------------------
 -- The recognizer is parametric over a conjugation coalgebra K and an

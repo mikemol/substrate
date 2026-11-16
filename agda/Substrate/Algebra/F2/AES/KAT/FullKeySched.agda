@@ -3,7 +3,6 @@
 -- to measure whether it fits <128 post-schedule-seal (Full-direct-shard path).
 module Substrate.Algebra.F2.AES.KAT.FullKeySched where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; trans; cong; cong₂)
 open import Substrate.Foundation.Vec using (Vec; _∷_; [])
 open import Substrate.Algebra.F2.AES.Round using (State)
 open import Substrate.Algebra.F2.AES.KeySchedule
@@ -11,6 +10,10 @@ open import Substrate.Algebra.F2.AES.KeySchedule
 open import Substrate.Algebra.F2.AES.KAT using (to-state; key-C1)
 open import Substrate.Algebra.F2.AES.KAT.Trace using (M0; M1; M2; M3; M4; M5; M6; M7; M8; K10)
 open import Substrate.Algebra.F2.AES.KAT.KeyPins
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
 
 module AssembleK
   (mk k1 k2 k3 k4 k5 k6 k7 k8 k9 k10 : State)

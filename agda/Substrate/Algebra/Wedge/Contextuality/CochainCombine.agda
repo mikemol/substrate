@@ -13,15 +13,17 @@
 
 module Substrate.Algebra.Wedge.Contextuality.CochainCombine where
 
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Eq using (_≡_; refl; cong)
-open import Substrate.Foundation.Negation using (¬_)
+open import Substrate.Foundation.Negation.Not
 open import Substrate.Foundation.Vec using (Vec; []; _∷_)
-open import Substrate.Algebra.F2 using (𝟘; 𝟙; 𝟙≢𝟘)
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.OneNeqZero
 open import Substrate.Algebra.F2.Vector using (Vector; 𝟎ⱽ)
 open import Substrate.Algebra.Wedge.Contextuality using (Constraint; con; rhs; _⊕ᶜ_)
 open import Substrate.Algebra.Wedge.Contextuality.General using (combine; scaleᶜ)
 open import Substrate.Algebra.Wedge.Contextuality.Cochain using (𝟬ᶜ; ⊕ᶜ-identityˡ)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Algebra.Wedge.BinMul.Sel
 
 ------------------------------------------------------------------------
 -- 29–31. The empty combination is 𝟬ᶜ; scaling is keep (𝟙) / drop-to-𝟬ᶜ (𝟘).

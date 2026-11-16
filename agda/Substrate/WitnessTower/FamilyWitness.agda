@@ -40,12 +40,14 @@
 
 module Substrate.WitnessTower.FamilyWitness where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Vec using (Vec)
-open import Substrate.Foundation.Eq using (_≡_; refl; cong; sym)
 
 open import Substrate.WitnessTower.Core using (WSimplex; base; witnessing)
 open import Substrate.WitnessTower.Enumerate using (perms; lengthL; factorial; perms-length)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Sym
 
 ------------------------------------------------------------------------
 -- (a) The linear tower IS a chain: WSimplex k is a singleton.

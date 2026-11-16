@@ -12,7 +12,7 @@
 
 module Substrate.Category.Poly.Category where
 
-open import Substrate.Foundation.Nat.Properties.Add using (+-assoc)
+open import Substrate.Foundation.Nat.Properties.Add.PlusAssoc
 open import Substrate.WitnessTower.Wedge.OrientationBimonoidal using (GradedAssocOver)
 open import Substrate.WitnessTower.Wedge.OrientationBimonoidal.Properties using (⊕-assoc-over)
 
@@ -20,5 +20,5 @@ open import Substrate.Category.Poly.Term using (poly-product)
 
 -- Associativity of composition = the tower's GradedAssocOver on the graded
 -- product. Unit laws are OrientationSum.⊕-unit-left / OrientationSumLaws.⊕-unit-right.
-poly-assoc : GradedAssocOver +-assoc poly-product
+poly-assoc : GradedAssocOver +ℕ-assoc poly-product
 poly-assoc = ⊕-assoc-over

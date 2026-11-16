@@ -14,15 +14,21 @@
 
 module Substrate.Category.UniversalProperty.Recognized where
 
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Eq using (_≡_)
-open import Substrate.Foundation.Negation using (¬_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Negation.Not
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
-open import Substrate.Algebra.Nat.Mod using (_mod-suc_)
+open import Substrate.Foundation.Nat.Nat.ModSuc
+open import Substrate.Algebra.Nat.Mod.ModSucBound
+open import Substrate.Algebra.Nat.Mod.ModSucId
+open import Substrate.Algebra.Nat.Mod.ModSucPeriodic
+open import Substrate.Algebra.Nat.Mod.ModSucSuc
+open import Substrate.Algebra.Nat.Mod.SucModSucLt
+open import Substrate.Algebra.Nat.Mod.SucModSucSelf
 open import Substrate.Category.UniversalProperty using (UPArrowP; mkUP; trivial-UPP)
 open import Substrate.Category.UniversalProperty.Vacuity
   using (Vacuous; Contentful; contentful→¬vacuous; trivial-vacuous;
          eq-UP; eq-contentful)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. The gate: a recognized UP carries its non-vacuity certificate.

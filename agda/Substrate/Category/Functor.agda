@@ -35,10 +35,10 @@
 
 module Substrate.Category.Functor where
 
-open import Substrate.Foundation.Level using (Level; _⊔_) renaming (suc to lsuc)
-open import Substrate.Foundation.Eq using (_≡_)
+open import Substrate.Foundation.Level using (Level; _⊔_)
 
-open import Substrate.Category.CategoryOf using (CategoryOf)
+open import Substrate.Category.CategoryOf.CategoryOf
+open import Substrate.Foundation.Eq
 
 private
   variable
@@ -86,7 +86,6 @@ record Functor
 -- preserves identity + composition.
 ------------------------------------------------------------------------
 
-open import Substrate.Foundation.Eq using (refl)
 
 id-Functor : {ObjC : Set ℓOC} {MorC : ObjC → ObjC → Set ℓMC}
              (C : CategoryOf ObjC MorC) → Functor C C
@@ -124,8 +123,15 @@ compose-Functor {ObjC = ObjC} {MorC = MorC} {C = C} {D = D} {E = E} G F = mkFunc
     module F = Functor F
     module G = Functor G
 
-    open import Substrate.Foundation.Eq
-      using (trans; cong)
+    -- ⚑ Ⓑ4ᵇ: WAS `open import Substrate.Foundation.Eq using (trans; cong)`.
+    -- `Foundation.Eq` no longer exports either — both were split to their own
+    -- leaves — and a `using` naming an unexported name is only a WARNING at the
+    -- import, so the failure surfaced 4 lines later as `[NotInScope] trans`. That
+    -- is the ban playbook's exact hazard, and it is also why the `using` goes:
+    -- a bare import of the leaf cannot silently name something that isn't there.
+    -- `cong` has two homes (`FUSepQBridge.Cong` too); this is the Foundation one.
+    open import Substrate.Foundation.Eq.Trans
+    open import Substrate.Foundation.Eq.Cong
 
     id-pres : (a : ObjC) →
               G.F-mor (F.F-mor (C.id a)) ≡ E.id (G.F-obj (F.F-obj a))

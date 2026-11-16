@@ -14,13 +14,14 @@
 
 {-# OPTIONS --safe --without-K #-}
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Pipeline.Brick
 
 open import Substrate.Pipeline.Brick.Witnessing using (S⇒D)
 open import Substrate.Pipeline.Brick.Record using (Brick)
 open import Substrate.Pipeline.Brick.Type using (BrickType)
 open import Substrate.Foundation.Product using (_,_)
+open import Substrate.Category.ConjugationCoalgebra.WithCharacters
 module Substrate.Pipeline.Examples.PredictorSurprise
   (Char   : Set)
   (Counts : Set)

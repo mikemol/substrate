@@ -14,12 +14,14 @@
 
 module Substrate.Algebra.Q.DecidableEq where
 
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.Foundation.Negation using (Dec; yes; no)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Negation.Dec
 
-open import Substrate.Algebra.Z using (ℤ; _≟ℤ_; ℕ-≟)
-open import Substrate.Algebra.Q using (ℚ; mkℚ; num; den-1)
+open import Substrate.Algebra.Z.DecInt
+open import Substrate.Algebra.Z.Int
+open import Substrate.Algebra.Z.NatDec
+open import Substrate.Algebra.Q.Rat
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. Syntactic decidable equality.

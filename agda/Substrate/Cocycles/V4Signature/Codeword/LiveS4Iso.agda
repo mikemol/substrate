@@ -30,12 +30,10 @@ module Substrate.Cocycles.V4Signature.Codeword.LiveS4Iso where
 
 open import Substrate.Foundation.Level using (0ℓ)
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; trans; cong)
 
 open import Substrate.Axes.Axis using (Axis; D; C; S; W)
 open import Substrate.Axes.ActAxis using (act-axis)
-open import Substrate.Groups.V4.Bijection using (V₄; e; α; β; γ)
+open import Substrate.Groups.V4.Bijection.V4
 import Substrate.Groups.V4.Operations as V4
 
 open import Substrate.Groups.V4-Embedding using (embed)
@@ -49,8 +47,8 @@ open import Substrate.Cocycles.V4Signature.Codeword
 open import Substrate.Cocycles.V4Signature.Codeword.Live
   using (Selector; sel-fft; sel-tft; sel-ftf; sel-ttf; sel-ftt; sel-ttt;
          live-to-axis-selector; axis-selector-to-live)
-open import Substrate.Cocycles.V4Signature.Codeword.LiveS4
-  using (stab-from-selector; live-to-permutation)
+open import Substrate.Cocycles.V4Signature.Codeword.LiveS4.LiveToPermutation
+open import Substrate.Cocycles.V4Signature.Codeword.LiveS4.StabFromSelector
 open import Substrate.Groups.Symmetric.Permutation.Compose Axis
 open import Substrate.Groups.Symmetric.Eq Axis
 open import Substrate.Groups.Symmetric.EqRefl Axis
@@ -58,8 +56,21 @@ open import Substrate.Groups.Symmetric.Identity Axis
 open import Substrate.Groups.Symmetric.Permutation Axis
 open import Substrate.Axes.VOfAxis
 open import Substrate.Cocycles.V4Signature.Codeword.Subtypes
-open import Substrate.Groups.SemidirectProduct.V
+open import Substrate.Groups.SemidirectProduct.V.NonDSends
+open import Substrate.Groups.SemidirectProduct.V.Private
+open import Substrate.Groups.SemidirectProduct.V.SelfToD
+open import Substrate.Groups.SemidirectProduct.V.VFor
+open import Substrate.Groups.SemidirectProduct.V.VForAnchor
+open import Substrate.Groups.SemidirectProduct.V.VForAnchorSends
+open import Substrate.Groups.SemidirectProduct.V.VOfAxisAnchor
+open import Substrate.Groups.SemidirectProduct.V.VOfAxisAnchorSends
+open import Substrate.Groups.SemidirectProduct.V.VOfAxisUnique
+open import Substrate.Groups.SemidirectProduct.V.VSendsD
 open import Substrate.Groups.SemidirectProduct.S
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- axis-of-v: the inverse of v-of-axis.

@@ -25,9 +25,9 @@
 -- exterior keeps, k-d forgets). This is the graded-cocycle reading of the
 -- chirality arc, over the UNBOUNDED tower (all n), not pinned at rung 3.
 --
--- HONEST SCOPE: this co-apexes the SIGN cocycle with the graded carrier +
+-- HONEST SCOPE: this co-apexes the SIGN cocycle with the graded carrier +F
 -- chirality arc — it does NOT yet build the full CY-5 codeword as a
--- GradedProduct (the multiplicity/k-d leg + the 5-bit codeword lift remain).
+-- GradedProduct (the multiplicity/k-d leg +F the 5-bit codeword lift remain).
 -- What is established: sign is the ℤ/2 exterior cocycle over tower-graded,
 -- for every grade n. The chirality/WHT arc is thereby tower-graded-manifest.
 --
@@ -38,11 +38,11 @@
 
 module Substrate.WitnessTower.TowerCocycleGraded where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Bool using (Bool; _xor_)
-open import Substrate.Foundation.Eq using (_≡_; trans; cong; cong₂)
-open import Substrate.Algebra.F2 using (F₂; _+_)
+open import Substrate.Foundation.Bool.Bool
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.PlusF
 
 open import Substrate.WitnessTower.Enumerate using (Perm)
 open import Substrate.WitnessTower.FirstAppearance using (compose)
@@ -50,6 +50,10 @@ open import Substrate.WitnessTower.IsPermutation using (IsPerm)
 open import Substrate.WitnessTower.Wedge.Graded using (tower-graded)
 open import Substrate.WitnessTower.Wedge.OrientationRigCatPermSign using (sign; sign-hom)
 open import Substrate.Algebra.F2.FromBool using (bool→F₂; bool→F₂-xor)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
 
 ------------------------------------------------------------------------
 -- 1. The graded carrier IS the tower's (imported → real edge in the graph).
@@ -72,7 +76,7 @@ signF σ = bool→F₂ (sign σ)
 -- grade n (unbounded, not pinned at rung 3).
 signF-cocycle :
   {n : ℕ} (σ τ : Perm n) → IsPerm σ → IsPerm τ →
-  signF (compose σ τ) ≡ (signF σ + signF τ)
+  signF (compose σ τ) ≡ (signF σ +F signF τ)
 signF-cocycle σ τ pσ pτ =
   trans (cong bool→F₂ (sign-hom σ τ pσ pτ))
         (bool→F₂-xor (sign σ) (sign τ))

@@ -26,7 +26,7 @@
 -- So support is a complete invariant for grading-BY-SUPPORT, but NOT a
 -- cycle-type discriminator outside involutions (where moved-count =
 -- 2·#2-cycles is injective on type). At rung 4 the support-4 debut (9
--- elements) splits into 3 double-transpositions + 6 four-cycles —
+-- elements) splits into 3 double-transpositions ℕ+ 6 four-cycles —
 -- distinguishing those needs an actual cycle decomposition, not
 -- moved-count. We compute that split here too, to mark the boundary
 -- honestly.
@@ -36,13 +36,16 @@
 
 module Substrate.WitnessTower.SupportGrading where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_) renaming (_≟_ to _≟ℕ_)
-open import Substrate.Foundation.Bool using (Bool; _∧_; not)
-open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Bool.And
+open import Substrate.Foundation.Bool.Bool
+open import Substrate.Foundation.Bool.Not
 
 open import Substrate.WitnessTower.Enumerate using (Perm; perms; lengthL)
 open import Substrate.WitnessTower.FirstAppearance
   using (moved-count; is-involution; filterL; ⌊_⌋)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. Census by support value: how many permutations of rung n have
@@ -111,5 +114,5 @@ support-4-split-four  : support-4-fourcycles ≡ 6
 support-4-split-four  = refl
 
 -- and they reconcile to the full support-4 debut D₄ = 9.
-support-4-reconcile : support-4-involutions + support-4-fourcycles ≡ by-support 4 4
+support-4-reconcile : support-4-involutions ℕ+ support-4-fourcycles ≡ by-support 4 4
 support-4-reconcile = refl

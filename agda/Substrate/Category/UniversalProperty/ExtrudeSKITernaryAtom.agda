@@ -21,16 +21,20 @@
 
 module Substrate.Category.UniversalProperty.ExtrudeSKITernaryAtom where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans)
-open import Substrate.Foundation.Empty using (⊥; ⊥-elim)
+open import Substrate.Foundation.Empty.Bot
+open import Substrate.Foundation.Empty.BotElim
 open import Substrate.Foundation.Product using (Σ; _,_; _×_)
-open import Substrate.Algebra.R.Trace.SKIShedDuality using (S; K; I; _∙_) renaming (Tm to Tm⟦533ef80d⟧)
+open import Substrate.Algebra.R.Trace.SKIShedDuality.Tm
 import Substrate.Algebra.R.Trace.SKIReductionToList as R
 open R using (_⇒_)
 open import Substrate.Foundation.RewriteConfluence (R._⇒_) using (_⇒*_; done; _◅_; Converge)
 open import Substrate.WitnessTower.M40Closure using (Z3; z0; z1; z2)
 open import Substrate.Category.UniversalProperty.ExtrudeSKIConfluent using (reduct-obs; reduct-refl; ⇒*→converge)
 open import Substrate.Category.UniversalProperty.DiagonalYCombinator using (Y-of; Y-fix)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Algebra.R.Trace.SKIShedDuality.Tm
 
 ------------------------------------------------------------------------
 -- ① THE IRREDUCIBLE TERNARY ATOM (reused: WitnessTower Z3). S/K/I are its three FACES/VERTICES — the
@@ -38,19 +42,19 @@ open import Substrate.Category.UniversalProperty.DiagonalYCombinator using (Y-of
 --    Mutual exclusivity is BY CONSTRUCTION (z0/z1/z2 are distinct constructors — the "transposition needs a
 --    transformation": the tower's σ/rotate S₃-action permutes them; identity never does).
 ------------------------------------------------------------------------
-atom : Z3 → Tm⟦533ef80d⟧
+atom : Z3 → Tm
 atom z0 = S
 atom z1 = K
 atom z2 = I
 
 -- ② each vertex-term is a NORMAL FORM (irreducible — a bare combinator has no reduction). By exhaustion.
-atom-normal : (v : Z3) {c : Tm⟦533ef80d⟧} → atom v ⇒ c → ⊥
+atom-normal : (v : Z3) {c : Tm} → atom v ⇒ c → ⊥
 atom-normal z0 ()
 atom-normal z1 ()
 atom-normal z2 ()
 
 -- a normal form only reduces to itself (no decision, no normalization — just: it doesn't step):
-nf-fixed : {n : Tm⟦533ef80d⟧} → ({c : Tm⟦533ef80d⟧} → n ⇒ c → ⊥) → {c : Tm⟦533ef80d⟧} → n ⇒* c → n ≡ c
+nf-fixed : {n : Tm} → ({c : Tm} → n ⇒ c → ⊥) → {c : Tm} → n ⇒* c → n ≡ c
 nf-fixed n-nf done      = refl
 nf-fixed n-nf (s ◅ _)   = ⊥-elim (n-nf s)
 
@@ -100,7 +104,7 @@ S≁I = faces-dont-converge z0≢z2
 non-degenerate : reduct-obs S S × (reduct-obs S K → ⊥)
 non-degenerate = reduct-refl S , S≁K
 
-fix-converges : (f : Tm⟦533ef80d⟧) → reduct-obs (Y-of f) (f ∙ (Y-of f))
+fix-converges : (f : Tm) → reduct-obs (Y-of f) (f ∙ (Y-of f))
 fix-converges f = ⇒*→converge (Y-fix f)
 
 ------------------------------------------------------------------------

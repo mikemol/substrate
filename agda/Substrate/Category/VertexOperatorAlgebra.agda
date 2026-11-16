@@ -14,8 +14,7 @@
 
 module Substrate.Category.VertexOperatorAlgebra where
 
-open import Substrate.Foundation.Level using (Level; _⊔_) renaming (suc to lsuc)
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 
 -- ⟡set1-paydown: parameterize the graded carrier family V : ℕ → Set out of the
 -- record (substrate stance: families are module params, never fields). The record

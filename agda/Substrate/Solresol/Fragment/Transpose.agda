@@ -11,9 +11,9 @@
 
 module Substrate.Solresol.Fragment.Transpose where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Solresol.Fragment.Note
   using (Note; do₁; re₁; mi₁; fa₁; sol; la₁; si₁)
+open import Substrate.Foundation.Eq
 
 transpose-1 : Note → Note
 transpose-1 do₁ = re₁

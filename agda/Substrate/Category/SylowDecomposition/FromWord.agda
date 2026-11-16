@@ -35,11 +35,13 @@ module Substrate.Category.SylowDecomposition.FromWord where
 open import Substrate.Foundation.Level using (Level)
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.List using (List; []; _∷_)
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Product using (Σ; _,_)
 
 open import Substrate.Category.SylowDecomposition
   using (InGenerated)
+open import Substrate.Algebra.GL3F2
+open import Substrate.Algebra.GL3F2.AsPresented
 
 private
   variable

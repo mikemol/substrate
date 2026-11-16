@@ -16,8 +16,12 @@ module Substrate.S5.S5RealConv where
 open import Substrate.S5.S5Verdict using (_≡_; refl; ℕ; zero; suc)
 open import Substrate.S5.S5Real using (CoTrace; head; tail; take; cycle; List; []; _∷_)
 import Substrate.S5.S5Real as S5R   -- for the ⟡def-eq constant witnesses below
-open import Substrate.Foundation.Nat     using (_+_; _*_)
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Times
 open import Substrate.Foundation.Product using (_×_; _,_) renaming (proj₁ to fst; proj₂ to snd)
+open import Substrate.Foundation.List
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Nat.Nat
 
 ------------------------------------------------------------------------
 -- generator → CF digit. The combinator generator carrier A is abstract here;

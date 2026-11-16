@@ -11,8 +11,7 @@
 module Substrate.Cocycles.V4Signature.S4Iso.Cases where
 
 open import Substrate.Groups.SemidirectProduct.Stab
-open import Substrate.Foundation.Empty using (⊥-elim)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; trans-sym)
+open import Substrate.Foundation.Empty.BotElim
 
 open import Substrate.Axes.Axis using (Axis; D; C; S; W)
 open import Substrate.Groups.Symmetric.Permutation Axis
@@ -22,6 +21,10 @@ open import Substrate.Groups.SemidirectProduct using (Stab)
 
 open import Substrate.Cocycles.V4Signature.S4Iso.Injective
 open import Substrate.Cocycles.V4Signature.S4Iso.StabElements
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.TransSym
 
 ------------------------------------------------------------------------
 -- (α-pair, even): σ(D)=D, σ(C)=C, σ(S)=S ⇒ σ ≈ stab-id.

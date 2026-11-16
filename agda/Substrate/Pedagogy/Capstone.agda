@@ -22,7 +22,7 @@ open import Substrate.Pedagogy.LanguagePage
 open import Substrate.Pedagogy.RosettaPage
 open import Substrate.Pedagogy.Index
 -- Bring in the substrate witnesses for the worked example.
-open import Substrate.Linguistic.Roster using (lojban; tokipona)
+open import Substrate.Linguistic.Roster.Lang
 
 ------------------------------------------------------------------------
 -- 1. Worked example: the Lojban PageBundle.

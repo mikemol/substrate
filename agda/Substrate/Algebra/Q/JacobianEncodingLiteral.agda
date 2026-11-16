@@ -26,7 +26,7 @@
 
 module Substrate.Algebra.Q.JacobianEncodingLiteral where
 
-open import Substrate.Algebra.Q using (ℚ)
+open import Substrate.Algebra.Q.Rat
 open import Substrate.Algebra.Q.Equiv using (_≈ℚ_)
 import Substrate.Algebra.Z.JacobianResidue        as R
 import Substrate.Algebra.Q.JacobianEvalNormalize   as β

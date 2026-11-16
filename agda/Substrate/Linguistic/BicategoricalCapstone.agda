@@ -11,7 +11,8 @@
 
 module Substrate.Linguistic.BicategoricalCapstone where
 
-open import Substrate.Linguistic.Roster using (Lang; witness-of)
+open import Substrate.Linguistic.Roster.Lang
+open import Substrate.Linguistic.Roster.WitnessOf
 open import Substrate.Linguistic.Morphism using (LanguageMorphism)
 
 -- Re-export the B-arc slices publicly.

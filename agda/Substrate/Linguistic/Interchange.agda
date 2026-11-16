@@ -24,8 +24,6 @@
 
 module Substrate.Linguistic.Interchange where
 
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; trans; cong)
 
 open import Substrate.Category.FreeOverBasis using (LanguageWitness)
 open import Substrate.Linguistic.Morphism using (LanguageMorphism)
@@ -35,6 +33,9 @@ open import Substrate.Linguistic.Language2Morphism
   using (Language2Morphism; mk2Mor; basis-eq; carrier-eq; id-2mor)
 open import Substrate.Linguistic.Vertical using (_∘V_)
 open import Substrate.Linguistic.Horizontal using (_∘H_)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- 1. Interchange at identity 2-cells.

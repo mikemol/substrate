@@ -18,12 +18,18 @@
 
 module Substrate.Algebra.ParityKernel.Universal where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym)
-open import Substrate.Foundation.Empty using (⊥-elim)
-open import Substrate.Algebra.F2 using (F₂; 𝟘; 𝟙; _+_; +-assoc; +-identityˡ; 𝟙≢𝟘)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Empty.BotElim
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.OneNeqZero
+open import Substrate.Algebra.F2.PlusAssoc
+open import Substrate.Algebra.F2.PlusF
+open import Substrate.Algebra.F2.PlusIdentityL
 open import Substrate.Algebra.N-to-F2-Parity using (parity)
 open import Substrate.Groups.Coxeter.Word using (Word; []; _∷_)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Sym
 
 module _ {Gen : Set} where
 

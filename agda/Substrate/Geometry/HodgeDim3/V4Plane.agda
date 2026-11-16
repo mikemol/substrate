@@ -22,16 +22,50 @@ module Substrate.Geometry.HodgeDim3.V4Plane where
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Literals using (₀; ₁; ₂; ₄)
 open import Substrate.Foundation.Vec using ([]; _∷_; lookup)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; trans; cong; cong-trans; sym-trans)
 
-open import Substrate.Algebra.F2
+open import Substrate.Algebra.F2.AbsorbL
+open import Substrate.Algebra.F2.AbsorbR
+open import Substrate.Algebra.F2.Assoc
+open import Substrate.Algebra.F2.Comm
+open import Substrate.Algebra.F2.Dec
+open import Substrate.Algebra.F2.DistribLPlus
+open import Substrate.Algebra.F2.DistribRPlus
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.F2Cases
+open import Substrate.Algebra.F2.Idempotent
+open import Substrate.Algebra.F2.IdentityL
+open import Substrate.Algebra.F2.IdentityR
+open import Substrate.Algebra.F2.InvOfOne
+open import Substrate.Algebra.F2.OneNeqZero
+open import Substrate.Algebra.F2.Op
+open import Substrate.Algebra.F2.Op2
+open import Substrate.Algebra.F2.PlusAssoc
+open import Substrate.Algebra.F2.PlusComm
+open import Substrate.Algebra.F2.PlusF
+open import Substrate.Algebra.F2.PlusIdentityL
+open import Substrate.Algebra.F2.PlusIdentityR
+open import Substrate.Algebra.F2.PlusInverseL
+open import Substrate.Algebra.F2.PlusInverseR
+open import Substrate.Algebra.F2.PlusSelfInverse
+open import Substrate.Algebra.F2.ZeroNeqOne
 open import Substrate.Algebra.F2.Vector
-open import Substrate.Algebra.F2.Linear
+open import Substrate.Algebra.F2.Linear.CompL
+open import Substrate.Algebra.F2.Linear.CompLAssoc
+open import Substrate.Algebra.F2.Linear.CompLIdentityL
+open import Substrate.Algebra.F2.Linear.CompLIdentityR
+open import Substrate.Algebra.F2.Linear.IdL
+open import Substrate.Algebra.F2.Linear.Linear
+open import Substrate.Algebra.F2.Linear.Preserves
 open import Substrate.Algebra.F2.Linear.FromImages
 open import Substrate.Algebra.F2.Linear.KernelPredBridge
   using (pred-at-i→kernel-at-i; kernel-at-i→pred-at-i)
 open import Substrate.Algebra.F2.Code
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.CongTrans
+open import Substrate.Foundation.Eq.SymTrans
 
 ------------------------------------------------------------------------
 -- Basis-images of the "project chirality bit" linear map.
@@ -74,7 +108,7 @@ V4-Plane-Pred v = lookup v ₂ ≡ 𝟘
 -- Application of V4Plane-Selector reduces to the chirality bit.
 --
 -- The key computational fact: apply V4Plane-Selector v ≡ lookup v 2 ∷ [].
--- Proved by ≡-from-lookup + lookup-sum + componentwise reduction.
+-- Proved by ≡-from-lookup +F lookup-sum +F componentwise reduction.
 ------------------------------------------------------------------------
 
 apply-V4Plane-Selector-lookup :
@@ -82,12 +116,12 @@ apply-V4Plane-Selector-lookup :
   lookup (apply V4Plane-Selector v) zero ≡ lookup v ₂
 apply-V4Plane-Selector-lookup (a ∷ b ∷ c ∷ []) =
   -- `linear-from-images` is opaque, so we reach the dense sum via its
-  -- characterising lemma (not by reduction); the sum a · 𝟘 + (b · 𝟘 + (c · 𝟙 + 𝟘))
+  -- characterising lemma (not by reduction); the sum a · 𝟘 +F (b · 𝟘 +F (c · 𝟙 +F 𝟘))
   -- then collapses through the identities to c.
   trans (apply-linear-from-images-lookup chirality-bit-images (a ∷ b ∷ c ∷ []) zero)
-  (cong-trans (_+ (b · 𝟘 + (c · 𝟙 + 𝟘))) (·-absorbʳ a)
+  (cong-trans (_+ (b · 𝟘 +F (c · 𝟙 +F 𝟘))) (·-absorbʳ a)
   (trans (+-identityˡ _)
-  (cong-trans (_+ (c · 𝟙 + 𝟘)) (·-absorbʳ b)
+  (cong-trans (_+ (c · 𝟙 +F 𝟘)) (·-absorbʳ b)
   (trans (+-identityˡ _)
   (cong-trans (_+ 𝟘) (·-identityʳ c)
          (+-identityʳ c))))))

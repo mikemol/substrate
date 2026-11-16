@@ -29,9 +29,9 @@
 
 module Substrate.WitnessTower.CommutatorSubgroup where
 
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Eq using (_≡_; trans; cong₂)
-open import Substrate.Foundation.Bool using (Bool; false; _xor_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Bool.Bool
+open import Substrate.Foundation.Bool.Xor
 open import Substrate.WitnessTower.Enumerate using (Perm)
 open import Substrate.WitnessTower.FirstAppearance using (id-perm; compose)
 open import Substrate.WitnessTower.IsPermutation using (IsPerm)
@@ -40,6 +40,9 @@ open import Substrate.WitnessTower.SignCommutator
   using (commutator; commutator-is-perm; commutator-even)
 open import Substrate.WitnessTower.Wedge.OrientationRigCatPermSign
   using (sign; sign-id; sign-hom; id-perm-is-perm)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong2
 
 ------------------------------------------------------------------------
 -- 1. THE COMMUTATOR SUBGROUP as an inductive family (mirrors CoxGen/BraidGen).

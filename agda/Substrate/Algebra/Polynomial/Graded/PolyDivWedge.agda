@@ -23,15 +23,17 @@
 
 module Substrate.Algebra.Polynomial.Graded.PolyDivWedge where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Vec using (Vec; []; _∷_)
 open import Substrate.Foundation.Product using (Σ; _,_)
-open import Substrate.Foundation.Eq using (_≡_; refl; cong; cong₂)
-open import Substrate.Algebra.CommutativeRing using (CommutativeRing)
+open import Substrate.Algebra.CommutativeRing.Record
 open import Substrate.Algebra.Wedge
-  using (DivStr) renaming (Wedge to Wedge⟦478f66a6⟧)   -- shape-specialized (ratchet)
+  using (DivStr) renaming (Wedge to Wedge)   -- shape-specialized (ratchet)
 import Substrate.Algebra.Polynomial.Graded.FromCommRing as F
 import Substrate.Algebra.Polynomial.Graded.Div as Div
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
 
 module Over {A : Set} (CR : CommutativeRing A) where
   open F.Over CR using (Poly; nth; convCoeff; _+_)
@@ -71,7 +73,7 @@ module Over {A : Set} (CR : CommutativeRing A) where
 
   -- THE WEDGE: each Euclidean division step is a generic `Wedge`, over any CommRing.
   step-wedge : (d : ℕ) (f-lo : Vec A (suc d)) (n : ℕ) (av : Vec A n) →
-               Wedge⟦478f66a6⟧ Poly-div (n , av) (divisor-q d f-lo)
+               Wedge Poly-div (n , av) (divisor-q d f-lo)
   step-wedge d f-lo n av = record
     { quot     = div-quot d f-lo (n , av)
     ; rem      = div-rem d f-lo (n , av)

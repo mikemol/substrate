@@ -7,8 +7,8 @@
 -- AFTER a `subst` over the corresponding ℕ law (the wedge's q, with r = id) — NOT an
 -- up-to-iso coherence (that is ⟡rig-6, where r = a transposition).
 --
---   ⊕-assoc      : subst LehmerPath (+-assoc m n p) ((l₁ ⊕ l₂) ⊕ l₃) ≡ l₁ ⊕ (l₂ ⊕ l₃)
---   ⊕-unit-right : subst LehmerPath (+-identityʳ n) (l ⊕ 0#)        ≡ l
+--   ⊕-assoc      : subst LehmerPath (+ℕ-assoc m n p) ((l₁ ⊕ l₂) ⊕ l₃) ≡ l₁ ⊕ (l₂ ⊕ l₃)
+--   ⊕-unit-right : subst LehmerPath (+ℕ-identityʳ n) (l ⊕ 0#)        ≡ l
 --
 -- (the left unit 0# ⊕ l ≡ l is already refl — OrientationSum.⊕-unit-left.) Both go by
 -- induction on the first path, pushing the grade-`subst` through the `◂` constructor
@@ -22,13 +22,19 @@
 
 module Substrate.WitnessTower.Wedge.OrientationSumLaws where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
-open import Substrate.Foundation.Nat.Properties.Add using (+-assoc; +-identityʳ)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Properties.Add.PlusAssoc
+open import Substrate.Foundation.Nat.Properties.Add.PlusIdentityR
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Inject using (inject+)
-open import Substrate.Foundation.Eq using (_≡_; refl; trans; cong; cong₂; subst)
-open import Substrate.WitnessTower.LehmerPath using (LehmerPath; start; _◂_)
+open import Substrate.WitnessTower.LehmerPath.LehmerPath
 open import Substrate.WitnessTower.Wedge.OrientationSum using (_⊕_; 0#)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.Foundation.Eq.Subst
 
 ------------------------------------------------------------------------
 -- 1. subst-push helpers: transporting a Fin along a `cong suc` grade-equality commutes
@@ -48,7 +54,7 @@ subst-cong-suc : ∀ {m m'} (eq : m ≡ m') (w : Fin (suc m)) →
                  subst (λ z → Fin (suc z)) eq w ≡ subst Fin (cong suc eq) w
 subst-cong-suc refl w = refl
 
--- pushing a grade-`subst` through the `◂` constructor (it splits onto path + choice).
+-- pushing a grade-`subst` through the `◂` constructor (it splits onto path ℕ+ choice).
 ◂-subst : ∀ {k k'} (eq : k ≡ k') (l : LehmerPath k) (q : Fin (suc k)) →
           subst LehmerPath (cong suc eq) (l ◂ q)
             ≡ subst LehmerPath eq l ◂ subst (λ z → Fin (suc z)) eq q
@@ -59,19 +65,19 @@ subst-cong-suc refl w = refl
 ------------------------------------------------------------------------
 
 -- associativity: nesting two inject+ is one inject+ over the summed amount, after the
--- grade transport. (Induction on x; base = suc-zero push, step = suc push + IH.)
+-- grade transport. (Induction on x; base = suc-zero push, step = suc push ℕ+ IH.)
 inject+-assoc : ∀ {m} (n p : ℕ) (x : Fin m) →
-                subst Fin (+-assoc m n p) (inject+ p (inject+ n x)) ≡ inject+ (n + p) x
-inject+-assoc {suc m} n p zero    = subst-Fin-suc-zero (+-assoc m n p)
+                subst Fin (+ℕ-assoc m n p) (inject+ p (inject+ n x)) ≡ inject+ (n ℕ+ p) x
+inject+-assoc {suc m} n p zero    = subst-Fin-suc-zero (+ℕ-assoc m n p)
 inject+-assoc {suc m} n p (suc x) =
-  trans (subst-Fin-suc-suc (+-assoc m n p) (inject+ p (inject+ n x)))
+  trans (subst-Fin-suc-suc (+ℕ-assoc m n p) (inject+ p (inject+ n x)))
         (cong suc (inject+-assoc n p x))
 
 -- right-unit: inject+ 0 is the identity, after the +0 transport.
-inject+0-id : ∀ {m} (x : Fin m) → subst Fin (+-identityʳ m) (inject+ 0 x) ≡ x
-inject+0-id {suc m} zero    = subst-Fin-suc-zero (+-identityʳ m)
+inject+0-id : ∀ {m} (x : Fin m) → subst Fin (+ℕ-identityʳ m) (inject+ 0 x) ≡ x
+inject+0-id {suc m} zero    = subst-Fin-suc-zero (+ℕ-identityʳ m)
 inject+0-id {suc m} (suc x) =
-  trans (subst-Fin-suc-suc (+-identityʳ m) (inject+ 0 x))
+  trans (subst-Fin-suc-suc (+ℕ-identityʳ m) (inject+ 0 x))
         (cong suc (inject+0-id x))
 
 ------------------------------------------------------------------------
@@ -80,19 +86,19 @@ inject+0-id {suc m} (suc x) =
 ------------------------------------------------------------------------
 
 ⊕-assoc : ∀ {m n p} (l₁ : LehmerPath m) (l₂ : LehmerPath n) (l₃ : LehmerPath p) →
-          subst LehmerPath (+-assoc m n p) ((l₁ ⊕ l₂) ⊕ l₃) ≡ l₁ ⊕ (l₂ ⊕ l₃)
+          subst LehmerPath (+ℕ-assoc m n p) ((l₁ ⊕ l₂) ⊕ l₃) ≡ l₁ ⊕ (l₂ ⊕ l₃)
 ⊕-assoc start l₂ l₃ = refl
 ⊕-assoc {suc m} {n} {p} (l₁ ◂ x) l₂ l₃ =
-  trans (◂-subst (+-assoc m n p) ((l₁ ⊕ l₂) ⊕ l₃) (inject+ p (inject+ n x)))
+  trans (◂-subst (+ℕ-assoc m n p) ((l₁ ⊕ l₂) ⊕ l₃) (inject+ p (inject+ n x)))
         (cong₂ _◂_ (⊕-assoc l₁ l₂ l₃)
-                   (trans (subst-cong-suc (+-assoc m n p) (inject+ p (inject+ n x)))
+                   (trans (subst-cong-suc (+ℕ-assoc m n p) (inject+ p (inject+ n x)))
                           (inject+-assoc n p x)))
 
 ⊕-unit-right : ∀ {n} (l : LehmerPath n) →
-               subst LehmerPath (+-identityʳ n) (l ⊕ 0#) ≡ l
+               subst LehmerPath (+ℕ-identityʳ n) (l ⊕ 0#) ≡ l
 ⊕-unit-right start = refl
 ⊕-unit-right {suc n} (l ◂ x) =
-  trans (◂-subst (+-identityʳ n) (l ⊕ 0#) (inject+ 0 x))
+  trans (◂-subst (+ℕ-identityʳ n) (l ⊕ 0#) (inject+ 0 x))
         (cong₂ _◂_ (⊕-unit-right l)
-                   (trans (subst-cong-suc (+-identityʳ n) (inject+ 0 x))
+                   (trans (subst-cong-suc (+ℕ-identityʳ n) (inject+ 0 x))
                           (inject+0-id x)))

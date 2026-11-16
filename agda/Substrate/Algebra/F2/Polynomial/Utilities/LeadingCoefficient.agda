@@ -12,7 +12,7 @@ module Substrate.Algebra.F2.Polynomial.Utilities.LeadingCoefficient where
 
 open import Substrate.Foundation.Maybe using (Maybe; just; nothing)
 
-open import Substrate.Algebra.F2 using (F₂; 𝟘; 𝟙)
+open import Substrate.Algebra.F2.F2
 open import Substrate.Algebra.F2.Polynomial using (Polynomial)
 open import Substrate.Algebra.F2.Polynomial.Utilities.LeadingPosition
   using (leading-position)

@@ -23,11 +23,11 @@
 
 module Substrate.Lojban.Cmavo where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Level using (Level; _⊔_)
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Lojban.Bridi
   using (Bridi; bridi-postcompose; interpret; interpret-postcompose)
+open import Substrate.Foundation.Eq
 
 private
   variable

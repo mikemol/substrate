@@ -10,8 +10,8 @@
 
 module Substrate.Algebra.Q.Neg where
 
-open import Substrate.Algebra.Z using (-ℤ_)
-open import Substrate.Algebra.Q using (ℚ; mkℚ; num; den-1)
+open import Substrate.Algebra.Z.Int2
+open import Substrate.Algebra.Q.Rat
 
 -ℚ_ : ℚ → ℚ
 -ℚ q = mkℚ (-ℤ (num q)) (den-1 q)

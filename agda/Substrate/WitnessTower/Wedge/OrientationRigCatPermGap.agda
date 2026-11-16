@@ -49,12 +49,12 @@ module Substrate.WitnessTower.Wedge.OrientationRigCatPermGap where
 
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using (Vec; []; _∷_)
-open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.Foundation.Sum using (_⊎_; inj₁; inj₂)
-open import Substrate.Foundation.Negation using (¬_)
+open import Substrate.Foundation.Sum.Sum
+open import Substrate.Foundation.Negation.Not
 
 open import Substrate.WitnessTower.Enumerate using (Perm)
 open import Substrate.WitnessTower.FirstAppearance using (id-perm; compose)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. The three concrete grade-3 group elements (C₃) and the transposition.

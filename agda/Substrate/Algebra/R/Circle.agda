@@ -25,11 +25,11 @@
 
 module Substrate.Algebra.R.Circle where
 
-open import Substrate.Foundation.Nat using (ℕ; zero)
-open import Substrate.Foundation.Eq  using (_≡_; refl)
+open import Substrate.Foundation.Nat.Nat
 
 open import Substrate.Algebra.R.Trace     using (RealTrace; head; tail)
 open import Substrate.Algebra.R.Trace.Ops using (cons0; addℕ)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- The cover map ℝ → S¹: wrap the angle onto the loop (drop the integer part).

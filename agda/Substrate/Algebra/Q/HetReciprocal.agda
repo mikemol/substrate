@@ -27,13 +27,16 @@
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.Algebra.Q.HetReciprocal where
+open import Substrate.Algebra.Z.Mul
 
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans)
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Algebra.Z using (ℤ; +_)
-open import Substrate.Algebra.Z.Arithmetic using (_*ℤ_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Algebra.Z.Int
+
 open import Substrate.Algebra.Z.Properties.Mul using (*ℤ-comm)
 open import Substrate.Algebra.Q.HetBasis using (HetQ; hnum; hden; module CrossEq)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
 
 module Cross
   {A B R : Set}

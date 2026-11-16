@@ -14,10 +14,12 @@
 
 {-# OPTIONS --safe --without-K #-}
 
-open import Substrate.Foundation.Nat using (ℕ)
 
 open import Substrate.Groups.Coxeter.Word using (++-assoc; Word)
 open import Substrate.Groups.Capabilities.xFreeCyclic using (from-coxeter-data)
+open import Substrate.Groups.Coxeter.Cyclic.Base.Gen
+open import Substrate.Groups.Coxeter.Cyclic.Base.Insert
+open import Substrate.Groups.Coxeter.ListPresentation
 module Substrate.Groups.Capabilities.xFreeCyclic.Witness (n : ℕ) where
 
 open import Substrate.Groups.Coxeter.Cyclic.Base n using (Gen; insert)

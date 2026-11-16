@@ -3,7 +3,7 @@
 --
 -- The WEDGE FOLD: EEA's free trace folded into the Bézout bridge over ℤ.
 -- Where gcd-fold (the annihilating fold) returns the residue g, this
--- returns the oriented mediating witness s·a + t·b = g — the proof of HOW
+-- returns the oriented mediating witness s·a ℕ+ t·b = g — the proof of HOW
 -- a and b reach their common part, kept and composable. This is the
 -- archetype the recognizer is modelled on: recognition returns the bridge,
 -- not the quotient's value.
@@ -17,23 +17,36 @@
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.Algebra.Z.Bezout where
+open import Substrate.Algebra.Z.Sub
+open import Substrate.Algebra.Z.Add
+open import Substrate.Algebra.Z.Mul
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_)
-open import Substrate.Foundation.Nat.Properties.Add using (+-identityʳ)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Times
+open import Substrate.Foundation.Nat.Properties.Add.PlusIdentityR
 open import Substrate.Foundation.Product using (Σ; _,_)
-open import Substrate.Algebra.Z using (ℤ; +_; -ℤ_; 0ℤ; 1ℤ)
-open import Substrate.Algebra.Z.Arithmetic using (_+ℤ_; _-ℤ_; _*ℤ_)
+open import Substrate.Algebra.Z.Int
+open import Substrate.Algebra.Z.Int2
+open import Substrate.Algebra.Z.OneInt
+open import Substrate.Algebra.Z.ZeroInt
+
 open import Substrate.Algebra.Z.Properties.Add
   using (+ℤ-assoc; +ℤ-comm; +ℤ-identityˡ; +ℤ-inverseʳ)
 open import Substrate.Algebra.Z.Properties.Mul
   using (distribˡ-pos; distribʳ-pos; neg-*-left; *ℤ-assoc-pos-pos)
-open import Substrate.Algebra.Nat.GCD.Wedge using (quotient; remainder; wedge-eq) renaming (Wedge to Wedge⟦b7e6a995⟧)
+open import Substrate.Algebra.Nat.GCD.Wedge using (quotient; remainder; wedge-eq) renaming (Wedge-GCD to Wedge-GCD)
 open import Substrate.Algebra.Nat.GCD.EEATrace using (EEATrace)
 open import Substrate.Algebra.Nat.GCD.Fold using (eea-fold)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.Algebra.Nat.GCD.Wedge
 
 ------------------------------------------------------------------------
--- 1. The Bézout witness over ℤ: the oriented bridge s·a + t·b = g.
+-- 1. The Bézout witness over ℤ: the oriented bridge s·a ℕ+ t·b = g.
 ------------------------------------------------------------------------
 
 BezoutℤWitness : ℕ → ℕ → ℕ → Set
@@ -44,16 +57,16 @@ BezoutℤWitness a b g =
 -- 2. The two fold-interpretations.
 ------------------------------------------------------------------------
 
--- base: gcd(a,0) = a; bridge 1·a + 0·0 = a.
+-- base: gcd(a,0) = a; bridge 1·a ℕ+ 0·0 = a.
 base-bezout : (a : ℕ) → BezoutℤWitness a 0 a
 base-bezout a =
-  1ℤ , 0ℤ , cong +_ (trans (+-identityʳ (a + 0)) (+-identityʳ a))
+  1ℤ , 0ℤ , cong +_ (trans (+ℕ-identityʳ (a ℕ+ 0)) (+ℕ-identityʳ a))
 
--- step: the Euclidean back-substitution. Given a = q·(suc b) + r and a
--- bridge s'·(suc b) + t'·r = g, the new bridge for (a, suc b) has
+-- step: the Euclidean back-substitution. Given a = q·(suc b) ℕ+ r and a
+-- bridge s'·(suc b) ℕ+ t'·r = g, the new bridge for (a, suc b) has
 -- s = t', t = s' − t'·q  (clean over ℤ).
 step-bezout :
-  {a g : ℕ} (b : ℕ) (w : Wedge⟦b7e6a995⟧ a (suc b)) →
+  {a g : ℕ} (b : ℕ) (w : Wedge-GCD a (suc b)) →
   BezoutℤWitness (suc b) (remainder w) g → BezoutℤWitness a (suc b) g
 step-bezout {a} {g} b w (s' , t' , eq') =
   t' , (s' -ℤ (t' *ℤ (+ q))) , proof

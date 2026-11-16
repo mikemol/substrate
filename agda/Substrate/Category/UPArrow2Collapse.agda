@@ -33,7 +33,7 @@
 
 module Substrate.Category.UPArrow2Collapse where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Category.UPArrowGraded using (UPArrowᴳ)
 
 ------------------------------------------------------------------------

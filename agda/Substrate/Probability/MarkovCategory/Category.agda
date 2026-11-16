@@ -15,9 +15,10 @@
 
 module Substrate.Probability.MarkovCategory.Category where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; cong)
 
 open import Substrate.Probability.MarkovCategory.Term
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
 
 module _ (O : Set) (K : Set) where
 

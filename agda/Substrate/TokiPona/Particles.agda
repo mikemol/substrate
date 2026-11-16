@@ -35,13 +35,15 @@
 
 module Substrate.TokiPona.Particles where
 
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; cong; sym)
+open import Substrate.Foundation.Nat.Nat
 
-open import Substrate.Algebra.F2 using (F₂; 𝟘; 𝟙; _+_)
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.PlusF
 open import Substrate.TokiPona.SemanticSpace using (SemVec)
 open import Substrate.TokiPona.TokiSentence using (TokiSentence)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Sym
 
 private
   variable
@@ -115,11 +117,11 @@ set-particle o  = mkMarkers 𝟘 𝟘 𝟘 𝟘 𝟙
 
 merge-markers : MarkerSet → MarkerSet → MarkerSet
 merge-markers a b = mkMarkers
-  (li-mark a + li-mark b)
-  (e-mark  a + e-mark  b)
-  (pi-mark a + pi-mark b)
-  (la-mark a + la-mark b)
-  (o-mark  a + o-mark  b)
+  (li-mark a +F li-mark b)
+  (e-mark  a +F e-mark  b)
+  (pi-mark a +F pi-mark b)
+  (la-mark a +F la-mark b)
+  (o-mark  a +F o-mark  b)
 
 ------------------------------------------------------------------------
 -- 6. The MarkedSentence: a TokiSentence paired with its MarkerSet.
@@ -168,13 +170,13 @@ merge-no-markersˡ _ = refl
 
 merge-no-markersʳ : (ms : MarkerSet) → merge-markers ms no-markers ≡ ms
 merge-no-markersʳ (mkMarkers a b c d e′) =
-  -- Each F₂ + 𝟘 reduces by 𝟘-right-identity. The substrate's F₂
-  -- has the left-identity definitional (𝟘 + y = y) but the right
+  -- Each F₂ +F 𝟘 reduces by 𝟘-right-identity. The substrate's F₂
+  -- has the left-identity definitional (𝟘 +F y = y) but the right
   -- side needs a 2-case proof — handled per component below.
   cong₅-mkMarkers
     (rightId a) (rightId b) (rightId c) (rightId d) (rightId e′)
   where
-    rightId : (x : F₂) → x + 𝟘 ≡ x
+    rightId : (x : F₂) → x +F 𝟘 ≡ x
     rightId 𝟘 = refl
     rightId 𝟙 = refl
     cong₅-mkMarkers :

@@ -27,19 +27,24 @@
 module Substrate.Cocycles.V4Signature.VRecovers where
 
 open import Substrate.Axes.VOfAxis
-open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym; cong)
 open import Substrate.Axes.Axis using (Axis; D)
 open import Substrate.Axes.ActAxis using (act-axis)
-open import Substrate.Groups.V4.Bijection using (V₄)
+open import Substrate.Groups.V4.Bijection.V4
 open import Substrate.Groups.Symmetric.Permutation Axis
 open import Substrate.Groups.V4-Embedding using (embed; v-of-axis)
-open import Substrate.Groups.SemidirectProduct.V using (v-for; v-of-axis-unique)
+open import Substrate.Groups.SemidirectProduct.V.VFor
+open import Substrate.Groups.SemidirectProduct.V.VOfAxisUnique
 
 import Substrate.Groups.S3 as S₃
-open import Substrate.Groups.S4-Iso.Embedding using (embed-S₃; compositional-to-perm)
+open import Substrate.Groups.S4-Iso.Embedding.CompositionalToPerm
+open import Substrate.Groups.S4-Iso.Embedding.EmbedS3
 open import Substrate.Groups.S4-Iso.Extract using (perm-to-compositional)
 open import Substrate.Groups.S4-Iso.ExtractCorrect using (embed-S₃-D)
 open import Substrate.Foundation.Product using (proj₁; _,_)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- Step lemma: v-of-axis (act-axis v D) ≡ v.

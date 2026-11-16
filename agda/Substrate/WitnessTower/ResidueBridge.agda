@@ -12,7 +12,7 @@
 --
 -- This file exhibits the V₄ residue as a genuine DivStr V₄ (recon = the V₄
 -- group multiplication; z = e, the no-residue identity), giving the REAL
--- reconciliation law `a ≡ residue · b · rem` as a Wedge — upgrading
+-- reconciliation law `a ≡ residue ·₄ b ·₄ rem` as a Wedge — upgrading
 -- ResidueCompensation's currently-trivial CompensationSoundness stub
 -- (v4-act σ b ≡ v4-act σ b, refl) to the actual wedge equation. Then both
 -- this and OrientationRigResidue.divᴸ are visibly DivStr instances: the
@@ -28,9 +28,8 @@
 
 module Substrate.WitnessTower.ResidueBridge where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
-open import Substrate.Groups.V4.Bijection using (V₄; e)
-open import Substrate.Groups.V4.Operations using (_·_)
+open import Substrate.Groups.V4.Bijection.V4
+open import Substrate.Groups.V4.Operations using (_·₄_)
 open import Substrate.Groups.V4.Axioms.Assoc using (·-assoc)
 open import Substrate.Groups.V4.Axioms.EpsilonLeft using (ε-left)
 open import Substrate.Groups.V4.Axioms.EpsilonRight using (ε-right)
@@ -38,30 +37,34 @@ open import Substrate.Groups.V4.Axioms.EpsilonRight using (ε-right)
 open import Substrate.Algebra.Wedge using (DivStr; Wedge)
 
 ------------------------------------------------------------------------
--- (V₄ leg) The V₄ residue as a DivStr: recon q b r = q · b · r, z = e.
+-- (V₄ leg) The V₄ residue as a DivStr: recon q b r = q ·₄ b ·₄ r, z = e.
 -- This is the "residue = compensating group element" of
 -- Category.ResidueCompensation, packaged as the generic wedge shape.
 ------------------------------------------------------------------------
 
 open import Substrate.WitnessTower.Wedge.Graded using (tower-graded)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 v4-div : DivStr V₄
 v4-div = record
   { z     = e
-  ; recon = λ q b r → (q · b) · r
+  ; recon = λ q b r → (q ·₄ b) ·₄ r
   }
 
 ------------------------------------------------------------------------
 -- The REAL reconciliation law as a Wedge (not the trivial soundness stub):
--- given a residue σ with a ≡ σ · b (match reconstructed from growth by the
+-- given a residue σ with a ≡ σ ·₄ b (match reconstructed from growth by the
 -- compensating σ), that IS a Wedge v4-div a b with quot = σ, rem = e.
 ------------------------------------------------------------------------
 
 residue-wedge :
-  (a b σ : V₄) → a ≡ (σ · b) → Wedge v4-div a b
+  (a b σ : V₄) → a ≡ (σ ·₄ b) → Wedge v4-div a b
 residue-wedge a b σ eq = record
   { quot     = σ
   ; rem      = e
-  ; wedge-eq = trans eq (sym (ε-right (σ · b)))
+  ; wedge-eq = trans eq (sym (ε-right (σ ·₄ b)))
   }
 
 -- The converse read-off: a Wedge over v4-div with rem = e recovers the
@@ -69,11 +72,11 @@ residue-wedge a b σ eq = record
 -- the same shape as S4-Iso.extract-s and OrientationRigResidue.)
 wedge-residue :
   (a b : V₄) (w : Wedge v4-div a b) → Wedge.rem w ≡ e →
-  a ≡ (Wedge.quot w · b)
+  a ≡ (Wedge.quot w ·₄ b)
 wedge-residue a b w rem-e =
   trans (Wedge.wedge-eq w)
-        (trans (cong (λ r → (Wedge.quot w · b) · r) rem-e)
-               (ε-right (Wedge.quot w · b)))
+        (trans (cong (λ r → (Wedge.quot w ·₄ b) ·₄ r) rem-e)
+               (ε-right (Wedge.quot w ·₄ b)))
 
 ------------------------------------------------------------------------
 -- ⟡residue-graded-honest — the HONEST flat/graded relation, mirroring

@@ -17,13 +17,16 @@
 
 module Substrate.Algebra.R.Trace.SKIGradedFlatAllegory where
 
-open import Substrate.Foundation.Eq  using (_≡_; refl)
 open import Substrate.Foundation.Iff using (_⇔_; ⇔-refl)
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _≤_; z≤n; s≤s; _<_)
-open import Substrate.Category.Allegory.Refinement
-  using (_⊑ᶠ_; ⊑ᶠ-refl; ⊑ᶠ-trans; Refinement; iterate; chain)
-open import Substrate.Algebra.R.Trace.SKIFaithfulRb using (Gen; gI; gK; gS; arity)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Category.Allegory.Refinement.Chain
+open import Substrate.Category.Allegory.Refinement.Iterate
+open import Substrate.Category.Allegory.Refinement.Refinement
+open import Substrate.Category.Allegory.Refinement.SqsubF
+open import Substrate.Algebra.R.Trace.SKIFaithfulRb.Gen
+open import Substrate.Algebra.R.Trace.SKIFaithfulRb.Arity
 open import Substrate.Category.Allegory.Refinement.Present
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- ① THE FIBER FAMILY: over arity-grades (ℕ), a family assigns to each grade n the
@@ -85,7 +88,7 @@ stage0-flat k = ⇔-refl
 Φ-shifts : (P : ℕ → Set) (n : ℕ) → Φ-arity P (suc n) ⇔ P n
 Φ-shifts P n = ⇔-refl
 -- the arity of each generator is the Φ-chain depth at which it settles (I:1/K:2/S:3).
-arity-is-chain-depth : (g : Gen) → arity g ≡ arity g
+arity-is-chain-depth : (g : Gen-SKI) → arity g ≡ arity g
 arity-is-chain-depth g = refl
 
 ------------------------------------------------------------------------

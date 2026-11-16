@@ -12,13 +12,15 @@
 
 module Substrate.Linguistic.Compose where
 
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; trans; cong)
 
 open import Substrate.Category.FreeOverBasis using (LanguageWitness; η; structure)
 open import Substrate.Linguistic.Morphism
   using (LanguageMorphism; mkLangMor;
          basis-map; carrier-map; η-coherence)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Category.UniversalProperty.Morphism
 
 ------------------------------------------------------------------------
 -- 1. Composition operator.

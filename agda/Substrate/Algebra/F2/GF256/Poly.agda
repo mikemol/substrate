@@ -14,14 +14,14 @@
 
 module Substrate.Algebra.F2.GF256.Poly where
 
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Eq using (_≡_)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Algebra.F2.Vector using (Vector)
 open import Substrate.Algebra.F2.GF256.CommRing using (GF256-CommRing)
 import Substrate.Algebra.Polynomial.Graded.FromCommRing as F
 
 -- Poly n = Vec (Vector 8) n ; _*P_, nth-*P, *P-distribʳ/ˡ, *P-scalarˡ/ʳ, … all at GF(2⁸).
 open F.Over GF256-CommRing public
+open import Substrate.Foundation.Eq
 
 -- explicit faithfulness witnesses (the bridge + a bilinear + a scalar law, at GF(2⁸)):
 _ : (p q : Poly 4) (k : ℕ) → nth (p *P q) k ≡ convCoeff p q k

@@ -28,17 +28,22 @@
 
 module Substrate.WitnessTower.FirstAppearance where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_) renaming (_≟_ to _≟ℕ_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Op
+open import Substrate.Foundation.Nat.Dec
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; lookup; tabulate)
 open import Substrate.Foundation.List using (List; []; _∷_)
-open import Substrate.Foundation.Bool using (Bool; true; false; _∧_; not; if_then_else_)
-open import Substrate.Foundation.Negation using (Dec; yes; no)
-open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Bool.And
+open import Substrate.Foundation.Bool.Bool
+open import Substrate.Foundation.Bool.IfThenElse
+open import Substrate.Foundation.Bool.Not
+open import Substrate.Foundation.Negation.Dec
 
 open import Substrate.WitnessTower.Enumerate
   using (Perm; perms; mapL; lengthL; all-positions)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 0. Local glue: Dec→Bool, List filter / ℕ-sum.
@@ -54,7 +59,7 @@ filterL p (x ∷ xs) = if p x then x ∷ filterL p xs else filterL p xs
 
 sumL : List ℕ → ℕ
 sumL []       = zero
-sumL (x ∷ xs) = x + sumL xs
+sumL (x ∷ xs) = x ℕ+ sumL xs
 
 ------------------------------------------------------------------------
 -- 1. Permutation arithmetic on the image-vector rep.
@@ -72,7 +77,7 @@ compose σ τ = tabulate (λ i → lookup σ (lookup τ i))
 -- is not itself square, so this is generic in both indices).
 _≡ᵇ_ : {m n : ℕ} → Vec (Fin m) n → Vec (Fin m) n → Bool
 []      ≡ᵇ []      = true
-(x ∷ σ) ≡ᵇ (y ∷ τ) = ⌊ x ≟ y ⌋ ∧ (σ ≡ᵇ τ)
+(x ∷ σ) ≡ᵇ (y ∷ τ) = ⌊ x ≟ᶠ y ⌋ ∧ (σ ≡ᵇ τ)
 
 ------------------------------------------------------------------------
 -- 2. Cycle-type signals.
@@ -81,7 +86,7 @@ _≡ᵇ_ : {m n : ℕ} → Vec (Fin m) n → Vec (Fin m) n → Bool
 -- number of points actually moved by σ (#{ i : σ i ≠ i }).
 moved-count : {n : ℕ} → Perm n → ℕ
 moved-count {n} σ =
-  sumL (mapL (λ i → if ⌊ lookup σ i ≟ i ⌋ then zero else suc zero)
+  sumL (mapL (λ i → if ⌊ lookup σ i ≟ᶠ i ⌋ then zero else suc zero)
              (all-positions n))
 
 -- σ is an involution: σ∘σ = id and σ ≠ id.
@@ -92,7 +97,19 @@ is-involution {n} σ =
 -- σ is an involution moving exactly `m` points.
 is-involution-moving : {n : ℕ} → ℕ → Perm n → Bool
 is-involution-moving {n} m σ =
-  is-involution σ ∧ ⌊ moved-count σ ≟ℕ m ⌋
+  -- ⚑ `_≟ℕ_` WAS ONLY EVER A LOCAL ALIAS.  At @771283c8~1 this module read
+  -- `open import ...Nat using (…) renaming (_≟_ to _≟ℕ_)`; the ban dissolved the
+  -- renaming and the alias with it, so the spelling names nothing tree-wide.
+  -- Both arguments are ℕ, so this is `Nat.Dec._≟_` — the Fin sites in this file
+  -- are now `_≟ᶠ_` after the source rename, which is what makes them separable.
+  --
+  -- ⚑⚑ AND `rename_at_source` REWROTE THIS SITE TOO, because the file imports
+  -- `Fin.Op` and its precision is per-FILE, not per-OCCURRENCE.  Its docstring
+  -- says so ("a file may import the leaf AND use a same-named definition from
+  -- elsewhere") and reports that class as AMBIGUOUS — but only when a SECOND
+  -- provider is imported.  Here the second provider (`Nat.Dec`) was NOT yet
+  -- imported, so nothing looked ambiguous and every `≟` was rewritten.
+  is-involution σ ∧ ⌊ moved-count σ ≟ m ⌋
 
 ------------------------------------------------------------------------
 -- 3. The census: counts per rung, each a refl over the enumeration.
@@ -140,9 +157,9 @@ census-moved4-4-debut : involutions-moving 4 4 ≡ 3
 census-moved4-4-debut = refl
 
 -- The reconciliation: at rung 4, every involution is a transposition or a
--- double-transposition (6 + 3 = 9); the +3 jump over rung 3's involution
+-- double-transposition (6 ℕ+ 3 = 9); the +3 jump over rung 3's involution
 -- count is EXACTLY the 3 newly-realizable double-transpositions = the
 -- gauge V₄ minus identity (dossier B3).
-census-rung4-split : involutions-moving 4 2 + involutions-moving 4 4
+census-rung4-split : involutions-moving 4 2 ℕ+ involutions-moving 4 4
                    ≡ involutions 4
 census-rung4-split = refl

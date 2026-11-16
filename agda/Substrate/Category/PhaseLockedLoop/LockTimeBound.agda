@@ -10,7 +10,8 @@
 
 module Substrate.Category.PhaseLockedLoop.LockTimeBound where
 
-open import Substrate.Foundation.Nat using (ℕ; _*_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Times
 
 record LockTimeBound : Set where
   field

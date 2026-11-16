@@ -12,13 +12,14 @@
 
 module Substrate.Algebra.Q.Linear where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Function using (id; _∘_)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; cong; trans)
 
-open import Substrate.Algebra.Q using (ℚ)
+open import Substrate.Algebra.Q.Rat
 open import Substrate.Algebra.Q.Vector using (Vector; _+ℚⱽ_; _*ℚₛ_)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Trans
 
 ------------------------------------------------------------------------
 -- 1. ℚ-linear map: record bundling apply + linearity proofs.

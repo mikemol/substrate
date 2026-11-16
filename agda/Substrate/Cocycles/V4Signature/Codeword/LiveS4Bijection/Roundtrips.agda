@@ -15,10 +15,9 @@
 
 module Substrate.Cocycles.V4Signature.Codeword.LiveS4Bijection.Roundtrips where
 
-open import Substrate.Foundation.Bool using (Bool; true; false)
-open import Substrate.Foundation.Empty using (⊥-elim)
+open import Substrate.Foundation.Bool.Bool
+open import Substrate.Foundation.Empty.BotElim
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁)
-open import Substrate.Foundation.Eq using (_≡_; refl; trans; cong)
 
 open import Substrate.Axes.Axis using (Axis; D; C; S; W)
 open import Substrate.Groups.Symmetric.Permutation Axis
@@ -33,8 +32,8 @@ open import Substrate.Cocycles.V4Signature.Codeword
   using (Live)
 open import Substrate.Cocycles.V4Signature.Codeword.Live
   using (Selector; sel-fft; sel-tft; sel-ftf; sel-ttf; sel-ftt; sel-ttt; live-to-axis-selector; axis-selector-to-live)
-open import Substrate.Cocycles.V4Signature.Codeword.LiveS4
-  using (stab-from-selector; live-to-permutation)
+open import Substrate.Cocycles.V4Signature.Codeword.LiveS4.LiveToPermutation
+open import Substrate.Cocycles.V4Signature.Codeword.LiveS4.StabFromSelector
 open import Substrate.Cocycles.V4Signature.Codeword.LiveS4Iso
   using (classify-CS-to-selector; selector-from-stab)
 
@@ -49,6 +48,10 @@ open import Substrate.Cocycles.V4Signature.S4Iso.Anchor
 open import Substrate.Cocycles.V4Signature.S4Iso.Classify
 open import Substrate.Groups.SemidirectProduct.Stab
 open import Substrate.Cocycles.V4Signature.S4Iso.Roundtrips
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Algebra.Wedge.BinMul.Sel
 axis-selector-roundtrip :
   (xy : Axis × Selector) →
   live-to-axis-selector (axis-selector-to-live xy) ≡ xy

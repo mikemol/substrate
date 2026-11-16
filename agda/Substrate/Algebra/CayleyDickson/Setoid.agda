@@ -13,11 +13,12 @@
 
 module Substrate.Algebra.CayleyDickson.Setoid where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Eq using (_≡_; refl; cong; cong₂; trans; sym; subst)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Product using (_,_; _×_)
-open import Substrate.Algebra.Q using (ℚ; num; mkℚ)
-open import Substrate.Algebra.Z using (ℤ; +_; -ℤ_; -ℤ-involutive)
+open import Substrate.Algebra.Q.Rat
+open import Substrate.Algebra.Z.Int
+open import Substrate.Algebra.Z.Int2
+open import Substrate.Algebra.Z.IntInvolutive
 open import Substrate.Algebra.Z.Add using (_+ℤ_)
 open import Substrate.Algebra.Z.Mul using (_*ℤ_)
 open import Substrate.Algebra.Z.Properties.Mul using (neg-*-left)
@@ -29,6 +30,12 @@ open import Substrate.Algebra.Q.Properties.Field
 open import Substrate.Algebra.CayleyDickson.CommuteEdge using (-ℚ-cong)
 open import Substrate.Algebra.CayleyDickson
   using (Carrier; ≈#; add; sub; mul; neg; conj; zero#; one#)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Subst
 
 ------------------------------------------------------------------------
 -- 1. ≈# is an equivalence (componentwise lift of ℚ's setoid).

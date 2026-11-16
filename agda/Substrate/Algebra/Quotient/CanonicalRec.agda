@@ -58,10 +58,20 @@
 
 module Substrate.Algebra.Quotient.CanonicalRec where
 
-open import Substrate.Foundation.Eq using (_≡_; sym; trans; cong)
-open import Substrate.Algebra.Quotient
+open import Substrate.Algebra.Quotient.ApproxcanonicalEq
+open import Substrate.Algebra.Quotient.Canonical
+open import Substrate.Algebra.Quotient.CanonicalEqApprox
+open import Substrate.Algebra.Quotient.IdemCanonical
+open import Substrate.Algebra.Quotient.KerQuotient
+open import Substrate.Algebra.Quotient.KerRel
+open import Substrate.Algebra.Quotient.Quotient
+open import Substrate.Algebra.Quotient.SplitCanonical
 open import Substrate.Category.UniversalProperty.Quotient
   using (Respects; QuotientUP)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 module _ {A : Set} {_≈_ : A → A → Set} {Q : Quotient A _≈_}
          (C : Canonical Q) where

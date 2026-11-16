@@ -43,27 +43,37 @@
 
 module Substrate.Algebra.Wedge.Contextuality where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Vec using (Vec; []; _∷_)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂)
-open import Substrate.Foundation.Negation using (¬_)
+open import Substrate.Foundation.Negation.Not
 open import Substrate.Foundation.Product using (Σ; _,_; _×_)
-open import Substrate.Algebra.F2
-  using (F₂; 𝟘; 𝟙; _+_; _·_; 𝟘≢𝟙; +-assoc; +-comm; ·-distribʳ-+)
+open import Substrate.Algebra.F2.DistribRPlus
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.Op
+open import Substrate.Algebra.F2.PlusAssoc
+open import Substrate.Algebra.F2.PlusComm
+open import Substrate.Algebra.F2.PlusF
+open import Substrate.Algebra.F2.ZeroNeqOne
 open import Substrate.Algebra.F2.Vector using (Vector; 𝟎ⱽ; _+ⱽ_)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.Algebra.Z.Int
 
 ------------------------------------------------------------------------
 -- 0. A 4-term commutative-monoid rearrangement, reused below.
 ------------------------------------------------------------------------
 
-+-middle4 : (a b c d : F₂) → ((a + b) + (c + d)) ≡ ((a + c) + (b + d))
++-middle4 : (a b c d : F₂) → ((a +F b) +F (c +F d)) ≡ ((a +F c) +F (b +F d))
 +-middle4 a b c d =
-  trans (+-assoc a b (c + d))
+  trans (+-assoc a b (c +F d))
         (trans (cong (a +_)
                   (trans (sym (+-assoc b c d))
                          (trans (cong (_+ d) (+-comm b c))
                                 (+-assoc c b d))))
-               (sym (+-assoc a c (b + d))))
+               (sym (+-assoc a c (b +F d))))
 
 ------------------------------------------------------------------------
 -- 1. The F₂ inner product ⟨lhs, s⟩ — the "evaluate this parity at the
@@ -72,14 +82,14 @@ open import Substrate.Algebra.F2.Vector using (Vector; 𝟎ⱽ; _+ⱽ_)
 
 ⟨_,_⟩ : ∀ {n} → Vector n → Vector n → F₂
 ⟨ []     , []     ⟩ = 𝟘
-⟨ x ∷ xs , y ∷ ys ⟩ = (x · y) + ⟨ xs , ys ⟩
+⟨ x ∷ xs , y ∷ ys ⟩ = (x · y) +F ⟨ xs , ys ⟩
 
 -- ADDITIVITY in the first argument: this is what makes XOR-of-contexts a
 -- well-defined operation on parities — the connecting map's linearity.
-inner-add : ∀ {n} (u v s : Vector n) → ⟨ u +ⱽ v , s ⟩ ≡ ⟨ u , s ⟩ + ⟨ v , s ⟩
+inner-add : ∀ {n} (u v s : Vector n) → ⟨ u +ⱽ v , s ⟩ ≡ ⟨ u , s ⟩ +F ⟨ v , s ⟩
 inner-add []         []         []         = refl
 inner-add (ux ∷ us) (vx ∷ vs) (sx ∷ ss) =
-  trans (cong₂ _+_ (·-distribʳ-+ sx ux vx) (inner-add us vs ss))
+  trans (cong₂ _+F_ (·-distribʳ-+ sx ux vx) (inner-add us vs ss))
         (+-middle4 (ux · sx) (vx · sx) ⟨ us , ss ⟩ ⟨ vs , ss ⟩)
 
 -- The empty support pairs to 𝟘 against any assignment.
@@ -105,14 +115,14 @@ satisfies s c = ⟨ lhs c , s ⟩ ≡ rhs c
 -- THE CONNECTING MAP: XOR two contexts (supports and parities both). This is
 -- the wedge read as the connecting homomorphism (primer §5).
 _⊕ᶜ_ : ∀ {n} → Constraint n → Constraint n → Constraint n
-c₁ ⊕ᶜ c₂ = con (lhs c₁ +ⱽ lhs c₂) (rhs c₁ + rhs c₂)
+c₁ ⊕ᶜ c₂ = con (lhs c₁ +ⱽ lhs c₂) (rhs c₁ +F rhs c₂)
 
 -- and it is sound on satisfaction: a section of both is a section of the XOR.
 -- (The cocycle composes; this is the retained operation we carry.)
 ⊕ᶜ-satisfies : ∀ {n} {s : Vector n} (c₁ c₂ : Constraint n) →
                satisfies s c₁ → satisfies s c₂ → satisfies s (c₁ ⊕ᶜ c₂)
 ⊕ᶜ-satisfies {s = s} c₁ c₂ e₁ e₂ =
-  trans (inner-add (lhs c₁) (lhs c₂) s) (cong₂ _+_ e₁ e₂)
+  trans (inner-add (lhs c₁) (lhs c₂) s) (cong₂ _+F_ e₁ e₂)
 
 ------------------------------------------------------------------------
 -- 3. THE OBSTRUCTION. The constraint (empty support, odd parity) — "0 = 1" —
@@ -125,7 +135,7 @@ zero-one-unsat s eq = 𝟘≢𝟙 (trans (sym (inner-zero s)) eq)
 ------------------------------------------------------------------------
 -- 4. THE MINIMAL CONTEXTUAL MODEL — the parity triangle (the simplest AvN /
 --    GHZ-family cohomologically-contextual model):
---      x_a + x_b = 0      x_b + x_c = 0      x_a + x_c = 1
+--      x_a +F x_b = 0      x_b +F x_c = 0      x_a +F x_c = 1
 --    Each context is satisfiable; no global assignment satisfies all three.
 ------------------------------------------------------------------------
 

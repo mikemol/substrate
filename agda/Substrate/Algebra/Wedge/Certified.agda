@@ -29,10 +29,13 @@
 
 module Substrate.Algebra.Wedge.Certified where
 
-open import Substrate.Foundation.Nat using (ℕ; _<_)
+open import Substrate.Foundation.Nat.Lt
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Algebra.Wedge using (DivStr; rem; fromℕ-Wedge; ℕ-div)
-  renaming (Wedge to Wedge⟦478f66a6⟧)
+  renaming (Wedge to Wedge)
 import Substrate.Algebra.Nat.GCD.Wedge as N
+open import Substrate.Algebra.Wedge
+open import Substrate.Realizability.Charter
 
 ------------------------------------------------------------------------
 -- 1. The certified wedge: a loose wedge whose residue's measure is smaller.
@@ -40,7 +43,7 @@ import Substrate.Algebra.Nat.GCD.Wedge as N
 
 record CertifiedWedge {C : Set} (D : DivStr C) (measure : C → ℕ) (a b : C) : Set where
   field
-    wedge : Wedge⟦478f66a6⟧ D a b
+    wedge : Wedge D a b
     small : measure (rem wedge) < measure b
 
 open CertifiedWedge public
@@ -60,5 +63,8 @@ residue-decreases w = small w
 idℕ : ℕ → ℕ
 idℕ n = n
 
-fromℕ-cert : {a b : ℕ} → N.Wedge a b → CertifiedWedge ℕ-div idℕ a b
+-- ⚑ Ⓝ6: `N.Wedge` → `N.Wedge-GCD` (⟡collision-sweep). Held back as AMBIGUOUS by
+-- `rename_at_source` because this file names both homes — the GCD wedge (`N.`)
+-- and `Substrate.Algebra.Wedge`'s own.
+fromℕ-cert : {a b : ℕ} → N.Wedge-GCD a b → CertifiedWedge ℕ-div idℕ a b
 fromℕ-cert w = record { wedge = fromℕ-Wedge w ; small = N.r<b w }

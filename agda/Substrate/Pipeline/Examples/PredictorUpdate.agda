@@ -21,6 +21,8 @@ open import Substrate.Pipeline.Brick.Record using (Brick)
 open import Substrate.Pipeline.Brick.Unit using (⊤; tt)
 open import Substrate.Pipeline.Brick.Type using (BrickType)
 open import Substrate.Foundation.Product using (_,_)
+open import Substrate.Category.ConjugationCoalgebra.WithCharacters
+open import Substrate.Probability.ConjugateMonad.Sites.DirichletMultinomial
 module Substrate.Pipeline.Examples.PredictorUpdate
   (Char   : Set)
   (Counts : Set)

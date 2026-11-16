@@ -10,7 +10,7 @@
 
 module Substrate.Algebra.F2.SymBilinForm.CongruenceAct where
 
-open import Substrate.Algebra.F2.Linear using (Linear; apply)
+open import Substrate.Algebra.F2.Linear.Linear
 open import Substrate.Algebra.F2.Vector using (basis)
 open import Substrate.Algebra.F2.SymBilinForm.BilinForm using (BilinForm)
 open import Substrate.Algebra.F2.SymBilinForm.BilinearFormOf using (bilinear-form-of)

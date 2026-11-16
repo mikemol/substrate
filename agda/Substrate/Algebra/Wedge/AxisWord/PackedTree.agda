@@ -30,12 +30,14 @@
 
 module Substrate.Algebra.Wedge.AxisWord.PackedTree where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _≤_; z≤n; s≤s)
+open import Substrate.Foundation.Nat.Le
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.List using (List; []; _∷_)
-open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.Foundation.Negation using (¬_; Dec; yes; no)
-open import Substrate.Foundation.Empty using (⊥-elim)
+open import Substrate.Foundation.Negation.Dec
+open import Substrate.Foundation.Negation.Not
+open import Substrate.Foundation.Empty.BotElim
 open import Substrate.Algebra.Wedge.AxisWord.PackedNode using (module PackedNode)
+open import Substrate.Foundation.Eq
 
 module PackedTree {A : Set} (_≟A_ : (a b : A) → Dec (a ≡ b)) where
 

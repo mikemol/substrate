@@ -33,11 +33,13 @@
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.Logic.Evidence.ElAtlas.OrbitCloudRung3 where
+open import Substrate.Algebra.Z.Add
 
 open import Substrate.Foundation.Vec using (Vec; _∷_; [])
-open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.Algebra.Z using (ℤ; +_; -ℤ_)
-open import Substrate.Algebra.Z.Arithmetic using (_+ℤ_)
+open import Substrate.Algebra.Z.Int
+open import Substrate.Algebra.Z.Int2
+
+open import Substrate.Foundation.Eq
 
 V3 : Set
 V3 = Vec ℤ 3

@@ -16,14 +16,17 @@
 
 module Substrate.Algebra.Wedge.TraceKleeneColimit where
 
-open import Substrate.Foundation.Eq  using (_≡_; refl; subst; sym)
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Empty using (⊥; ⊥-elim)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Empty.Bot
 open import Substrate.Foundation.Product using (Σ; _,_; _×_; proj₁; proj₂)
-open import Substrate.Foundation.Sum using (_⊎_; inj₁; inj₂)
+open import Substrate.Foundation.Sum.Sum
 open import Substrate.Algebra.Wedge using (DivStr; z; rem; Trace; done; more)
-open import Substrate.Category.Allegory.Refinement using (_⊑ᶠ_; iterate)
+open import Substrate.Category.Allegory.Refinement.Iterate
+open import Substrate.Category.Allegory.Refinement.SqsubF
 open import Substrate.Algebra.Wedge.TraceMuStep using (Idx; Φ-step; step-refinement; TraceF)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Subst
+open import Substrate.Foundation.Eq.Sym
 
 module _ {C : Set} (D : DivStr C) where
 

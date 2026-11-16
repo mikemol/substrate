@@ -8,14 +8,17 @@
 ------------------------------------------------------------------------
 module Substrate.Category.UniversalProperty.ExtrudeCostreamViaTrace where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Product using (_×_; _,_)
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Algebra.R.Trace using (RealTrace; head; tail)
 open import Substrate.Algebra.R.Trace.Unfold using (unfold)
-open import Substrate.Algebra.R.Trace.Bisim using (_~_; head~; tail~; ~-refl; ~-sym; ~-trans)
+open import Substrate.Algebra.R.Trace.Bisim.Op
+open import Substrate.Algebra.R.Trace.Bisim.Refl
+open import Substrate.Algebra.R.Trace.Bisim.Sym
+open import Substrate.Algebra.R.Trace.Bisim.Trans
 open import Substrate.Category.UniversalProperty.ExtrudeIOCostream using (CoIO; emit-head; emit-rest)
-open import Substrate.Category.UniversalProperty.ExtrudeIOCostreamBisim using (_≈ᶜ_; head≈; rest≈)
+open import Substrate.Category.UniversalProperty.ExtrudeIOCostreamBisim.Approx
+open import Substrate.Foundation.Eq
 
 -- CoIO ℕ is a ℕ-headed coalgebra DIRECTLY (no parity encoding — emit-head is already the head):
 coalg : CoIO ℕ → ℕ × CoIO ℕ

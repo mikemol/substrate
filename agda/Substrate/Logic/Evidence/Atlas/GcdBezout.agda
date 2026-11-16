@@ -29,7 +29,7 @@
 
 module Substrate.Logic.Evidence.Atlas.GcdBezout where
 
-open import Substrate.Foundation.Nat     using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Product using (proj₁; proj₂)
 open import Substrate.Algebra.Nat.GCD.ComputeTrace using (compute-trace)
 open import Substrate.Algebra.Z.Bezout using (BezoutℤWitness; bezout-ℤ)

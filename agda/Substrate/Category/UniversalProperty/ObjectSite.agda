@@ -30,15 +30,15 @@
 
 module Substrate.Category.UniversalProperty.ObjectSite where
 
-open import Substrate.Foundation.Nat using (ℕ; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.To
 open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂)
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Category.UniversalProperty.TmDBGodel using (TmDB; var; app)
 open import Substrate.Category.UniversalProperty.ObjectUniverse using (O; C)
 open import Substrate.Category.UniversalProperty.Term using (UPTerm; []; _∷_; _++ᵤ_)
 open import Substrate.Category.UniversalProperty.Category using (UPCategory; UPCategory-canonical)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. The concrete Hom: tower-step GENERATORS.

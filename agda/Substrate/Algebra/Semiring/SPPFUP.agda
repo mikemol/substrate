@@ -27,12 +27,14 @@
 
 module Substrate.Algebra.Semiring.SPPFUP where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; trans; cong₂)
 open import Substrate.Algebra.Magma     using (Magma)
 open import Substrate.Algebra.Semigroup using (magma)
 open import Substrate.Algebra.Monoid    using (semigroup; ε)
 open import Substrate.Algebra.Semiring  using (Semiring; +-monoid; *-monoid)
 open import Substrate.Algebra.Semiring.SPPF using (SPPF; gen; one; _⊗_; _⊕_; inside)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong2
 
 module _ {A G : Set} (S : Semiring A) (v : G → A) where
   private

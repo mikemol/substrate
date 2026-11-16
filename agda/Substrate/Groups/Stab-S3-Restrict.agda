@@ -24,19 +24,14 @@
 
 module Substrate.Groups.Stab-S3-Restrict where
 
-open import Substrate.Foundation.Level using (0ℓ)
-open import Substrate.Foundation.Empty using (⊥; ⊥-elim)
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Empty.BotElim
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂)
-open import Substrate.Foundation.Eq
-  using (_≡_; _≢_; refl; sym; trans; cong)
 
 open import Substrate.Axes.Axis using (Axis; D; C; S; W)
 open import Substrate.Groups.Symmetric.Permutation Axis
-open import Substrate.Groups.Symmetric.Permutation.Compose Axis using (_·_)
 open import Substrate.Groups.Symmetric.Permutation.Inverse Axis using (_⁻¹)
-open import Substrate.Groups.Symmetric.Identity Axis using (ε)
 import Substrate.Groups.SFin.Permutation as SFinP
 open import Substrate.Groups.Stab-S3
   using (Stab; stab-preserves-≢; Stab-inv;
@@ -44,6 +39,11 @@ open import Substrate.Groups.Stab-S3
          non-anchor-to-fin3; non-anchor-fin3-non-anchor;
          fin3-non-anchor-fin3;
          restrict-apply; restrict-invₐ)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Neq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- Proof-irrelevance: non-anchor-to-fin3 doesn't depend on the proof

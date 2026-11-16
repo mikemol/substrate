@@ -23,10 +23,12 @@
 
 {-# OPTIONS --safe --without-K #-}
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Product using (_×_)
+open import Substrate.Category.ConjugationCoalgebra.WithCharacters
+open import Substrate.Category.GeneratorOperad
+open import Substrate.Probability.ConjugateMonad.Sites.DirichletMultinomial
 
-open import Substrate.Pipeline.Examples.RotateCrumb
 module Substrate.Pipeline.Examples
   (Char      : Set)
   (Counts    : Set)
@@ -40,9 +42,4 @@ module Substrate.Pipeline.Examples
      Window → (Predictor × Cache) → (RotIdx × (Predictor × Cache)))
   where
 
-open import Substrate.Pipeline.Examples.PredictorUpdate Char Counts update-counts
-open import Substrate.Pipeline.Examples.PredictorSurprise Char Counts surprise-bits
-open import Substrate.Pipeline.Examples.ChooseRotation Window RotIdx Predictor Cache
-                                                       choose-rotation-impl
-  public
 

@@ -16,17 +16,21 @@
 
 module Substrate.FUSep.FUSepConvEtaWitness where
 
-open import Substrate.Foundation.Eq    using (_≡_; refl)
-open import Substrate.Foundation.Empty using (⊥)
-open import Substrate.FUSep.FUSepQCyc  using (Stream; hd; tl; _~ₛ_; hd~; tl~; ~-refl)
+open import Substrate.Foundation.Empty.Bot
+-- ⚑ `FUSepQCyc` dissolved; the seven names split across three leaves. `tl`/`tl~`
+-- are record fields on shared lines, invisible to `def_index` — see FUSepQLambek.
+open import Substrate.FUSep.FUSepQCyc.Stream
+open import Substrate.FUSep.FUSepQCyc.Op
+open import Substrate.FUSep.FUSepQCyc.Refl
+open import Substrate.Foundation.Eq
 
 -- ── the concrete SKI-shaped calculus (M opaque, B, I, application) ──
-data Tm : Set where      -- ⟦shape:533ef80d M B I,_·_⟧
-  M B I : Tm
-  _·_   : Tm → Tm → Tm
+data Tm-ConvEta : Set where      -- ⟦shape:533ef80d M B I,_·_⟧
+  M B I : Tm-ConvEta
+  _·_   : Tm-ConvEta → Tm-ConvEta → Tm-ConvEta
 infixl 7 _·_
 
-data _⟶_ : Tm → Tm → Set where
+data _⟶_ : Tm-ConvEta → Tm-ConvEta → Set where
   redI : ∀ {x}      → (I · x) ⟶ x
   redB : ∀ {x y z}  → (B · x · y · z) ⟶ (x · (y · z))
   appL : ∀ {f g a}  → f ⟶ g → (f · a) ⟶ (g · a)
@@ -36,11 +40,11 @@ data _⟶_ : Tm → Tm → Set where
 -- local re-derivation (done / _◅_) of the generic RT-closure; instantiate the center
 -- (Foundation.RewriteConfluence at _⟶_) instead, so `_⟶*_` here IS the Foundation Star.
 open import Substrate.Foundation.RewriteConfluence _⟶_
-  using (done; _◅_) renaming (_⇒*_ to _⟶*_)
+  using (done; _◅_)
 
 -- THE ARITY GAP, concrete: (B·M·I)·p ⟶* M·p. The stuck 2-arg B-value RESOLVES on
 -- the 3rd argument (redB), then the residual I cancels (redI). Two real steps.
-bmi-reduces : ∀ (p : Tm) → ((B · M · I) · p) ⟶* (M · p)
+bmi-reduces : ∀ (p : Tm-ConvEta) → ((B · M · I) · p) ⟶* (M · p)
 bmi-reduces p = redB ◅ (appR redI ◅ done)
 
 -- ── the observation: the spine head (leftmost atom of the value) ──
@@ -48,7 +52,7 @@ data Head : Set where hM hB hI : Head
 hB≢hM : hB ≡ hM → ⊥
 hB≢hM ()
 
-spine : Tm → Head
+spine : Tm-ConvEta → Head
 spine M       = hM
 spine B       = hB
 spine I       = hI
@@ -57,7 +61,7 @@ spine (f · _) = spine f
 -- the bare observations, PROVEN: B·M·I is a stuck B-value (hB); M and M·p are M-headed.
 obs-bmi : spine (B · M · I) ≡ hB
 obs-bmi = refl
-obs-Mp  : ∀ {p : Tm} → spine (M · p) ≡ hM
+obs-Mp  : ∀ {p : Tm-ConvEta} → spine (M · p) ≡ hM
 obs-Mp  = refl
 
 -- ── the observation streams (values grounded by spine + bmi-reduces) ──
@@ -96,7 +100,7 @@ eta-not-bare eq = hB≢hM eq
 -- This links the stream values to the ACTUAL reduction (not just asserts them).
 ------------------------------------------------------------------------
 -- the applied head of B M I (via the arity-gap reduction) is hM, = M's applied head.
-applied-agree : ∀ (p : Tm) → spine (M · p) ≡ spine (M · p)
+applied-agree : ∀ (p : Tm-ConvEta) → spine (M · p) ≡ spine (M · p)
 applied-agree p = refl   -- both sides reduce (B·M·I)·p ⟶* M·p (bmi-reduces) to M·p
 
 -- and the shared tail's head is exactly that applied observation: hd (tl bmi-stream)

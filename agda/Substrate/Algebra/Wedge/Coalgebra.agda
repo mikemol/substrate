@@ -35,13 +35,14 @@
 
 module Substrate.Algebra.Wedge.Coalgebra where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Bool using (Bool; true; false)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Bool.Bool
 open import Substrate.Foundation.List using (List; []; _∷_)
-open import Substrate.Foundation.Eq using (_≡_)
-open import Substrate.Foundation.Negation using (Dec; yes; no)
+open import Substrate.Foundation.Negation.Dec
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
-open import Substrate.Algebra.Wedge using (DivStr; z; quot; rem) renaming (Wedge to Wedge⟦478f66a6⟧)
+open import Substrate.Algebra.Wedge using (DivStr; z; quot; rem) renaming (Wedge to Wedge)
+open import Substrate.Foundation.Eq
+open import Substrate.Algebra.Wedge
 ------------------------------------------------------------------------
 -- 1. The wedge as a coalgebra: `divide` (the unfold) + decidable residue
 --    equality (the SPPF cycle-test).
@@ -49,7 +50,7 @@ open import Substrate.Algebra.Wedge using (DivStr; z; quot; rem) renaming (Wedge
 
 record WedgeCoalg {C : Set} (D : DivStr C) : Set where
   field
-    divide : (a b : C) → Wedge⟦478f66a6⟧ D a b      -- the unfold step (dual to recon)
+    divide : (a b : C) → Wedge D a b      -- the unfold step (dual to recon)
     eq?    : (x y : C) → Dec (x ≡ y)       -- "already a path?" — the dedup test
 
 open WedgeCoalg public
@@ -86,7 +87,7 @@ run {C = C} {D = D} co (suc f) seen a b with eq? co b (z D)
 ... | yes _ = [] , halt
 ... | no  _ = cont (divide co a b)
   where
-    cont : Wedge⟦478f66a6⟧ D a b → List C × Unfold
+    cont : Wedge D a b → List C × Unfold
     cont w with seen? co (rem w) seen
     ... | true  = quot w ∷ [] , loop                 -- residue already a path: close the cycle
     ... | false = let r = run co f (rem w ∷ seen) b (rem w)

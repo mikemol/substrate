@@ -12,14 +12,18 @@
 
 module Substrate.Algebra.GL3F2.MultiRouteEquivariance.SingerGL where
 
-open import Substrate.Foundation.Eq using (_≡_; sym; trans; cong)
 open import Substrate.Algebra.F2.Vector using (Vector)
-open import Substrate.Algebra.F2.Linear using (apply)
+open import Substrate.Algebra.F2.Linear.Linear
 open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Order using (iterate-apply-as-L-iterate)
 open import Substrate.Algebra.GL3F2 using (GL3F2; mkGL3F2)
 open import Substrate.Algebra.GL3F2.GaugeGenerators using (singer-Linear)
 open import Substrate.Algebra.GL3F2.SingerOrder.HasOrder using (HasOrder-singer)
 open import Substrate.Algebra.GL3F2.MultiRouteEquivariance.SingerInv using (singer-inv)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Algebra.F2.FanoPlane
 
 singer-GL : GL3F2
 singer-GL = mkGL3F2 singer-Linear singer-inv left-witness right-witness

@@ -19,10 +19,14 @@
 module Substrate.Logic.Evidence.SWP where
 
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁)
-open import Substrate.Foundation.Eq      using (_≡_; refl; cong₂)
 open import Substrate.Algebra.Semiring.SPPF using (SPPF; gen; one; _⊗_; _⊕_)
 open import Substrate.Logic.Evidence.DualRail using (EvCarrier)
 import Substrate.Logic.Evidence.DualRail as DR
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.Logic.Evidence.Verdict
+open import Substrate.Algebra.CayleyDickson
+open import Substrate.Algebra.Polynomial.Graded.Mod
 
 module _ {C : Set} (add mul : C → C → C) (oneC : C) where
   open DR.Connectives add mul using (_⊗E_; _⊕E_)

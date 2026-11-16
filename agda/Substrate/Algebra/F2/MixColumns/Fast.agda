@@ -16,6 +16,7 @@ module Substrate.Algebra.F2.MixColumns.Fast where
 open import Substrate.Foundation.Vec using (Vec; []; _∷_)
 open import Substrate.Algebra.F2.Vector using (Vector; _+ⱽ_)
 open import Substrate.Algebra.F2.GF256.XtimeTable using (xtime-tab)
+open import Substrate.FUSep.FUSepQHexagon.Private
 
 -- the cheap forward mix: same column outputs, computed via xtime-tab (a lookup) ⊕.
 -- grouping matches `dot4 _ _ _ _` = (slot₀ ⊕ slot₁) ⊕ (slot₂ ⊕ slot₃).

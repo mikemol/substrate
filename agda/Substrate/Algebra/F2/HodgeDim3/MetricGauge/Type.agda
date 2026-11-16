@@ -16,7 +16,7 @@ module Substrate.Algebra.F2.HodgeDim3.MetricGauge.Type where
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Literals using (₁; ₂; ₃; ₄; ₅)
 open import Substrate.Foundation.Vec using (lookup)
-open import Substrate.Algebra.F2     using (F₂)
+open import Substrate.Algebra.F2.F2
 open import Substrate.Algebra.F2.Vector using (Vector)
 
 SymBilinForm-3 : Set

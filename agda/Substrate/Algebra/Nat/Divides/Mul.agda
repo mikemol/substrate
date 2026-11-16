@@ -10,10 +10,11 @@
 
 module Substrate.Algebra.Nat.Divides.Mul where
 
-open import Substrate.Foundation.Nat using (ℕ; _*_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Times
 open import Substrate.Foundation.Nat.Properties.Mul using (*-comm)
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Algebra.Nat.Divides.Type using (_∣_; divides)
+open import Substrate.Foundation.Eq
 
 m∣m*n : ∀ {m} n → m ∣ m * n
 m∣m*n {m} n = divides n (*-comm m n)

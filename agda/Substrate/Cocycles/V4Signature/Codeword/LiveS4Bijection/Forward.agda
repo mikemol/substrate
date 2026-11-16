@@ -22,7 +22,6 @@
 
 module Substrate.Cocycles.V4Signature.Codeword.LiveS4Bijection.Forward where
 
-open import Substrate.Foundation.Eq using (_≡_; sym; trans; cong)
 
 open import Substrate.Axes.Axis
 open import Substrate.Axes.ActAxis using (act-axis)
@@ -32,18 +31,33 @@ open import Substrate.Groups.Symmetric.Permutation.Compose Axis using (_·_)
 open import Substrate.Groups.V4-Embedding using (embed)
 open import Substrate.Groups.SemidirectProduct
   using (v-of-axis; v-for; s-for; s-for-fixes-anchor; factorisation)
-open import Substrate.Cocycles.V4Signature.Codeword.LiveS4
-  using (stab-from-selector; live-to-permutation)
+open import Substrate.Cocycles.V4Signature.Codeword.LiveS4.LiveToPermutation
+open import Substrate.Cocycles.V4Signature.Codeword.LiveS4.StabFromSelector
 open import Substrate.Cocycles.V4Signature.Codeword.LiveS4Iso
   using (axis-of-v; v-of-axis-axis-of-v-id;
          selector-from-stab; permutation-to-live)
 
 open import Substrate.Cocycles.V4Signature.Codeword.LiveS4Bijection.Roundtrips
   using (live-perm-axis-sel; stab-roundtrip)
-open import Substrate.Groups.SemidirectProduct.V
+open import Substrate.Groups.SemidirectProduct.V.NonDSends
+open import Substrate.Groups.SemidirectProduct.V.Private
+open import Substrate.Groups.SemidirectProduct.V.SelfToD
+open import Substrate.Groups.SemidirectProduct.V.VFor
+open import Substrate.Groups.SemidirectProduct.V.VForAnchor
+open import Substrate.Groups.SemidirectProduct.V.VForAnchorSends
+open import Substrate.Groups.SemidirectProduct.V.VOfAxisAnchor
+open import Substrate.Groups.SemidirectProduct.V.VOfAxisAnchorSends
+open import Substrate.Groups.SemidirectProduct.V.VOfAxisUnique
+open import Substrate.Groups.SemidirectProduct.V.VSendsD
 open import Substrate.Groups.SemidirectProduct.S
 open import Substrate.Axes.VOfAxis
 open import Substrate.Groups.SemidirectProduct.Factorisation
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.TokiPona.ModifierBilinear.WithBasisAction.Step1
+open import Substrate.TokiPona.ModifierBilinear.WithBasisAction.Step2
 
 σ-live-σ-roundtrip :
   (σ : Permutation) →

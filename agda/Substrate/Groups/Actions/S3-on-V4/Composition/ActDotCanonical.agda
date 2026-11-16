@@ -16,7 +16,6 @@ import Substrate.Groups.S3 as S₃
 open import Substrate.Foundation.Product using (_,_)
 open import Substrate.Foundation.Fin.Literals using (₁; ₂; ₃; ₄)
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Eq using (_≡_)
 
 open import Substrate.Groups.Actions.S3-on-V4.Dispatch.Act using (act)
 open import Substrate.Groups.Actions.S3-on-V4.Dispatch.ActOnCanonical using (act-on-canonical)
@@ -24,6 +23,7 @@ open import Substrate.Groups.Actions.S3-on-V4.Composition.Block00 using (act-∙
 open import Substrate.Groups.Actions.S3-on-V4.Composition.Block01 using (act-∙-canonical-01)
 open import Substrate.Groups.Actions.S3-on-V4.Composition.Block10 using (act-∙-canonical-10)
 open import Substrate.Groups.Actions.S3-on-V4.Composition.Block11 using (act-∙-canonical-11)
+open import Substrate.Foundation.Eq
 
 act-∙-canonical : ∀ {n₁ h₁ n₂ h₂} →
                   Z₃E.Canonical-ex n₁ → Z₂E.Canonical-ex h₁ →

@@ -4,7 +4,7 @@
 -- THE ADDITIVE OPERATION OF THE LEHMER-CODE RIG — GRADED, NEVER COLLAPSED.
 --
 -- The "semiring of Lehmer codes" (the symmetric rig of finite types) is the graded
--- rig on ⋃ₙ Lehmer(n): + = ⊎ (disjoint union / choice), × = × (product). It is
+-- rig on ⋃ₙ Lehmer(n): ℕ+ = ⊎ (disjoint union / choice), × = × (product). It is
 -- GRADED — a `Σ ℕ LehmerPath` carrier would bundle the whole family into one Set,
 -- which is the grade collapse = Set₁ (see set1-is-grade-collapse). So the operations
 -- are grade-SHIFTING maps, each grade its own Set₀; the rig decategorifies to ℕ
@@ -26,30 +26,31 @@
 
 module Substrate.WitnessTower.Wedge.OrientationSum where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Inject using (inject+)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_)
-open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.WitnessTower.Enumerate using (Perm)
-open import Substrate.WitnessTower.LehmerPath using (LehmerPath; start; _◂_; decode)
+open import Substrate.WitnessTower.LehmerPath.Decode
+open import Substrate.WitnessTower.LehmerPath.LehmerPath
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. THE GRADED SUM. A grade-shifting map LehmerPath m → LehmerPath n →
---    LehmerPath (m + n): replay l₁'s choices on top of l₂, injecting each rank
---    into the larger index. The grade is m + n, in the type — the rig's `+`
+--    LehmerPath (m ℕ+ n): replay l₁'s choices on top of l₂, injecting each rank
+--    into the larger index. The grade is m ℕ+ n, in the type — the rig's `+`
 --    decategorified to ℕ's `+`.
 ------------------------------------------------------------------------
 
 infixr 6 _⊕_
 
-_⊕_ : ∀ {m n} → LehmerPath m → LehmerPath n → LehmerPath (m + n)
+_⊕_ : ∀ {m n} → LehmerPath m → LehmerPath n → LehmerPath (m ℕ+ n)
 start    ⊕ l₂ = l₂
 (l₁ ◂ p) ⊕ l₂ = (l₁ ⊕ l₂) ◂ inject+ _ p
 
 ------------------------------------------------------------------------
 -- 2. THE ADDITIVE UNIT. 0 = start : LehmerPath 0 (the empty ordering), and it is
---    the LEFT unit definitionally: 0 + n = n, start ⊕ l = l.
+--    the LEFT unit definitionally: 0 ℕ+ n = n, start ⊕ l = l.
 ------------------------------------------------------------------------
 
 0# : LehmerPath 0

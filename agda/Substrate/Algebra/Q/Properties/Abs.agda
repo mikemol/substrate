@@ -13,14 +13,19 @@
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.Algebra.Q.Properties.Abs where
+open import Substrate.Algebra.Z.Mul
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _*_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Times
 open import Substrate.Foundation.Nat.Properties.Cancel using (suc-injective)
-open import Substrate.Foundation.Eq using (_≡_; refl; cong)
-open import Substrate.Algebra.Z using (ℤ; +_; -suc_; -ℤ_)
-open import Substrate.Algebra.Z.Arithmetic using (_*ℤ_)
+open import Substrate.Algebra.Z.Int
+open import Substrate.Algebra.Z.Int2
+
 open import Substrate.Algebra.Q.Reduce using (sign-of)
-open import Substrate.Algebra.Q.Reduction using (abs-ℤ)
+open import Substrate.Algebra.Q.Reduction.AbsInt
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Nat.SucInjective
 
 abs-neg-pos : (k : ℕ) → abs-ℤ (-ℤ (+ k)) ≡ k
 abs-neg-pos zero    = refl

@@ -4,7 +4,7 @@
 -- THE REFLECTION REPRESENTATION OF THE FOUR-POINT V₄ — the Coxeter path.
 --
 -- V₄ = ⟨A, B | A² = B² = ε, AB = BA⟩ (Groups.V4-Coxeter). Its elements are
--- reduced WORDS in the two generators (Coxeter.Word = the free monoid on Gen),
+-- reduced WORDS in the two generators (Coxeter.Word = the free monoid on Gen-V4),
 -- and multiplication is word concatenation modulo the relations. So the action
 -- on a wedge's four points is not cased over the four enumerated group elements
 -- — it is defined on the GENERATORS (each a reflection: A ↦ rowSwap, B ↦
@@ -26,11 +26,13 @@
 
 module Substrate.Algebra.Wedge.FourPointReflection where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; cong; sym)
 open import Substrate.Groups.Coxeter.Word using (Word; []; _∷_; _++_)
-open import Substrate.Groups.V4-Coxeter using (Gen; A; B)
+open import Substrate.Groups.V4-Coxeter using (Gen-V4; A; B)
 open import Substrate.Algebra.Wedge.FourPointV4
   using (Square; rowSwap; colSwap; rowSwap-inv; colSwap-inv; row-col-commute)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Sym
 
 module _ {C : Set} where
 
@@ -38,7 +40,7 @@ module _ {C : Set} where
   -- 1. Each generator acts as its reflection (involution) on the four points.
   ------------------------------------------------------------------------
 
-  genAct : Gen → Square {C} → Square {C}
+  genAct : Gen-V4 → Square {C} → Square {C}
   genAct A = rowSwap
   genAct B = colSwap
 
@@ -47,7 +49,7 @@ module _ {C : Set} where
   --    reflections. The empty word is the identity rewrite.
   ------------------------------------------------------------------------
 
-  wordAct : Word Gen → Square {C} → Square {C}
+  wordAct : Word Gen-V4 → Square {C} → Square {C}
   wordAct []      s = s
   wordAct (g ∷ w) s = genAct g (wordAct w s)
 
@@ -56,7 +58,7 @@ module _ {C : Set} where
   --    by induction on the first word — no enumeration of V₄'s elements.
   ------------------------------------------------------------------------
 
-  wordAct-hom : (w₁ w₂ : Word Gen) (s : Square {C}) →
+  wordAct-hom : (w₁ w₂ : Word Gen-V4) (s : Square {C}) →
                 wordAct (w₁ ++ w₂) s ≡ wordAct w₁ (wordAct w₂ s)
   wordAct-hom []       w₂ s = refl
   wordAct-hom (g ∷ w₁) w₂ s = cong (genAct g) (wordAct-hom w₁ w₂ s)

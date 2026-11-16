@@ -12,12 +12,13 @@
 
 module Substrate.Linguistic.Vertical where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; trans)
 
 open import Substrate.Category.FreeOverBasis using (LanguageWitness)
 open import Substrate.Linguistic.Morphism using (LanguageMorphism)
 open import Substrate.Linguistic.Language2Morphism
   using (Language2Morphism; mk2Mor; basis-eq; carrier-eq; id-2mor)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
 
 ------------------------------------------------------------------------
 -- 1. Vertical composition.

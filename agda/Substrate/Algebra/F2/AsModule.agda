@@ -4,7 +4,7 @@
 -- Mod6 of the Module-over-Ring tower per [scratch/m_mod_arc_plan.md].
 --
 -- Packages Substrate.Algebra.F2.Vector as a Module instance over
--- F₂-Ring (M9). Componentwise + / scalar * / 0 / negation discharge
+-- F₂-Ring (M9). Componentwise +F / scalar * / 0 / negation discharge
 -- the 4 module axioms via F₂.Vector's existing pointwise lemmas.
 --
 -- This closes the visible-surface F₂-vector arithmetic gap: the
@@ -15,14 +15,18 @@
 
 module Substrate.Algebra.F2.AsModule where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Vec using (lookup)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; trans; cong; cong₂; cong-trans)
 
-open import Substrate.Algebra.F2
-  using (F₂; 𝟘; 𝟙; _+_; _·_; -_;
-         +-self-inverse; ·-distribʳ-+; ·-assoc)
+open import Substrate.Algebra.F2.Assoc
+open import Substrate.Algebra.F2.DistribRPlus
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.Op
+open import Substrate.Algebra.F2.Op2
+open import Substrate.Algebra.F2.PlusF
+open import Substrate.Algebra.F2.PlusInverseL
+open import Substrate.Algebra.F2.PlusInverseR
+open import Substrate.Algebra.F2.PlusSelfInverse
 open import Substrate.Algebra.F2.Vector
   using (Vector; 𝟎ⱽ; _+ⱽ_; _*ₛ_; -ⱽ_; basis;
          lookup-𝟎; lookup-+ⱽ; lookup-*ₛ; lookup--ⱽ;
@@ -41,6 +45,12 @@ open import Substrate.Algebra.Group using (Group)
 open import Substrate.Algebra.AbelianGroup using (AbelianGroup)
 open import Substrate.Algebra.Module using (Module)
 open import Substrate.Algebra.Module.Free using (FreeCarrier)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.Foundation.Eq.CongTrans
 
 ------------------------------------------------------------------------
 -- 1. The two missing pointwise lemmas for the Module axioms.
@@ -50,14 +60,14 @@ open import Substrate.Algebra.Module.Free using (FreeCarrier)
 -- scalar-mult-assoc.
 ------------------------------------------------------------------------
 
--- (r + s) *ₛ v ≡ (r *ₛ v) +ⱽ (s *ₛ v)
+-- (r +F s) *ₛ v ≡ (r *ₛ v) +ⱽ (s *ₛ v)
 *ₛ-distribʳ-+ : ∀ {n} (r s : F₂) (v : Vector n) →
-                ((r + s) *ₛ v) ≡ ((r *ₛ v) +ⱽ (s *ₛ v))
-*ₛ-distribʳ-+ r s v = ≡-from-lookup ((r + s) *ₛ v) ((r *ₛ v) +ⱽ (s *ₛ v))
+                ((r +F s) *ₛ v) ≡ ((r *ₛ v) +ⱽ (s *ₛ v))
+*ₛ-distribʳ-+ r s v = ≡-from-lookup ((r +F s) *ₛ v) ((r *ₛ v) +ⱽ (s *ₛ v))
   (λ i →
-    trans (lookup-*ₛ (r + s) v i)
+    trans (lookup-*ₛ (r +F s) v i)
     (trans (·-distribʳ-+ (lookup v i) r s)
-    (trans (cong₂ _+_ (sym (lookup-*ₛ r v i)) (sym (lookup-*ₛ s v i)))
+    (trans (cong₂ _+F_ (sym (lookup-*ₛ r v i)) (sym (lookup-*ₛ s v i)))
            (sym (lookup-+ⱽ (r *ₛ v) (s *ₛ v) i)))))
 
 -- (r · s) *ₛ v ≡ r *ₛ (s *ₛ v)
@@ -98,16 +108,21 @@ F₂Vec-+-Monoid = record
 +ⱽ-invˡ v = ≡-from-lookup ((-ⱽ v) +ⱽ v) 𝟎ⱽ
   (λ i →
     trans (lookup-+ⱽ (-ⱽ v) v i)
-    (cong-trans (_+ lookup v i) (lookup--ⱽ v i)
-    (trans (Substrate.Algebra.F2.+-inverseˡ (lookup v i))
+    (cong-trans (_+F lookup v i) (lookup--ⱽ v i)
+    -- ⚑ A FULLY-QUALIFIED REFERENCE TO A RETIRED BARREL — a THIRD surface for one
+    -- decomposition, distinct from a stale import and from a stale section.  It
+    -- names `Substrate.Algebra.F2.…` in the TERM, so no import-line tool sees it
+    -- and `--stale-sections` correctly left it alone.  The owning leaf is
+    -- `F2.PlusInverseL`, which this module did not import.
+    (trans (+-inverseˡ (lookup v i))
            (sym (lookup-𝟎 i)))))
 
 +ⱽ-invʳ : ∀ {n} (v : Vector n) → (v +ⱽ (-ⱽ v)) ≡ 𝟎ⱽ
 +ⱽ-invʳ v = ≡-from-lookup (v +ⱽ (-ⱽ v)) 𝟎ⱽ
   (λ i →
     trans (lookup-+ⱽ v (-ⱽ v) i)
-    (cong-trans (lookup v i +_) (lookup--ⱽ v i)
-    (trans (Substrate.Algebra.F2.+-inverseʳ (lookup v i))
+    (cong-trans (lookup v i +F_) (lookup--ⱽ v i)
+    (trans (+-inverseʳ (lookup v i))
            (sym (lookup-𝟎 i)))))
 
 F₂Vec-+-Group : ∀ {n} → Group (Vector n)

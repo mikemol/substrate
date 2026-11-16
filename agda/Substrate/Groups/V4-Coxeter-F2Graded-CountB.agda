@@ -14,17 +14,16 @@
 
 module Substrate.Groups.V4-Coxeter-F2Graded-CountB where
 
-open import Substrate.Foundation.Eq using (refl)
-open import Substrate.Foundation.Nat using (zero; suc)
+open import Substrate.Foundation.Nat.Nat
 
-open import Substrate.Groups.Coxeter.Word.Count using (count-by; count-by-distrib)
 import Substrate.Groups.V4-Coxeter as V₄
+open import Substrate.Foundation.Eq
+open import Substrate.Groups.Coxeter.Word.Count
 
-sel-B : V₄.Gen → _
+sel-B : V₄.Gen-V4 → _
 sel-B V₄.A = zero
 sel-B V₄.B = suc zero
 
 open import Substrate.Groups.V4-Coxeter-F2GradedFromHomomorphism
   (count-by sel-B) refl (count-by-distrib sel-B)
   public
-  renaming (F₂Graded-from-Homomorphism to V4-F2Graded-CountB)

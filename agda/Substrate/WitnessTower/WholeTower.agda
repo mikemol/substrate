@@ -29,12 +29,11 @@
 
 module Substrate.WitnessTower.WholeTower where
 
-open import Substrate.Groups.V4.Bijection using (V₄)
+open import Substrate.Groups.V4.Bijection.V4
 open import Substrate.Groups.V4.Bundle using (V₄-Group)
 import Substrate.Groups.S3 as S₃
 open import Substrate.Algebra.SetoidGroup using (SetoidGroup)
 open import Substrate.Algebra.Group.ToSetoid using (to-setoid)
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Foundation.Iff using (_⇔_; ⇔-refl)
 
 open import Substrate.Groups.S4-Composed using (S₄-Group)
@@ -46,6 +45,7 @@ open import Substrate.Axes.Axis using (Axis)
 -- factors (built earlier in the WitnessTower arc):
 open import Substrate.WitnessTower.SharedMiddle using (Lα; Lβ; Lγ)
 open import Substrate.WitnessTower.WhyThreeV2 using (rotate-on-α; rotate-on-β; rotate-on-γ)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. The whole tower up to rung 3 = S₄, as the full nested semidirect

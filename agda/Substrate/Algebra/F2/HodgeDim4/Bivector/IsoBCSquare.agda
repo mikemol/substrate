@@ -40,8 +40,7 @@ module Substrate.Algebra.F2.HodgeDim4.Bivector.IsoBCSquare where
 open import Substrate.Algebra.F2.HodgeDim4.Bivector using (Bivector)
 open import Substrate.Algebra.F2.HodgeDim4.Bivector.TensorProductBridge
   using (bivector-to-tensor; tensor-to-bivector; bivector-tensor-roundtrip)
-open import Substrate.Algebra.F2.HodgeDim4.Bivector.AntisymmetricRoundtrip
-  using (tensor-bivector-roundtrip)
+open import Substrate.Algebra.F2.HodgeDim4.Bivector.AntisymmetricRoundtrip.TensorBivectorRoundtrip
 open import Substrate.Category.TensorProduct using (TensorProduct)
 open import Substrate.Category.TensorProduct.AntisymmetricTensor
   using (AntisymmetricTensor; tensor)

@@ -21,9 +21,9 @@
 
 module Substrate.Category.KanExtension where
 
-open import Substrate.Foundation.Level using (Level; _⊔_) renaming (suc to lsuc)
+open import Substrate.Foundation.Level using (Level; _⊔_)
 
-open import Substrate.Category.CategoryOf using (CategoryOf)
+open import Substrate.Category.CategoryOf.CategoryOf
 open import Substrate.Category.Functor using (Functor)
 open import Substrate.Category.Functor.Opposite using (opposite-Functor)
 open import Substrate.Category.Opposite using (Opposite)

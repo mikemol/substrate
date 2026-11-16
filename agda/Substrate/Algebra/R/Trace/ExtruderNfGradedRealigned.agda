@@ -17,13 +17,13 @@
 
 module Substrate.Algebra.R.Trace.ExtruderNfGradedRealigned where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.Foundation.Empty using (⊥)
-open import Substrate.Algebra.Wedge.Mul using (Two; ε; two-div) renaming (𝟘 to t0)
+open import Substrate.Foundation.Empty.Bot
+open import Substrate.Algebra.Wedge.Mul using (Two; ε; two-div)
 open import Substrate.Algebra.Wedge.CrossMul using (CrossMix; cross; Coherent)
 open import Substrate.Algebra.Wedge.Wedderburn using (M2; M2-mul-str; e₁₂; 𝟎)
 open import Substrate.Algebra.Wedge.CrossMulGraded
   using (mix-M2; coherent-graded; cross-εε; cross-εε-not-clean)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- THE GRADED-OBSTRUCTION Nf cospan = mix-M2 (Two → M₂, the Wedderburn corner).

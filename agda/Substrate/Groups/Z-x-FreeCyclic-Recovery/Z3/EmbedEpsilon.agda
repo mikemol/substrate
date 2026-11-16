@@ -6,11 +6,11 @@
 
 module Substrate.Groups.Z-x-FreeCyclic-Recovery.Z3.EmbedEpsilon where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
 
 import Substrate.Groups.Capabilities.xFreeCyclic.Witness as xFreeCyclicW
 import Substrate.Groups.Coxeter.Cyclic.Core 2 as ZCore
 open import Substrate.Groups.Z-x-FreeCyclic-Recovery.Z3.Embed using (embed-Z₃)
+open import Substrate.Foundation.Eq
 cap = xFreeCyclicW.cap 2
 
 

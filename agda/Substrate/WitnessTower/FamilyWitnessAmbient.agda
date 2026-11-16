@@ -40,8 +40,7 @@
 
 module Substrate.WitnessTower.FamilyWitnessAmbient where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Nat.Nat
 
 -- the ambient Boolean lattice of faces (the level above the simplex-DAG).
 open import Substrate.WitnessTower.FaceSet
@@ -52,7 +51,10 @@ open import Substrate.WitnessTower.FamilyWitness
   using (FSimplex; vertex; cell; WSimplex-unique)
 
 -- the f-vector census (k-face counts). Its 0-face count is n+1.
-open import Substrate.WitnessTower.FaceCount public using (faces)
+-- ⚑ `public` RETIRED (Ⓑ2c).  Zero external importers; `faces` is used below in
+-- THIS file (the 0-face count tie), which is what the import is for.
+open import Substrate.WitnessTower.FaceCount using (faces)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- THE TIE that makes the ambient non-trivial: FaceCount's 0-faces = n+1, the

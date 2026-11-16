@@ -7,21 +7,28 @@
 
 module Substrate.Groups.Actions.S3-on-V4.Composition.RotPowComposeChain where
 
-open import Substrate.Groups.V4.Bijection using (V₄)
+open import Substrate.Groups.V4.Bijection.V4
 open import Substrate.Groups.Coxeter.Word using (Word; _++_)
-open import Substrate.Foundation.Eq using (_≡_; sym; trans; cong)
 
+-- ⚑ `normalize` IS `ListPresentation`'s, not `Existential`'s (Ⓐ¹⁶).
 import Substrate.Groups.Coxeter.Cyclic.Base 2 as Z₃B
 import Substrate.Groups.Coxeter.Cyclic.Existential 2 as Z₃E
-import Substrate.Groups.Coxeter.Cyclic.Core 2 as Z₃C
+import Substrate.Groups.Coxeter.ListPresentation
+  Z₃B.Gen Z₃E.Canonical-ex Z₃E.c-ε Z₃B.insert Z₃E.insert-canonical-ex as Z₃LP
 
 open import Substrate.Groups.Actions.S3-on-V4.Generators.RotPow using (rot-pow)
 open import Substrate.Groups.Actions.S3-on-V4.Generators.RotPowAppend using (rot-pow-append)
 open import Substrate.Groups.Actions.S3-on-V4.Generators.RotPowNormalizeEq using (rot-pow-normalize-eq)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Generators
+import Substrate.Groups.Coxeter.Cyclic.Core 2 as Z₃C
 
 rot-pow-compose-chain :
   ∀ (n₁ n₂' : Word Z₃B.Gen) (v' : V₄) →
-  rot-pow (Z₃E.normalize (Z₃E.normalize (n₁ ++ n₂'))) v' ≡
+  rot-pow (Z₃LP.normalize (Z₃LP.normalize (n₁ ++ n₂'))) v' ≡
     rot-pow n₁ (rot-pow n₂' v')
 rot-pow-compose-chain n₁ n₂' v' =
   trans (cong (λ w → rot-pow w v') (Z₃C.normalize-idem (n₁ ++ n₂')))

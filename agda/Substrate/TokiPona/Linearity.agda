@@ -32,9 +32,7 @@
 
 module Substrate.TokiPona.Linearity where
 
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; cong; sym)
+open import Substrate.Foundation.Nat.Nat
 
 open import Substrate.Groups.Coxeter.Word using (Word)
 
@@ -52,6 +50,9 @@ open import Substrate.TokiPona.Particles
   using (MarkerSet; no-markers; merge-markers;
          merge-no-markersˡ; merge-no-markersʳ;
          MarkedSentence)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Sym
 
 ------------------------------------------------------------------------
 -- 1. The packaged TokiLinearity record.

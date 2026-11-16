@@ -21,9 +21,9 @@
 
 module Substrate.Algebra.F2.Polynomial.Wedge.GF16TwoFaces where
 
-open import Substrate.Foundation.Nat using (ℕ; _+_)
-open import Substrate.Foundation.Bool using (false)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Bool.Bool
 open import Substrate.Algebra.F2.CommRing using (F₂-CommRing)
 import Substrate.Algebra.Polynomial.Graded.Quotient as Q
 import Substrate.Algebra.Polynomial.Graded.Mod as M
@@ -38,6 +38,10 @@ open M.Over F₂-CommRing 3 m-lo₄
 open Q.Over F₂-CommRing 3 m-lo₄
 open D.Over F₂-CommRing 3 m-lo₄
   using (Poly; _*Q_; oneC; *Q-comm; *Q-assoc; *Q-identityˡ; *Q-identityʳ)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 -- the dlog antilog at GF(2⁴) (division regime; x primitive, order 15).
 gpow : ℕ → Poly 4
@@ -62,7 +66,7 @@ inv-unique a b c ab ac =
 -- because the inverse is unique. (gᵏ nonzero; k+j = 15.)
 ------------------------------------------------------------------------
 
-two-faces : (k j : ℕ) → k + j ≡ 15 → is-zero4 (gpow k) ≡ false →
+two-faces : (k j : ℕ) → k ℕ+ j ≡ 15 → is-zero4 (gpow k) ≡ false →
             inv₄ (gpow k) ≡ gpow j
 two-faces k j kj nz =
   inv-unique (gpow k) (inv₄ (gpow k)) (gpow j)

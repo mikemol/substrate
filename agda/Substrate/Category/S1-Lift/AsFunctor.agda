@@ -25,8 +25,9 @@
 
 open import Substrate.Foundation.Level using (Level)
 
-open import Substrate.Category.CategoryOf using (CategoryOf)
+open import Substrate.Category.CategoryOf.CategoryOf
 open import Substrate.Category.Functor using (Functor)
+open import Substrate.Category.S1-Lift
 
 module Substrate.Category.S1-Lift.AsFunctor
   {ℓOC ℓMC ℓOD ℓMD : Level}
@@ -47,7 +48,6 @@ module Substrate.Category.S1-Lift.AsFunctor
 
 open import Substrate.Category.Functor.AsNamed
   CyclicCat ContinuousCat S1-Lift public
-  renaming (named-Functor to S1-Lift-Functor)
 ------------------------------------------------------------------------
 -- 2. Capstone — S¹-Lift as M1 Functor.
 --

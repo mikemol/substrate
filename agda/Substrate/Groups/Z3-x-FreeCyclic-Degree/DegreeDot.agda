@@ -1,22 +1,24 @@
 ------------------------------------------------------------------------
 -- Substrate.Groups.Z3-x-FreeCyclic-Degree.DegreeDot
 --
--- cycle-degree is a monoid homomorphism into (ℕ, +, 0).
+-- cycle-degree is a monoid homomorphism into (ℕ, ℕ+, 0).
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.Groups.Z3-x-FreeCyclic-Degree.DegreeDot where
 
-open import Substrate.Foundation.Nat using (_+_)
+open import Substrate.Foundation.Nat.Plus
 open import Substrate.Foundation.Product using (_,_)
-open import Substrate.Foundation.Eq using (_≡_; trans; cong)
 
 import Substrate.Groups.Capabilities.xFreeCyclic.Witness as xFreeCyclicW
 import Substrate.Groups.FreeCyclic-Coxeter as F
 import Substrate.Groups.FreeCyclic-Coxeter-Length as F-Len
 import Substrate.Groups.FreeCyclic-Coxeter-GradedMonoid as F-Grade
 open import Substrate.Groups.Z3-x-FreeCyclic-Degree.CycleDegree using (cycle-degree)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 cap-Z₃ = xFreeCyclicW.cap 2
 
 
@@ -24,7 +26,7 @@ cap-Z₃ = xFreeCyclicW.cap 2
 import Substrate.Groups.Coxeter.xFreeCyclicFromCapability cap-Z₃ as Z₃×F
 cycle-degree-· :
   (a b : Z₃×F.Word) →
-  cycle-degree (a Z₃×F.· b) ≡ cycle-degree a + cycle-degree b
+  cycle-degree (a Z₃×F.· b) ≡ cycle-degree a ℕ+ cycle-degree b
 cycle-degree-· (_ , a₂) (_ , b₂) =
   trans
     (cong F-Len.length-of-word

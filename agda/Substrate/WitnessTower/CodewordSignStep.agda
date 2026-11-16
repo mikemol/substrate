@@ -38,16 +38,16 @@
 
 module Substrate.WitnessTower.CodewordSignStep where
 
-open import Substrate.Foundation.Nat using (ℕ; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using (Vec; map)
-open import Substrate.Foundation.Bool using (Bool; _xor_)
-open import Substrate.Foundation.Eq using (_≡_)
+open import Substrate.Foundation.Bool.Xor
 open import Substrate.Foundation.Fin.Punctured using (punchIn)
 
 open import Substrate.WitnessTower.Enumerate using (Perm; insert-at)
 open import Substrate.WitnessTower.Wedge.OrientationRigCatPermSign using (sign; parityLess)
 open import Substrate.WitnessTower.SignStepCocycle using (sign-step)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- The codeword lives at rung 3 (S₄ = Perm 4). Rung 3 is reached from rung 2

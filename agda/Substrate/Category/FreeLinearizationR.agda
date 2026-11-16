@@ -16,11 +16,11 @@
 
 module Substrate.Category.FreeLinearizationR where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Eq using (_≡_)
 
 open import Substrate.Category.LinearAlgebra using (LinearAlgebra)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. The FreeLinearizationR record.

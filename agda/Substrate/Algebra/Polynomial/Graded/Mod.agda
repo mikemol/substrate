@@ -25,20 +25,36 @@
 
 module Substrate.Algebra.Polynomial.Graded.Mod where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; s≤s; z≤n; s≤s-injective)
-  renaming (_<_ to _<ℕ_; _≤_ to _≤ℕ_)
-open import Substrate.Foundation.Nat.Properties.Add using () renaming (+-comm to +ℕ-comm)
+open import Substrate.Foundation.Nat.Le
+-- ⚑ `<ℕ` WAS THE SECOND ALIAS FROM THE SAME DISSOLVED `renaming` — one clause
+-- can carry several, so clearing one leaves the rest.  ℕ's `_<_` is UNRENAMED
+-- (unlike `_+_`→`_ℕ+_`), so the leaf import is the whole fix.
+open import Substrate.Foundation.Nat.Lt
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.SLesInjective
+-- ⚑ A DEAD `renaming`, AND AGDA NAMED THE FIX: `PlusComm doesn't export +-comm
+-- (did you mean '+ℕ-comm'?)`.  The leaf now provides `+ℕ-comm` AT SOURCE — the
+-- ban's own remedy, domain-specialized naming upstream — so a clause renaming
+-- `+-comm` to it renames a name that no longer exists and binds nothing.  Note
+-- this is a WARNING, not an error: the alias silently fails and the breakage
+-- surfaces later at a use site.
+open import Substrate.Foundation.Nat.Properties.Add.PlusComm
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; replicate)
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.To
 open import Substrate.Foundation.Fin.From2
 open import Substrate.Foundation.Fin.Properties using (toℕ-bound; toℕ-fromℕ<; toℕ-injective)
-open import Substrate.Foundation.Empty using (⊥)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂; subst)
-open import Substrate.Algebra.CommutativeRing using (CommutativeRing)
+open import Substrate.Foundation.Empty.Bot
+open import Substrate.Algebra.CommutativeRing.Record
 import Substrate.Algebra.Polynomial.Graded.FromCommRing as F
 import Substrate.Algebra.Polynomial.Graded.Mod.Core as Core
 import Substrate.Algebra.Polynomial.Graded.Mod.Expand as Expand
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.Foundation.Eq.Subst
 
 module Over {A : Set} (CR : CommutativeRing A) (d : ℕ) (f-lo : Vec A (suc d)) where
   open F.Over CR                    -- NON-public: not ours to re-export
@@ -113,7 +129,7 @@ module Over {A : Set} (CR : CommutativeRing A) (d : ℕ) (f-lo : Vec A (suc d)) 
   inj-toℕ fzero     = refl
   inj-toℕ (fsuc i) = cong suc (inj-toℕ i)
 
-  <-irrefl : (n : ℕ) → n <ℕ n → ⊥
+  <-irrefl : (n : ℕ) → n < n → ⊥
   <-irrefl (suc n) (s≤s p) = <-irrefl n p
 
   -- vinit drops the (zero) top of a low basis vector → the basis one dim down.
@@ -127,22 +143,24 @@ module Over {A : Set} (CR : CommutativeRing A) (d : ℕ) (f-lo : Vec A (suc d)) 
     trans (vlast-nth (basis (inj i)))
           (nth-basis-other (inj i) d
             (λ e → <-irrefl (toℕ (inj i))
-                     (subst (λ z → toℕ (inj i) <ℕ z) e
-                            (subst (_<ℕ d) (sym (inj-toℕ i)) (toℕ-bound i)))))
+                     (subst (λ z → toℕ (inj i) < z) e
+                            (subst (_< d) (sym (inj-toℕ i)) (toℕ-bound i)))))
 
   ytime-basis-shift : (i : Fin d) → ytime (basis {suc d} (inj i)) ≡ basis {suc d} (fsuc i)
   ytime-basis-shift i =
     trans (ytime-shift (basis (inj i)) (vlast-basis-inj i))
           (cong (𝟘 ∷_) (vinit-basis i))
 
-  ≤-step : ∀ {a b} → a ≤ℕ b → a ≤ℕ suc b
+  -- ⚑ `≤ℕ` — the THIRD alias from the same dissolved `renaming (_<_ to _<ℕ_;
+  -- _≤_ to _≤ℕ_)`.  `Nat.Le` provides `_≤_` unrenamed and is already imported.
+  ≤-step : ∀ {a b} → a ≤ b → a ≤ suc b
   ≤-step z≤n     = z≤n
   ≤-step (s≤s p) = s≤s (≤-step p)
 
   -- ytimeⁱ of the unit = the i-th basis vector (no reduction below degree suc d).
   -- Recurse on the EXPONENT k (decoupled from the carrier d); bridge Fin indices
   -- by toℕ alone (toℕ-injective), so each ytime is a pure basis shift.
-  pow-basis-ℕ : (k : ℕ) (lt : k <ℕ suc d) → xpow k oneC ≡ basis (fromℕ< lt)
+  pow-basis-ℕ : (k : ℕ) (lt : k < suc d) → xpow k oneC ≡ basis (fromℕ< lt)
   pow-basis-ℕ zero    lt = refl
   pow-basis-ℕ (suc k) lt =
     trans (xpow-ytime k oneC)

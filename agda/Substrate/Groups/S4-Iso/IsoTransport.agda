@@ -18,8 +18,14 @@ open import Substrate.Groups.Symmetric.Permutation Axis
 open import Substrate.Axes.VOfAxis using (v-of-axis)
 open import Substrate.Axes.AxisOfV using (axis-of-v)
 open import Substrate.Axes.ActAxis using (act-axis)
-import Substrate.Groups.V4.Operations as V4
-open import Substrate.Groups.V4.Bijection
+open import Substrate.Groups.V4.Bijection.FromC
+open import Substrate.Groups.V4.Bijection.FromCCanonical
+open import Substrate.Groups.V4.Bijection.FromTo
+open import Substrate.Groups.V4.Bijection.Private
+open import Substrate.Groups.V4.Bijection.ToC
+open import Substrate.Groups.V4.Bijection.ToCCanonical
+open import Substrate.Groups.V4.Bijection.ToFromCanonical
+open import Substrate.Groups.V4.Bijection.V4
 import Substrate.Groups.S3 as S₃
 import Substrate.Groups.S4-Composed as S4C
 open import Substrate.Groups.Actions.S3-on-V4.Axioms.ActCong
@@ -29,10 +35,9 @@ open import Substrate.Groups.Symmetric.Identity Axis
 open import Substrate.Groups.Symmetric.Group Axis using (Symmetric-Group)
 open import Substrate.Groups.Symmetric.ComposeCong Axis
 open import Substrate.Foundation.Product using (_,_; proj₁)
-open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym; cong)
 
-open import Substrate.Groups.S4-Iso.Embedding
-  using (embed-S₃; compositional-to-perm)
+open import Substrate.Groups.S4-Iso.Embedding.CompositionalToPerm
+open import Substrate.Groups.S4-Iso.Embedding.EmbedS3
 open import Substrate.Groups.S4-Iso.Foundation using (embed-S₃-ε)
 open import Substrate.Groups.S4-Iso.ForwardHom using (forward-hom)
 open import Substrate.Groups.Symmetric.Permutation.Compose Axis
@@ -46,6 +51,12 @@ open import Substrate.Groups.Symmetric.EqTrans Axis
 open import Substrate.Algebra.SetoidGroup.Properties using (module Props)
 open import Substrate.Groups.Symmetric.Permutation.Inverse Axis
 open Props Permutation _≈_ Symmetric-Group using (inverseˡ-unique)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Category.Comonoid.Sites.V4
+import Substrate.Groups.V4.Operations as V4
 forward-ε : compositional-to-perm S4C.ε ≈ ε
 forward-ε x = trans (cong (act-axis e) (embed-S₃-ε x)) (act-axis-id x)
 

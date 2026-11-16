@@ -18,7 +18,7 @@
 -- chirality bit are one F₂ element.
 --
 -- SHAPE (the substrate-native "how to bridge", NOT an asserted ≡): a
--- carrier-parametrised WITNESS RECORD whose fields are the maps + their
+-- carrier-parametrised WITNESS RECORD whose fields are the maps +F their
 -- round-trips (the F2nSelfDual / Bridge idiom). Zero postulates.
 --
 -- SCOPE (honest, and this time TYPED not prose): this is the n=1 / single-
@@ -35,10 +35,15 @@
 
 module Substrate.Cocycles.V4Signature.Chirality.WHTCharacterBridge where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; cong; sym; trans)
-open import Substrate.Algebra.F2 using (F₂; 𝟘; 𝟙; _+_; _·_)
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.Op
+open import Substrate.Algebra.F2.PlusF
 open import Substrate.Algebra.F2.FromBool using (bool→F₂; F₂→bool; bool→F₂→bool)
 open import Substrate.Cocycles.V4Signature.Chirality.Type using (Chirality; even; odd)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
 
 ------------------------------------------------------------------------
 -- 1. The atomic WHT character at F₂ (n = 1).
@@ -86,7 +91,7 @@ F₂→chir→F₂ 𝟙 = refl
 
 ------------------------------------------------------------------------
 -- 3. THE WITNESS RECORD (substrate-native bridge shape: parametrised on
---    the shared carrier F₂, fields = the two maps + both round-trips).
+--    the shared carrier F₂, fields = the two maps +F both round-trips).
 --    This is the F2nSelfDual / Bridge idiom, NOT a free-floating ≡.
 --
 --    `to`   : a chirality bit ↦ the WHT character SELECTOR it names.

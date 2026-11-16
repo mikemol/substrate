@@ -11,7 +11,7 @@
 
 module Substrate.Category.ComposedReference.Record where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Category.ComposedReference.EmissionSource using (EmissionSource)
 open import Substrate.Category.ComposedReference.ActionAlgebra using (ActionAlgebra)
 open import Substrate.Category.ComposedReference.BasisLabel using (BasisLabel)

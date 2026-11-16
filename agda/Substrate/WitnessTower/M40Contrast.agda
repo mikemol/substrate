@@ -24,14 +24,14 @@
 module Substrate.WitnessTower.M40Contrast where
 
 import Substrate.Groups.V4.Operations as V4
-open import Substrate.Groups.V4.Bijection using (V₄; e; α; β; γ)
-open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.Foundation.Empty using (⊥)
+open import Substrate.Groups.V4.Bijection.V4
+open import Substrate.Foundation.Empty.Bot
 open import Substrate.Foundation.Product using (_×_; _,_)
 open import Substrate.Category.Coalgebra using (Endomap)
 open import Substrate.Category.Coalgebra.FiniteOrder using (HasOrder; iterate)
 -- cited for the contrast (the A₄×ℤ₂ side has no genuine order-4 element):
 open import Substrate.WitnessTower.M40Closure using (no-order-4)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- The 4-cycle on the four masks: e → α → β → γ → e.  An element of Sym(V₄)=S₄.

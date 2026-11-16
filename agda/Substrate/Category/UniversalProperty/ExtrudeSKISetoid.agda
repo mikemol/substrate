@@ -20,43 +20,45 @@
 module Substrate.Category.UniversalProperty.ExtrudeSKISetoid where
 
 open import Substrate.Foundation.Product using (Σ; _,_)
-open import Substrate.Algebra.R.Trace.SKIShedDuality using (S; K; _∙_) renaming (Tm to Tm⟦533ef80d⟧)
-open import Substrate.Algebra.R.Trace.SKIReductionToList using (β-K; β-S; cong-l; cong-r) renaming (_⇒_ to _⇒⟦66d2c034⟧_)
+open import Substrate.Algebra.R.Trace.SKIShedDuality.Tm
+open import Substrate.Algebra.R.Trace.SKIReductionToList using (β-K; β-S; cong-l; cong-r) renaming (_⇒_ to _⇒_)
 import Substrate.Foundation.RewriteConfluence (Substrate.Algebra.R.Trace.SKIReductionToList._⇒_)
   as RC using (_⇒*_; done; _◅_)
 open import Substrate.FUSep.ConversionCongruence using (ARS; _≈_; emb; ≈refl; ≈sym; ≈trans)
 open import Substrate.Category.UniversalProperty.DiagonalYCombinator using (Y-of; Y-fix)
+open import Substrate.Algebra.R.Trace.SKIShedDuality.Tm
+open import Substrate.Algebra.R.Trace.SKIReductionToList
 
 ------------------------------------------------------------------------
 -- ① SKI IS AN ARS (the ConversionCongruence interface). Carrier = Tm⟦533ef80d⟧, application = _∙_, reduction = _⇒⟦66d2c034⟧_,
 --    the application-context compatibilities = the repo's cong-l/cong-r. So ConversionCongruence gives us
 --    ≈ = the equivalence closure of ⇒⟦66d2c034⟧ (convertibility), REUSED (≈ is _≈_ applied to ski-ARS).
 ------------------------------------------------------------------------
-ski-ARS : ARS Tm⟦533ef80d⟧ _⇒⟦66d2c034⟧_
+ski-ARS : ARS Tm _⇒_
 ski-ARS = record
   { _·_ = _∙_
   ; ·-congˡ = λ {a}{a'}{b} r → cong-l b r
   ; ·-congʳ = λ {a}{b}{b'} r → cong-r a r }
 
 -- convertibility on SKI = _≈_ at ski-ARS (the anonymous ARS module, applied):
-_≋_ : Tm⟦533ef80d⟧ → Tm⟦533ef80d⟧ → Set
+_≋_ : Tm → Tm → Set
 a ≋ b = _≈_ ski-ARS a b
 
 ------------------------------------------------------------------------
 -- ② REDUCTION ⊆ CONVERTIBILITY (⇒* ⊆ ≈): a directed reduction chain is a convertibility. So every ⇒*-fact
 --    (the S/K β-steps, and Y-fix) lifts to ≈.
 ------------------------------------------------------------------------
-⇒*→≋ : {a b : Tm⟦533ef80d⟧} → a RC.⇒* b → a ≋ b
+⇒*→≋ : {a b : Tm} → a RC.⇒* b → a ≋ b
 ⇒*→≋ RC.done         = ≈refl
 ⇒*→≋ (s RC.◅ rest)   = ≈trans (emb s) (⇒*→≋ rest)
 
 ------------------------------------------------------------------------
 -- ③ THE COMBINATOR-ALGEBRA LAWS HOLD AT ≈ (what ExtruderFix.CombinatorAlgebra requires — at ≈, not ≡):
 ------------------------------------------------------------------------
-K-law-≋ : (x y : Tm⟦533ef80d⟧) → ((K ∙ x) ∙ y) ≋ x
+K-law-≋ : (x y : Tm) → ((K ∙ x) ∙ y) ≋ x
 K-law-≋ x y = emb (β-K x y)
 
-S-law-≋ : (x y z : Tm⟦533ef80d⟧) → (((S ∙ x) ∙ y) ∙ z) ≋ ((x ∙ z) ∙ (y ∙ z))
+S-law-≋ : (x y z : Tm) → (((S ∙ x) ∙ y) ∙ z) ≋ ((x ∙ z) ∙ (y ∙ z))
 S-law-≋ x y z = emb (β-S x y z)
 
 ------------------------------------------------------------------------
@@ -64,11 +66,11 @@ S-law-≋ x y z = emb (β-S x y z)
 --    So (Tm⟦533ef80d⟧, ≈) is a combinator algebra WITH a fixpoint operator = Y-of — ExtruderFix's fixpoint-from-
 --    diagonals realized concretely on SKI terms, at convertibility.
 ------------------------------------------------------------------------
-fix-law-≋ : (f : Tm⟦533ef80d⟧) → (Y-of f) ≋ (f ∙ (Y-of f))
+fix-law-≋ : (f : Tm) → (Y-of f) ≋ (f ∙ (Y-of f))
 fix-law-≋ f = ⇒*→≋ (Y-fix f)
 
 -- HasFix (concrete): a fixpoint-witnessing family — for every f, a v (= Y-of f) with v ≋ f · v.
-ski-HasFix : (f : Tm⟦533ef80d⟧) → Σ Tm⟦533ef80d⟧ (λ v → v ≋ (f ∙ v))
+ski-HasFix : (f : Tm) → Σ Tm (λ v → v ≋ (f ∙ v))
 ski-HasFix f = (Y-of f) , fix-law-≋ f
 
 ------------------------------------------------------------------------

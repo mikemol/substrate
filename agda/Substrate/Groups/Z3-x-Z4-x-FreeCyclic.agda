@@ -28,8 +28,6 @@ module Substrate.Groups.Z3-x-Z4-x-FreeCyclic where
 open import Substrate.Groups.Z3-Coxeter using (++-assoc)
 
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; trans; cong; cong₂)
 
 import Substrate.Groups.Coxeter.Cyclic.Base 2 as Z₃-Base
 import Substrate.Groups.Z3-Coxeter as Z₃
@@ -38,6 +36,11 @@ import Substrate.Groups.Z4-Coxeter as Z₄
 import Substrate.Groups.FreeCyclic-Coxeter as F
 open import Substrate.Groups.Coxeter.Word
   using (Word; []; _∷_; _++_; ++-identity-right)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
 
 ------------------------------------------------------------------------
 -- N-1: The 3-axis Word type.

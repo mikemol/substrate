@@ -16,24 +16,30 @@
 -- `outer ≡ pair` makes the categorical handle visible at the use
 -- site.
 --
--- Slice 2 of 3 in the TensorProduct + EEA trio.
+-- Slice 2 of 3 in the TensorProduct +F EEA trio.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.Algebra.F2.Polynomial.TensorProductView where
 
-open import Substrate.Foundation.Nat using (ℕ) renaming (_+_ to _ℕ+_)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; cong)
 
-open import Substrate.Algebra.F2
 open import Substrate.Algebra.F2.Vector
 open import Substrate.Algebra.F2.Polynomial
   using (Polynomial; _*P_; outer; anti-diag-sum)
 open import Substrate.Category.TensorProduct
   using (TensorProduct; pair)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+-- ⚑ Ⓑ2: `ℕ+` was unbound at :66 (`Polynomial (n ℕ+ m)` — a ℕ INDEX, not a
+-- carrier operation). One home, confirmed statically by
+-- `fix_notinscope --unresolved` before any build.
+-- ⚑ THE THREE `using` LISTS ABOVE ARE BAN DEBT (Ⓕ-QUAL859) and are LEFT: widening
+-- them can surface collisions this file has never had to face, which is Ⓐ2's
+-- one-compile-per-file work, not Ⓑ2's. Naming the debt beats quietly enlarging
+-- the change.
+open import Substrate.Foundation.Nat.Plus
 
 ------------------------------------------------------------------------
 -- N-1: outer IS pair — definitional equivalence.
@@ -98,12 +104,12 @@ _*P-via-tensor_ p q = anti-diag-sum (pair p q)
 -- Deferred follow-ons:
 --
 --   * **anti-diag-sum as a Linear-record**: package anti-diag-sum
---     as `Linear (TensorProduct n m) (Polynomial (n + m))` — i.e.,
+--     as `Linear (TensorProduct n m) (Polynomial (n +F m))` — i.e.,
 --     prove its bilinearity / linearity in the tensor product
 --     structure. Currently a plain function.
 --
 --   * **Other bilinear operations via pair**: any bilinear op on
---     V × W → U can be factored via `pair + specific-linear-out`.
+--     V × W → U can be factored via `pair +F specific-linear-out`.
 --     Future operations (inner product when n = m, antisymmetric
 --     pairings, etc.) follow this template.
 --

@@ -17,9 +17,12 @@
 
 module Substrate.FUSep.FUSepQHalts where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Foundation.WellFounded using (Acc; acc)
-open import Substrate.FUSep.FUSepQBridge using (FinTrace; base; step; reconstruct; fintrace-unit)
+-- ⚑ `FUSepQBridge` is DISSOLVED; all five names live in `.Anon` (`--provides`).
+-- `rewire_to_leaves` refused this file for the same reason as FUSepQSKI: it keys
+-- on the provision index for a bare import, and these names are multiply-homed.
+open import Substrate.FUSep.FUSepQBridge.Anon
+open import Substrate.Foundation.Eq
 
 -- a state either IS a value (base) or STEPS (with a decrease + reconstruction).
 -- This ⊎ is the `Obs × (1 + −)` termination the substrate names — the `1` is base.

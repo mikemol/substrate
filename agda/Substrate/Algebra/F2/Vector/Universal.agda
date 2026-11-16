@@ -21,17 +21,46 @@
 
 module Substrate.Algebra.F2.Vector.Universal where
 
-open import Substrate.Foundation.Empty using (⊥-elim)
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Empty.BotElim
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; lookup)
 open import Substrate.Foundation.Function using (_∘_)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; trans; cong; cong₂; cong-trans; sym-trans)
-open import Substrate.Foundation.Negation using (¬_)
+open import Substrate.Foundation.Negation.Not
 
-open import Substrate.Algebra.F2
+open import Substrate.Algebra.F2.AbsorbL
+open import Substrate.Algebra.F2.AbsorbR
+open import Substrate.Algebra.F2.Assoc
+open import Substrate.Algebra.F2.Comm
+open import Substrate.Algebra.F2.Dec
+open import Substrate.Algebra.F2.DistribLPlus
+open import Substrate.Algebra.F2.DistribRPlus
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.F2Cases
+open import Substrate.Algebra.F2.Idempotent
+open import Substrate.Algebra.F2.IdentityL
+open import Substrate.Algebra.F2.IdentityR
+open import Substrate.Algebra.F2.InvOfOne
+open import Substrate.Algebra.F2.OneNeqZero
+open import Substrate.Algebra.F2.Op
+open import Substrate.Algebra.F2.Op2
+open import Substrate.Algebra.F2.PlusAssoc
+open import Substrate.Algebra.F2.PlusComm
+open import Substrate.Algebra.F2.PlusF
+open import Substrate.Algebra.F2.PlusIdentityL
+open import Substrate.Algebra.F2.PlusIdentityR
+open import Substrate.Algebra.F2.PlusInverseL
+open import Substrate.Algebra.F2.PlusInverseR
+open import Substrate.Algebra.F2.PlusSelfInverse
+open import Substrate.Algebra.F2.ZeroNeqOne
 open import Substrate.Algebra.F2.Vector
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.Foundation.Eq.CongTrans
+open import Substrate.Foundation.Eq.SymTrans
 
 ------------------------------------------------------------------------
 -- Finite indexed sum: Σᵢ f i for i : Fin n.
@@ -75,7 +104,7 @@ basis-lookup-other (suc i) (suc j) neq =
 
 sum-F₂ : ∀ {n} → (Fin n → F₂) → F₂
 sum-F₂ {zero}  _ = 𝟘
-sum-F₂ {suc _} g = g zero + sum-F₂ (g ∘ suc)
+sum-F₂ {suc _} g = g zero +F sum-F₂ (g ∘ suc)
 
 -- Congruence of sum-F₂ over pointwise equality. Promoted to
 -- module-level: forward-reference within a `where` block isn't
@@ -84,7 +113,7 @@ sum-F₂ {suc _} g = g zero + sum-F₂ (g ∘ suc)
 sum-F₂-cong : ∀ {n} {f g : Fin n → F₂} →
               (∀ i → f i ≡ g i) → sum-F₂ f ≡ sum-F₂ g
 sum-F₂-cong {zero}  _  = refl
-sum-F₂-cong {suc _} eq = cong₂ _+_ (eq zero) (sum-F₂-cong (eq ∘ suc))
+sum-F₂-cong {suc _} eq = cong₂ _+F_ (eq zero) (sum-F₂-cong (eq ∘ suc))
 
 ------------------------------------------------------------------------
 -- Sum-lookup: lookup commutes with sum componentwise.
@@ -99,7 +128,10 @@ lookup-sum :
 lookup-sum {zero}  f j = lookup-𝟎 j
 lookup-sum {suc _} f j =
   trans (lookup-+ⱽ (f zero) (sum (f ∘ suc)) j)
-        (cong (lookup (f zero) j +_) (lookup-sum (f ∘ suc) j))
+        -- ⚑ A SECTION CARRIES THE OPERATOR'S SPELLING TOO.  The decomposed F₂
+        -- leaves name it `_+F_`; a whole-module `open import Substrate.Algebra.F2`
+        -- used to supply a bare `_+_`.  Same class as `SpectralCycleDim/PlusCancelR`.
+        (cong (lookup (f zero) j +F_) (lookup-sum (f ∘ suc) j))
 
 ------------------------------------------------------------------------
 -- Atomic decomposition: lookup form.
@@ -116,7 +148,7 @@ lookup-decomp-aux :
 lookup-decomp-aux {suc _} (x ∷ xs) zero =
   -- i = 0 contributes lookup v 0 · 𝟙 = x; i = suc i' contributes
   -- lookup v (suc i') · 𝟘 = 𝟘.
-  trans (cong₂ _+_ (·-identityʳ x) (vanish-suc-from-zero xs))
+  trans (cong₂ _+F_ (·-identityʳ x) (vanish-suc-from-zero xs))
         (+-identityʳ x)
   where
     -- For the tail terms: lookup (basis (suc i')) zero ≡ 𝟘 by def
@@ -126,10 +158,14 @@ lookup-decomp-aux {suc _} (x ∷ xs) zero =
       sum-F₂ (λ i → lookup ys i · lookup (basis (suc i)) zero) ≡ 𝟘
     vanish-suc-from-zero []       = refl
     vanish-suc-from-zero (y ∷ ys) =
-      trans (cong₂ _+_ (·-absorbʳ y) (vanish-suc-from-zero ys)) refl
+      trans (cong₂ _+F_ (·-absorbʳ y) (vanish-suc-from-zero ys)) refl
 lookup-decomp-aux {suc _} (x ∷ xs) (suc j) =
   -- i = 0 contributes x · lookup 𝟎ⱽ j ≡ x · 𝟘 ≡ 𝟘; recurse on the tail.
-  cong-trans (_+ sum-F₂ (λ i → lookup xs i · lookup (basis (suc i)) (suc j)))
+  -- ⚑ THE LEFT SECTION, the mirror of :131's right one.  `--at 771283c8~1` shows
+  -- the ban commit converted every APPLIED `_+_` to `_+F_` here and missed both
+  -- SECTIONS — so the file's operator spelling is right everywhere except where
+  -- an argument slot is left open.
+  cong-trans (_+F sum-F₂ (λ i → lookup xs i · lookup (basis (suc i)) (suc j)))
              (cong-trans (x ·_) (lookup-𝟎 j) (·-absorbʳ x))
              (trans (+-identityˡ _)
                     (lookup-decomp-aux xs j))

@@ -25,9 +25,9 @@
 module Substrate.Algebra.Lie.CartanA1 where
 
 open import Substrate.Category.CartanType using (CartanType; mkCartanType)
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Eq
 
 -- A₁: rank 1, the 1×1 Cartan matrix is m₀₀ = 1.
 A1-rank : ℕ

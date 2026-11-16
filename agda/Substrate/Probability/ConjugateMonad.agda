@@ -49,10 +49,9 @@
 
 module Substrate.Probability.ConjugateMonad where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
 open import Substrate.Foundation.List using (List; []; _∷_; foldl)
-open import Substrate.Foundation.Level using (Level) renaming (suc to lsuc)
-open import Substrate.Foundation.Eq using (_≡_)
+open import Substrate.Foundation.Level using (Level)
+open import Substrate.Foundation.Eq
 
 private
   variable

@@ -18,10 +18,10 @@
 module Substrate.Category.UniversalProperty.X8aConfluentClassifier where
 import Substrate.Foundation.RewriteConfluence
 
-open import Substrate.Foundation.Eq using (_≡_)
-open import Substrate.Foundation.Negation using (¬_)
-open import Substrate.FUSep.FUSepQReduce using (stop; shed; Reduce; _↦_; SN; sn-confluent) renaming (Step to Step⟦c0e06c56⟧; Tm to Tm⟦533ef80d⟧)
+open import Substrate.Foundation.Negation.Not
+open import Substrate.FUSep.FUSepQReduce using (stop; shed; Reduce; _↦_; SN; sn-confluent) renaming ( Tm-QReduce to Tm⟦533ef80d⟧)
 open import Substrate.FUSep.FUSepQCR using (module Newman)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- THE OBLIGATION INTERFACE: what a concrete branching SKI classifier must supply so the SKI

@@ -23,17 +23,45 @@
 
 module Substrate.Algebra.F2.Linear.Augmentation where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using (_∷_; []; lookup)
-open import Substrate.Foundation.Eq using (_≡_; refl; cong; cong₂; trans; sym)
 
-open import Substrate.Algebra.F2
+open import Substrate.Algebra.F2.AbsorbL
+open import Substrate.Algebra.F2.AbsorbR
+open import Substrate.Algebra.F2.Assoc
+open import Substrate.Algebra.F2.Comm
+open import Substrate.Algebra.F2.Dec
+open import Substrate.Algebra.F2.DistribLPlus
+open import Substrate.Algebra.F2.DistribRPlus
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.F2Cases
+open import Substrate.Algebra.F2.Idempotent
+open import Substrate.Algebra.F2.IdentityL
+open import Substrate.Algebra.F2.IdentityR
+open import Substrate.Algebra.F2.InvOfOne
+open import Substrate.Algebra.F2.OneNeqZero
+open import Substrate.Algebra.F2.Op
+open import Substrate.Algebra.F2.Op2
+open import Substrate.Algebra.F2.PlusAssoc
+open import Substrate.Algebra.F2.PlusComm
+open import Substrate.Algebra.F2.PlusF
+open import Substrate.Algebra.F2.PlusIdentityL
+open import Substrate.Algebra.F2.PlusIdentityR
+open import Substrate.Algebra.F2.PlusInverseL
+open import Substrate.Algebra.F2.PlusInverseR
+open import Substrate.Algebra.F2.PlusSelfInverse
+open import Substrate.Algebra.F2.ZeroNeqOne
 open import Substrate.Algebra.F2.Vector
-open import Substrate.Algebra.F2.Linear using (Linear; apply)
+open import Substrate.Algebra.F2.Linear.Linear
 open import Substrate.Algebra.F2.AsModule using (*ₛ-distribʳ-+; *ₛ-assoc)
 open import Substrate.Algebra.F2.Linear.Kernel using (inKer)
 open import Substrate.Algebra.F2.Linear.KernelSpan using (KernelDim)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Sym
 
 ------------------------------------------------------------------------
 -- total (Σ of the coordinates) and ones (all-𝟙), by recursion on length.
@@ -41,30 +69,30 @@ open import Substrate.Algebra.F2.Linear.KernelSpan using (KernelDim)
 
 total : ∀ {p} → Vector p → F₂
 total []       = 𝟘
-total (x ∷ xs) = x + total xs
+total (x ∷ xs) = x +F total xs
 
 ones : ∀ {p} → Vector p
 ones {zero}  = []
 ones {suc _} = 𝟙 ∷ ones
 
 -- F₂ middle-four interchange (for total's additivity).
-+swap4 : (a b c d : F₂) → ((a + b) + (c + d)) ≡ ((a + c) + (b + d))
++swap4 : (a b c d : F₂) → ((a +F b) +F (c +F d)) ≡ ((a +F c) +F (b +F d))
 +swap4 a b c d =
-  trans (+-assoc a b (c + d))
-  (trans (cong (a +_) (sym (+-assoc b c d)))
-  (trans (cong (λ z → a + (z + d)) (+-comm b c))
-  (trans (cong (a +_) (+-assoc c b d))
-         (sym (+-assoc a c (b + d))))))
+  trans (+-assoc a b (c +F d))
+  (trans (cong (a +F_) (sym (+-assoc b c d)))
+  (trans (cong (λ z → a +F (z +F d)) (+-comm b c))
+  (trans (cong (a +F_) (+-assoc c b d))
+         (sym (+-assoc a c (b +F d))))))
 
-total-+ⱽ : ∀ {p} (u v : Vector p) → total (u +ⱽ v) ≡ (total u + total v)
+total-+ⱽ : ∀ {p} (u v : Vector p) → total (u +ⱽ v) ≡ (total u +F total v)
 total-+ⱽ []       []       = refl
 total-+ⱽ (x ∷ xs) (y ∷ ys) =
-  trans (cong ((x + y) +_) (total-+ⱽ xs ys)) (+swap4 x y (total xs) (total ys))
+  trans (cong ((x +F y) +F_) (total-+ⱽ xs ys)) (+swap4 x y (total xs) (total ys))
 
 total-*ₛ : ∀ {p} (c : F₂) (v : Vector p) → total (c *ₛ v) ≡ (c · total v)
 total-*ₛ c []       = sym (·-absorbʳ c)
 total-*ₛ c (x ∷ xs) =
-  trans (cong ((c · x) +_) (total-*ₛ c xs)) (sym (·-distribˡ-+ c x (total xs)))
+  trans (cong ((c · x) +F_) (total-*ₛ c xs)) (sym (·-distribˡ-+ c x (total xs)))
 
 ------------------------------------------------------------------------
 -- The augmentation operator A v = (total v) ·ₛ ones, F₂-linear.
@@ -97,8 +125,8 @@ retr = record
   ; preserves-*ₛ = λ { c (x ∷ xs) → refl }
   }
 
--- Over F₂, a + b = 𝟘 forces b = a (the kernel condition reading x = Σrest).
-sum0→eq : (a b : F₂) → (a + b) ≡ 𝟘 → b ≡ a
+-- Over F₂, a +F b = 𝟘 forces b = a (the kernel condition reading x = Σrest).
+sum0→eq : (a b : F₂) → (a +F b) ≡ 𝟘 → b ≡ a
 sum0→eq 𝟘 𝟘 _ = refl
 sum0→eq 𝟙 𝟙 _ = refl
 sum0→eq 𝟘 𝟙 ()

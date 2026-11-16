@@ -48,13 +48,21 @@
 
 module Substrate.Realizability.Charter where
 
-open import Substrate.Foundation.Bool    using (Bool; true; false; _∧_; _∨_)
-open import Substrate.Foundation.Eq      using (_≡_; refl; cong; trans)
+open import Substrate.Foundation.Bool.And
+open import Substrate.Foundation.Bool.Bool
+open import Substrate.Foundation.Bool.Or
 open import Substrate.Foundation.Product using (_,_; _×_)
-open import Substrate.Foundation.Sum     using (_⊎_; inj₁; inj₂)
-open import Substrate.Foundation.Nat     using (ℕ)
+open import Substrate.Foundation.Sum.Sum
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Category.CategoryOf using (CategoryOf)
+open import Substrate.Category.CategoryOf.CategoryOf
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Algebra.Z.ZRingNorm
+open import Substrate.Category.CascadedCoalgebra
+open import Substrate.WitnessTower.M40Closure
+open import Substrate.Foundation.List
 
 ------------------------------------------------------------------------
 -- 0.  The atomic substructure: Bool reflection (∧ for §4, ∨ for §5).
@@ -351,7 +359,7 @@ WitnessCategory = record
 -- 8.  Lemma 4.3 (determinism ⇒ replayability).
 ------------------------------------------------------------------------
 
-data Verdict : Set where      -- ⟦shape:0ff56923 accept reject′⟧
+data Verdict : Set where      -- ⟦shape:8f94a101 accept,reject′⟧
   accept reject′ : Verdict
 
 module Replay

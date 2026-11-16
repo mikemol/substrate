@@ -37,11 +37,10 @@
 
 module Substrate.TokiPona.AsLinearBridge where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using (Vec)
-  renaming ([] to []ᵥ; _∷_ to _∷ᵥ_)
-open import Substrate.Foundation.Eq
+  renaming ([] to []ᵥ)
 open import Substrate.Foundation.Iff using (_⇔_; ⇔-refl)
 
 open import Substrate.Groups.Coxeter.Word using (Word; []; _∷_)
@@ -51,7 +50,7 @@ open import Substrate.TokiPona.Nimi using (Nimi; nimi-count)
 open import Substrate.TokiPona.LinearAlgebra
   using (NimiFreeLinearization; free-linearize-nimi)
 
-open import Substrate.Algebra.F2.Linear using (Linear; apply)
+open import Substrate.Algebra.F2.Linear.Linear
 
 open import Substrate.Category.OpcodeAlgebra
   using (OpcodeAlgebra; mkAlgebra; OpcodeCategory; substrate-native;
@@ -75,6 +74,9 @@ open import Substrate.Category.OpcodeAlgebra
 ------------------------------------------------------------------------
 
 open import Substrate.TokiPona.NimiSpace using (nimi-as-vector)
+open import Substrate.Foundation.Eq
+open import Substrate.Algebra.F2.AES.Round
+open import Substrate.Algebra.Z.JacobianNegSemiring
 module Bridge
   (V : Set)
   (_⊞_ : V → V → V)

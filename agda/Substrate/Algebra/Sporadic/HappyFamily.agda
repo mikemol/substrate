@@ -29,7 +29,7 @@
 module Substrate.Algebra.Sporadic.HappyFamily where
 
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 
 open import Substrate.Category.ConjugationCoalgebra
   using (ConjugationCoalgebra; mkConjugationCoalgebra)
@@ -38,7 +38,6 @@ open import Substrate.Category.ConjugationCoalgebra
 -- 1. Re-export previously-built Happy Family members.
 ------------------------------------------------------------------------
 
-import Substrate.Algebra.Sporadic.Monster.AsCoalgebra
 import Substrate.Algebra.Sporadic.BabyMonster
 import Substrate.Algebra.Sporadic.Conway
 import Substrate.Algebra.Sporadic.MathieuFischer

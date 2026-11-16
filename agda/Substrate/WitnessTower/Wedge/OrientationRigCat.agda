@@ -10,7 +10,7 @@
 -- not fields). Applied here, GRADED: the objects are indexed by grades
 -- (Obj : ℕ → Set) and the morphisms are a grade-respecting Hom family. Then
 -- the rig-category structure — the category (id, ∘, laws), the two monoidal
--- products on objects (⊕ over (ℕ,+,0), ⊗ over (ℕ,*,1)), and the braidings
+-- products on objects (⊕ over (ℕ,ℕ+,0), ⊗ over (ℕ,*,1)), and the braidings
 -- as morphisms — is a record that TYPE-CHECKS AT `Set` (NOT Set (lsuc …)).
 -- That green compile at `: Set` IS the dissolution.
 --
@@ -27,10 +27,13 @@
 
 module Substrate.WitnessTower.Wedge.OrientationRigCat where
 
-open import Substrate.Foundation.Nat using (ℕ; _+_; _*_)
-open import Substrate.Foundation.Eq using (_≡_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Times
 open import Substrate.WitnessTower.Wedge.OrientationBimonoidal
   using (GradedProductOver; _∧_; u)
+open import Substrate.Foundation.Eq
+open import Substrate.Probability.MarkovCategory
 
 ------------------------------------------------------------------------
 -- S1 — THE DISSOLUTION. Obj and Hom are MODULE PARAMETERS (mirroring
@@ -41,7 +44,7 @@ open import Substrate.WitnessTower.Wedge.OrientationBimonoidal
 --   Hom : {i j} → Obj i → Obj j → Set   -- grade-respecting morphisms
 --
 -- The two object-level products reuse the committed GradedProductOver:
---   ⊕obj : GradedProductOver _+_ 0 Obj   (the additive monoid on objects)
+--   ⊕obj : GradedProductOver _ℕ+_ 0 Obj   (the additive monoid on objects)
 --   ⊗obj : GradedProductOver _*_ 1 Obj   (the multiplicative monoid)
 -- Their unit/combine are `u`/`_∧_` from OrientationBimonoidal.
 --
@@ -73,9 +76,9 @@ record GradedRigCat
 
     ----------------------------------------------------------------
     -- the two monoidal products ON OBJECTS (the rig, decategorified
-    -- onto the object monoid): ⊕ over (ℕ,+,0), ⊗ over (ℕ,*,1).
+    -- onto the object monoid): ⊕ over (ℕ,ℕ+,0), ⊗ over (ℕ,*,1).
     ----------------------------------------------------------------
-    ⊕obj : GradedProductOver _+_ 0 Obj
+    ⊕obj : GradedProductOver _ℕ+_ 0 Obj
     ⊗obj : GradedProductOver _*_ 1 Obj
 
     ----------------------------------------------------------------

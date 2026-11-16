@@ -10,7 +10,7 @@
 
 module Substrate.Category.PhaseLockedLoop.Bank.BankIndependence where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Category.PhaseLockedLoop.Bank.PLLBank using (PLLBank)
 
 -- ⟡set1-paydown: PLLBank now parameterizes its Reference/VCOState carrier families,

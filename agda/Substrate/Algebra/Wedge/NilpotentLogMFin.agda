@@ -15,15 +15,24 @@
 
 module Substrate.Algebra.Wedge.NilpotentLogMFin where
 
-open import Substrate.Foundation.Eq  using (_≡_; refl; sym; trans; cong)
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _<_; _<?_; z≤n; s≤s)
+open import Substrate.Foundation.Nat.Le
+open import Substrate.Foundation.Nat.Lt
+open import Substrate.Foundation.Nat.Lt2
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.To
 open import Substrate.Foundation.Fin.From2
 open import Substrate.Foundation.Maybe using (Maybe; just; nothing)
-open import Substrate.Foundation.Negation using (Dec; yes; no; ¬_)
-open import Substrate.Foundation.Empty using (⊥-elim)
+open import Substrate.Foundation.Negation.Dec
+open import Substrate.Foundation.Negation.Not
+open import Substrate.Foundation.Empty.BotElim
 open import Substrate.Algebra.Wedge.NilpotentFaithfulLogChart using (d; LogM; mulM)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Fin.Properties
 
 ------------------------------------------------------------------------
 -- Two small Fin facts (not in Foundation.Fin) — derived inline.
@@ -39,7 +48,7 @@ fromℕ<-toℕ fzero     (s≤s q) = refl
 fromℕ<-toℕ (fsuc i) (s≤s p) = cong fsuc (fromℕ<-toℕ i p)
 
 ------------------------------------------------------------------------
--- THE FAITHFUL CARRIER + its multiplication. LogF = Maybe (Fin (suc d)); mulF
+-- THE FAITHFUL CARRIER ℕ+ its multiplication. LogF = Maybe (Fin (suc d)); mulF
 -- adds the logs (as ℕ) and, below the cap, keeps the result AS A Fin (fromℕ<);
 -- at/over the cap, the absorbing nothing.
 ------------------------------------------------------------------------
@@ -49,7 +58,7 @@ LogF = Maybe (Fin (suc d))
 mulF : LogF → LogF → LogF
 mulF nothing  _        = nothing
 mulF (just _) nothing  = nothing
-mulF (just i) (just j) with (toℕ i + toℕ j) <? suc d
+mulF (just i) (just j) with (toℕ i ℕ+ toℕ j) <? suc d
 ... | yes p = just (fromℕ< p)
 ... | no  _ = nothing
 
@@ -64,8 +73,8 @@ fz₀ = fzero
 
 mulF-identityˡ : (x : LogF) → mulF (just fz₀) x ≡ x
 mulF-identityˡ nothing  = refl
-mulF-identityˡ (just j) with (toℕ fz₀ + toℕ j) <? suc d
--- toℕ fzero + toℕ j = 0 + toℕ j reduces to toℕ j, so p : toℕ j < suc d and fromℕ< p ≡ j.
+mulF-identityˡ (just j) with (toℕ fz₀ ℕ+ toℕ j) <? suc d
+-- toℕ fzero ℕ+ toℕ j = 0 ℕ+ toℕ j reduces to toℕ j, so p : toℕ j < suc d and fromℕ< p ≡ j.
 ... | yes p = cong just (fromℕ<-toℕ j p)
 ... | no ¬p = ⊥-elim (¬p (toℕ-bound j))
 
@@ -82,9 +91,9 @@ mulF-identityˡ (just j) with (toℕ fz₀ + toℕ j) <? suc d
 ι-hom : (x y : LogF) → ι (mulF x y) ≡ mulM (ι x) (ι y)
 ι-hom nothing  _        = refl
 ι-hom (just _) nothing  = refl
-ι-hom (just i) (just j) with (toℕ i + toℕ j) <? suc d
-... | yes p = cong (λ z → just z) (toℕ-fromℕ< p)  -- ι (just (fromℕ< p)) = just (toℕ (fromℕ< p)) = just (toℕ i + toℕ j)
-      where -- toℕ (fromℕ< p) ≡ (toℕ i + toℕ j): fromℕ< then toℕ is the identity on the ℕ.
+ι-hom (just i) (just j) with (toℕ i ℕ+ toℕ j) <? suc d
+... | yes p = cong (λ z → just z) (toℕ-fromℕ< p)  -- ι (just (fromℕ< p)) = just (toℕ (fromℕ< p)) = just (toℕ i ℕ+ toℕ j)
+      where -- toℕ (fromℕ< p) ≡ (toℕ i ℕ+ toℕ j): fromℕ< then toℕ is the identity on the ℕ.
             toℕ-fromℕ< : {n m : ℕ} (q : m < n) → toℕ (fromℕ< q) ≡ m
             toℕ-fromℕ< (s≤s z≤n)     = refl
             toℕ-fromℕ< (s≤s (s≤s q)) = cong suc (toℕ-fromℕ< (s≤s q))

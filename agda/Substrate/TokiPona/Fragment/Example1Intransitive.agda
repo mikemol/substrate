@@ -12,12 +12,12 @@
 
 module Substrate.TokiPona.Fragment.Example1Intransitive where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.TokiPona.SemanticSpace
 open import Substrate.TokiPona.Nimi
 open import Substrate.TokiPona.NimiSpace using (nimi-as-vector)
 open import Substrate.TokiPona.TokiSentence
 open import Substrate.TokiPona.LinearAlgebra
+open import Substrate.Foundation.Eq
 
 example-soweli-li-suli : TokiSentence nimi-count
 example-soweli-li-suli =

@@ -20,7 +20,7 @@
 
 module Substrate.Algebra.R.Trace.StreamMap where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Algebra.R.Trace using (RealTrace; head; tail)
 
 -- map a per-digit function over the WHOLE trace (guarded corecursion).

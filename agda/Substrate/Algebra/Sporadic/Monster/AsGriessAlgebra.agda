@@ -36,10 +36,10 @@
 {-# OPTIONS --safe --without-K #-}
 
 open import Substrate.Foundation.Level using (Level; 0ℓ)
-open import Substrate.Foundation.Eq using (_≡_)
 
 open import Substrate.Category.CommutativeNonAssociativeAlgebra
   using (CommutativeNonAssociativeAlgebra)
+open import Substrate.Foundation.Eq
 
 module Substrate.Algebra.Sporadic.Monster.AsGriessAlgebra
   -- The Monster as abstract group.

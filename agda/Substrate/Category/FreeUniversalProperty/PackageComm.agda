@@ -31,10 +31,14 @@
 
 module Substrate.Category.FreeUniversalProperty.PackageComm where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
 open import Substrate.Category.FreeOverBasis
   using (AlgebraClass; Has-structure; Hom-preserves)
 open import Substrate.Category.FreeUniversalProperty using (FreeUP)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Algebra.F2.AES.Round
 
 module _
   {Has : Set → Set}

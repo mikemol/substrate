@@ -29,12 +29,10 @@ open import Substrate.Algebra.F2.FanoPlane using (FanoLine; Point; point-to-vec)
 
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Literals using (₁; ₂; ₃; ₂₃)
-open import Substrate.Foundation.Sum using (_⊎_; inj₁; inj₂)
+open import Substrate.Foundation.Sum.Sum
 open import Substrate.Foundation.Vec using (lookup)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl)
 
-open import Substrate.Algebra.F2 using (F₂; 𝟘)
+open import Substrate.Algebra.F2.F2
 open import Substrate.ShadowArchitecture.FanoLabeling
 open import Substrate.ShadowArchitecture.SelfReference using (_on_)
 
@@ -48,6 +46,7 @@ open import Substrate.ShadowArchitecture.SelfReference using (_on_)
 
 open import Substrate.ShadowArchitecture.Weight
   using (line-orbit; wt-1)
+open import Substrate.Foundation.Eq
 Axis : Set
 Axis = Fin 3
 

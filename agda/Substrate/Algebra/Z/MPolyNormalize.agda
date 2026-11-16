@@ -18,15 +18,26 @@
 
 module Substrate.Algebra.Z.MPolyNormalize where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _<_; _≤_; z≤n; s≤s)
+open import Substrate.Foundation.Nat.Le
+open import Substrate.Foundation.Nat.Lt
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.List using (List; []; _∷_; _++_)
-open import Substrate.Foundation.Negation using (¬_; Dec; yes; no)
-open import Substrate.Foundation.Empty using (⊥; ⊥-elim)
-open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym; cong; cong₂; subst)
-open import Substrate.Algebra.Z using (ℤ; +_; 0ℤ; 1ℤ; _≟ℤ_)
+open import Substrate.Foundation.Negation.Dec
+open import Substrate.Foundation.Negation.Not
+open import Substrate.Foundation.Empty.Bot
+open import Substrate.Algebra.Z.DecInt
+open import Substrate.Algebra.Z.Int
+open import Substrate.Algebra.Z.OneInt
+open import Substrate.Algebra.Z.ZeroInt
 open import Substrate.Algebra.Z.Add using (_+ℤ_)
 open import Substrate.Algebra.Z.JacobianResidue
   using (Mono; mono; Term; term; MPoly; coeff; eqM; eqℕ; 𝔹; tt; ff; and)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.Foundation.Eq.Subst
 
 ------------------------------------------------------------------------
 -- Small proof-free helpers on Mono / 𝔹.

@@ -23,11 +23,12 @@ module Substrate.Category.UniversalProperty.DiagonalDoFComputable where
 -- illuminating framing, NOT a theorem of this slice; not enforced by the typechecker).
 -- Promoting the framing to a theorem would require the formal identity Obs = the powerset coalgebra (⟡diagonal-escape-coalg / -obs-code).
 
-open import Substrate.Foundation.Nat using (ℕ; _≟_)
-open import Substrate.Foundation.Bool using (Bool; true; false)
-open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.Foundation.Negation using (Dec; yes; no)
+open import Substrate.Foundation.Nat.Dec
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Bool.Bool
+open import Substrate.Foundation.Negation.Dec
 open import Substrate.Algebra.R.Trace using (RealTrace; head; tail)
+open import Substrate.Foundation.Eq
 
 -- a plural prediction is a Bool-subset of possible digits (Set, per 230 — not a Set₁ predicate).
 Pred : Set

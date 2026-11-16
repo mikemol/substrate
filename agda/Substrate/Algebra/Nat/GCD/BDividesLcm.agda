@@ -8,7 +8,7 @@
 
 module Substrate.Algebra.Nat.GCD.BDividesLcm where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Algebra.Nat.Divides.Mul using (n∣m*n)
 open import Substrate.Algebra.Nat.Divides.Type using (_∣_)
 open import Substrate.Algebra.Nat.GCD.LcmN using (lcm-ℕ)

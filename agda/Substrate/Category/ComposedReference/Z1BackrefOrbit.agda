@@ -9,11 +9,12 @@
 
 module Substrate.Category.ComposedReference.Z1BackrefOrbit where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Category.ComposedReference.EmissionSource using (EmissionSource; Recent)
 open import Substrate.Category.ComposedReference.ActionAlgebra using (identity-action)
 open import Substrate.Category.ComposedReference.BasisLabel using (BasisLabel; ALGEBRAIC)
 open import Substrate.Category.ComposedReference.Record using (ComposedReference)
+open import Substrate.Cocycles.KRule
 
 Z1-backref-orbit : ℕ → ℕ → ComposedReference
 Z1-backref-orbit dist len = record

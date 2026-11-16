@@ -8,7 +8,7 @@
 --
 -- The existing Bivector module bundled the bivector type
 -- (= Vector 6) and the complement involution but not the wedge
--- pairing itself. This module supplies the wedge + instantiates
+-- pairing itself. This module supplies the wedge +F instantiates
 -- L4 WedgeProduct.
 --
 -- Per [[universal-property-discipline]]: the wedge structure is
@@ -16,15 +16,15 @@
 -- HodgeDim4; downstream sites can now consume the rank-2 wedge via
 -- the categorical primitive rather than the F₂-specific definition.
 --
--- Per [[3plus1-parity-universal]] + [[reserved-selfdual-bijection-
+-- Per [[3plus1-parity-universal]] +F [[reserved-selfdual-bijection-
 -- gauge]]: the bivector space carries the chirality F₂ via the
 -- complement involution (Hodge ★, see L7 bridge); the wedge is the
 -- underlying graded structure on which the chirality acts.
 --
 -- The wedge formula (lex-ordered 2-blade basis):
---   (u ∧ v)[ij] = u_i · v_j + u_j · v_i (in F₂)
--- alternating: (v ∧ v)[ij] = v_i · v_j + v_j · v_i = 2·v_i·v_j = 𝟘
---              via ·-comm + +-self-inverse.
+--   (u ∧ v)[ij] = u_i · v_j +F u_j · v_i (in F₂)
+-- alternating: (v ∧ v)[ij] = v_i · v_j +F v_j · v_i = 2·v_i·v_j = 𝟘
+--              via ·-comm +F +-self-inverse.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
@@ -33,41 +33,65 @@ module Substrate.Algebra.F2.HodgeDim4.Bivector.AsExterior where
 
 open import Substrate.Foundation.Level using (Level)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; cong₂)
 
-open import Substrate.Algebra.F2
+open import Substrate.Algebra.F2.AbsorbL
+open import Substrate.Algebra.F2.AbsorbR
+open import Substrate.Algebra.F2.Assoc
+open import Substrate.Algebra.F2.Comm
+open import Substrate.Algebra.F2.Dec
+open import Substrate.Algebra.F2.DistribLPlus
+open import Substrate.Algebra.F2.DistribRPlus
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.F2Cases
+open import Substrate.Algebra.F2.Idempotent
+open import Substrate.Algebra.F2.IdentityL
+open import Substrate.Algebra.F2.IdentityR
+open import Substrate.Algebra.F2.InvOfOne
+open import Substrate.Algebra.F2.OneNeqZero
+open import Substrate.Algebra.F2.Op
+open import Substrate.Algebra.F2.Op2
+open import Substrate.Algebra.F2.PlusAssoc
+open import Substrate.Algebra.F2.PlusComm
+open import Substrate.Algebra.F2.PlusF
+open import Substrate.Algebra.F2.PlusIdentityL
+open import Substrate.Algebra.F2.PlusIdentityR
+open import Substrate.Algebra.F2.PlusInverseL
+open import Substrate.Algebra.F2.PlusInverseR
+open import Substrate.Algebra.F2.PlusSelfInverse
+open import Substrate.Algebra.F2.ZeroNeqOne
 open import Substrate.Algebra.F2.Vector using (Vector; 𝟎ⱽ; _+ⱽ_)
 open import Substrate.Algebra.F2.HodgeDim4.Bivector using (Bivector)
 
 open import Substrate.Category.WedgeProduct using (WedgeProduct; mkWedgeProduct)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong2
 
 ------------------------------------------------------------------------
 -- The wedge product Vector 4 × Vector 4 → Vector 6.
 --
 -- Lex-ordered 2-blade basis (matching Bivector.b₀₁..b₂₃):
---   index 0: e₀ ∧ e₁  → u₀·v₁ + u₁·v₀
---   index 1: e₀ ∧ e₂  → u₀·v₂ + u₂·v₀
---   index 2: e₀ ∧ e₃  → u₀·v₃ + u₃·v₀
---   index 3: e₁ ∧ e₂  → u₁·v₂ + u₂·v₁
---   index 4: e₁ ∧ e₃  → u₁·v₃ + u₃·v₁
---   index 5: e₂ ∧ e₃  → u₂·v₃ + u₃·v₂
+--   index 0: e₀ ∧ e₁  → u₀·v₁ +F u₁·v₀
+--   index 1: e₀ ∧ e₂  → u₀·v₂ +F u₂·v₀
+--   index 2: e₀ ∧ e₃  → u₀·v₃ +F u₃·v₀
+--   index 3: e₁ ∧ e₂  → u₁·v₂ +F u₂·v₁
+--   index 4: e₁ ∧ e₃  → u₁·v₃ +F u₃·v₁
+--   index 5: e₂ ∧ e₃  → u₂·v₃ +F u₃·v₂
 ------------------------------------------------------------------------
 
 wedge : Vector 4 → Vector 4 → Bivector
 wedge (u₀ ∷ u₁ ∷ u₂ ∷ u₃ ∷ []) (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ []) =
-    ((u₀ · v₁) + (u₁ · v₀))
-  ∷ ((u₀ · v₂) + (u₂ · v₀))
-  ∷ ((u₀ · v₃) + (u₃ · v₀))
-  ∷ ((u₁ · v₂) + (u₂ · v₁))
-  ∷ ((u₁ · v₃) + (u₃ · v₁))
-  ∷ ((u₂ · v₃) + (u₃ · v₂))
+    ((u₀ · v₁) +F (u₁ · v₀))
+  ∷ ((u₀ · v₂) +F (u₂ · v₀))
+  ∷ ((u₀ · v₃) +F (u₃ · v₀))
+  ∷ ((u₁ · v₂) +F (u₂ · v₁))
+  ∷ ((u₁ · v₃) +F (u₃ · v₁))
+  ∷ ((u₂ · v₃) +F (u₃ · v₂))
   ∷ []
 
 ------------------------------------------------------------------------
 -- The alternating axiom: v ∧ v ≡ 𝟎ⱽ.
 --
--- For each of the 6 components: v_i · v_j + v_j · v_i = (v_i · v_j) +
+-- For each of the 6 components: v_i · v_j +F v_j · v_i = (v_i · v_j) +F
 -- (v_i · v_j) (by ·-comm) = 𝟘 (by +-self-inverse).
 ------------------------------------------------------------------------
 
@@ -75,15 +99,15 @@ alternating-wedge : (v : Vector 4) → wedge v v ≡ 𝟎ⱽ
 alternating-wedge (v₀ ∷ v₁ ∷ v₂ ∷ v₃ ∷ []) =
   helper v₀ v₁ v₂ v₃
   where
-    -- Componentwise: v_i · v_j + v_j · v_i = (v_i · v_j) + (v_i · v_j)
+    -- Componentwise: v_i · v_j +F v_j · v_i = (v_i · v_j) +F (v_i · v_j)
     -- = 𝟘. F₂ has only 4 values for each pair; case-split closes.
     helper : (a b c d : F₂) →
-             (((a · b) + (b · a)) ∷
-              ((a · c) + (c · a)) ∷
-              ((a · d) + (d · a)) ∷
-              ((b · c) + (c · b)) ∷
-              ((b · d) + (d · b)) ∷
-              ((c · d) + (d · c)) ∷ []) ≡ 𝟎ⱽ
+             (((a · b) +F (b · a)) ∷
+              ((a · c) +F (c · a)) ∷
+              ((a · d) +F (d · a)) ∷
+              ((b · c) +F (c · b)) ∷
+              ((b · d) +F (d · b)) ∷
+              ((c · d) +F (d · c)) ∷ []) ≡ 𝟎ⱽ
     helper 𝟘 𝟘 𝟘 𝟘 = refl
     helper 𝟘 𝟘 𝟘 𝟙 = refl
     helper 𝟘 𝟘 𝟙 𝟘 = refl

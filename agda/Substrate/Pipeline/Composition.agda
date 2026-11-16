@@ -23,9 +23,12 @@ open import Substrate.Pipeline.Brick.Record using (Brick)
 open import Substrate.Pipeline.Brick.Type using (BrickType)
 
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; trans; cong; sym)
 open import Substrate.Pipeline.Brick
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Category.BWTEmergence
 
 -- ⟡set1-rp: telescope carriers for Brick (auto).
 private variable

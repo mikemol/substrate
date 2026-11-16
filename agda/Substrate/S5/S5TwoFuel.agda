@@ -31,12 +31,18 @@ open import Substrate.S5.S5Verdict
 open import Substrate.Foundation.Bool    using (Bool; true; false)
 open import Substrate.Foundation.Product using (Σ; _×_; _,_) renaming (proj₁ to fst; proj₂ to snd)
 open import Substrate.Foundation.List    using (_++_)
-open import Substrate.Foundation.Nat     using (_≤_; z≤n; s≤s)
+open import Substrate.Foundation.Nat.Le
 
 open import Substrate.Foundation.List.Length using (length)   -- ⟡dedup: was a local re-derivation
 
 -- the dedupe machinery + its L3 length-bound: LIFTED to the shared parent.
 open import Substrate.S5.Dedupe using (module Dedupe)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Bool.Bool
+open import Substrate.S5.S5TwoFuelFix
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Nat.Nat
 
 -- the trace-keeping runner ----------------------------------------------
 

@@ -53,9 +53,9 @@
 
 module Substrate.Cardinality.Product where
 
-open import Substrate.Foundation.Level using (0ℓ)
-open import Substrate.Foundation.Bool using (Bool)
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _*_)
+open import Substrate.Foundation.Bool.Bool
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Times
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Product using (_×_; _,_)
 open import Substrate.Algebra.Bijection
@@ -66,7 +66,7 @@ open import Substrate.Algebra.Bijection
 open import Substrate.Foundation.Fin.Combine.Bijection using (*↔×)
 
 open import Substrate.Axes.Axis using (Axis)
-open import Substrate.Groups.V4.Bijection using (V₄)
+open import Substrate.Groups.V4.Bijection.V4
 open import Substrate.Cardinality
   using (axis-↔-fin4; v4-↔-fin4; pairing-↔-fin3;
          chirality-↔-fin2; bool-↔-fin2)
@@ -82,6 +82,7 @@ open import Substrate.Cocycles.V4Signature.S4Iso.Classify
 ------------------------------------------------------------------------
 
 open import Substrate.Cocycles.V4Signature.S4Iso using (TotalSpace)
+open import Substrate.Axes.Punctured
 fin-product : ∀ {m n} → (Fin m × Fin n) ↔ Fin (m * n)
 fin-product = ↔-sym *↔×
 

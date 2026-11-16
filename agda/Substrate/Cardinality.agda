@@ -69,25 +69,24 @@
 
 module Substrate.Cardinality where
 
-open import Substrate.Foundation.Level using (0ℓ)
 open import Substrate.Foundation.Fin.Literals using (₁; ₂; ₃; ₄)
 open import Substrate.Algebra.Bijection using (_↔_; mk↔ₛ′; ↔-sym)
-open import Substrate.Foundation.Bool using (Bool; true; false)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; trans; cong)
+open import Substrate.Foundation.Bool.Bool
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Cover using (fin-cover)
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Product using (_,_)
 
-open import Substrate.Axes.Axis using (Axis; D; C; S; W)
 -- axis-↔-fin4 lives at the Axes layer (single source of truth) and is
 -- re-exported here so existing consumers (Cardinality.Product) that
 -- import it from this module are unaffected.
-open import Substrate.Axes.Punctured public using (axis-↔-fin4)
-open import Substrate.Groups.V4.Bijection using (V₄; e; α; β; γ)
+open import Substrate.Groups.V4.Bijection.V4
 open import Substrate.Cocycles.V4Signature.Chirality.Type using (Chirality; even; odd)
 open import Substrate.Cocycles.V4Signature.Pairing.Type using (Pairing; α-pair; β-pair; γ-pair)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- Axis ↔ Fin 4

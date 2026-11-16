@@ -27,10 +27,14 @@ module Substrate.Category.UniversalProperty.DiagonalDoF where
 -- illuminating framing, NOT a theorem of this slice; not enforced by the typechecker).
 -- Promoting the framing to a theorem would require the formal identification of the dof inequality with the diagonal's defeat (⟡diagonal-lawvere-coalg).
 
-open import Substrate.Foundation.Bool using (Bool; true; false; not)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; cong)
-open import Substrate.Foundation.Negation using (¬_)
+open import Substrate.Foundation.Bool.Bool
+open import Substrate.Foundation.Bool.Not
+open import Substrate.Foundation.Negation.Not
 open import Substrate.Foundation.Product using (Σ; _,_)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Category.Lawvere
 
 ------------------------------------------------------------------------
 -- ① THE LEVER (221): the diagonal endomap `not` is fixed-point-free on the COMMITTED object.

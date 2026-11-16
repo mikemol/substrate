@@ -33,15 +33,15 @@
 
 module Substrate.WitnessTower.Wedge.PackedBridge where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using (Vec; []; _∷_)
-open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.Algebra.F2 using (F₂; 𝟘; 𝟙)
+open import Substrate.Algebra.F2.F2
 open import Substrate.Algebra.Wedge.Graded.Morphism using (GradedDivStrMorphism)
 open import Substrate.Algebra.Wedge.VecGraded using (vec-graded)
 open import Substrate.WitnessTower.Wedge.Graded using (tower-graded)
 open import Substrate.WitnessTower.Enumerate using (Perm; insert-at)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. A binary digit picks a witness insertion slot (grade-aware).

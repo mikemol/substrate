@@ -12,11 +12,10 @@
 
 module Substrate.Pedagogy.Index where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Groups.Coxeter.Word using (Word; []; _∷_)
 
-open import Substrate.Linguistic.Roster
-  using (Lang; lojban; tokipona; solresol; kelen; lambda-lang; lie-lang)
+open import Substrate.Linguistic.Roster.Lang
 
 open import Substrate.Pedagogy.MarkdownToken
   using (TextSymbol;

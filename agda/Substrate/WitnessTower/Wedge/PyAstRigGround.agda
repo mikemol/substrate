@@ -38,11 +38,11 @@
 
 module Substrate.WitnessTower.Wedge.PyAstRigGround where
 
-open import Substrate.Foundation.Nat using (ℕ; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.WitnessTower.Enumerate using (Perm; insert-at)
-open import Substrate.WitnessTower.LehmerPath using (LehmerPath; _◂_; decode)
+open import Substrate.WitnessTower.LehmerPath.Decode
+open import Substrate.WitnessTower.LehmerPath.LehmerPath
 open import Substrate.WitnessTower.FirstAppearance using (id-perm; compose)
 open import Substrate.WitnessTower.SnGroup using (compose-id-left; compose-id-right)
 open import Substrate.WitnessTower.CyclicGrounding using (compose-assoc)
@@ -50,6 +50,9 @@ open import Substrate.Algebra.Monoid using (Monoid)
 open import Substrate.Algebra.Wedge.Graded using (recon)
 open import Substrate.WitnessTower.Wedge.OrientationTowerDiv using (towerDiv)
 open import Substrate.WitnessTower.Wedge.PyAstRig using (Objpy; act; pyRecon)
+open import Substrate.Foundation.Eq
+open import Substrate.Algebra.Semigroup
+open import Substrate.Groups.V4-Cosets
 
 -- THE GROUNDING: pyRecon consumes towerDiv's residue-recon; a top Lehmer digit d acts by the
 -- tower's own step `insert-at d`. Definitional — the residue IS the Lehmer digit, not a new thing.

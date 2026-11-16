@@ -59,16 +59,19 @@
 
 module Substrate.Algebra.CayleyDickson where
 
-open import Substrate.Foundation.Nat     using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
-open import Substrate.Foundation.Eq      using (_≡_; refl)
-open import Substrate.Foundation.Empty   using (⊥)
+open import Substrate.Foundation.Empty.Bot
 
-open import Substrate.Algebra.Q       using (ℚ; 0ℚ; 1ℚ; -1ℚ)
+open import Substrate.Algebra.Q.OneRat
+open import Substrate.Algebra.Q.OneRat2
+open import Substrate.Algebra.Q.Rat
+open import Substrate.Algebra.Q.ZeroRat
 open import Substrate.Algebra.Q.Add   using (_+ℚ_)
 open import Substrate.Algebra.Q.Mul   using (_*ℚ_)
 open import Substrate.Algebra.Q.Neg   using (-ℚ_)
 open import Substrate.Algebra.Q.Equiv using (_≈ℚ_)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- The carrier tower: Carrier n = the 2ⁿ-dimensional algebra over ℚ. The recursion

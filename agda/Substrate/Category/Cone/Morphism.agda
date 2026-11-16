@@ -34,12 +34,14 @@ module Substrate.Category.Cone.Morphism where
 
 open import Substrate.Foundation.Level using (Level; _⊔_)
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; trans; cong)
+open import Substrate.Foundation.Nat.Nat
 
 open import Substrate.Category.Cone using (Cone; leg)
 open import Substrate.Category.Morphism using (Morphism; mkMorphism)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 private
   variable

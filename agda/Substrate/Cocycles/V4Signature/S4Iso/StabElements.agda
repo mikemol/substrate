@@ -12,12 +12,20 @@ module Substrate.Cocycles.V4Signature.S4Iso.StabElements where
 
 open import Substrate.Foundation.Product using (_,_; proj₁; proj₂)
 open import Substrate.Foundation.Fin.Literals using (₁; ₂)
-open import Substrate.Foundation.Eq using (_≡_; refl; cong)
 
 open import Substrate.Axes.Axis using (Axis; D; C; S; W)
 open import Substrate.Groups.Symmetric.Permutation Axis
 open import Substrate.Groups.SemidirectProduct.Stab
-open import Substrate.Groups.SemidirectProduct.V
+open import Substrate.Groups.SemidirectProduct.V.NonDSends
+open import Substrate.Groups.SemidirectProduct.V.Private
+open import Substrate.Groups.SemidirectProduct.V.SelfToD
+open import Substrate.Groups.SemidirectProduct.V.VFor
+open import Substrate.Groups.SemidirectProduct.V.VForAnchor
+open import Substrate.Groups.SemidirectProduct.V.VForAnchorSends
+open import Substrate.Groups.SemidirectProduct.V.VOfAxisAnchor
+open import Substrate.Groups.SemidirectProduct.V.VOfAxisAnchorSends
+open import Substrate.Groups.SemidirectProduct.V.VOfAxisUnique
+open import Substrate.Groups.SemidirectProduct.V.VSendsD
 open import Substrate.Groups.SemidirectProduct.S
 open import Substrate.Groups.SemidirectProduct.Factorisation
 open import Substrate.Groups.V4-Embedding
@@ -32,8 +40,16 @@ open import Substrate.Cocycles.V4Signature.OrbitKey-S3.OrbitKeyToS3
 open import Substrate.Cocycles.V4Signature.OrbitKey-S3.S3ToOrbitKey
 open import Substrate.Cocycles.V4Signature.OrbitKey-S3.OrbitKeyRoundTrip
 open import Substrate.Cocycles.V4Signature.OrbitKey-S3.SFinApplyInj
-open import Substrate.Cocycles.V4Signature.OrbitKey-S3.SFinRoundTrip
-  using (transposition; transposition-fixes-third; s3-id; s3-csw; s3-cws)
+-- ⚑ THE CLAUSE NAMED THE WRONG PARENT, not merely a dissolved one. `SFinRoundTrip`
+-- is gone, but these five names were never its: `transposition` and
+-- `transposition-fixes-third` are `.Transposition`'s, and `s3-id`/`s3-csw`/`s3-cws`
+-- are `.S3Elements`' — SIBLING leaves. So `rewire_to_leaves` was right to refuse:
+-- it maps a parent onto ITS OWN leaves, and no leaf of `SFinRoundTrip` provides
+-- these. `agda_defs <name>` places each one directly.
+open import Substrate.Cocycles.V4Signature.OrbitKey-S3.Transposition
+open import Substrate.Cocycles.V4Signature.OrbitKey-S3.S3Elements
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- Identity in Stab(D).

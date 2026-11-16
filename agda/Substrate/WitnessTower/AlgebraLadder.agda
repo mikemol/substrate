@@ -33,7 +33,6 @@
 
 module Substrate.WitnessTower.AlgebraLadder where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
 
 open import Substrate.Algebra.Magma        using (Magma)
 open import Substrate.Algebra.Semigroup    using (Semigroup; magma; ·-assoc)
@@ -42,6 +41,7 @@ open import Substrate.Algebra.Group        using (Group; monoid; inv; inv-left; 
 open import Substrate.Algebra.AbelianGroup using (AbelianGroup; group; ·-comm)
 
 open import Substrate.WitnessTower.Core using (Path; walk; steps; steps-walk)
+open import Substrate.Foundation.Eq
 
 private variable A : Set
 

@@ -4,10 +4,10 @@
 -- Substrate.Algebra.R.Trace.ExtruderNfCrossDlog — ⟡nf-cross-dlog: the degree-k
 -- Nf cross-witness on the GROUNDED exp/dlog footing (ADD 133), dissolving the
 -- asymmetric addCap hack. The additive→multiplicative codec is DLogHom.gpow-hom:
---   gpow (a + b) ≡ gpow a *Q gpow b            (exp of a sum IS a product)
+--   gpow (a ℕ+ b) ≡ gpow a *Q gpow b            (exp of a sum IS a product)
 -- so the Nf cross of two strands carrying exponents (shed-step logs) i, j is
---   cross i j = gpow i *Q gpow j = gpow (i + j)
--- SYMMETRIC in i, j (because + is), with NO strand forced to zero. The degree-k
+--   cross i j = gpow i *Q gpow j = gpow (i ℕ+ j)
+-- SYMMETRIC in i, j (because ℕ+ is), with NO strand forced to zero. The degree-k
 -- obstruction lives in the NILPOTENT regime: instantiate with the ZERO modulus
 -- f-lo = 0, so y^(suc d) ≡ 0 (nilpotent), NOT a GF irreducible (cyclic). Then
 -- gpow n = yⁿ collapses at the degree bound — the residual redex's cost.
@@ -18,11 +18,11 @@
 
 module Substrate.Algebra.R.Trace.ExtruderNfCrossDlog where
 
-open import Substrate.Foundation.Eq  using (_≡_; refl; sym; trans; cong)
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
-open import Substrate.Foundation.Nat.Properties.Add using (+-comm)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Properties.Add.PlusComm
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; replicate)
-import Substrate.Algebra.F2 as F2
+open import Substrate.Algebra.F2.F2
 open import Substrate.Algebra.F2.CommRing using (F₂-CommRing)
 open import Substrate.Algebra.F2.Polynomial.Wedge.DLogHom using (module Over)
 import Substrate.Algebra.Polynomial.Graded.FromCommRing as F
@@ -36,11 +36,15 @@ import Substrate.Algebra.Polynomial.Graded.Div as Div
 -- obstruction as NilpotentDegreeK's Rk 3, now MULTIPLICATIVELY via exp/dlog.
 ------------------------------------------------------------------------
 open F.Over F₂-CommRing using (Poly)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 d : ℕ
 d = 3
 
-f-lo₀ : Vec F2.F₂ (suc d)              -- ZERO modulus ⟹ y^(suc d) ≡ 0 (nilpotent)
-f-lo₀ = replicate (suc d) F2.𝟘
+f-lo₀ : Vec F₂ (suc d)              -- ZERO modulus ⟹ y^(suc d) ≡ 0 (nilpotent)
+f-lo₀ = replicate (suc d) 𝟘
 
 
 
@@ -55,7 +59,7 @@ cross-dlog : ℕ → ℕ → Poly (suc d)
 cross-dlog i j = gpow i *Q gpow j
 
 -- the codec: the cross IS gpow of the summed logs (exp of a sum is a product).
-cross-is-gpow-sum : (i j : ℕ) → cross-dlog i j ≡ gpow (i + j)
+cross-is-gpow-sum : (i j : ℕ) → cross-dlog i j ≡ gpow (i ℕ+ j)
 cross-is-gpow-sum i j = sym (gpow-hom i j)
 
 ------------------------------------------------------------------------
@@ -78,14 +82,14 @@ nilpotent-at-bound : gpow (suc d) ≡ 𝟎C           -- y^(suc d) ≡ 0: genuin
 nilpotent-at-bound = refl
 
 -- the cross of two strands whose logs SUM to the bound collapses — the maximal
--- obstruction is when i + j = suc d (the residual redex is exactly the bound).
-cross-collapses-at-bound : (i j : ℕ) → i + j ≡ suc d → cross-dlog i j ≡ gpow (suc d)
+-- obstruction is when i ℕ+ j = suc d (the residual redex is exactly the bound).
+cross-collapses-at-bound : (i j : ℕ) → i ℕ+ j ≡ suc d → cross-dlog i j ≡ gpow (suc d)
 cross-collapses-at-bound i j p = trans (cross-is-gpow-sum i j) (cong gpow p)
 
 ------------------------------------------------------------------------
 -- THE DISSOLUTION (grounded): the additive addCap of the earlier Rₖ (ADD 131) was
 -- the LOG side; here the exponents i, j ARE the logs, and gpow is exp. The cross
--- is gpow (i + j) — the additive sum of logs, symmetric, lifted to the product by
+-- is gpow (i ℕ+ j) — the additive sum of logs, symmetric, lifted to the product by
 -- the codec. No strand is forced to zero: both logs add. The degree-k obstruction
 -- is the sum reaching the bound (suc d), where gpow collapses (nilpotent regime).
 ------------------------------------------------------------------------

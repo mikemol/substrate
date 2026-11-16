@@ -15,7 +15,6 @@
 module Substrate.Cocycles.V4Signature.Codeword.LiveS4Bijection.Anchor where
 
 open import Substrate.Foundation.Product using (_,_)
-open import Substrate.Foundation.Eq using (_≡_)
 
 open import Substrate.Axes.Axis using (Axis; D; C; S; W)
 open import Substrate.Groups.Symmetric.Permutation Axis
@@ -27,6 +26,8 @@ open import Substrate.Cocycles.V4Signature.OrbitKey.Type
 open import Substrate.Cocycles.V4Signature.Pairing.Type
 open import Substrate.Cocycles.V4Signature.Chirality.Type
 open import Substrate.Cocycles.V4Signature.S4Iso.Anchor
+open import Substrate.Foundation.Eq
+open import Substrate.Algebra.Wedge.BinMul.Sel
 
 ------------------------------------------------------------------------
 -- Selector → OrbitKey table.

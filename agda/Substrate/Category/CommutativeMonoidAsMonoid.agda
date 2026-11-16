@@ -26,7 +26,7 @@ open import Substrate.Algebra.Magma using (Magma)
 open import Substrate.Algebra.Semigroup using (Semigroup)
 open import Substrate.Algebra.Monoid using (Monoid)
 open import Substrate.Category.CommutativeMonoid using (CommutativeMonoid)
-open import Substrate.Category.CategoryOf using (CategoryOf)
+open import Substrate.Category.CategoryOf.CategoryOf
 open import Substrate.Category.Delooping using (deloop)
 
 open CommutativeMonoid   -- opens the law projections (+R-assoc/+R-identityˡ/ʳ/comm); R/_+R_/0R are now params

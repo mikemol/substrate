@@ -1,8 +1,8 @@
 ------------------------------------------------------------------------
 -- Substrate.Foundation.Fin.Inject
 --
--- inject+ : ∀ {n} k → Fin n → Fin (n + k).
--- Embed a Fin n into Fin (n + k) by keeping the underlying numeric
+-- inject+ : ∀ {n} k → Fin n → Fin (n ℕ+ k).
+-- Embed a Fin n into Fin (n ℕ+ k) by keeping the underlying numeric
 -- value. The "extra" k slots at the high end are unreachable from
 -- inject+'s image.
 ------------------------------------------------------------------------
@@ -11,9 +11,10 @@
 
 module Substrate.Foundation.Fin.Inject where
 
-open import Substrate.Foundation.Nat using (ℕ; _+_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
 open import Substrate.Foundation.Fin.Fin
 
-inject+ : ∀ {n} k → Fin n → Fin (n + k)
+inject+ : ∀ {n} k → Fin n → Fin (n ℕ+ k)
 inject+ _ zero    = zero
 inject+ k (suc i) = suc (inject+ k i)

@@ -20,21 +20,25 @@
 
 module Substrate.Category.UniversalProperty.ExtrudeSKIFibration where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans)
-open import Substrate.Foundation.Empty using (⊥; ⊥-elim)
+open import Substrate.Foundation.Empty.Bot
+open import Substrate.Foundation.Empty.BotElim
 open import Substrate.Foundation.Product using (Σ; _,_; _×_; proj₁; proj₂)
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Algebra.R.Trace.SKIShedDuality using (_∙_) renaming (Tm to Tm⟦533ef80d⟧)
+open import Substrate.Algebra.R.Trace.SKIShedDuality.Tm
 import Substrate.Algebra.R.Trace.SKIReductionToList as R
 open R using (_⇒_)
 open import Substrate.Foundation.RewriteConfluence (R._⇒_) using (_⇒*_; done; _◅_; Converge)
 open import Substrate.Category.GrothendieckConstruction using (Fibration)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Algebra.R.Trace.SKIShedDuality.Tm
 
 ------------------------------------------------------------------------
 -- a normal form only reduces to itself (positive; no decision):
 ------------------------------------------------------------------------
-nf-fixed : {n : Tm⟦533ef80d⟧} → ({c : Tm⟦533ef80d⟧} → n ⇒ c → ⊥) → {c : Tm⟦533ef80d⟧} → n ⇒* c → n ≡ c
+nf-fixed : {n : Tm} → ({c : Tm} → n ⇒ c → ⊥) → {c : Tm} → n ⇒* c → n ≡ c
 nf-fixed n-nf done    = refl
 nf-fixed n-nf (s ◅ _) = ⊥-elim (n-nf s)
 
@@ -58,8 +62,8 @@ Total = Σ ℕ (λ n → Fin (suc n))
 ------------------------------------------------------------------------
 record TowerLabeling : Set where
   field
-    label        : Total → Tm⟦533ef80d⟧
-    label-normal : (t : Total) {c : Tm⟦533ef80d⟧} → label t ⇒ c → ⊥
+    label        : Total → Tm
+    label-normal : (t : Total) {c : Tm} → label t ⇒ c → ⊥
     label-inj    : {s t : Total} → label s ≡ label t → s ≡ t
 
   -- the non-degeneracy, over the WHOLE total space (every vertex at every rung), by exhaustion:

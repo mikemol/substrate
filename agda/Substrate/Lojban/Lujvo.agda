@@ -28,13 +28,14 @@
 
 module Substrate.Lojban.Lujvo where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Vec using (Vec)
-open import Substrate.Foundation.Eq using (_≡_; refl)
 
 open import Substrate.Lojban.Gismu using (Gismu; arity)
 open import Substrate.Lojban.Word Gismu
   using (LojbanWord; ε; single; free-merge; free-merge-assoc)
+open import Substrate.Foundation.Eq
+open import Substrate.Lojban.Fragment.Carriers
 
 ------------------------------------------------------------------------
 -- 1. The Lujvo record.
@@ -139,7 +140,7 @@ module WithDenotation
   open import Substrate.Lojban.Gismu using (module WithDenotation)
   open Substrate.Lojban.Gismu.WithDenotation Sumti Sem denote
     using (gismu-to-selbri)
-  open import Substrate.Lojban.PlaceStructure using (Selbri)
+  open import Substrate.Lojban.PlaceStructure.Selbri
 
   lujvo-to-selbri : (ℓ : Lujvo) → Selbri (lujvo-arity ℓ) Sumti Sem
   lujvo-to-selbri ℓ = gismu-to-selbri (head ℓ)

@@ -23,11 +23,10 @@
 module Substrate.Category.ExteriorAlgebra.Morphism where
 
 open import Substrate.Foundation.Level using (Level; _⊔_)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl)
 
 open import Substrate.Category.ExteriorAlgebra using (ExteriorAlgebra)
 open import Substrate.Category.Morphism using (Morphism; mkMorphism)
+open import Substrate.Foundation.Eq
 
 private
   variable

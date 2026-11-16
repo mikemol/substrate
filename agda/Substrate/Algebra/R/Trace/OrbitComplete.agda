@@ -24,13 +24,14 @@
 
 module Substrate.Algebra.R.Trace.OrbitComplete where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Unit using (⊤)
 open import Substrate.Foundation.Product using (_×_; _,_)
 open import Substrate.Algebra.R.Trace using (RealTrace; head; tail)
-open import Substrate.Algebra.R.Trace.Bisim using (_~_; head~; tail~)
+open import Substrate.Algebra.R.Trace.Bisim.Op
 open import Substrate.Algebra.R.Trace.OrbitUniversality using (module OrbitCover)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Bool.Not
 
 module ClosedControls
   (S : Set) (next : S → S) (obs : S → ℕ)
@@ -87,7 +88,9 @@ module ClosedControls
 -- EVERY state. This witnesses the theorem is not vacuous.
 ------------------------------------------------------------------------
 module BoolInstance where
-  open import Substrate.Foundation.Bool using (Bool; not; boolToℕ) renaming (true to tt; false to ff)  -- ⟡A4: route through Foundation.Bool (no distinct local Bool)
+  open import Substrate.Foundation.Bool.Bool
+  open import Substrate.Foundation.Bool.BoolToNat
+  open import Substrate.Foundation.Bool.Not   -- ⟡A4: route through Foundation.Bool (no distinct local Bool)
   flip : Bool → Bool
   flip = not
   bobs : Bool → ℕ

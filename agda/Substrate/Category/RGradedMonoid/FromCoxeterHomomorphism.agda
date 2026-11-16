@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------
 -- Substrate.Category.RGradedMonoid.FromCoxeterHomomorphism
 --
--- Combinator: any Coxeter Word algebra + an ℕ-valued monoid
+-- Combinator: any Coxeter Word algebra ℕ+ an ℕ-valued monoid
 -- homomorphism gives an F₂-graded RGradedMonoid via parity ∘ hom.
 --
 -- Consolidates the pattern shared by V4-F2Graded (length-parity),
@@ -13,7 +13,7 @@
 --   2. Have an ℕ-homomorphism hom : Word A → ℕ (length, count-of-A,
 --      count-of-B, weight, etc.).
 --   3. The F₂-grading is parity ∘ hom; degree-· follows from
---      hom-distrib (= the homomorphism property of hom) + parity-+.
+--      hom-distrib (= the homomorphism property of hom) ℕ+ parity-+.
 --
 -- This combinator takes (Word, _++_, ε, monoid laws, hom, hom-laws)
 -- and produces the F₂-graded RGradedMonoid record. Each F₂-graded
@@ -22,9 +22,12 @@
 
 {-# OPTIONS --safe --without-K #-}
 
-open import Substrate.Foundation.Nat using (ℕ; _+_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
 open import Substrate.Foundation.Eq
-  using (_≡_; refl; trans; cong)
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Groups.Capabilities.Strict2Monoid
 
 module Substrate.Category.RGradedMonoid.FromCoxeterHomomorphism
   (Word : Set)
@@ -35,7 +38,7 @@ module Substrate.Category.RGradedMonoid.FromCoxeterHomomorphism
   (++-identityʳ  : (a : Word) → a ++ ε ≡ a)
   (hom           : Word → ℕ)
   (hom-ε         : hom ε ≡ 0)
-  (hom-distrib   : (a b : Word) → hom (a ++ b) ≡ hom a + hom b)
+  (hom-distrib   : (a b : Word) → hom (a ++ b) ≡ hom a ℕ+ hom b)
   where
 
 open import Substrate.Algebra.N-to-F2-Parity using (parity; parity-+)
@@ -48,8 +51,8 @@ open import Substrate.Category.RGradedMonoid
 -- degree = parity ∘ hom.
 -- degree-ε = parity 0 ≡ 0 (refl).
 -- degree-· = parity (hom (a ++ b))
---          ≡ parity (hom a + hom b)              [cong parity hom-distrib]
---          ≡ parity (hom a) + parity (hom b)      [parity-+]
+--          ≡ parity (hom a ℕ+ hom b)              [cong parity hom-distrib]
+--          ≡ parity (hom a) ℕ+ parity (hom b)      [parity-+]
 ------------------------------------------------------------------------
 
 F₂Graded-from-Homomorphism : RGradedMonoid F₂-CommMonoid Word

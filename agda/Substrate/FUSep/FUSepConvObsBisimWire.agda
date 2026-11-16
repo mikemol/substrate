@@ -17,11 +17,11 @@
 
 module Substrate.FUSep.FUSepConvObsBisimWire where
 
-open import Substrate.Foundation.Eq    using (_≡_; refl)
-open import Substrate.Foundation.Empty using (⊥)
+open import Substrate.Foundation.Empty.Bot
 import Substrate.FUSep.ConversionCongruence as ConversionCongruence
 open ConversionCongruence using (ARS)
 import Substrate.FUSep.ObsBisim as ObsBisim
+open import Substrate.Foundation.Eq
 
 record _×_ (A B : Set) : Set where
   constructor _,_

@@ -24,13 +24,14 @@
 
 module Substrate.Algebra.Wedge.Reads where
 
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Algebra.Wedge using (ℕ-div; collapse; cell; forget; fromEEATrace; fromℕ-Wedge)
 open import Substrate.Algebra.Nat.GCD.EEATrace using (EEATrace)
 open import Substrate.Algebra.Nat.GCD.Fold using (gcd-fold; gcd-fold-correct)
 import Substrate.Algebra.Nat.GCD.Wedge as N
 open import Substrate.Algebra.Z.Bezout using (bezout-ℤ)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
 
 ------------------------------------------------------------------------
 -- 1. Forgetful trace-read = gcd-fold (the annihilating fold).
@@ -44,7 +45,9 @@ collapse-is-gcd t = sym (gcd-fold-correct t)
 -- 2. Presented wedge-read = the remainder (residue mod b).
 ------------------------------------------------------------------------
 
-cell-is-remainder : {a b : ℕ} (w : N.Wedge a b) →
+-- ⚑ Ⓝ6: `N.Wedge` → `N.Wedge-GCD` (⟡collision-sweep) — the last of the three
+-- files `rename_at_source` held back as AMBIGUOUS for naming both homes.
+cell-is-remainder : {a b : ℕ} (w : N.Wedge-GCD a b) →
                     cell (fromℕ-Wedge w) ≡ N.remainder w
 cell-is-remainder w = refl
 
@@ -52,7 +55,7 @@ cell-is-remainder w = refl
 -- 3. Forgetful wedge-read = the dividend a (evaluate the term).
 ------------------------------------------------------------------------
 
-forget-is-dividend : {a b : ℕ} (w : N.Wedge a b) →
+forget-is-dividend : {a b : ℕ} (w : N.Wedge-GCD a b) →
                      forget (fromℕ-Wedge w) ≡ a
 forget-is-dividend w = sym (N.wedge-eq w)  -- forget = q·b+r ; the witness, reversed
 

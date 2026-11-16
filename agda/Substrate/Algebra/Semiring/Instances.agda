@@ -6,10 +6,10 @@
 -- scratch/commuting_sphere.md):  one tensor over a chosen semiring
 -- *is* the job gauge.
 --
---   * ℕ            — the COUNTING gauge   (+ , * , 0 , 1)
+--   * ℕ            — the COUNTING gauge   (ℕ+ , * , 0 , 1)
 --   * F₂           — the GF(2)/CARRIER gauge (XOR , AND , 𝟘 , 𝟙)
 --   * Bool         — the ROUTING gauge   (∨ , ∧ , false , true)
---   * ℕ∞ (tropical)— the COST/PLACEMENT gauge (min , + , ∞ , fin 0)
+--   * ℕ∞ (tropical)— the COST/PLACEMENT gauge (min , ℕ+ , ∞ , fin 0)
 --
 -- The semiring records are *packaging* moves over laws proven
 -- elsewhere (Foundation.Nat.Properties.*, Algebra.F2, and — for the
@@ -25,16 +25,16 @@
 
 module Substrate.Algebra.Semiring.Instances where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
 
-open import Substrate.Algebra.Magma using (Magma)
-open import Substrate.Algebra.Semigroup using (Semigroup)
 open import Substrate.Algebra.Monoid using (Monoid)
 open import Substrate.Algebra.Semiring using (Semiring)
+open import Substrate.Foundation.Eq
+open import Substrate.Algebra.Magma
+open import Substrate.Algebra.Semigroup
 
 ------------------------------------------------------------------------
--- 0. The shared costructure: build a Monoid from carrier + op + ε
---    + the three laws.  Used 6× below (one additive + one
+-- 0. The shared costructure: build a Monoid from carrier ℕ+ op ℕ+ ε
+--    ℕ+ the three laws.  Used 6× below (one additive ℕ+ one
 --    multiplicative monoid for each of ℕ, Bool, ℕ∞).
 ------------------------------------------------------------------------
 
@@ -57,15 +57,18 @@ mk-monoid op e assoc idˡ idʳ = record
 -- 1. ℕ — the counting gauge.
 ------------------------------------------------------------------------
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_)
-open import Substrate.Foundation.Nat.Properties.Add
-  using (+-assoc; +-identityˡ; +-identityʳ)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Times
+open import Substrate.Foundation.Nat.Properties.Add.PlusAssoc
+open import Substrate.Foundation.Nat.Properties.Add.PlusIdentityL
+open import Substrate.Foundation.Nat.Properties.Add.PlusIdentityR
 open import Substrate.Foundation.Nat.Properties.Mul
   using (*-assoc; *-identityˡ; *-identityʳ;
          *-distribˡ-+; *-distribʳ-+; *-zeroˡ; *-zeroʳ)
 
 ℕ-+-Monoid : Monoid ℕ
-ℕ-+-Monoid = mk-monoid _+_ zero +-assoc +-identityˡ +-identityʳ
+ℕ-+-Monoid = mk-monoid _ℕ+_ zero +ℕ-assoc +ℕ-identityˡ +ℕ-identityʳ
 
 ℕ-*-Monoid : Monoid ℕ
 ℕ-*-Monoid = mk-monoid _*_ (suc zero) *-assoc *-identityˡ *-identityʳ
@@ -87,8 +90,6 @@ open import Substrate.Foundation.Nat.Properties.Mul
 -- simply re-export it so all four gauges are reachable here.
 ------------------------------------------------------------------------
 
-open import Substrate.Algebra.F2 using (F₂)
-open import Substrate.Algebra.F2.AsField using () renaming (F₂-Semiring to F₂-semiring) public
 
 ------------------------------------------------------------------------
 -- 2b. POLYNOMIAL Semiring — pointer (not re-exported: would cycle here,
@@ -113,10 +114,19 @@ open import Substrate.Algebra.F2.AsField using () renaming (F₂-Semiring to F�
 -- the other 6 belong there too. Imported below, then packaged into the records.)
 ------------------------------------------------------------------------
 
-open import Substrate.Foundation.Bool using (Bool; true; false; _∨_; _∧_)
-open import Substrate.Foundation.Bool.Properties
-  using ( ∨-assoc; ∨-identityˡ; ∨-identityʳ; ∧-assoc; ∧-identityˡ; ∧-identityʳ
-        ; ∧-distribˡ-∨; ∧-distribʳ-∨; ∧-zeroˡ; ∧-zeroʳ )
+open import Substrate.Foundation.Bool.And
+open import Substrate.Foundation.Bool.Bool
+open import Substrate.Foundation.Bool.Or
+open import Substrate.Foundation.Bool.Properties.AndAssoc
+open import Substrate.Foundation.Bool.Properties.AndDistribLOr
+open import Substrate.Foundation.Bool.Properties.AndDistribROr
+open import Substrate.Foundation.Bool.Properties.AndIdentityL
+open import Substrate.Foundation.Bool.Properties.AndIdentityR
+open import Substrate.Foundation.Bool.Properties.AndZeroL
+open import Substrate.Foundation.Bool.Properties.AndZeroR
+open import Substrate.Foundation.Bool.Properties.OrAssoc
+open import Substrate.Foundation.Bool.Properties.OrIdentityL
+open import Substrate.Foundation.Bool.Properties.OrIdentityR
 
 Bool-∨-Monoid : Monoid Bool
 Bool-∨-Monoid = mk-monoid _∨_ false ∨-assoc ∨-identityˡ ∨-identityʳ
@@ -138,7 +148,7 @@ Bool-semiring = record
 -- 4. ℕ∞ tropical (min-plus) — the cost/placement gauge.
 --
 -- additive = min (ε = ∞), multiplicative = ⊕ = +∞ (ε = fin 0).
--- Carrier + laws live in Substrate.Algebra.Semiring.NatInf.
+-- Carrier ℕ+ laws live in Substrate.Algebra.Semiring.NatInf.
 ------------------------------------------------------------------------
 
 open import Substrate.Algebra.Semiring.NatInf
@@ -147,7 +157,8 @@ open import Substrate.Algebra.Semiring.NatInf
          ⊕-identityˡ; ⊕-distribˡ-⊓; ⊕-absorbˡ; ⊕-absorbʳ)
 open import Substrate.Algebra.Semiring.NatInf.Properties
   using (⊕-assoc; ⊕-identityʳ; ⊕-distribʳ-⊓)
-open import Substrate.Foundation.Nat using () renaming (zero to ℕzero)
+open import Substrate.Foundation.Nat.Nat
+  renaming (zero to ℕzero)
 
 ℕ∞-⊓-Monoid : Monoid ℕ∞
 ℕ∞-⊓-Monoid = mk-monoid _⊓_ ∞ ⊓-assoc ⊓-identityˡ ⊓-identityʳ

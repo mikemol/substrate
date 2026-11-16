@@ -37,14 +37,18 @@
 
 module Substrate.Algebra.Q.JacobianCollision where
 
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.Algebra.Z using (ℤ; +_; -suc_; 0ℤ; 1ℤ)
-open import Substrate.Algebra.Q using (ℚ; mkℚ; num; den-1; 0ℚ; 1ℚ)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Algebra.Z.Int
+open import Substrate.Algebra.Z.OneInt
+open import Substrate.Algebra.Z.ZeroInt
+open import Substrate.Algebra.Q.OneRat
+open import Substrate.Algebra.Q.Rat
+open import Substrate.Algebra.Q.ZeroRat
 open import Substrate.Algebra.Q.Add using (_+ℚ_)
 open import Substrate.Algebra.Q.Sub using (_-ℚ_)
 open import Substrate.Algebra.Q.Mul using (_*ℚ_)
 open import Substrate.Algebra.Q.Equiv using (_≈ℚ_)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. Literals. All coefficients of F are integers; only the POINTS are

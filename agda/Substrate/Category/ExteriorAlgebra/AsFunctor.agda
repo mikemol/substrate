@@ -31,7 +31,7 @@
 
 open import Substrate.Foundation.Level using (Level)
 
-open import Substrate.Category.CategoryOf using (CategoryOf)
+open import Substrate.Category.CategoryOf.CategoryOf
 open import Substrate.Category.Functor using (Functor)
 
 module Substrate.Category.ExteriorAlgebra.AsFunctor
@@ -49,7 +49,6 @@ module Substrate.Category.ExteriorAlgebra.AsFunctor
 
 open import Substrate.Category.Functor.AsNamed
   Vect ExtAlg Λ public
-  renaming (named-Functor to Λ-Functor)
 
 ------------------------------------------------------------------------
 -- 2. Capstone — Λ as a substrate Functor.

@@ -33,6 +33,7 @@ open import Substrate.Foundation.Level using (Level)
 open import Substrate.Algebra.F2.Linear.CategoryStructures
   using (F2LinearCategoryStructures)
 open import Substrate.Category.DaggerCategory using (DaggerCategory)
+open import Substrate.Probability.MarkovCategory
 
 module Substrate.Algebra.F2.Linear.AsDaggerCategory
   {ℓO ℓM : Level}

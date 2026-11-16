@@ -26,16 +26,15 @@
 
 module Substrate.Algebra.F2.Linear.MultilinearFromImages where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using (Vec; []; _∷_)
 open import Substrate.Foundation.Unit using (⊤; tt)
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans)
 
-open import Substrate.Algebra.F2 using (F₂)
+open import Substrate.Algebra.F2.F2
 open import Substrate.Algebra.F2.Vector using (Vector; basis; _+ⱽ_; _*ₛ_)
-open import Substrate.Algebra.F2.Linear using (Linear; apply; preserves-+; preserves-*ₛ)
+open import Substrate.Algebra.F2.Linear.Linear
 open import Substrate.Algebra.F2.Linear.FromImages
   using (linear-from-images; apply-linear-from-images-basis)
 open import Substrate.Algebra.F2.Linear.ImagesProps
@@ -43,6 +42,9 @@ open import Substrate.Algebra.F2.Linear.ImagesProps
 open import Substrate.Algebra.F2.Linear.MultilinearUniversal
   using ( Args; BasisIndices; basis-tuple; IsLinear; IsMultilinear
         ; multilinear-extensionality )
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
 
 ------------------------------------------------------------------------
 -- The construction: nest `linear-from-images` over the arities. At each

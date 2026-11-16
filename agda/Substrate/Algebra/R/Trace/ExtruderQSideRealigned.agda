@@ -19,14 +19,14 @@
 
 module Substrate.Algebra.R.Trace.ExtruderQSideRealigned where
 
-open import Substrate.Foundation.Eq      using (_≡_; refl)
-open import Substrate.Foundation.Nat     using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂)
 
 open import Substrate.Algebra.Nat.GCD.EEATrace     using (EEATrace; base; step)
 open import Substrate.Algebra.Nat.GCD.ComputeTrace using (compute-trace)
 open import Substrate.Algebra.Wedge                using (Trace; done; more; fromEEATrace; ℕ-div)
 open import Substrate.Algebra.Wedge.Trace.Residues using (trace-residues)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- ① FUSepQBridge.FinTrace IS EEATrace. My FinTrace (base | step h s' (s≡recon…)

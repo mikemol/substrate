@@ -17,23 +17,50 @@
 
 {-# OPTIONS --safe --without-K #-}
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_)
-open import Substrate.Foundation.Nat.Properties.Add using (+-comm)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Times
+open import Substrate.Foundation.Nat.Properties.Add.PlusComm
 open import Substrate.Foundation.Nat.Properties.Mul using (*-identityʳ; *-suc)
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.To
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
 
 open import Substrate.Groups.Coxeter.Word using (Word; []; _++_)
-open import Substrate.Algebra.Nat.Mod
-  using (_mod-suc_; mod-suc-periodic)
+open import Substrate.Foundation.Nat.Nat.ModSuc
+open import Substrate.Algebra.Nat.Mod.ModSucBound
+open import Substrate.Algebra.Nat.Mod.ModSucId
+open import Substrate.Algebra.Nat.Mod.ModSucPeriodic
+open import Substrate.Algebra.Nat.Mod.ModSucSuc
+open import Substrate.Algebra.Nat.Mod.SucModSucLt
+open import Substrate.Algebra.Nat.Mod.SucModSucSelf
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Groups.Coxeter.Cyclic.Base.Gen
 
 module Substrate.Groups.Coxeter.Cyclic.NthPower (n : ℕ) where
 
 open import Substrate.Groups.Coxeter.Cyclic.Core n using (_≈_; ε)
-open import Substrate.Groups.Coxeter.Cyclic.Existential n using (normalize; canonical-cover-ex; normalize-canonical)
-open import Substrate.Groups.Coxeter.Cyclic.NthPower.Concat n using (power-concat-eq; power-cyclic-normalize)
-open import Substrate.Groups.Coxeter.Cyclic.Base n using (power; Gen)
+-- ⚑ TWO OF THE THREE NAMES WERE NOT `Existential`'s (Ⓑ2c-BRIDGE10‴).
+-- `canonical-cover-ex` is; `normalize` and `normalize-canonical` belong to
+-- `ListPresentation` and arrived through Existential's own open — so this clause
+-- named two non-exports, bound nothing, and failed at the use site as a warning.
+-- ⚑ ORDER: Base then Existential, THEN the application that consumes both.
+open import Substrate.Groups.Coxeter.Cyclic.Base n
+-- ⛑ Ⓡ2ᵈ: the `Defs` LEAVES this shard cites, derived by
+-- `rewire_fcr --siblings Defs <file>` — a SET, not a prefix. `Defs`'s
+-- re-opens are bare (Ⓡ1), so a leaf-defined name no longer arrives
+-- through the root. Each leaf carries its OWN minimal telescope, so the
+-- argument lists differ by leaf and are read from each header.
+open import Substrate.Groups.Coxeter.Cyclic.Base.Insert n
+open import Substrate.Groups.Coxeter.Cyclic.Base.Power
+open import Substrate.Groups.Coxeter.Cyclic.Existential n
+open import Substrate.Groups.Coxeter.ListPresentation
+  Gen Canonical-ex c-ε insert insert-canonical-ex
+-- ⚑ A THIRD DISSOLVED PARENT (Ⓑ2c-BRIDGE10‴) — `NthPower.Concat`, split into
+-- leaves by the same commit.  The two names this file used sit in two of them.
+open import Substrate.Groups.Coxeter.Cyclic.NthPower.Concat.PowerConcatEq n
+open import Substrate.Groups.Coxeter.Cyclic.NthPower.Concat.PowerCyclicNormalize n
 open import Substrate.Groups.Coxeter.Cyclic.NthPower.Flat n public
 
 
@@ -46,19 +73,19 @@ flat-power-eq j zero    = cong power (sym (*-identityʳ j))
 flat-power-eq j (suc m) =
   trans (cong (_++ power j) (flat-power-eq j m))
   (trans (power-concat-eq (j * suc m) j)
-         (cong power (trans (+-comm (j * suc m) j) (sym (*-suc j (suc m))))))
+         (cong power (trans (+ℕ-comm (j * suc m) j) (sym (*-suc j (suc m))))))
 
 ------------------------------------------------------------------------
 -- 2. mult-suc-n-mod: (k * suc n) mod-suc n ≡ 0.
 --
--- Induction on k: zero case definitional; step case uses +-comm to
+-- Induction on k: zero case definitional; step case uses +ℕ-comm to
 -- align with mod-suc-periodic, then IH.
 ------------------------------------------------------------------------
 
 mult-suc-n-mod : (k : ℕ) → (k * suc n) mod-suc n ≡ 0
 mult-suc-n-mod zero    = refl
 mult-suc-n-mod (suc k) =
-  trans (cong (_mod-suc n) (+-comm (suc n) (k * suc n)))
+  trans (cong (_mod-suc n) (+ℕ-comm (suc n) (k * suc n)))
   (trans (mod-suc-periodic (k * suc n) n)
          (mult-suc-n-mod k))
 

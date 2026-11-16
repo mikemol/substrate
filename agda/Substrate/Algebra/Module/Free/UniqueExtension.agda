@@ -35,10 +35,8 @@
 
 module Substrate.Algebra.Module.Free.UniqueExtension where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; trans)
 
 open import Substrate.Algebra.Ring using (Ring)
 open import Substrate.Algebra.Module using (Module)
@@ -47,6 +45,9 @@ open import Substrate.Algebra.Module.Free using (FreeCarrier)
 open import Substrate.Algebra.Module.Free.Basis
   using (free-basis; FreeBasisUniversal; extension; uniqueness;
          extension-on-basis; images)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
 
 ------------------------------------------------------------------------
 -- 1. The generic free-module-extensionality theorem statement.

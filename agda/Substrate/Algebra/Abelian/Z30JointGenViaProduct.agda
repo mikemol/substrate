@@ -19,11 +19,10 @@
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.List using (List; []; _∷_)
 open import Substrate.Foundation.Product using (Σ; _,_)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl)
 
 open import Substrate.Category.SylowDecomposition.FromWord
   using (evaluate-word)
+open import Substrate.Foundation.Eq
 
 module Substrate.Algebra.Abelian.Z30JointGenViaProduct
   -- The Z/30 carrier + ops.
@@ -51,7 +50,6 @@ open import Substrate.Category.PrimeFactoredGauge.JointGenWrapper
   3 gen-Z30 gen-Z30-sylow
   represent-Z30 represent-Z30-correct
   public
-  renaming (joint-gen to Z30-joint-gen)
 
 ------------------------------------------------------------------------
 -- Capstone — Z/30 joint-gen dischargeable; closes W3.

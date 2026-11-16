@@ -18,24 +18,37 @@
 
 module Substrate.Algebra.F2.Polynomial.Wedge.SBoxTable where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Times
 open import Substrate.Foundation.Vec using (Vec; []; _∷_)
-open import Substrate.Foundation.Eq using (_≡_; refl; cong; cong₂)
-open import Substrate.Foundation.Bool using (Bool; true; false; _∧_)
-import Substrate.Algebra.F2 as F2
-open import Substrate.Algebra.F2.CommRing using (F₂-CommRing)
-open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit.Base
-  using (m-lo; all-vec; all-vec-sound; ∧-elimˡ; ∧-elimʳ)
+open import Substrate.Foundation.Bool.And
+open import Substrate.Foundation.Bool.Bool
+-- ⚑ WAS `import Substrate.Algebra.F2 as F2` — retired barrel + banned alias.
+open import Substrate.Algebra.F2.F2
+-- ⚑⚑ AND A SECOND RETIRED BARREL ON THE NEXT LINE: `...GUnit.Base` is a
+-- DIRECTORY, not a module, and the `using` list named five things now spread
+-- across its four leaves.  Two retired-barrel imports in one file, one of them
+-- invisible to a scan keyed on the `as` alias — which is why the class census
+-- (`check_indented_imports Substrate.Algebra.F2`) never listed this second one.
+open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit.Base.MLo
+open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit.Base.AllVec
+open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit.Base.AllVecSound
+open import Substrate.Foundation.Bool.Properties.AndElimL
+open import Substrate.Foundation.Bool.Properties.AndElimR
 import Substrate.Algebra.Polynomial.Graded.Base as GB
-open GB.Over F2.𝟘 using (Poly)
+open GB.Over 𝟘 using (Poly)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
 
 -- numeric value of a byte (LSB-first: index 0 = x^0 = bit 0).
-bit : F2.F₂ → ℕ
-bit F2.𝟘 = 0
-bit F2.𝟙 = 1
-byte-val : {n : ℕ} → Vec F2.F₂ n → ℕ
+bit : F₂ → ℕ
+bit 𝟘 = 0
+bit 𝟙 = 1
+byte-val : {n : ℕ} → Vec F₂ n → ℕ
 byte-val []       = 0
-byte-val (b ∷ bs) = bit b + 2 * byte-val bs
+byte-val (b ∷ bs) = bit b ℕ+ 2 * byte-val bs
 
 -- decidable ℕ equality.
 _==ℕ_ : ℕ → ℕ → Bool
@@ -79,25 +92,25 @@ SBOX =
 ------------------------------------------------------------------------
 
 -- F₂ / byte Bool-equality, with soundness (the reflection→≡ bridge for bytes).
-_==F_ : F2.F₂ → F2.F₂ → Bool
-F2.𝟘 ==F F2.𝟘 = true
-F2.𝟙 ==F F2.𝟙 = true
+_==F_ : F₂ → F₂ → Bool
+𝟘 ==F 𝟘 = true
+𝟙 ==F 𝟙 = true
 _    ==F _    = false
-==F-sound : (x y : F2.F₂) → (x ==F y) ≡ true → x ≡ y
-==F-sound F2.𝟘 F2.𝟘 _ = refl
-==F-sound F2.𝟙 F2.𝟙 _ = refl
-_==V_ : {n : ℕ} → Vec F2.F₂ n → Vec F2.F₂ n → Bool
+==F-sound : (x y : F₂) → (x ==F y) ≡ true → x ≡ y
+==F-sound 𝟘 𝟘 _ = refl
+==F-sound 𝟙 𝟙 _ = refl
+_==V_ : {n : ℕ} → Vec F₂ n → Vec F₂ n → Bool
 []       ==V []       = true
 (x ∷ xs) ==V (y ∷ ys) = (x ==F y) ∧ (xs ==V ys)
-==V-sound : {n : ℕ} (u v : Vec F2.F₂ n) → (u ==V v) ≡ true → u ≡ v
+==V-sound : {n : ℕ} (u v : Vec F₂ n) → (u ==V v) ≡ true → u ≡ v
 ==V-sound []       []       _ = refl
 ==V-sound (x ∷ xs) (y ∷ ys) h =
   cong₂ _∷_ (==F-sound x y (∧-elimˡ h)) (==V-sound xs ys (∧-elimʳ h))
 
 -- ℕ → byte (LSB-first, 8-bit decoder).
-odd : ℕ → F2.F₂
-odd zero          = F2.𝟘
-odd (suc zero)    = F2.𝟙
+odd : ℕ → F₂
+odd zero          = 𝟘
+odd (suc zero)    = 𝟙
 odd (suc (suc n)) = odd n
 half : ℕ → ℕ
 half zero          = 0

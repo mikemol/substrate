@@ -8,23 +8,32 @@
 --
 -- ⟡H-overclaim CORRECTION: I flagged this "refl-ish". WRONG — det-sq's own
 -- structure shows det-after is NOT a simple outer flip; the seed-parametric
--- lemma det-after n … ≡ (−1)ⁿ *ℤ det4 … is needed (det-flip at the step +
+-- lemma det-after n … ≡ (−1)ⁿ *ℤ det4 … is needed (det-flip at the step ℕ+
 -- ℤ neg-mult lemmas). Filed as a mild overclaim; the real proof below.
 ------------------------------------------------------------------------
 
 module Substrate.Algebra.R.Trace.DetValSign where
+open import Substrate.Algebra.Z.Mul
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _*_; _+_)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
-open import Substrate.Algebra.F2 using (F₂; 𝟘; 𝟙) renaming (_+_ to _+F_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Times
+open import Substrate.Algebra.F2.F2
 open import Substrate.Algebra.N-to-F2-Parity using (parity)
-open import Substrate.Algebra.Z using (ℤ; +_; -suc_; -ℤ_; 0ℤ; 1ℤ)
-open import Substrate.Algebra.Z.Arithmetic using (_*ℤ_)
+open import Substrate.Algebra.Z.Int
+open import Substrate.Algebra.Z.Int2
+open import Substrate.Algebra.Z.OneInt
+
 open import Substrate.Algebra.Z.Properties.Mul using (neg-*-left)
 open import Substrate.Algebra.Z.Properties.MulFull using (neg-*-right; *ℤ-identityˡ)
 open import Substrate.Algebra.R.Trace using (RealTrace; head; tail)
 open import Substrate.Algebra.R.Trace.Properties using (det4; det-after; det-flip)
 open import Substrate.Algebra.R.Trace.ChiralityBridge using (det-sign; det-sign-is-parity)  -- ⟡A1: single source
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Algebra.F2.PlusF
 
 -- (−1)ⁿ as a ℤ tracker.
 pow-neg : ℕ → ℤ
@@ -41,7 +50,7 @@ det-after-value :
   det-after n p₁ q₁ p₀ q₀ r ≡ (pow-neg n) *ℤ (det4 p₁ q₁ p₀ q₀)
 det-after-value zero    p₁ q₁ p₀ q₀ r = sym (*ℤ-identityˡ (det4 p₁ q₁ p₀ q₀))
 det-after-value (suc n) p₁ q₁ p₀ q₀ r =
-  trans (det-after-value n (a * p₁ + p₀) (a * q₁ + q₀) p₁ q₁ (tail r))
+  trans (det-after-value n (a * p₁ ℕ+ p₀) (a * q₁ ℕ+ q₀) p₁ q₁ (tail r))
         (trans (cong (pow-neg n *ℤ_) (det-flip a p₁ q₁ p₀ q₀))
                (trans (neg-*-right (pow-neg n) (det4 p₁ q₁ p₀ q₀))
                       (sym (neg-*-left (pow-neg n) (det4 p₁ q₁ p₀ q₀)))))
@@ -75,14 +84,14 @@ sign-pow-neg zero    = refl
 sign-pow-neg (suc n) = trans (sign-flip (pow-neg n) (pow-neg-unit n))
                              (cong (𝟙 +F_) (sign-pow-neg n))
   where
-    -- pow-neg n is a unit: either +(suc _) or -suc _, never +0.
+    -- pow-neg n is a unit: either ℕ+(suc _) or -suc _, never +0.
     data Unit : ℤ → Set where
       pos : (k : ℕ) → Unit (+ (suc k))
       neg : (k : ℕ) → Unit (-suc k)
     pow-neg-unit : (n : ℕ) → Unit (pow-neg n)
     pow-neg-unit zero    = pos zero
     pow-neg-unit (suc n) with pow-neg n | pow-neg-unit n
-    ... | + (suc k)  | pos .k = neg k
+    ... | ℕ+ (suc k)  | pos .k = neg k
     ... | -suc k     | neg .k = pos k
     sign-flip : (x : ℤ) → Unit x → sign (-ℤ x) ≡ 𝟙 +F sign x
     sign-flip (+ (suc k)) (pos .k) = refl

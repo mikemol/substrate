@@ -23,7 +23,6 @@
 module Substrate.WitnessTower.Link where
 
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Eq using (_≡_; refl)
 
 open import Substrate.Category.Coalgebra using (Endomap; _∘E_)
 open import Substrate.Category.Coalgebra.FiniteOrder using (HasOrder)
@@ -33,6 +32,7 @@ open import Substrate.Category.Coalgebra.StructuralGCD.Properties
 
 open import Substrate.WitnessTower.Hodge
   using (dual-grade₃; dual-grade₃-involution)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. The link as an Endomap: the witness↔witnessed swap on rung grades.

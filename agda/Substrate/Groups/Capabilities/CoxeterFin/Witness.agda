@@ -14,10 +14,12 @@
 
 {-# OPTIONS --safe --without-K #-}
 
-open import Substrate.Foundation.Nat using (ℕ; suc)
+open import Substrate.Foundation.Nat.Nat
 
 open import Substrate.Algebra.Nat.CyclicSuc using (cyclic-suc)
 open import Substrate.Groups.Capabilities.CoxeterFin using (CoxeterFinCapability; from-coxeter-fin-data)
+open import Substrate.Groups.Coxeter.Cyclic.Base.Gen
+open import Substrate.Groups.Coxeter.Cyclic.Base.OrderOf
 module Substrate.Groups.Capabilities.CoxeterFin.Witness (n : ℕ) where
 
 open import Substrate.Groups.Coxeter.Cyclic.Base n using (Gen; a; insert; σ-OrderOf)

@@ -21,10 +21,11 @@ module Substrate.Category.Strict2Monoid.DirectProduct where
 
 open import Substrate.Foundation.Product using (_×_; _,_)
 open import Substrate.Foundation.Level using (Level; _⊔_)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; cong; cong₂)
 
 open import Substrate.Category.Strict2Monoid
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
 
 private
   variable

@@ -8,10 +8,12 @@
 
 module Substrate.Groups.Symmetric.InverseCong (A : Set) where
 
-open import Substrate.Foundation.Eq using (_≡_; cong; sym-trans)
 open import Substrate.Groups.Symmetric.Permutation A
 open import Substrate.Groups.Symmetric.Eq A using (_≈_)
 open import Substrate.Groups.Symmetric.Permutation.Inverse A using (_⁻¹)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.SymTrans
 
 ⁻¹-cong :
   {σ τ : Permutation} → σ ≈ τ → (σ ⁻¹) ≈ (τ ⁻¹)

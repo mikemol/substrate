@@ -7,7 +7,7 @@
 --
 -- GL(3, F₂) has order 168 (= PSL(2,7) ≅ PSL(3,2), the simple group).
 -- This file does NOT enumerate all 168 elements; it provides two
--- generators (σ cyclic shift + τ shear) and computes their action on
+-- generators (σ cyclic shift +F τ shear) and computes their action on
 -- the 7 Fano points. The combined cycle structures demonstrate that
 -- the group action is transitive.
 --
@@ -32,17 +32,46 @@ module Substrate.Geometry.HodgeDim3.Gl3 where
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Literals using (₂)
 open import Substrate.Foundation.Vec using ([]; _∷_)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl)
 
-open import Substrate.Algebra.F2
+open import Substrate.Algebra.F2.AbsorbL
+open import Substrate.Algebra.F2.AbsorbR
+open import Substrate.Algebra.F2.Assoc
+open import Substrate.Algebra.F2.Comm
+open import Substrate.Algebra.F2.Dec
+open import Substrate.Algebra.F2.DistribLPlus
+open import Substrate.Algebra.F2.DistribRPlus
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.F2Cases
+open import Substrate.Algebra.F2.Idempotent
+open import Substrate.Algebra.F2.IdentityL
+open import Substrate.Algebra.F2.IdentityR
+open import Substrate.Algebra.F2.InvOfOne
+open import Substrate.Algebra.F2.OneNeqZero
+open import Substrate.Algebra.F2.Op
+open import Substrate.Algebra.F2.Op2
+open import Substrate.Algebra.F2.PlusAssoc
+open import Substrate.Algebra.F2.PlusComm
+open import Substrate.Algebra.F2.PlusF
+open import Substrate.Algebra.F2.PlusIdentityL
+open import Substrate.Algebra.F2.PlusIdentityR
+open import Substrate.Algebra.F2.PlusInverseL
+open import Substrate.Algebra.F2.PlusInverseR
+open import Substrate.Algebra.F2.PlusSelfInverse
+open import Substrate.Algebra.F2.ZeroNeqOne
 open import Substrate.Algebra.F2.Vector
-open import Substrate.Algebra.F2.Linear
+open import Substrate.Algebra.F2.Linear.CompL
+open import Substrate.Algebra.F2.Linear.CompLAssoc
+open import Substrate.Algebra.F2.Linear.CompLIdentityL
+open import Substrate.Algebra.F2.Linear.CompLIdentityR
+open import Substrate.Algebra.F2.Linear.IdL
+open import Substrate.Algebra.F2.Linear.Linear
+open import Substrate.Algebra.F2.Linear.Preserves
 open import Substrate.Algebra.F2.Linear.FromImages
   using (linear-from-images)
 open import Substrate.Geometry.Fano
   using (Point; point-coords;
          p₁; p₂; p₃; p₄; p₅; p₆; p₇)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- Generator σ: cyclic shift on basis vectors.
@@ -63,13 +92,13 @@ open import Substrate.Geometry.Fano
 ------------------------------------------------------------------------
 -- Generator τ: shear adding e₁ to e₀.
 --
---   e₀ ↦ e₀ + e₁, e₁ ↦ e₁, e₂ ↦ e₂
+--   e₀ ↦ e₀ +F e₁, e₁ ↦ e₁, e₂ ↦ e₂
 --
 -- As a Linear 3 → 3, τ takes (a, b, c) ↦ (a, a+b, c).
 ------------------------------------------------------------------------
 
 τ-images : Fin 3 → Vector 3
-τ-images zero          = 𝟙 ∷ 𝟙 ∷ 𝟘 ∷ []      -- e₀ ↦ e₀ + e₁
+τ-images zero          = 𝟙 ∷ 𝟙 ∷ 𝟘 ∷ []      -- e₀ ↦ e₀ +F e₁
 τ-images (suc zero)    = 𝟘 ∷ 𝟙 ∷ 𝟘 ∷ []      -- e₁ ↦ e₁
 τ-images ₂ = 𝟘 ∷ 𝟘 ∷ 𝟙 ∷ []      -- e₂ ↦ e₂
 

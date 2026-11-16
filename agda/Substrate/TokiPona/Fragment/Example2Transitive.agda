@@ -11,13 +11,13 @@
 
 module Substrate.TokiPona.Fragment.Example2Transitive where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.TokiPona.SemanticSpace
 open import Substrate.TokiPona.Nimi
 open import Substrate.TokiPona.NimiSpace using (nimi-as-vector)
 open import Substrate.TokiPona.TokiSentence
 open import Substrate.TokiPona.Particles
 open import Substrate.TokiPona.LinearAlgebra
+open import Substrate.Foundation.Eq
 
 example-mi-moku-e-kili : TokiSentence nimi-count
 example-mi-moku-e-kili =

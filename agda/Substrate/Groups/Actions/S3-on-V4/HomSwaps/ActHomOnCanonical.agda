@@ -22,7 +22,6 @@ module Substrate.Groups.Actions.S3-on-V4.HomSwaps.ActHomOnCanonical where
 import Substrate.Groups.V4.Operations as V4
 import Substrate.Groups.Coxeter.Cyclic.Existential 1 as Z₂E
 import Substrate.Groups.Coxeter.Cyclic.Existential 2 as Z₃E
-open import Substrate.Foundation.Eq using (_≡_; trans; sym; cong₂)
 
 open import Substrate.Groups.V4.IsHomomorphism using (IsHomomorphism)
 open import Substrate.Groups.V4.IsHomomorphism.Compose using (∘-IsHom)
@@ -33,6 +32,10 @@ open import Substrate.Groups.Actions.S3-on-V4.Generators.RotateIsHom using (rota
 open import Substrate.Groups.Actions.S3-on-V4.Generators.SwapABIsHom using (swap-αβ-IsHom)
 open import Substrate.Groups.Actions.S3-on-V4.Generators.IterPowIsHom using (iter-pow-IsHom)
 open import Substrate.Groups.Actions.S3-on-V4.Twist.ActEqualsPow using (act-equals-pow)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Cong2
 
 act-hom-on-canonical :
   ∀ {n h} (c-n : Z₃E.Canonical-ex n) (c-h : Z₂E.Canonical-ex h) →

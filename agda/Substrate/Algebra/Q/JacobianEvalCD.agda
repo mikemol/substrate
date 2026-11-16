@@ -28,7 +28,7 @@
 -- symbolic polynomial identity, so this route gives `literal₁` cheaply
 -- AT A POINT, not the ∀-quantified `identify₁ : (x y z) → …` that
 -- `JacobianCounterexample` consumes (that stays with `JacobianLiteral1`'s
--- Assemble route).  What is new here is the reusable cheap evaluator + its
+-- Assemble route).  What is new here is the reusable cheap evaluator ℕ+ its
 -- general soundness, and the point-wise literal₁ at the collision points.
 --
 -- --safe --without-K; no postulates, no holes.
@@ -36,18 +36,24 @@
 
 module Substrate.Algebra.Q.JacobianEvalCD where
 
-open import Substrate.Foundation.Nat
-  using (ℕ; zero; suc; _+_; _*_; _^_; _∸_; _≤_; z≤n; s≤s)
+open import Substrate.Foundation.Nat.Le
+open import Substrate.Foundation.Nat.Monus
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Pow
+open import Substrate.Foundation.Nat.Times
 open import Substrate.Foundation.Nat.Properties.Mul using (*-identityˡ)
 open import Substrate.Foundation.Nat.Properties.Order using (≤-trans; m≤m+n; *-monoˡ-≤)
 open import Substrate.Foundation.Nat.Properties.Sub using (∸-+-id)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂; subst)
-open import Substrate.Algebra.Z using (ℤ; +_; -suc_; 0ℤ)
+open import Substrate.Algebra.Z.Int
+open import Substrate.Algebra.Z.ZeroInt
 open import Substrate.Algebra.Z.Add using (_+ℤ_)
 open import Substrate.Algebra.Z.Mul using (_*ℤ_)
 open import Substrate.Algebra.Z.Properties.MulFull
   using (*ℤ-assoc; *ℤ-distribʳ-+; *ℤ-zeroˡ; *ℤ-identityˡ; quadℤ)
-open import Substrate.Algebra.Q using (ℚ; mkℚ; num; den-1; 0ℚ; 1ℚ)
+open import Substrate.Algebra.Q.OneRat
+open import Substrate.Algebra.Q.Rat
+open import Substrate.Algebra.Q.ZeroRat
 open import Substrate.Algebra.Q.Add using (_+ℚ_)
 open import Substrate.Algebra.Q.Mul using (_*ℚ_)
 open import Substrate.Algebra.Q.Equiv using (_≈ℚ_; ≈ℚ-refl; ≈ℚ-trans)
@@ -61,7 +67,13 @@ import Substrate.Algebra.Z.JacobianResidue as R
 import Substrate.Algebra.Q.JacobianCollision as C
 open import Substrate.Foundation.List using (List; []; _∷_)
 open import Substrate.Foundation.Unit using (⊤)
-open import Substrate.Foundation.Empty using (⊥)
+open import Substrate.Foundation.Empty.Bot
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.Foundation.Eq.Subst
 
 ------------------------------------------------------------------------
 -- Positivity helpers (collapse `suc (D ∸ 1)` back to `D`).
@@ -108,7 +120,7 @@ powℤ : ℤ → ℕ → ℤ
 powℤ b zero    = + 1
 powℤ b (suc n) = b *ℤ powℤ b n
 
-powℤ-add : (b : ℤ) (m n : ℕ) → powℤ b (m + n) ≡ powℤ b m *ℤ powℤ b n
+powℤ-add : (b : ℤ) (m n : ℕ) → powℤ b (m ℕ+ n) ≡ powℤ b m *ℤ powℤ b n
 powℤ-add b zero    n = sym (*ℤ-identityˡ (powℤ b n))
 powℤ-add b (suc m) n =
   trans (cong (b *ℤ_) (powℤ-add b m n)) (sym (*ℤ-assoc b (powℤ b m) (powℤ b n)))
@@ -300,7 +312,7 @@ module _ (x y z : ℚ) (Dx Dy Dz : ℕ) where
       ez : powℤ (+ qzn) Dz ≡ Pz′ *ℤ Pz
       ez = trans (cong (powℤ (+ qzn)) (sym (∸-+-id Dz c c≤)))
                  (powℤ-add (+ qzn) (Dz ∸ c) c)
-      -- + Dden ≡ powℤ Dx · (powℤ Dy · powℤ Dz)
+      -- ℕ+ Dden ≡ powℤ Dx · (powℤ Dy · powℤ Dz)
       posD : powℤ (+ qxn) Dx *ℤ (powℤ (+ qyn) Dy *ℤ powℤ (+ qzn) Dz) ≡ + Dden
       posD = cong₂ _*ℤ_ (powℤ-pos (den-1 x) Dx)
                         (cong₂ _*ℤ_ (powℤ-pos (den-1 y) Dy) (powℤ-pos (den-1 z) Dz))
@@ -346,9 +358,9 @@ module _ (x y z : ℚ) (Dx Dy Dz : ℕ) where
       (fixed-D-add (padNum (term (mono a b c) k)) (sumNum p') (Dden ∸ 1))
 
 ------------------------------------------------------------------------
--- THE 2nd LEG + POINT-WISE literal₁, at the two collision points.
+-- THE 2nd LEG ℕ+ POINT-WISE literal₁, at the two collision points.
 --
--- f₁ = z(1+xy)³ + y²(1+xy)(4+3xy) — measured degree box (Dx,Dy,Dz)=(3,4,1)
+-- f₁ = z(1+xy)³ ℕ+ y²(1+xy)(4+3xy) — measured degree box (Dx,Dy,Dz)=(3,4,1)
 -- (max monomials x³y³z and x²y⁴; `Bounded-f₁` below reflects that it fits).
 ------------------------------------------------------------------------
 

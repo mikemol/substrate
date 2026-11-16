@@ -19,13 +19,13 @@
 
 module Substrate.Category.UniversalProperty.Vacuity where
 
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Eq using (_≡_)
-open import Substrate.Foundation.Negation using (¬_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Negation.Not
 open import Substrate.Foundation.Product using (Σ; _,_)
 open import Substrate.Foundation.Unit using (⊤; tt)
 open import Substrate.Category.UniversalProperty
   using (UPArrowP; mkUP; SourceP; TargetP; WitnessP; trivial-UPP)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. The recognizer. ⟡UPArrow-dissolve: re-indexed over the Set₀

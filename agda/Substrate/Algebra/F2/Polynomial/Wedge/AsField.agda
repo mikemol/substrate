@@ -9,7 +9,7 @@
 --   * `is-zero8-sound` — the reflection's Bool nonzero is the real nonzero;
 --   * `0≢1`           — `nth 𝟎C 0 = 𝟘 ≠ 𝟙 = nth oneC 0`.
 -- Fully --safe --without-K, ZERO postulates.  The inverse is constructed
--- (fuel-EEA) and its correctness proven (Bézout + irreducibility-by-reflection),
+-- (fuel-EEA) and its correctness proven (Bézout +F irreducibility-by-reflection),
 -- not asserted.
 ------------------------------------------------------------------------
 
@@ -18,15 +18,15 @@
 module Substrate.Algebra.F2.Polynomial.Wedge.AsField where
 
 open import Substrate.Foundation.Vec using (Vec; []; _∷_)
-open import Substrate.Foundation.Eq using (_≡_; refl; cong)
-open import Substrate.Foundation.Bool using (Bool; true; false)
-open import Substrate.Foundation.Negation using (¬_)
-open import Substrate.Foundation.Empty using (⊥-elim)
-import Substrate.Algebra.F2 as F2
-open import Substrate.Algebra.F2 using (𝟘≢𝟙)
+open import Substrate.Foundation.Bool.Bool
+open import Substrate.Foundation.Negation.Not
+open import Substrate.Foundation.Empty.BotElim
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.ZeroNeqOne
 open import Substrate.Algebra.F2.CommRing using (F₂-CommRing)
 open import Substrate.Algebra.Field using (Field)
-open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit.Base using (m-lo; is-zero8)
+open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit.Base.IsZero8
+open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit.Base.MLo
 open import Substrate.Algebra.F2.Polynomial.Wedge.Inverse using (inv; inv-law)
 import Substrate.Algebra.Polynomial.Graded.Mod as M
 import Substrate.Algebra.Polynomial.Graded.FromCommRing as F
@@ -36,18 +36,20 @@ import Substrate.Algebra.Polynomial.Graded.Div as D
 open F.Over F₂-CommRing using (Poly; nth)
 open M.Over F₂-CommRing 7 m-lo using (oneC)
 open Q.Over F₂-CommRing 7 m-lo using (Quotient-Ring; 𝟎C)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
 
 -- is-zero8 a ≡ true forces a to be the zero poly 𝟎C (= replicate 8 𝟘).
 is-zero8-sound : (a : Poly 8) → is-zero8 a ≡ true → a ≡ 𝟎C
-is-zero8-sound (F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ []) h = refl
-is-zero8-sound (F2.𝟙 ∷ _) ()
-is-zero8-sound (F2.𝟘 ∷ F2.𝟙 ∷ _) ()
-is-zero8-sound (F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟙 ∷ _) ()
-is-zero8-sound (F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟙 ∷ _) ()
-is-zero8-sound (F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟙 ∷ _) ()
-is-zero8-sound (F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟙 ∷ _) ()
-is-zero8-sound (F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟙 ∷ _) ()
-is-zero8-sound (F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟙 ∷ []) ()
+is-zero8-sound (𝟘 ∷ 𝟘 ∷ 𝟘 ∷ 𝟘 ∷ 𝟘 ∷ 𝟘 ∷ 𝟘 ∷ 𝟘 ∷ []) h = refl
+is-zero8-sound (𝟙 ∷ _) ()
+is-zero8-sound (𝟘 ∷ 𝟙 ∷ _) ()
+is-zero8-sound (𝟘 ∷ 𝟘 ∷ 𝟙 ∷ _) ()
+is-zero8-sound (𝟘 ∷ 𝟘 ∷ 𝟘 ∷ 𝟙 ∷ _) ()
+is-zero8-sound (𝟘 ∷ 𝟘 ∷ 𝟘 ∷ 𝟘 ∷ 𝟙 ∷ _) ()
+is-zero8-sound (𝟘 ∷ 𝟘 ∷ 𝟘 ∷ 𝟘 ∷ 𝟘 ∷ 𝟙 ∷ _) ()
+is-zero8-sound (𝟘 ∷ 𝟘 ∷ 𝟘 ∷ 𝟘 ∷ 𝟘 ∷ 𝟘 ∷ 𝟙 ∷ _) ()
+is-zero8-sound (𝟘 ∷ 𝟘 ∷ 𝟘 ∷ 𝟘 ∷ 𝟘 ∷ 𝟘 ∷ 𝟘 ∷ 𝟙 ∷ []) ()
 
 -- bridge: the Field's propositional nonzero ⟹ the reflection's Bool nonzero.
 nonzero-bridge : (a : Poly 8) → ¬ (a ≡ 𝟎C) → is-zero8 a ≡ false

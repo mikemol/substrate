@@ -11,7 +11,7 @@
 --                            field over L = ℕ: GF(2ⁿ) multiplication IS exp of
 --                            ℕ-addition (the first AES-field codec instance).
 --   • `dlog-inv-law`       — the discrete-log inverse: `gᵏ · gʲ ≡ 1` whenever
---                            `k+j = order`, via `gpow-hom` + `g^order = 1`. The
+--                            `k+j = order`, via `gpow-hom` ℕ+ `g^order = 1`. The
 --                            inverse of gᵏ is g^(order−k) — additive negation in
 --                            the exponent, no EEA/Bézout.
 --
@@ -30,22 +30,26 @@
 
 module Substrate.Algebra.F2.Polynomial.Wedge.DLogPow where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
 open import Substrate.Foundation.Vec using (Vec; []; _∷_)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
-import Substrate.Algebra.F2 as F2
+open import Substrate.Algebra.F2.F2
 open import Substrate.Algebra.F2.CommRing using (F₂-CommRing)
 open import Substrate.Algebra.ExpLogCodec using (ExpLogCodec)
 import Substrate.Algebra.Polynomial.Graded.FromCommRing as F
 import Substrate.Algebra.Polynomial.Graded.Mod as M
 import Substrate.Algebra.Polynomial.Graded.Quotient as Q
 import Substrate.Algebra.Polynomial.Graded.Div as D
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- The structural antilog, generic over the field and primitive element.
 ------------------------------------------------------------------------
 
-module Over (d : ℕ) (m-lo : Vec F2.F₂ (suc d)) (gx : F.Over.Poly F₂-CommRing (suc d)) where
+module Over (d : ℕ) (m-lo : Vec F₂ (suc d)) (gx : F.Over.Poly F₂-CommRing (suc d)) where
   open F.Over F₂-CommRing using (Poly)
   open M.Over F₂-CommRing d m-lo using (oneC)
   open Q.Over F₂-CommRing d m-lo using (_*Q_; *Q-assoc; *Q-identityˡ)
@@ -56,7 +60,7 @@ module Over (d : ℕ) (m-lo : Vec F2.F₂ (suc d)) (gx : F.Over.Poly F₂-CommRi
   gpow (suc n) = gx *Q gpow n
 
   -- g^(a+b) = gᵃ · gᵇ : the homomorphism, by induction (NOT a 2ⁿ²-case table).
-  gpow-hom : (a b : ℕ) → gpow (a + b) ≡ (gpow a *Q gpow b)
+  gpow-hom : (a b : ℕ) → gpow (a ℕ+ b) ≡ (gpow a *Q gpow b)
   gpow-hom zero    b = sym (*Q-identityˡ (gpow b))
   gpow-hom (suc a) b =
     trans (cong (gx *Q_) (gpow-hom a b))
@@ -65,13 +69,13 @@ module Over (d : ℕ) (m-lo : Vec F2.F₂ (suc d)) (gx : F.Over.Poly F₂-CommRi
   -- the generic codec at this field, over L = ℕ: GF(2ⁿ) mult IS exp of ℕ-add.
   gpow-codec : ExpLogCodec ℕ _*Q_ oneC _≡_
   gpow-codec = record
-    { _⊕_ = _+_ ; 𝟘 = zero ; expL = gpow
+    { _⊕_ = _ℕ+_ ; 𝟘 = zero ; expL = gpow
     ; exp-⊕ = gpow-hom ; exp-𝟘 = refl }
 
   -- THE DISCRETE-LOG INVERSE: gᵏ · gʲ ≡ 1 whenever k+j = order. The inverse of gᵏ
   -- is g^(order−k) — additive negation in the exponent, transported by exp.
   dlog-inv-law : (ord : ℕ) → gpow ord ≡ oneC →
-                 (k j : ℕ) → k + j ≡ ord → (gpow k *Q gpow j) ≡ oneC
+                 (k j : ℕ) → k ℕ+ j ≡ ord → (gpow k *Q gpow j) ≡ oneC
   dlog-inv-law ord g k j kj =
     trans (sym (gpow-hom k j)) (trans (cong gpow kj) g)
 
@@ -79,11 +83,11 @@ module Over (d : ℕ) (m-lo : Vec F2.F₂ (suc d)) (gx : F.Over.Poly F₂-CommRi
 -- GF(2⁴) = F₂[x]/(x⁴+x+1), primitive g = x, multiplicative order 15.
 ------------------------------------------------------------------------
 
-m-lo₄ : Vec F2.F₂ 4
-m-lo₄ = F2.𝟙 ∷ F2.𝟙 ∷ F2.𝟘 ∷ F2.𝟘 ∷ []
+m-lo₄ : Vec F₂ 4
+m-lo₄ = 𝟙 ∷ 𝟙 ∷ 𝟘 ∷ 𝟘 ∷ []
 
 gx₄ : F.Over.Poly F₂-CommRing 4
-gx₄ = F2.𝟘 ∷ F2.𝟙 ∷ F2.𝟘 ∷ F2.𝟘 ∷ []          -- x
+gx₄ = 𝟘 ∷ 𝟙 ∷ 𝟘 ∷ 𝟘 ∷ []          -- x
 
 module GF16 = Over 3 m-lo₄ gx₄
 open M.Over F₂-CommRing 3 m-lo₄ using (oneC)

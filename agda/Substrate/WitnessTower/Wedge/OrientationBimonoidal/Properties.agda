@@ -3,9 +3,9 @@
 --
 -- ⟡rig-11 (instances) — ⊕ and ⊗ as instances of the ONE GradedProductOver, and both
 -- associators as instances of the ONE GradedAssocOver. The proof-dependent face of
--- OrientationBimonoidal (imports the ordering ops + their proof modules).
+-- OrientationBimonoidal (imports the ordering ops ℕ+ their proof modules).
 --
---   ⊕-over : GradedProductOver _+_ 0 LehmerPath ;  ⊕-assoc-over : GradedAssocOver +-assoc ⊕-over
+--   ⊕-over : GradedProductOver _ℕ+_ 0 LehmerPath ;  ⊕-assoc-over : GradedAssocOver +ℕ-assoc ⊕-over
 --   ⊗-over : GradedProductOver _*_ 1 Perm       ;  ⊗-assoc-over : GradedAssocOver *-assoc ⊗-over
 --
 -- ⊕-assoc-over = ⊕-assoc and ⊗-assoc-over = ⊗-assoc typecheck — rig-5 and rig-8 are the
@@ -25,46 +25,48 @@
 
 module Substrate.WitnessTower.Wedge.OrientationBimonoidal.Properties where
 
-open import Substrate.Foundation.Nat using (ℕ; _+_; _*_)
-open import Substrate.Foundation.Nat.Properties.Add using (+-assoc)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Times
+open import Substrate.Foundation.Nat.Properties.Add.PlusAssoc
 open import Substrate.Foundation.Nat.Properties.Mul using (*-assoc)
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Algebra.Wedge.Product using (GradedProduct)
-open import Substrate.WitnessTower.LehmerPath using (LehmerPath)
+open import Substrate.WitnessTower.LehmerPath.LehmerPath
 open import Substrate.WitnessTower.Enumerate using (Perm)
 open import Substrate.WitnessTower.Wedge.OrientationSum using (_⊕_; 0#)
 open import Substrate.WitnessTower.Wedge.OrientationProduct using (_⊗_; 1#)
 open import Substrate.WitnessTower.Wedge.OrientationSumLaws using (⊕-assoc)
 open import Substrate.WitnessTower.Wedge.OrientationProductLaws using (⊗-assoc)
 open import Substrate.Foundation.Vec using (lookup)
-open import Substrate.WitnessTower.LehmerPath using (decode)
+open import Substrate.WitnessTower.LehmerPath.Decode
 open import Substrate.WitnessTower.Wedge.OrientationSumComm using (blockSwap; blockSwap-invol)
 open import Substrate.WitnessTower.Wedge.OrientationProductComm using (factorSwap; factorSwap-invol)
 open import Substrate.WitnessTower.Wedge.OrientationSumNaturality using (⊕-comm-nat)
 open import Substrate.WitnessTower.Wedge.OrientationProductNaturality using (⊗-comm-nat)
 open import Substrate.WitnessTower.Wedge.OrientationBimonoidal
   using (GradedProductOver; GradedAssocOver; GradedBraid; GradedBraidNatural)
+open import Substrate.Foundation.Eq
 
-⊕-over : GradedProductOver _+_ 0 LehmerPath
+⊕-over : GradedProductOver _ℕ+_ 0 LehmerPath
 ⊕-over = record { u = 0# ; _∧_ = _⊕_ }
 
 ⊗-over : GradedProductOver _*_ 1 Perm
 ⊗-over = record { u = 1# ; _∧_ = _⊗_ }
 
-⊕-assoc-over : GradedAssocOver +-assoc ⊕-over
+⊕-assoc-over : GradedAssocOver +ℕ-assoc ⊕-over
 ⊕-assoc-over = ⊕-assoc
 
 ⊗-assoc-over : GradedAssocOver *-assoc ⊗-over
 ⊗-assoc-over = ⊗-assoc
 
 ------------------------------------------------------------------------
--- The comm-iso fibres as instances of the ONE GradedBraid: blockSwap (⟡rig-6, over +)
+-- The comm-iso fibres as instances of the ONE GradedBraid: blockSwap (⟡rig-6, over ℕ+)
 -- and factorSwap (⟡rig-8, over *) are both involutive graded index-braidings. The
 -- involution laws (blockSwap-invol / factorSwap-invol) instantiate braid-invol — the
 -- symmetric groupoid's r ∘ r = id, uniform over the grading op.
 ------------------------------------------------------------------------
 
-⊕-braid : GradedBraid _+_
+⊕-braid : GradedBraid _ℕ+_
 ⊕-braid = record { braid = blockSwap ; braid-invol = blockSwap-invol }
 
 ⊗-braid : GradedBraid _*_
@@ -85,19 +87,19 @@ open import Substrate.WitnessTower.Wedge.OrientationBimonoidal
 
 ------------------------------------------------------------------------
 -- REUSE UNIFICATION (dedup: GradedProductOver and Algebra.Wedge.Product.GradedProduct
--- share the record fingerprint {u, _∧_}). GradedProductOver _+_ 0 IS GradedProduct — the
--- existing fixed-`+` product is the (ℕ,+,0) instance of the general grading-op product.
+-- share the record fingerprint {u, _∧_}). GradedProductOver _ℕ+_ 0 IS GradedProduct — the
+-- existing fixed-`+` product is the (ℕ,ℕ+,0) instance of the general grading-op product.
 -- A field-copy bijection (round-trips refl by record η), formalizing the rig-11 equation.
 ------------------------------------------------------------------------
 
-GP→over : {C : ℕ → Set} → GradedProduct C → GradedProductOver _+_ 0 C
+GP→over : {C : ℕ → Set} → GradedProduct C → GradedProductOver _ℕ+_ 0 C
 GP→over P = record { u = GradedProduct.u P ; _∧_ = GradedProduct._∧_ P }
 
-over→GP : {C : ℕ → Set} → GradedProductOver _+_ 0 C → GradedProduct C
+over→GP : {C : ℕ → Set} → GradedProductOver _ℕ+_ 0 C → GradedProduct C
 over→GP P = record { u = GradedProductOver.u P ; _∧_ = GradedProductOver._∧_ P }
 
 GP→over→GP : {C : ℕ → Set} (P : GradedProduct C) → over→GP (GP→over P) ≡ P
 GP→over→GP P = refl
 
-over→GP→over : {C : ℕ → Set} (P : GradedProductOver _+_ 0 C) → GP→over (over→GP P) ≡ P
+over→GP→over : {C : ℕ → Set} (P : GradedProductOver _ℕ+_ 0 C) → GP→over (over→GP P) ≡ P
 over→GP→over P = refl

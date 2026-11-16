@@ -6,21 +6,21 @@
 -- happens at grades is the disagreement that happens between the cone's apex
 -- and its base."
 --
--- The atom is the F₂ fact `𝟙 + b ≢ b`: the residue at a coordinate ALWAYS
+-- The atom is the F₂ fact `𝟙 +F b ≢ b`: the residue at a coordinate ALWAYS
 -- disagrees with its source there. (Constructive negation — a derivation of
 -- ⊥ from the equation via constructor disjointness, reusing Algebra.F2's
 -- 𝟙≢𝟘 / 𝟘≢𝟙 — not absence-of-proof.) It is `flip-disagrees`. Its three
 -- instantiations, all the SAME atom:
 --
 --   * APEX vs BASE (the cone). The Hodge residue ★ (FaceSet) flips the apex
---     bit: head (★ (b ∷ f)) = 𝟙 + b, which disagrees with the original head
+--     bit: head (★ (b ∷ f)) = 𝟙 +F b, which disagrees with the original head
 --     b. The newest (apex) coordinate at each dimension is the cone's own
 --     diagonal entry — ★ flips it. `apex-disagrees`.
 --   * GRADES (no fixed point). Hence the cell-level ★ has NO fixed face:
 --     ★ S ≡ S is impossible, because they already disagree at the apex.
 --     `★-no-fixpoint`. (The grade-LABEL shadow is Hodge.witness-distinct.)
 --   * THE DIAGONAL (Cantor). Given rows M i, the witness D whose i-th bit is
---     the flip 𝟙 + (M i)ᵢ differs from EVERY row at coordinate i — so D is
+--     the flip 𝟙 +F (M i)ᵢ differs from EVERY row at coordinate i — so D is
 --     not among the rows. `cantor-diagonal`. Same flip, run along i.
 --
 -- So Cantor's diagonal, the grade ★'s fixed-point-freeness, and the cone's
@@ -35,30 +35,37 @@
 
 module Substrate.WitnessTower.Diagonal where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; head; tail; lookup)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
-open import Substrate.Foundation.Empty using (⊥)
-open import Substrate.Algebra.F2 using (F₂; 𝟘; 𝟙; _+_; 𝟙≢𝟘; 𝟘≢𝟙; +-assoc)
+open import Substrate.Foundation.Empty.Bot
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.OneNeqZero
+open import Substrate.Algebra.F2.PlusAssoc
+open import Substrate.Algebra.F2.PlusF
+open import Substrate.Algebra.F2.ZeroNeqOne
 open import Substrate.Algebra.F2.Vector
   using (Vector; _+ⱽ_; +ⱽ-assoc; +ⱽ-comm; +ⱽ-self-inverse; +ⱽ-identityˡ)
 open import Substrate.WitnessTower.FaceSet using (Face; ★)
 open import Substrate.Category.Lawvere
   using (FixedPointFree; diag; diag-not-in-family; InvolutiveResidue;
          CommutingInvolutions; fpf-≠-has-fixpoint)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
--- 1. THE ATOM. The residue 𝟙 + b never equals its source b. Constructive:
+-- 1. THE ATOM. The residue 𝟙 +F b never equals its source b. Constructive:
 --    case on b routes to F₂'s existing constructor-disjointness refutations.
 ------------------------------------------------------------------------
 
-flip-disagrees : (b : F₂) → 𝟙 + b ≡ b → ⊥
-flip-disagrees 𝟘 eq = 𝟙≢𝟘 eq    -- 𝟙 + 𝟘 = 𝟙, so the equation is 𝟙 ≡ 𝟘
-flip-disagrees 𝟙 eq = 𝟘≢𝟙 eq    -- 𝟙 + 𝟙 = 𝟘, so the equation is 𝟘 ≡ 𝟙
+flip-disagrees : (b : F₂) → 𝟙 +F b ≡ b → ⊥
+flip-disagrees 𝟘 eq = 𝟙≢𝟘 eq    -- 𝟙 +F 𝟘 = 𝟙, so the equation is 𝟙 ≡ 𝟘
+flip-disagrees 𝟙 eq = 𝟘≢𝟙 eq    -- 𝟙 +F 𝟙 = 𝟘, so the equation is 𝟘 ≡ 𝟙
 
 ------------------------------------------------------------------------
--- 2. APEX vs BASE. ★ flips the apex bit (head (★ (b ∷ f)) = 𝟙 + b), so the
+-- 2. APEX vs BASE. ★ flips the apex bit (head (★ (b ∷ f)) = 𝟙 +F b), so the
 --    residue disagrees with the face at the apex — the cone's diagonal entry.
 ------------------------------------------------------------------------
 
@@ -81,7 +88,7 @@ apex-disagrees b f eq = flip-disagrees b (cong head eq)
 
 cantor-diagonal :
   {n : ℕ} (M : Fin n → Vector n) (D : Vector n)
-  (is-flip : (i : Fin n) → lookup D i ≡ 𝟙 + lookup (M i) i)
+  (is-flip : (i : Fin n) → lookup D i ≡ 𝟙 +F lookup (M i) i)
   (i : Fin n) → D ≡ M i → ⊥
 cantor-diagonal M D is-flip i eq =
   flip-disagrees (lookup (M i) i)
@@ -96,10 +103,21 @@ cantor-diagonal M D is-flip i eq =
 --    the certified r<b would make δ canonical over every carrier = keystone.)
 ------------------------------------------------------------------------
 
--- F₂ with the residue δ = (𝟙 +_) is a fixed-point-free carrier; its δ-free
+-- F₂ with the residue δ = (𝟙 +F_) is a fixed-point-free carrier; its δ-free
 -- IS flip-disagrees. The whole arc's atom, packaged as a Lawvere instance.
+--
+-- ⚑ WAS `𝟙 +_` (ⓉDIAGONAL-FIX).  F₂'s addition is spelled `_+F_` — `flip-disagrees`
+-- at :63 already uses it — and bare `+` names nothing here, so agda reported
+-- `[NoParseForApplication] 𝟙 +_ / Operators used in the grammar: None`: not a
+-- fixity that failed to resolve, an operator with no definition in scope at all.
+--
+-- ⚑ AND THIS IS THE SAME STRANDED-SPELLING CLASS as `·₂`/`+₂` in ParityBridge: a
+-- rename moved F₂'s operators and left the section behind.  The cost here was
+-- higher than a broken module — `F₂-fpf` is the Lawvere PACKAGING of the atom,
+-- so while this line did not parse, the tower's one concrete `FixedPointFree`
+-- instance did not exist, and `cantor-lawvere`/`F₂-ir` below it could not load.
 F₂-fpf : FixedPointFree F₂
-F₂-fpf = record { δ = 𝟙 +_ ; δ-free = flip-disagrees }
+F₂-fpf = record { δ = 𝟙 +F_ ; δ-free = flip-disagrees }
 
 -- the diagonal, re-derived as Lawvere's theorem at V = F₂ (function form):
 -- no family I → (I → F₂) contains its own diagonal twist.
@@ -107,12 +125,12 @@ cantor-lawvere : {I : Set} (M : I → I → F₂) (i : I) → diag F₂-fpf M �
 cantor-lawvere = diag-not-in-family F₂-fpf
 
 -- F₂'s residue is moreover a fixed-point-free INVOLUTION (δ² = id, the green
--- double-negation): 𝟙 + (𝟙 + b) = b by +-assoc (𝟙 + 𝟙 = 𝟘, then 𝟘 + b = b).
+-- double-negation): 𝟙 +F (𝟙 +F b) = b by +-assoc (𝟙 +F 𝟙 = 𝟘, then 𝟘 +F b = b).
 -- So the collapse∘lift round-trip is its own inverse — the graded flip, and the
 -- Z/2 that contains both ends (degree 1 = the diagonal, degree 0 = the return).
 F₂-ir : InvolutiveResidue F₂
 F₂-ir = record
-  { δ       = 𝟙 +_
+  { δ       = 𝟙 +F_      -- ⚑ was `𝟙 +_`, same stranded spelling (ⓉDIAGONAL-FIX)
   ; δ-free  = flip-disagrees
   ; δ-invol = λ b → sym (+-assoc 𝟙 𝟙 b)
   }
@@ -122,7 +140,7 @@ F₂-ir = record
 -- (reusing Algebra.F2.Vector's group laws), so {id, +e₁, +e₂, +e₁₂} is Klein
 -- four — the NORMAL "gauge" V₄ of all double-transpositions (the translation
 -- regular rep). It is NOT the whole V₄ story: S₄ also has three INTERFACE V₄s
--- (one double-transposition d + two transpositions), and gauge ∩ interface =
+-- (one double-transposition d +F two transpositions), and gauge ∩ interface =
 -- a shared V₂ = ⟨d⟩ — the seam (WitnessTower.B3Split splits the 4 Klein-fours
 -- by cycle type; WitnessTower.SharedMiddle models the shared-middle V₂ on the
 -- certified Groups.V4; the EXACT intersection is posited there, not yet built).

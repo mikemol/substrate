@@ -13,12 +13,14 @@
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.Algebra.Q.Order where
+open import Substrate.Algebra.Z.Mul
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _≤_; _*_)
-  renaming (z≤n to ℕ-z≤n; s≤s to ℕ-s≤s)
-open import Substrate.Algebra.Z using (ℤ; +_; -suc_)
-open import Substrate.Algebra.Q using (ℚ; mkℚ; num; den-1)
-open import Substrate.Algebra.Z.Arithmetic using (_*ℤ_)
+open import Substrate.Foundation.Nat.Le
+open import Substrate.Foundation.Nat.Nat
+
+open import Substrate.Algebra.Z.Int
+open import Substrate.Algebra.Q.Rat
+
 
 ------------------------------------------------------------------------
 -- 1. ℤ ordering.
@@ -33,17 +35,17 @@ data _≤ℤ_ : ℤ → ℤ → Set where
 
 -- Reflexivity at ℤ.
 ≤ℤ-refl : (z : ℤ) → z ≤ℤ z
-≤ℤ-refl (+ zero)    = +≤+ ℕ-z≤n
+≤ℤ-refl (+ zero)    = +≤+ z≤n
 ≤ℤ-refl (+ suc n)   = +≤+ (≤ℤ-refl-ℕ (suc n))
   where
     ≤ℤ-refl-ℕ : (n : ℕ) → n ≤ n
-    ≤ℤ-refl-ℕ zero    = ℕ-z≤n
-    ≤ℤ-refl-ℕ (suc n) = ℕ-s≤s (≤ℤ-refl-ℕ n)
+    ≤ℤ-refl-ℕ zero    = z≤n
+    ≤ℤ-refl-ℕ (suc n) = s≤s (≤ℤ-refl-ℕ n)
 ≤ℤ-refl (-suc n) = -≤- (≤ℤ-refl-helper n)
   where
     ≤ℤ-refl-helper : (n : ℕ) → n ≤ n
-    ≤ℤ-refl-helper zero    = ℕ-z≤n
-    ≤ℤ-refl-helper (suc n) = ℕ-s≤s (≤ℤ-refl-helper n)
+    ≤ℤ-refl-helper zero    = z≤n
+    ≤ℤ-refl-helper (suc n) = s≤s (≤ℤ-refl-helper n)
 
 ------------------------------------------------------------------------
 -- 2. ℚ ordering via cross-multiplication.

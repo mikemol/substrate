@@ -36,10 +36,10 @@
 module Substrate.Algebra.Sporadic.MathieuFischer where
 
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Nat using (ℕ)
 
 open import Substrate.Category.ConjugationCoalgebra
   using (ConjugationCoalgebra; mkConjugationCoalgebra)
+open import Substrate.Groups.V4-Cosets
 
 ------------------------------------------------------------------------
 -- Mathieu groups.

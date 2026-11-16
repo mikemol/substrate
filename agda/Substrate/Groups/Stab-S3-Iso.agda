@@ -36,13 +36,10 @@
 
 module Substrate.Groups.Stab-S3-Iso where
 
-open import Substrate.Foundation.Level using (0ℓ)
 open import Substrate.Foundation.Fin.Literals using (₁; ₂; ₃)
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂)
-open import Substrate.Foundation.Eq
-  using (_≡_; _≢_; refl; sym; trans; cong)
 
 open import Substrate.Axes.Axis using (Axis; D; C; S; W)
 open import Substrate.Groups.Symmetric.Permutation Axis
@@ -55,6 +52,11 @@ open import Substrate.Groups.Stab-S3
 open import Substrate.Groups.Stab-S3-Restrict
   using (non-anchor-to-fin3-cong; restrict)
 open import Substrate.Groups.Stab-S3-Extend using (extend)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Neq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- restrict-extend: round trip on the SFinP.Permutation 3 side.

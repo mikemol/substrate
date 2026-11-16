@@ -14,6 +14,12 @@ module Substrate.Groups.Z3.Normalize where
 open import Substrate.Groups.Coxeter.Word
 open import Substrate.Groups.Coxeter.Cyclic.Base 2
 open import Substrate.Groups.Coxeter.Cyclic.Existential 2
+-- ⚑ `normalize` IS `ListPresentation`'s (Ⓐ¹⁶‴); both opens above are bare, so
+-- the five arguments are already in scope.
+open import Substrate.Groups.Coxeter.ListPresentation
+  Gen Canonical-ex c-ε insert insert-canonical-ex
+open import Substrate.Groups.Coxeter.Cyclic.Base.Gen
+open import Substrate.Groups.Coxeter.Cyclic.Base.Insert
 
 normalize₃ : Word Gen → Word Gen
 normalize₃ = normalize

@@ -35,8 +35,7 @@
 
 module Substrate.Algebra.Wedge.Shape.Double.InternedEffectivity where
 
-open import Substrate.Foundation.Eq using (_≡_)
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Product using (_,_)
 open import Substrate.Foundation.Iff using (_⇔_)
 open import Substrate.Algebra.Wedge using (Trace; ℕ-div)
@@ -45,6 +44,8 @@ open import Substrate.Algebra.Wedge.Shape.Double using (Corr)
 open import Substrate.Algebra.Wedge.Shape.Register using (Register; _∈ᴿ_; idx)
 open import Substrate.Algebra.Wedge.Shape.Register.Properties using (NoDupᴿ)
 open import Substrate.Algebra.Wedge.Shape.Double.Interned using (corr→addr; addr→corr)
+open import Substrate.Foundation.Eq
+open import Substrate.S5.S5Carrier
 
 ------------------------------------------------------------------------
 -- EFFECTIVITY — the interior reading (equal shapes) and the exterior reading

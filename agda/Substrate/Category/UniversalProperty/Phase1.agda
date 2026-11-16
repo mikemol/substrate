@@ -62,23 +62,32 @@ open import Substrate.Category.UniversalProperty
   using (UPArrowP; mkUP; SourceP; TargetP; WitnessP; trivial-UPP)
 open import Substrate.Category.UniversalProperty.Morphism
   using (UPMorphism; source-map; target-map; coherent)
-open import Substrate.Category.UniversalProperty.Compose
-  using (id-UPMorphism; compose-UPMorphism)
+open import Substrate.Category.UniversalProperty.Compose.ComposeUPMorphism
+open import Substrate.Category.UniversalProperty.Compose.IdUPMorphism
 open import Substrate.Category.UniversalProperty.Term
   using (UPGen; lift; UPTerm; []; _∷_; _++ᵤ_)
-open import Substrate.Category.UniversalProperty.ArrowOfArrow
-  using (UPArrow²; L0-SourceP; L0-TargetP; L1-WitnessP; UPArrow²-Morphism)
-open import Substrate.Category.UniversalProperty.FixedPoint
-  using (ι; promote)
+-- ⚑ `ArrowOfArrow` (the parent) IS DISSOLVED, and its `using` clause named THREE
+-- NAMES THAT NEVER EXISTED: `L0-SourceP`/`L0-TargetP`/`L1-WitnessP`, where the
+-- leaves export `L0-Source`/`L0-Target`/`L1-Witness` — no trailing `P`. That is
+-- why `agda_defs L0-SourceP` reports no definer anywhere: it was a stale clause
+-- entry, and `ModuleDoesntExport` is only a WARNING, so it bound nothing and
+-- failed at a distant use site rather than here. The clause goes with the parent.
+open import Substrate.Category.UniversalProperty.ArrowOfArrow.L0Source
+open import Substrate.Category.UniversalProperty.ArrowOfArrow.L0Target
+open import Substrate.Category.UniversalProperty.ArrowOfArrow.UPArrow2
+open import Substrate.Category.UniversalProperty.ArrowOfArrow.UPArrow2Morphism
+open import Substrate.Category.UniversalProperty.FixedPoint.Op
+open import Substrate.Category.UniversalProperty.FixedPoint.Promote
 open import Substrate.Category.UniversalProperty.Category
   using (UPCategory; UPCategory-canonical;
          id-UPTerm; compose-UPTerm; ++ᵤ-identityˡ;
          ++ᵤ-identityʳ; ++ᵤ-assoc)
-open import Substrate.Category.UniversalProperty.Instances
-  using (FreeMonoid-UP; FreeModule-UP; ConeLimit-UP;
-         Adjunction-UP; FreeLinearization-UP)
-open import Substrate.Category.UniversalProperty.Terminal
-  using (to-trivial-cond)
+open import Substrate.Category.UniversalProperty.Instances.AdjunctionUP
+open import Substrate.Category.UniversalProperty.Instances.ConeLimitUP
+open import Substrate.Category.UniversalProperty.Instances.FreeLinearizationUP
+open import Substrate.Category.UniversalProperty.Instances.FreeModuleUP
+open import Substrate.Category.UniversalProperty.Instances.FreeMonoidUP
+open import Substrate.Category.UniversalProperty.Terminal.ToTrivialCond
 
 ------------------------------------------------------------------------
 -- UPCategory Phase-1 closure: ready for Phase 2's site structure.

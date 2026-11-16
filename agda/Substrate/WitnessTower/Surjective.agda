@@ -12,13 +12,12 @@
 
 module Substrate.WitnessTower.Surjective where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Op
 open import Substrate.Foundation.Vec using (lookup; tabulate)
-open import Substrate.Foundation.Vec.Properties using (lookup∘tabulate)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans)
-open import Substrate.Foundation.Negation using (yes; no)
+open import Substrate.Foundation.Vec.Properties.LookupComptabulate
+open import Substrate.Foundation.Negation.Dec
 open import Substrate.Foundation.Product using (Σ; _,_)
 open import Substrate.Foundation.Fin.Punctured using (punchOut)
 
@@ -26,10 +25,13 @@ open import Substrate.WitnessTower.Enumerate using (Perm)
 open import Substrate.WitnessTower.IsPermutation using (IsPerm)
 open import Substrate.WitnessTower.Decompose
   using (decomp-tail; decomp-tail-perm; tail-≢-head; punchOut-injective)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
 
 perm-surjective :
   {n : ℕ} (σ : Perm n) → IsPerm σ → (y : Fin n) → Σ (Fin n) (λ x → lookup σ x ≡ y)
-perm-surjective {suc n} σ perm y with y ≟ lookup σ zero
+perm-surjective {suc n} σ perm y with y ≟ᶠ lookup σ zero
 ... | yes y≡h = zero , sym y≡h
 ... | no  y≢h
       with perm-surjective (decomp-tail σ perm) (decomp-tail-perm σ perm)

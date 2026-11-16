@@ -8,7 +8,7 @@
 --
 -- The Euclidean algorithm on integers TERMINATES (`EEATrace` reaches `base` at
 -- the gcd) — a finite continued fraction, i.e. a RATIONAL. On a real it never
--- terminates: the same Wedge step (digit = quotient, residual = the Gauss-map
+-- terminates: the same Wedge-GCD step (digit = quotient, residual = the Gauss-map
 -- image) repeated forever. So ℚ-Canonical's CF shape ([[project_sppf_eea_unification]])
 -- and this share one machinery; finite ⇒ ℚ, productive ⇒ ℝ.
 --
@@ -24,16 +24,19 @@
 
 module Substrate.Algebra.R.Trace where
 
-open import Substrate.Foundation.Nat     using (ℕ; zero; suc; _+_; _*_; _≤_)
+open import Substrate.Foundation.Nat.Le
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Times
 open import Substrate.Foundation.List    using (List; []; _∷_)
 open import Substrate.Foundation.Product using (_×_; _,_)
-open import Substrate.Foundation.Eq      using (_≡_; refl)
 
 open import Substrate.Algebra.Nat.GCD.Wedge using (quotient)
 open import Substrate.Algebra.Nat.GCD.EEATrace using (EEATrace; base; step)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
--- The carrier: the coinductive Euclidean trace. One node = one Wedge step's
+-- The carrier: the coinductive Euclidean trace. One node = one Wedge-GCD step's
 -- quotient (a CF digit); `tail` is the residual process (never reaches base).
 ------------------------------------------------------------------------
 
@@ -63,13 +66,13 @@ take (suc n) r = head r ∷ take n (tail r)
 
 ------------------------------------------------------------------------
 -- Finite observation 2 — the n-th convergent pₙ/qₙ ∈ ℚ, by the CF recurrence
--- pₖ = aₖ·pₖ₋₁ + pₖ₋₂, qₖ = aₖ·qₖ₋₁ + qₖ₋₂. State = the last two (p,q) columns.
+-- pₖ = aₖ·pₖ₋₁ ℕ+ pₖ₋₂, qₖ = aₖ·qₖ₋₁ ℕ+ qₖ₋₂. State = the last two (p,q) columns.
 ------------------------------------------------------------------------
 
 conv-go : ℕ → ℕ → ℕ → ℕ → ℕ → RealTrace → ℕ × ℕ
 conv-go zero    p₁ q₁ _  _  _ = (p₁ , q₁)
 conv-go (suc n) p₁ q₁ p₀ q₀ r =
-  conv-go n ((head r * p₁) + p₀) ((head r * q₁) + q₀) p₁ q₁ (tail r)
+  conv-go n ((head r * p₁) ℕ+ p₀) ((head r * q₁) ℕ+ q₀) p₁ q₁ (tail r)
 
 convergent : ℕ → RealTrace → ℕ × ℕ
 convergent n r = conv-go n 1 0 0 1 r   -- seed (p₋₁,q₋₁,p₋₂,q₋₂) = (1,0,0,1)
@@ -89,7 +92,7 @@ tail sqrt2 = twos
 ------------------------------------------------------------------------
 -- The bridge to the existing machinery: the quotients ALONG an EEATrace are a
 -- FINITE continued fraction — the CF of a rational. `RealTrace` is exactly this
--- reading, never reaching `base`. One Wedge step; finite ⇒ ℚ, infinite ⇒ ℝ.
+-- reading, never reaching `base`. One Wedge-GCD step; finite ⇒ ℚ, infinite ⇒ ℝ.
 ------------------------------------------------------------------------
 
 digits-of-EEA : {a b g : ℕ} → EEATrace a b g → List ℕ

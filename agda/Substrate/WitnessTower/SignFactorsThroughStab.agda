@@ -38,8 +38,7 @@
 module Substrate.WitnessTower.SignFactorsThroughStab where
 
 open import Substrate.Foundation.Vec using (Vec; tabulate)
-open import Substrate.Foundation.Bool using (Bool; true; false)
-open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym)
+open import Substrate.Foundation.Bool.Bool
 open import Substrate.WitnessTower.Enumerate using (Perm)
 open import Substrate.WitnessTower.Wedge.OrientationRigCatPermSign using (sign)
 open import Substrate.Axes.Axis using (Axis; D; C; S; W)
@@ -50,7 +49,11 @@ open import Substrate.Groups.Symmetric.Permutation.Compose Axis using (_·_)
 open import Substrate.Groups.V4-Embedding using (embed)
 open import Substrate.Cocycles.V4Signature.Codeword.Live
   using (Selector; sel-fft; sel-tft; sel-ftf; sel-ttf; sel-ftt; sel-ttt)
-open import Substrate.Cocycles.V4Signature.Codeword.LiveS4 using (stab-from-selector)
+open import Substrate.Cocycles.V4Signature.Codeword.LiveS4.StabFromSelector
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Algebra.Wedge.BinMul.Sel
 
 -- transport S4.Permutation → Perm 4 so `sign` applies.
 perm4 : Permutation → Perm 4

@@ -1,14 +1,23 @@
 {-# OPTIONS --safe --without-K #-}
 -- AI-9 MixColumns (file-per-test, memory-bounded). Base: fully-generic structural
--- primitives (abstract gmul ⇒ no constant-gmul normalization) + the byte constants/values.
+-- primitives (abstract gmul ⇒ no constant-gmul normalization) +F the byte constants/values.
 module Substrate.Algebra.F2.MixColumns.Base where
-open import Substrate.Algebra.F2 using (𝟘; 𝟙) public
+open import Substrate.Algebra.F2.F2 public
 open import Substrate.Algebra.F2.Vector using (Vector; _+ⱽ_; 𝟎ⱽ; +ⱽ-identityˡ; +ⱽ-identityʳ;
   +ⱽ-comm; +ⱽ-assoc) public
-open import Substrate.Algebra.F2.GF256.Mul using (gmul; gmul-distribˡ; gmul-distribʳ)
+open import Substrate.Algebra.F2.GF256.Mul.Gmul
+open import Substrate.Algebra.F2.GF256.Mul.GmulDistribR
 open import Substrate.Algebra.F2.GF256.Reduce using (+ⱽ-rearrange)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_) public
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂) public
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.FUSep.FUSepQHexagon.Private
+open import Substrate.ShadowArchitecture.Raven.Semantics.Cotypes
+open import Substrate.WitnessTower.Wedge.OrientationDistributorAssoc.P1
+open import Substrate.WitnessTower.Wedge.OrientationDistributorAssoc.P2
 
 c01 c02 c03 c09 c0b c0d c0e : Vector 8
 c01 = 𝟙 ∷ 𝟘 ∷ 𝟘 ∷ 𝟘 ∷ 𝟘 ∷ 𝟘 ∷ 𝟘 ∷ 𝟘 ∷ []

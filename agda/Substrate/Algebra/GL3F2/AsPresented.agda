@@ -37,7 +37,6 @@ module Substrate.Algebra.GL3F2.AsPresented where
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Literals using (₁; ₂)
 open import Substrate.Foundation.Product using (Σ; _,_)
-open import Substrate.Foundation.Eq using (_≡_; refl)
 
 open import Substrate.Algebra.F2.Vector using (Vector)
 open import Substrate.Algebra.GL3F2
@@ -47,6 +46,7 @@ open import Substrate.Algebra.GL3F2.MultiRouteEquivariance.SingerGL using (singe
 open import Substrate.Algebra.GL3F2.MultiRouteEquivariance.Swap01GL using (swap01-GL)
 open import Substrate.Algebra.GL3F2.SylowDecomposition
   using (Sylow-predicates; in-cyclic-of; _≈G_)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. The generator alphabet: Fin 3 indexing (swap01, cycle3, singer).

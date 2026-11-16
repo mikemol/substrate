@@ -15,15 +15,18 @@
 module Substrate.Algebra.GL3F2.SingerOrder.OnBasis where
 
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
 
 open import Substrate.Algebra.F2.Vector using (basis)
-open import Substrate.Algebra.F2.Linear using (apply)
+open import Substrate.Algebra.F2.Linear.Linear
 open import Substrate.Algebra.F2.FanoPlane
   using (Point; e₁; e₂; e₃; point-to-vec; singer⁷; singer⁷-id; singer-Linear)
 open import Substrate.Category.Coalgebra.FiniteOrder using (iterate)
 open import Substrate.Algebra.GL3F2.SingerOrder.Iterate
   using (singer^; iterate-commutes)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 basis-point : Fin 3 → Point
 basis-point zero          = e₁

@@ -26,9 +26,12 @@
 
 module Substrate.Category.UniversalProperty.StencilGroupoid where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans)
 open import Substrate.Algebra.R.Trace using (RealTrace; head; tail)
-open import Substrate.Algebra.R.Trace.Bisim using (_~_; head~; tail~; ~-refl)
+open import Substrate.Algebra.R.Trace.Bisim.Op
+open import Substrate.Algebra.R.Trace.Bisim.Refl
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
 
 ------------------------------------------------------------------------
 -- ① THE ~-FRAME IS A GROUPOID: ~ is an equivalence. ~-refl (169) + ~-sym + ~-trans

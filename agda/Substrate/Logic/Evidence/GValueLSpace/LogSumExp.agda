@@ -21,11 +21,17 @@
 
 module Substrate.Logic.Evidence.GValueLSpace.LogSumExp where
 
-open import Substrate.Algebra.Q using (ℚ; 1ℚ)
+open import Substrate.Algebra.Q.OneRat
+open import Substrate.Algebra.Q.Rat
 open import Substrate.Algebra.Q.Mul using (_*ℚ_)
 open import Substrate.Algebra.Q.Add using (_+ℚ_)
 open import Substrate.Algebra.Q.Equiv using (_≈ℚ_; ≈ℚ-refl)
-open import Substrate.Logic.Evidence.GValueLSpace using (ExpLogCodec; ExpLogCodecℚ)
+-- ⚑ `ExpLogCodec` WAS REACHED THROUGH `GValueLSpace`'s `public` RE-EXPORT
+-- (Ⓑ2c); its home is `Algebra.ExpLogCodec`.  `ExpLogCodecℚ` is GValueLSpace's
+-- own ℚ instance.
+open import Substrate.Algebra.ExpLogCodec
+open import Substrate.Logic.Evidence.GValueLSpace
+open import Substrate.Logic.Evidence.Atlas
 
 module _ {L : Set} (C : ExpLogCodecℚ L)
          (logL    : ℚ → L)

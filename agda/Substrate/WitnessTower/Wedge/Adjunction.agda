@@ -25,14 +25,14 @@
 
 module Substrate.WitnessTower.Wedge.Adjunction where
 
-open import Substrate.Foundation.Nat using (ℕ; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Product using (_,_)
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.WitnessTower.Enumerate using (Perm; insert-at)
 open import Substrate.Algebra.Wedge.Graded using (gforget)
 open import Substrate.Algebra.Wedge.Graded.Adjunction using (geval; gTerm; gtriangle; geval-eq)
 open import Substrate.WitnessTower.Wedge.Graded using (tower-graded; tower-step)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. The orientation = the residue = R n. The datum the forgetful side drops.

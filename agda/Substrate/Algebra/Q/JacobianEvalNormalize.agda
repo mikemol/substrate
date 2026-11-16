@@ -23,15 +23,19 @@
 
 module Substrate.Algebra.Q.JacobianEvalNormalize where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; cong; cong₂; sym)
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
-open import Substrate.Foundation.Negation using (yes; no)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Negation.Dec
 open import Substrate.Foundation.List using (List; []; _∷_)
-open import Substrate.Algebra.Z using (ℤ; +_; 0ℤ; _≟ℤ_)
+open import Substrate.Algebra.Z.DecInt
+open import Substrate.Algebra.Z.Int
+open import Substrate.Algebra.Z.ZeroInt
 open import Substrate.Algebra.Z.Add using (_+ℤ_)
 open import Substrate.Algebra.Z.Mul using (_*ℤ_)
 open import Substrate.Algebra.Z.Properties.MulFull using (*ℤ-identityʳ)
-open import Substrate.Algebra.Q using (ℚ; mkℚ; 0ℚ; 1ℚ)
+open import Substrate.Algebra.Q.OneRat
+open import Substrate.Algebra.Q.Rat
+open import Substrate.Algebra.Q.ZeroRat
 open import Substrate.Algebra.Q.Add using (_+ℚ_)
 open import Substrate.Algebra.Q.Mul using (_*ℚ_)
 open import Substrate.Algebra.Q.Equiv using (_≈ℚ_; ≈ℚ-refl; ≈ℚ-sym; ≈ℚ-trans)
@@ -45,6 +49,10 @@ open import Substrate.Algebra.Z.JacobianResidue
   using (MPoly; Mono; mono; Term; term; f₁; f₂; f₃)
 open import Substrate.Algebra.Q.JacobianEncodingNormalize
   using (Cᴹf₁; Cᴹf₂; Cᴹf₃; bridge₁; bridge₂; bridge₃)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.Foundation.Eq.Sym
 
 -- ≡ ⇒ ≈ℚ (the rigid identification crosses into the setoid).
 ≡→≈ℚ : {a b : ℚ} → a ≡ b → a ≈ℚ b
@@ -84,7 +92,7 @@ module _ (x y z : ℚ) where
   evalT-zero : (m : Mono) → evalT (term m 0ℤ) ≈ℚ 0ℚ
   evalT-zero m = zero-absorbˡ (monoval m)
 
-  -- like monomials combine: evalT(m,k) + evalT(m,d) ≈ evalT(m, k+d).
+  -- like monomials combine: evalT(m,k) ℕ+ evalT(m,d) ≈ evalT(m, k+d).
   coeff-combine : (m : Mono) (k d : ℤ) →
                   (evalT (term m k) +ℚ evalT (term m d)) ≈ℚ evalT (term m (k +ℤ d))
   coeff-combine m k d =
@@ -99,7 +107,7 @@ module _ (x y z : ℚ) where
                (≈ℚ-refl (monoval m)))
 
   ----------------------------------------------------------------------
-  -- consNZ respects eval: evalℚ (consNZ m k p) ≈ℚ evalT(m,k) + evalℚ p.
+  -- consNZ respects eval: evalℚ (consNZ m k p) ≈ℚ evalT(m,k) ℕ+ evalℚ p.
   ----------------------------------------------------------------------
 
   consNZ-eval : (m : Mono) (k : ℤ) (p : MPoly) →

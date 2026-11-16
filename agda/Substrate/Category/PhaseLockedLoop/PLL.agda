@@ -10,8 +10,8 @@
 
 module Substrate.Category.PhaseLockedLoop.PLL where
 
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Bool using (Bool)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Bool.Bool
 
 -- ⟡set1-paydown: parameterize Reference and VCOState. Both were carrier FIELDS
 -- (`Reference/VCOState : Set`), forcing PLL : Set₁; take them as module parameters

@@ -23,18 +23,22 @@
 
 module Substrate.WitnessTower.Wedge.OrientationRigFree where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; map; lookup; tabulate)
-open import Substrate.Foundation.Vec.Properties using (lookup∘tabulate)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
-open import Substrate.Foundation.Empty using (⊥-elim)
+open import Substrate.Foundation.Vec.Properties.LookupComptabulate
+open import Substrate.Foundation.Empty.BotElim
 open import Substrate.Foundation.Fin.Punctured using (punchIn; punchIn-≢)
 open import Substrate.WitnessTower.Enumerate using (Perm; insert-at)
 open import Substrate.WitnessTower.IsPermutation using (IsPerm; lookup-map; punchIn-injective)
 open import Substrate.WitnessTower.Decompose using (lookup-ext)
-open import Substrate.WitnessTower.LehmerPath using (LehmerPath; start; _◂_; decode)
+open import Substrate.WitnessTower.LehmerPath.Decode
+open import Substrate.WitnessTower.LehmerPath.LehmerPath
 open import Substrate.WitnessTower.Wedge.OrientationSum using (_⊕_)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- 1. THE ROTATION ρ p — σ-INDEPENDENT. Sends the new head (rank 0) to rank

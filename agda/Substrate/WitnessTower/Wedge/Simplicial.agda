@@ -34,15 +34,18 @@
 
 module Substrate.WitnessTower.Wedge.Simplicial where
 
-open import Substrate.Foundation.Nat using (ℕ; suc; _≤_)
+open import Substrate.Foundation.Nat.Le
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.List using (List)
 open import Substrate.Foundation.Vec using (lookup)
-open import Substrate.Foundation.Eq using (_≡_; refl; cong)
 open import Substrate.WitnessTower.Enumerate using (Perm; insert-at)
-open import Substrate.WitnessTower.SimplicialBoundary using (delAt; simplicial)
+open import Substrate.WitnessTower.SimplicialBoundary.DelAt
+open import Substrate.WitnessTower.SimplicialBoundary.Simplicial
 open import Substrate.Algebra.Wedge.Graded using (GradedWedge; recon; gcell)
 open import Substrate.WitnessTower.Wedge.Graded using (tower-graded; tower-step)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- 1. THE FORGETFUL / ORDER-INSENSITIVE SIDE: the nerve faces and THE simplicial

@@ -17,8 +17,7 @@
 
 module Substrate.Category.FreeLinearizationR.F2Bridge where
 
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Category.FreeLinearization
   using (FreeLinearization)
   renaming (extension to F₂-extension;
@@ -29,6 +28,7 @@ open import Substrate.Category.FreeLinearizationR
   using (FreeLinearizationR)
 open import Substrate.Algebra.F2.AsLinearAlgebra
   using (F₂-LinearAlgebra)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. Lift: F₂-FreeLinearization → FreeLinearizationR at F₂.

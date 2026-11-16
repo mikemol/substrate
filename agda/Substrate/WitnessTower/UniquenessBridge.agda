@@ -82,7 +82,6 @@
 
 module Substrate.WitnessTower.UniquenessBridge where
 
-open import Substrate.Foundation.Eq using (_≡_)
 
 -- (SPPF) free-semiring-term uniqueness.
 open import Substrate.Algebra.Semiring.SPPF using (SPPF; inside)
@@ -95,6 +94,7 @@ open import Substrate.WitnessTower.Wedge.OrientationRigInitial
 -- (INTERNER) the DUAL half — quotient effectivity, NOT a uniqueness instance.
 open import Substrate.Algebra.Wedge.Shape.Double.InternedEffectivity
   using (corr⇔addr)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- Searchable re-exports. Both are "the canonical map is unique among

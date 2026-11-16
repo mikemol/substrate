@@ -12,11 +12,15 @@
 
 module Substrate.Algebra.Nat.Divides.One where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _*_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Times
 open import Substrate.Foundation.Nat.Properties.Cancel using (suc-injective)
 open import Substrate.Foundation.Nat.Properties.Mul using (*-zeroʳ; *-comm)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans)
 open import Substrate.Algebra.Nat.Divides.Type using (_∣_; divides)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Nat.SucInjective
 
 -- `m ∣ 1` gives `q` with `1 ≡ q * m`. Pin `m`:
 --   m = 0       → 1 ≡ q*0 ≡ 0, contradiction supplies the (vacuous) goal.

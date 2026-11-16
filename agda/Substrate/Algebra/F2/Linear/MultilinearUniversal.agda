@@ -8,7 +8,7 @@
 -- instances of: `bilinear-extensionality` (n=2, β̌) is now literally this
 -- theorem read through a `Bilinear → IsMultilinear (k∷l∷[])` adapter (see
 -- `BilinearUniversal`), and `linear-extensionality` (n=1) is the base it
--- folds. (The Bilinear record bundles curried arguments + named leg-laws for
+-- folds. (The Bilinear record bundles curried arguments +F named leg-laws for
 -- ergonomic consumption; this generic form takes uncurried `Args` and the
 -- unbundled `IsMultilinear` predicate so the arity can fold — the adapter
 -- bridges the two representations. The earlier standalone n=3 rung was
@@ -27,17 +27,17 @@
 
 module Substrate.Algebra.F2.Linear.MultilinearUniversal where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using (Vec; []; _∷_)
 open import Substrate.Foundation.Unit using (⊤; tt)
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
-open import Substrate.Foundation.Eq using (_≡_)
 
-open import Substrate.Algebra.F2 using (F₂)
+open import Substrate.Algebra.F2.F2
 open import Substrate.Algebra.F2.Vector using (Vector; basis; _+ⱽ_; _*ₛ_)
-open import Substrate.Algebra.F2.Linear using (Linear; apply; preserves-+; preserves-*ₛ)
+open import Substrate.Algebra.F2.Linear.Linear
 open import Substrate.Algebra.F2.Linear.Universal using (linear-extensionality)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- The uncurried argument tuple, its basis-index tuple, and the

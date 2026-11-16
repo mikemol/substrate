@@ -16,11 +16,11 @@
 
 module Substrate.Algebra.R.Trace.ExtruderNfCrossDlogCospan where
 
-open import Substrate.Foundation.Eq  using (_≡_; refl; sym; trans; cong)
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
 open import Substrate.Foundation.Product using (Σ; _,_)
 open import Substrate.Foundation.Vec using (Vec; replicate)
-import Substrate.Algebra.F2 as F2
+open import Substrate.Algebra.F2.F2
 open import Substrate.Algebra.F2.CommRing using (F₂-CommRing)
 open import Substrate.Algebra.F2.Polynomial.Wedge.DLogHom using (module Over)
 import Substrate.Algebra.Polynomial.Graded.FromCommRing as F
@@ -31,6 +31,10 @@ open import Substrate.Algebra.Wedge using (DivStr; z; recon)
 open import Substrate.Algebra.Wedge.Mul using (MulDivStr; base; mul; Nilpotent; pow)
 open import Substrate.Algebra.Wedge.Bridge using (Bridge; translate; id-bridge)
 open import Substrate.Algebra.Wedge.CrossMul using (CrossMix; embA; embB; cross; Coherent)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- The nilpotent regime (matching ExtruderNfCrossDlog): d = 3, zero modulus.
@@ -38,8 +42,8 @@ open import Substrate.Algebra.Wedge.CrossMul using (CrossMix; embA; embB; cross;
 d : ℕ
 d = 3
 
-f-lo₀ : Vec F2.F₂ (suc d)
-f-lo₀ = replicate (suc d) F2.𝟘
+f-lo₀ : Vec F₂ (suc d)
+f-lo₀ = replicate (suc d) 𝟘
 
 open F.Over F₂-CommRing using (Poly; _+P_)
 open M.Over F₂-CommRing d f-lo₀ using (oneC)
@@ -73,7 +77,7 @@ cross-is-dlog : (i j : ℕ) → cross dlog-mix (gpow i) (gpow j) ≡ (gpow i *Q 
 cross-is-dlog i j = refl
 
 -- and it is gpow (i+j) — the codec, now AS the cospan's cross term (symmetric).
-cross-cospan-sum : (i j : ℕ) → cross dlog-mix (gpow i) (gpow j) ≡ gpow (i + j)
+cross-cospan-sum : (i j : ℕ) → cross dlog-mix (gpow i) (gpow j) ≡ gpow (i ℕ+ j)
 cross-cospan-sum i j = sym (gpow-hom i j)
 
 ------------------------------------------------------------------------

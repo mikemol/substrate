@@ -11,6 +11,7 @@ module Substrate.Pipeline.Brick.EdgeAccessors where
 
 open import Substrate.Pipeline.Brick.Type using (BrickType)
 open import Substrate.Pipeline.Brick.Record using (Brick)
+open import Substrate.FUSep.FUSepQReduce
 
 -- ⟡set1-paydown: BrickType's edges are now type indices, not projections — read them off the
 -- implicit params (inferred from the brick's type) instead of `BrickType.D-in T`.

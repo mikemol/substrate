@@ -42,14 +42,16 @@
 
 module Substrate.Algebra.Wedge.PrimePowerGraded where
 
-open import Substrate.Foundation.Nat using (ℕ; suc; _*_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Times
 open import Substrate.Foundation.List using (List; []; _∷_)
 open import Substrate.Foundation.List.Length using (length)
 open import Substrate.Foundation.Product using (Σ; _,_; _×_; proj₁)
-open import Substrate.Foundation.Eq using (_≡_; refl; cong)
 open import Substrate.Algebra.Nat.Prime
   using (IsPrime; AllPrime; []ᴾ; _∷ᴾ_; product; Factored)
 open import Substrate.Algebra.Wedge.Graded using (GradedDivStr; recon)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- 1. The graded prime-digit carrier and the prime residue.

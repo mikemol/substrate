@@ -20,7 +20,7 @@
 
 module Substrate.Conway.OrderLaws where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Product using (_×_; _,_)
 open import Substrate.Foundation.Unit using (⊤; tt)
 open import Substrate.Groups.Coxeter.Word using ([])

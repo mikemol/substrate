@@ -25,10 +25,10 @@
 
 module Substrate.Algebra.Nat.GCD.EEATrace.Keystone where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _<_)
+open import Substrate.Foundation.Nat.Lt
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.List using (List)
-open import Substrate.Foundation.Eq using (_≡_)
-open import Substrate.Foundation.Sum using (_⊎_)
+open import Substrate.Foundation.Sum.Sum
 open import Substrate.Foundation.Product using (Σ)
 open import Substrate.Algebra.Nat.GCD.Wedge using (remainder; r<b)
 open import Substrate.Algebra.Nat.GCD.EEATrace using (EEATrace; step)
@@ -36,6 +36,7 @@ open import Substrate.Algebra.Wedge using (fromEEATrace)
 open import Substrate.Algebra.Wedge.Trace.Residues using (trace-residues; trace-classify)
 open import Substrate.Algebra.Wedge.ResidueAtom using (ℕ-torsor; ℕ-zero?)
 open import Substrate.Category.Lawvere using (FixedPointFree)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. The shed residues + their prove-or-correct tags = the carrier-generic

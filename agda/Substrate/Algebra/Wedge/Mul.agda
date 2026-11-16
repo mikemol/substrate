@@ -30,10 +30,11 @@
 
 module Substrate.Algebra.Wedge.Mul where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _*_)
-open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Times
 open import Substrate.Foundation.Product using (Σ; _,_)
 open import Substrate.Algebra.Wedge using (DivStr; z; recon; ℕ-div)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. The enrichment: a carrier that multiplies.

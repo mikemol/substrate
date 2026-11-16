@@ -20,16 +20,20 @@
 
 module Substrate.Category.Coalgebra.StructuralGCD.Properties where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _*_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Times
 open import Substrate.Foundation.Nat.Properties.Mul using (*-comm)
 open import Substrate.Foundation.Level using (Level)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
 
 open import Substrate.Category.Coalgebra using (Endomap; _∘E_)
 open import Substrate.Category.Coalgebra.FiniteOrder
   using (iterate; iterate-add; HasOrder; HasOrder-multiple)
 open import Substrate.Category.Coalgebra.StructuralGCD
   using (Commute; commute; commute-sym)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 private
   variable

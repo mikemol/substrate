@@ -25,18 +25,23 @@
 
 module Substrate.WitnessTower.B3Split where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_) renaming (_≟_ to _≟ℕ_)
-open import Substrate.Foundation.Bool using (Bool; true; false; _∧_; not; if_then_else_; boolToℕ)  -- ⟡A4: single source
-open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Bool.And
+open import Substrate.Foundation.Bool.Bool
+open import Substrate.Foundation.Bool.BoolToNat
+open import Substrate.Foundation.Bool.IfThenElse
+open import Substrate.Foundation.Bool.Not   -- ⟡A4: single source
 
 open import Substrate.WitnessTower.Enumerate using (Perm; perms; mapL; concatMapL; lengthL)
 open import Substrate.WitnessTower.FirstAppearance using (compose; ⌊_⌋; filterL; _≡ᵇ_)
 open import Substrate.WitnessTower.KleinCensus using (klein-pair)
 open import Substrate.WitnessTower.CycleType
   using (cycle-type; _≟ᵛ_; ty-double; ty-transp)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
--- 0. Element cycle-type tests (rung 4) + a Bool→ℕ tally.
+-- 0. Element cycle-type tests (rung 4) ℕ+ a Bool→ℕ tally.
 ------------------------------------------------------------------------
 
 is-double : Perm 4 → Bool
@@ -60,11 +65,11 @@ count-pairs p =
 
 triple-doubles : Perm 4 → Perm 4 → ℕ
 triple-doubles a b =
-  bToℕ (is-double a) + (bToℕ (is-double b) + bToℕ (is-double (compose a b)))
+  bToℕ (is-double a) ℕ+ (bToℕ (is-double b) ℕ+ bToℕ (is-double (compose a b)))
 
 triple-transps : Perm 4 → Perm 4 → ℕ
 triple-transps a b =
-  bToℕ (is-transp a) + (bToℕ (is-transp b) + bToℕ (is-transp (compose a b)))
+  bToℕ (is-transp a) ℕ+ (bToℕ (is-transp b) ℕ+ bToℕ (is-transp (compose a b)))
 
 klein-pairs-with-doubles : (d : ℕ) → ℕ
 klein-pairs-with-doubles d =
@@ -87,7 +92,7 @@ no-two-doubles-4 = refl
 -- #subgroups = #pairs / 6, recorded as witnessed identities:
 gauge-six          : 6 ≡ klein-pairs-with-doubles 3          -- 1 × 6
 gauge-six          = refl
-interface-eighteen : 6 + (6 + 6) ≡ klein-pairs-with-doubles 1  -- 3 × 6
+interface-eighteen : 6 ℕ+ (6 ℕ+ 6) ≡ klein-pairs-with-doubles 1  -- 3 × 6
 interface-eighteen = refl
 
 ------------------------------------------------------------------------
@@ -119,7 +124,7 @@ gauge-closure-6 = refl
 --    non-identity element: its unique double-transposition d (a gauge
 --    member by §3), the two transpositions being NON-members (the gauge
 --    has only (2,2) non-identity elements). So gauge ∩ interface =
---    {id, d} ≅ V₂. We confirm the FULL interface signature (1 double +
+--    {id, d} ≅ V₂. We confirm the FULL interface signature (1 double ℕ+
 --    2 transpositions), so the "two elements outside the gauge" half is
 --    checked too — the seam is the single shared d.
 ------------------------------------------------------------------------
@@ -129,11 +134,11 @@ interface-full-sig =
   count-pairs (λ a b → klein-pair a b
                      ∧ (⌊ triple-doubles a b ≟ℕ 1 ⌋ ∧ ⌊ triple-transps a b ≟ℕ 2 ⌋))
 
--- all 18 interface pairs have signature {seam (2,2)} + {two (2,1,1)}:
+-- all 18 interface pairs have signature {seam (2,2)} ℕ+ {two (2,1,1)}:
 -- gauge ∩ interface = exactly one shared (2,2) = a V₂ seam.
 seam-signature : interface-full-sig ≡ 18
 seam-signature = refl
 
--- the total reconciles: 6 (gauge) + 18 (interface) = 24 Klein pairs.
-b3-reconcile : klein-pairs-with-doubles 3 + klein-pairs-with-doubles 1 ≡ 24
+-- the total reconciles: 6 (gauge) ℕ+ 18 (interface) = 24 Klein pairs.
+b3-reconcile : klein-pairs-with-doubles 3 ℕ+ klein-pairs-with-doubles 1 ≡ 24
 b3-reconcile = refl

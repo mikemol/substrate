@@ -2,7 +2,7 @@
 -- Substrate.Foundation.Empty.Polymorphic
 --
 -- Universe-polymorphic empty type. Distinguished from
--- Substrate.Foundation.Empty (mono-universe, ⊥ : Set) for higher-universe
+-- Substrate.Foundation.Empty (mono-universe, ⊥ᵖ : Set) for higher-universe
 -- contexts. ⊥-elim is the eliminator.
 ------------------------------------------------------------------------
 
@@ -16,7 +16,7 @@ private
   variable
     ℓ ℓ′ : Level
 
-data ⊥ {ℓ} : Set ℓ where
+data ⊥ᵖ {ℓ} : Set ℓ where
 
-⊥-elim : {A : Set ℓ′} → ⊥ {ℓ} → A
+⊥-elim : {A : Set ℓ′} → ⊥ᵖ {ℓ} → A
 ⊥-elim ()

@@ -35,7 +35,8 @@ module Substrate.Foundations.Bijection where
 open import Substrate.Foundation.Level using (Level; _⊔_)
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
 open import Substrate.Foundation.Eq
-  using (_≡_; refl; cong; cong₂)
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
 
 ------------------------------------------------------------------------
 -- The bijection record.

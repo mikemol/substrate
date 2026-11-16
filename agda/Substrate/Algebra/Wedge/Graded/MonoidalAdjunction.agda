@@ -21,7 +21,7 @@
 
 module Substrate.Algebra.Wedge.Graded.MonoidalAdjunction where
 
-open import Substrate.Foundation.Nat using (ℕ; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Product using (Σ)
 open import Substrate.Algebra.Wedge using (DivStr)
 -- ⟡set1-paydown: GradedDivStr AND GradedProduct now carry their graded carrier as a

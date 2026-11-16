@@ -5,13 +5,13 @@
 -- expansion in ℤ (NOT letting Agda auto-normalize — that balloons RAM).
 module Substrate.Algebra.Q.JacCube where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂)
-open import Substrate.Algebra.Z using (ℤ; +_; 0ℤ)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Algebra.Z.Int
+open import Substrate.Algebra.Z.ZeroInt
 open import Substrate.Algebra.Z.Add using (_+ℤ_)
 open import Substrate.Algebra.Z.Mul using (_*ℤ_)
 open import Substrate.Algebra.Z.Properties.Add using (+ℤ-assoc; +ℤ-identityˡ)
-open import Substrate.Algebra.Q using (ℚ; mkℚ)
+open import Substrate.Algebra.Q.Rat
 open import Substrate.Algebra.Q.Equiv using (_≈ℚ_; ≈ℚ-refl; ≈ℚ-sym; ≈ℚ-trans)
 open import Substrate.Algebra.Q.JacobianEvalNormalize using (evalℚ; normalize-eval; ≡→≈ℚ)
 open import Substrate.Algebra.Z.MPolyNormalize using (normalize)
@@ -21,6 +21,11 @@ import Substrate.Algebra.Q.JacobianEvalCD as CD
 import Substrate.Algebra.Q.JacobianEvalCDCurried as Cur
 import Substrate.Algebra.Q.JacobianCollision as C
 open import Substrate.Foundation.List using (List; []; _∷_; _++_)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
 
 -- sumNum is additive over ++ (fold homomorphism).
 sumNum-++ : (x y z : ℚ) (p q : MPoly) →

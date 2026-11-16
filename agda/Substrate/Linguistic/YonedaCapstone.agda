@@ -13,7 +13,6 @@
 
 module Substrate.Linguistic.YonedaCapstone where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
 
 -- Re-export the Y-arc slices publicly.
 open import Substrate.Linguistic.Morphism
@@ -26,8 +25,9 @@ open import Substrate.Linguistic.HomFunctor
 open import Substrate.Linguistic.YonedaEmbedding
 open import Substrate.Linguistic.YonedaLemma
 -- Bring in the Lang enum for worked examples.
-open import Substrate.Linguistic.Roster
-  using (Lang; witness-of; lojban; tokipona; solresol; kelen; lambda-lang; lie-lang)
+open import Substrate.Linguistic.Roster.Lang
+open import Substrate.Linguistic.Roster.WitnessOf
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. The headline statement (substrate-internal form).

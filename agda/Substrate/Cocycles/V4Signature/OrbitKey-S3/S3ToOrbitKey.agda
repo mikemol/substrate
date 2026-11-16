@@ -18,12 +18,13 @@ module Substrate.Cocycles.V4Signature.OrbitKey-S3.S3ToOrbitKey where
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Literals using (₁; ₂)
 open import Substrate.Foundation.Product using (_,_)
-open import Substrate.Foundation.Eq using (_≡_; cong₂)
 import Substrate.Groups.SFin.Apply as SFinA
 import Substrate.Groups.SFin.Permutation as SFinP
 open import Substrate.Cocycles.V4Signature.Chirality.Type using (even; odd)
 open import Substrate.Cocycles.V4Signature.OrbitKey.Type using (OrbitKey)
 open import Substrate.Cocycles.V4Signature.Pairing.Type using (α-pair; β-pair; γ-pair)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong2
 
 s3-to-orbit-key-from : Fin 3 → Fin 3 → OrbitKey
 s3-to-orbit-key-from zero            ₁       = α-pair , even

@@ -15,6 +15,7 @@
 open import Substrate.Foundation.Level using (Level)
 
 open import Substrate.Category.DaggerCategory using (DaggerCategory)
+open import Substrate.Probability.MarkovCategory
 
 module Substrate.Algebra.F2.HodgeDim4.HodgeStar.AsDaggerEndomap
   {ℓO ℓM : Level}
@@ -26,5 +27,4 @@ module Substrate.Algebra.F2.HodgeDim4.HodgeStar.AsDaggerEndomap
   where
 
 open import Substrate.Category.DaggerCategory.AsNamed F2L-Dag
-  renaming (named-DaggerCategory to HodgeStar-AsDaggerEndomap-Carrier)
 

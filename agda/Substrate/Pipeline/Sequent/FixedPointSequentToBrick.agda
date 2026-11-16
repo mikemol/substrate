@@ -17,12 +17,13 @@ open import Substrate.Pipeline.Brick.Record using (Brick)
 
 open import Substrate.Foundation.Product using (_,_)
 open import Substrate.Foundation.Maybe using (Maybe)
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Pipeline.Brick
 open import Substrate.Pipeline.Sequent.SequentRule using (SequentRule)
 open import Substrate.Pipeline.Sequent.CanonicalSpec using (CanonicalSpec)
 open import Substrate.Pipeline.Sequent.SequentFixed using (SequentFixed)
 open import Substrate.Pipeline.Sequent.IterateToCanonical using (iterate-to-canonical)
+open import Substrate.Algebra.Quotient.Canonical
 
 -- ⟡set1-paydown: cascades from CanonicalSpec/SequentFixed — thread the canonical
 -- predicate `Canonical` as an implicit param; `s : SequentFixed A Canonical` and

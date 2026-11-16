@@ -22,6 +22,7 @@
 ------------------------------------------------------------------------
 
 module Substrate.FUSep.FUSepQCR where
+open import Substrate.Foundation.RewriteConfluence
 
 -- The relation-generic Newman / Church-Rosser center, abstracted over the step
 -- `_⇒_` and its carrier so the concrete SKI system slots in (the ⟡H0 requirement)

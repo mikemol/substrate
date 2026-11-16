@@ -30,15 +30,20 @@
 
 module Substrate.Category.Coalgebra.FiniteOrder where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Times
 open import Substrate.Foundation.Level using (Level)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; trans; cong; cong-trans)
 
 open import Substrate.Category.Coalgebra
   using (Endomap; FixedPoint; fixed)
 
 open import Substrate.Foundation.Nat.Properties.Mul using (*-comm)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.CongTrans
 private
   variable
     ℓ : Level
@@ -61,7 +66,7 @@ iterate (suc n) γ x = γ (iterate n γ x)
 ------------------------------------------------------------------------
 -- N-2: iterate-add — iteration is additive in the index.
 --
---   iterate (m + n) γ x ≡ iterate m γ (iterate n γ x)
+--   iterate (m ℕ+ n) γ x ≡ iterate m γ (iterate n γ x)
 --
 -- The structural fact that γ^(m+n) = γ^m ∘ γ^n, expressed pointwise.
 -- Used throughout the finite-order theory.
@@ -69,7 +74,7 @@ iterate (suc n) γ x = γ (iterate n γ x)
 
 iterate-add :
   {X : Set ℓ} (γ : Endomap X) (m n : ℕ) (x : X) →
-  iterate (m + n) γ x ≡ iterate m γ (iterate n γ x)
+  iterate (m ℕ+ n) γ x ≡ iterate m γ (iterate n γ x)
 iterate-add γ zero    n x = refl
 iterate-add γ (suc m) n x = cong γ (iterate-add γ m n x)
 
@@ -149,7 +154,7 @@ HasOrder-multiple :
 HasOrder-multiple {γ = γ} {k = k} hyp zero    x = refl
 HasOrder-multiple {γ = γ} {k = k} hyp (suc n) x =
   -- iterate ((suc n) * k) γ x
-  -- = iterate (k + n * k) γ x        [stdlib: suc m * n = n + m * n]
+  -- = iterate (k ℕ+ n * k) γ x        [stdlib: suc m * n = n ℕ+ m * n]
   -- = iterate k γ (iterate (n * k) γ x)   [iterate-add]
   -- = iterate k γ x                  [IH: HasOrder-multiple hyp n x]
   -- = x                              [HasOrder hyp at x]
@@ -171,7 +176,7 @@ HasOrder-multiple {γ = γ} {k = k} hyp (suc n) x =
 --   k=suc k': iterate (suc k') (iterate j γ) x
 --             = iterate j γ (iterate k' (iterate j γ) x)
 --             ≡ iterate j γ (iterate (k' * j) γ x)         [IH]
---             ≡ iterate (j + k' * j) γ x                   [sym iterate-add]
+--             ≡ iterate (j ℕ+ k' * j) γ x                   [sym iterate-add]
 --             = iterate ((suc k') * j) γ x                 [stdlib *-suc]
 ------------------------------------------------------------------------
 

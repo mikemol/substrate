@@ -5,7 +5,7 @@
 -- [scratch/m_mod_arc_plan.md].
 --
 -- The Surreal-as-Field obligation record: a bundle of all the
--- per-arithmetic + per-order obligations from G2-G8 that, when
+-- per-arithmetic ℕ+ per-order obligations from G2-G8 that, when
 -- discharged collectively, package the surreal numbers as a Field
 -- instance in the M-arc sense.
 --
@@ -20,22 +20,25 @@
 
 module Substrate.Conway.AsField where
 
-open import Substrate.Foundation.Nat using (ℕ; suc; _+_; _*_)
-open import Substrate.Foundation.Eq
-  using (_≡_; cong; sym; subst)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
 
 open import Substrate.Conway.SurrealFinite using (SurrealFinite)
-open import Substrate.Conway.AddGeneral using (ConwayAddType)
+open import Substrate.Conway.AddGeneral.ConwayAddType
 open import Substrate.Conway.AddComm using (ConwayAddCommutativity)
 open import Substrate.Conway.AddAssoc using (ConwayAddAssociativity)
 open import Substrate.Conway.OrderTrans using (ConwayOrderTransitivity)
 open import Substrate.Conway.OrderAntisym using (ConwayOrderAntisymmetry)
-open import Substrate.Conway.Mul using (ConwayMulType)
+open import Substrate.Conway.Mul.ConwayMulType
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Subst
 
 ------------------------------------------------------------------------
 -- 1. The Surreal-as-Field obligation record.
 --
--- Bundles every G2-G8 obligation + an order-completeness witness.
+-- Bundles every G2-G8 obligation ℕ+ an order-completeness witness.
 -- Discharging this record packages surreals into the M-arc's Field
 -- record via mechanical glue.
 ------------------------------------------------------------------------
@@ -60,7 +63,7 @@ module _ (add : ConwayAddType)
 ------------------------------------------------------------------------
 -- 2. The Surreal-Field lift signature (deferred).
 --
--- Given a SurrealFieldObligation instance + an alignment witness
+-- Given a SurrealFieldObligation instance ℕ+ an alignment witness
 -- (subst-flattening that makes SurrealFinite over varying indices
 -- into a single Σ-bundled type), the lift to
 --

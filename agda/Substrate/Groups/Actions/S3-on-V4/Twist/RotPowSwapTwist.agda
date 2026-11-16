@@ -7,18 +7,19 @@
 
 module Substrate.Groups.Actions.S3-on-V4.Twist.RotPowSwapTwist where
 
-open import Substrate.Groups.V4.Bijection using (V₄)
+open import Substrate.Groups.V4.Bijection.V4
 open import Substrate.Groups.V4.Operations using (v4-cover)
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Foundation.Fin.Literals using (₁; ₂)
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Product using (_,_)
 
 import Substrate.Groups.Coxeter.Cyclic.Existential 2 as Z₃E
-import Substrate.Groups.Coxeter.Cyclic.Inverse 2 as Z₃I
+-- ⚑ `Cyclic.Inverse` DISSOLVED (771283c8) — `inv` is `Inverse.Inv`'s (Ⓐ¹⁶).
+import Substrate.Groups.Coxeter.Cyclic.Inverse.Inv 2 as Z₃I
 
 open import Substrate.Groups.Actions.S3-on-V4.Generators.RotPow using (rot-pow)
 open import Substrate.Groups.Actions.S3-on-V4.Generators.SwapAB using (swap-αβ)
+open import Substrate.Foundation.Eq
 
 rot-pow-swap-twist : ∀ {n} → Z₃E.Canonical-ex n → (v : V₄) →
                      swap-αβ (rot-pow n v) ≡ rot-pow (Z₃I.inv n) (swap-αβ v)

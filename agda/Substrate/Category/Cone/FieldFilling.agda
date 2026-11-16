@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------
 -- Substrate.Category.Cone.FieldFilling
 --
--- The field-filling constraint on a Cone: |apex| + |base| = q^k for
+-- The field-filling constraint on a Cone: |apex| ℕ+ |base| = q^k for
 -- some prime power q^k.
 --
 -- Per [[project-3plus1-is-cone-instance]]: the M:N cone STRUCTURALLY
@@ -9,9 +9,9 @@
 -- whatever completes the base to a prime-power total.
 --
 -- This module provides a lightweight record packaging:
---   * A Cone (apex + base + legs).
+--   * A Cone (apex ℕ+ base ℕ+ legs).
 --   * The prime p and power k such that M+N = p^k.
---   * The cardinality witness (= proof apex-size + n ≡ p^k).
+--   * The cardinality witness (= proof apex-size ℕ+ n ≡ p^k).
 --
 -- Primality of p is NOT enforced at the type level (would require
 -- importing/building IsPrime infrastructure). The "prime power"
@@ -29,11 +29,13 @@
 module Substrate.Category.Cone.FieldFilling where
 
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Nat using (ℕ; _+_; _^_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Pow
 open import Substrate.Foundation.Level using (Level)
-open import Substrate.Foundation.Eq using (_≡_)
 
 open import Substrate.Category.Cone
+open import Substrate.Foundation.Eq
 
 private
   variable
@@ -43,7 +45,7 @@ private
 -- N-1: FieldFilling record.
 --
 -- For a Cone with n base objects and apex of size apex-size, the
--- field-filling constraint asserts apex-size + n = p^k.
+-- field-filling constraint asserts apex-size ℕ+ n = p^k.
 --
 -- p and k are PARAMETERS — the caller chooses them, asserting that p
 -- IS prime (semantic commitment, not type-checked here).
@@ -56,12 +58,12 @@ record FieldFilling
   (cone : Cone n Base Apex)
   : Set where
   field
-    fills : apex-size + n ≡ p ^ k
+    fills : apex-size ℕ+ n ≡ p ^ k
 
 ------------------------------------------------------------------------
 -- N-2: Capstone.
 --
--- After this slice: a Cone + field-filling witness packages the
+-- After this slice: a Cone ℕ+ field-filling witness packages the
 -- substrate's structural claim that M:N cones live in finite fields
 -- of size M+N.
 --
@@ -71,7 +73,7 @@ record FieldFilling
 -- power use sites (Z₂, Z₃, Z₅; F₂; V₄ = F₂²; etc.) have known
 -- primes that the caller asserts naturally.
 --
--- Substrate-wide implication: this record + the Cone primitive
+-- Substrate-wide implication: this record ℕ+ the Cone primitive
 -- formalize the M:N cone universal at the type level. Each
 -- structurally-observed M:N split in the substrate (3+1, 7+1, 24+8,
 -- 15+1, etc.) becomes a FieldFilling instance.
@@ -82,7 +84,7 @@ record FieldFilling
 --
 -- Deferred follow-ons:
 --
---   * **IsPrime predicate + enforced primality**: add a substrate-
+--   * **IsPrime predicate ℕ+ enforced primality**: add a substrate-
 --     native IsPrime that's required by FieldFilling. Avoids
 --     unsafe caller assertions.
 --

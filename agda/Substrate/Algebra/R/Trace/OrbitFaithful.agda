@@ -22,13 +22,16 @@
 
 module Substrate.Algebra.R.Trace.OrbitFaithful where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Eq using (_≡_; refl; cong)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
 open import Substrate.Algebra.R.Trace using (RealTrace; head; tail)
-open import Substrate.Algebra.R.Trace.Bisim using (_~_; head~; tail~; ~-refl)
-open import Substrate.Algebra.R.Trace.Final using (Coalg; ana; ana-unique)
+open import Substrate.Algebra.R.Trace.Bisim.Op
+open import Substrate.Algebra.R.Trace.Final.Ana
+open import Substrate.Algebra.R.Trace.Final.AnaUnique
+open import Substrate.Algebra.R.Trace.Final.Coalg
 open import Substrate.Algebra.R.Trace.OrbitUniversality using (module OrbitCover)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
 
 module Faithful
   (S : Set) (next : S → S) (obs : S → ℕ)

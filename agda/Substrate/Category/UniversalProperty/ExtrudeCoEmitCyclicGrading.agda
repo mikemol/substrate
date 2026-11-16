@@ -8,10 +8,10 @@
 ------------------------------------------------------------------------
 module Substrate.Category.UniversalProperty.ExtrudeCoEmitCyclicGrading where
 
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Algebra.R.Trace using (RealTrace; head; tail)
-open import Substrate.Algebra.R.Trace.Bisim using (_~_; head~; tail~; ~-refl)
+open import Substrate.Algebra.R.Trace.Bisim.Op
+open import Substrate.Foundation.Eq
 
 -- the period-1 cover of a point n: the constant stream repeating n (the finitely-generated pole of the grading).
 repeat : ℕ → RealTrace

@@ -40,8 +40,8 @@
 
 module Substrate.WitnessTower.ParityCoordIsoApex where
 
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Bool using (Bool; true; false)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Bool.Bool
 
 ------------------------------------------------------------------------
 -- (a) the three V₄-parities, named together as the coordinate apex. Each is an
@@ -60,18 +60,18 @@ open import Substrate.Groups.V4-Coxeter-F2Graded-CountB  using (V4-F2Graded-Coun
 -- count-B are the two axis coordinates; AB is odd under both counts = the shared
 -- point of the two Z/2 factors.
 open import Substrate.Foundation.Product using (_×_; _,_)
-open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.Groups.V4.Bijection using (V₄; e; α; β; γ)
+open import Substrate.Groups.V4.Bijection.V4
 open import Substrate.Groups.V4.Operations using (_·_)
 open import Substrate.Cocycles.V4Signature.Codeword.ReservedToBivectorAffine.V4 using (_+V₄_)
 open import Substrate.Foundation.Product using (proj₁; proj₂)
-open import Substrate.Groups.V4.Bijection using (to-c)
+open import Substrate.Groups.V4.Bijection.ToC
 open import Substrate.Algebra.F2.FromBool using (F₂→bool)
 open import Substrate.Category.RGradedMonoid using (RGradedMonoid)
 open import Substrate.WitnessTower.Enumerate using (Perm)
 open import Substrate.WitnessTower.Wedge.OrientationRigCatPermSign using (sign; sign-hom)
 open import Substrate.WitnessTower.SignStabTotal using (sign-stab-total)
 open import Substrate.WitnessTower.TowerLiftSplit using (rung3-sign-stab)
+open import Substrate.Foundation.Eq
 parity-length = V4-F2Graded
 parity-A      = V4-F2Graded-CountA
 parity-B      = V4-F2Graded-CountB

@@ -29,16 +29,22 @@
 
 module Substrate.Algebra.Wedge.AxisWord.Detector where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Op
 open import Substrate.Foundation.Vec using (Vec; []; _∷_)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
-open import Substrate.Foundation.Negation using (¬_; Dec; yes; no)
-open import Substrate.Foundation.Empty using (⊥-elim)
+open import Substrate.Foundation.Negation.Dec
+open import Substrate.Foundation.Negation.Not
+open import Substrate.Foundation.Empty.BotElim
 open import Substrate.Foundation.Product using (_×_; _,_)
-open import Substrate.Algebra.F2 using (F₂; 𝟘; 𝟙; 𝟘≢𝟙; 𝟙≢𝟘)
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.OneNeqZero
+open import Substrate.Algebra.F2.ZeroNeqOne
 open import Substrate.Algebra.Wedge.AxisWord using (count; self-wedge-multiplicity)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- Slice 11. The detector grade of a decision: 𝟘 = same direction (no
@@ -95,7 +101,7 @@ module Detector {A : Set} (_≟A_ : (a b : A) → Dec (a ≡ b)) where
 --           𝟘 (no distinction). The reconciliation, as code.
 ------------------------------------------------------------------------
 
-module DF (k : ℕ) = Detector {Fin k} (λ a b → a ≟ b)
+module DF (k : ℕ) = Detector {Fin k} (λ a b → a ≟ᶠ b)
 
 carrier-vs-detector : (k : ℕ) (i : Fin k) →
   (count i (i ∷ i ∷ []) ≡ 2)        -- carrier: repetition retained

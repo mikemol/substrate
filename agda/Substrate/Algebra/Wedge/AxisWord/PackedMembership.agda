@@ -13,15 +13,16 @@
 
 module Substrate.Algebra.Wedge.AxisWord.PackedMembership where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.Foundation.Negation using (¬_; Dec; yes; no)
-open import Substrate.Foundation.Empty using (⊥-elim)
-open import Substrate.Foundation.Sum using (_⊎_; inj₁; inj₂)
+open import Substrate.Foundation.Negation.Dec
+open import Substrate.Foundation.Negation.Not
+open import Substrate.Foundation.Empty.BotElim
+open import Substrate.Foundation.Sum.Sum
 open import Substrate.Foundation.Product using (Σ; _,_; _×_)
 open import Substrate.Foundation.List using ([]; _∷_)
 open import Substrate.Algebra.Wedge.AxisWord.PackedNode using (module PackedNode)
 open import Substrate.Algebra.Wedge.AxisWord.PackedTree using (module PackedTree)
 open import Substrate.Algebra.Wedge.AxisWord.PackedRecall using (module PackedRecall)
+open import Substrate.Foundation.Eq
 
 module PackedMembership {A : Set} (_≟A_ : (a b : A) → Dec (a ≡ b)) where
 

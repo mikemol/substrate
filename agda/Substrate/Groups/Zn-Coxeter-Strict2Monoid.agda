@@ -14,7 +14,16 @@
 
 {-# OPTIONS --safe --without-K #-}
 
-open import Substrate.Foundation.Eq using (_≡_)
+
+-- ⚑ A NAME USED IN THE TELESCOPE MUST BE IMPORTED BEFORE THE MODULE HEADER.
+-- A parameter list is scope-checked before anything inside `where`, so an
+-- import placed after the header is too late.  The splitter emits the
+-- prelude after the header (right for a body, wrong for a telescope), so
+-- every leaf whose PARAMETERS mention the name inherited this.
+-- MEASURED: 11 sites tree-wide.
+open import Substrate.Foundation.Eq
+open import Substrate.Groups.Coxeter.Word
+open import Substrate.Groups.Capabilities.Strict2Monoid
 
 module Substrate.Groups.Zn-Coxeter-Strict2Monoid
   (Word          : Set)
@@ -33,3 +42,4 @@ open import Substrate.Category.Strict2Monoid.FromCoxeter
   ++-identityˡ ++-identityʳ
   normalize normalize-distrib
   public
+open import Substrate.Foundation.Eq

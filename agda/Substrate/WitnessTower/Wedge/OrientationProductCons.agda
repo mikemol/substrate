@@ -20,7 +20,8 @@
 
 module Substrate.WitnessTower.Wedge.OrientationProductCons where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _*_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Times
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Combine using (combine)
 open import Substrate.Foundation.Fin.RemQuot using (remQuot)
@@ -28,15 +29,19 @@ open import Substrate.Foundation.Fin.Combine.CombineRemQuotInverse using (combin
 open import Substrate.Foundation.Fin.Inject using (inject+)
 open import Substrate.Foundation.Fin.Raise using (raise)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; lookup; tabulate; map; _++_)
-open import Substrate.Foundation.Vec.Properties using (lookup∘tabulate)
+open import Substrate.Foundation.Vec.Properties.LookupComptabulate
 open import Substrate.Foundation.Product using (proj₁; proj₂)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
 open import Substrate.WitnessTower.Enumerate using (Perm; insert-at)
 open import Substrate.WitnessTower.IsPermutation using (lookup-map)
 open import Substrate.WitnessTower.Decompose using (lookup-ext)
 open import Substrate.WitnessTower.Wedge.OrientationProduct using (_⊗_)
 open import Substrate.WitnessTower.Wedge.OrientationProductInsert
   using (blockPunchIn; ⊗-insert-head; ⊗-insert-tail)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Algebra.Sporadic.HappyFamily.AsTree
 
 ------------------------------------------------------------------------
 -- 0. Lookup of a concatenation, keyed by the inject+/raise split — the two

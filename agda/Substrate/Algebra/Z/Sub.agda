@@ -12,7 +12,8 @@
 
 module Substrate.Algebra.Z.Sub where
 
-open import Substrate.Algebra.Z using (ℤ; -ℤ_)
+open import Substrate.Algebra.Z.Int
+open import Substrate.Algebra.Z.Int2
 open import Substrate.Algebra.Z.Add using (_+ℤ_)
 
 infixl 6 _-ℤ_

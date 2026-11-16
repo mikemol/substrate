@@ -10,7 +10,7 @@
 -- PART 1 (here): the MONIC PRESENTATION — a poly monic at full length
 -- (`vlast v ≡ 𝟙`) with low part f-lo IS the divisor `b-poly` (no trim).  This
 -- is the common case: each step's remainder, once at its exact degree, presents
--- as a `divisor-q` for the next step via `snoc-vinit-vlast` + char-2 `-P = id`.
+-- as a `divisor-q` for the next step via `snoc-vinit-vlast` +F char-2 `-P = id`.
 --
 -- REMAINING (the multi-piece grind):
 --   * B-TRIM — present a remainder with TRAILING ZEROS (vlast = 𝟘, degree <
@@ -18,8 +18,8 @@
 --     Vec length from `leading-position`; no generic `take`), with correctness
 --     `v ≡ divisor-q d′ f-lo′` to `subst` into the trace.
 --   * B-BUILD — the FUEL recursion (mirror `Nat/GCD/ComputeTrace.compute-trace`):
---     base (`zero-q` ⇒ g = a), step (`divmod` by the carried divisor + present
---     the remainder via monic-pres/B-TRIM + recurse + `step`-wrap with subst).
+--     base (`zero-q` ⇒ g = a), step (`divmod` by the carried divisor +F present
+--     the remainder via monic-pres/B-TRIM +F recurse +F `step`-wrap with subst).
 --   * B-INV-UNIT discharge — the concrete gcd's `nth g 0 ≡ 𝟙` / `nth g (suc k) ≡ 𝟘`.
 -- Then `bezout-poly ∘ this` feeds `ModZero.inverse-from-bezout`; wrap = AI-8.
 ------------------------------------------------------------------------
@@ -28,15 +28,19 @@
 
 module Substrate.Algebra.F2.Polynomial.Wedge.ComputeTrace where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Vec using (Vec; []; _∷_)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂)
-open import Substrate.Algebra.F2 using (F₂)
+open import Substrate.Algebra.F2.F2
 open import Substrate.Algebra.F2.CommRing using (F₂-CommRing)
 import Substrate.Algebra.Polynomial.Graded.FromCommRing as F
 import Substrate.Algebra.Polynomial.Graded.Mod as M
 import Substrate.Algebra.Polynomial.Graded.Quotient as Q
 import Substrate.Algebra.Polynomial.Graded.Div as D
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
 
 -- the monic presentation, relative to the candidate divisor's (d, f-lo).
 module Pres (n : ℕ) (f-lo : Vec F₂ (suc n)) where

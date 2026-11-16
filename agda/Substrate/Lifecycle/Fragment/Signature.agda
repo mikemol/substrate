@@ -1,0 +1,278 @@
+------------------------------------------------------------------------
+-- Substrate.Lifecycle.Fragment.Signature
+--
+-- Defines: NodeSig
+-- ⟡cap-128-forcing: one lemma, one elaboration unit.
+------------------------------------------------------------------------
+
+{-# OPTIONS --safe --without-K #-}
+
+module Substrate.Lifecycle.Fragment.Signature where
+
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.List
+open import Substrate.Foundation.Maybe
+
+
+------------------------------------------------------------------------
+-- THE NODE SIGNATURE — what interning quotients BY.
+--
+-- The store's key, from `pack_level`'s own GROUP BY:
+--
+--     (ctor_id, qname_pid, idx, lit_id, kids)
+--
+-- with `kids = array_agg(obs_node.node_id ORDER BY edge.ord)` — the
+-- children's ALREADY-ASSIGNED node ids, in edge order. That makes the key
+-- content-complete by induction: a child's id is itself built from its own
+-- children's ids.
+--
+-- ⚑⚑⚑ AND THAT IS AGDA'S OWN KEY, VERIFIED AGAINST THE SOURCES (Agda 2.8.0,
+-- Hackage tarball sha256 8684190…9ba0, read by linux-sources 2026-08-22 —
+-- ⟡occurrence-vs-identity). `Serialise/Base.hs` interns every node while
+-- WRITING the interface:
+--
+--     data Node = Empty | Cons !Word32 !Node
+--     nodeD :: !(HashTable Node Word32)   -- ^ Written to interface file.
+--     icodeN tag _ = … \ !args -> do !node <- icodeArgs … args
+--                                    icodeNode $ Cons tag node
+--
+-- a constructor tag consed onto ALREADY-INTERNED child ids, hashed, reused.
+-- So this record does not IMPOSE a quotient on Agda's terms — it RESTORES one
+-- Agda already applied. The `.agdai` is a shared DAG; the shim's post-order
+-- print counter flattens it to a tree, and the 57× collapse (25.4M events →
+-- 443k nodes) is exactly the sharing that flattening lost.
+--
+-- ⚑⚑ THIS ALSO RETIRES THE DEPTH-2 HAZARD STRUCTURALLY, not by vigilance. The
+-- 926-QNames-into-one-node collapse happened because a key of own-head plus
+-- children's HEADS truncates at depth 2. `Cons tag node` cannot truncate: each
+-- child id already stands for its entire subtree, so induction is the
+-- mechanism rather than a property to re-check.
+--
+-- ⚑ THREE PLACES OUR KEY IS **FINER** THAN AGDA'S `Eq Term`, and knowing it is
+-- the point — a corpus may always quotient later, but cannot unmerge:
+--     Con x _ vs == Con x' _ vs'   -- ConInfo (ConOrigin) IGNORED by Agda
+--     DontCare _ == DontCare _     -- contents IGNORED entirely
+--     Dummy{}    == Dummy{}        -- the String and Elims IGNORED
+--   and one type up, `Eq (Type' a) = (==) `on` unEl` — SORT ANNOTATIONS ignored.
+--
+-- ⚑⚑ ONE PLACE OUR KEY IS **WRONG**, AND IT SPLITS RATHER THAN MERGES.
+-- `argInfoFreeVariables :: FreeVariables = UnknownFVs | KnownFVs IntSet` sits
+-- in `ArgInfo`'s derived `Eq`, but it is a CACHE — "has the analysis run" — not
+-- a property of the term. Two identical subterms differ there purely by when
+-- the checker computed FVs. MEASURED: both spellings are interned in `terms`
+-- on live, so the split is reachable, not hypothetical. `UnknownFVs` belongs in
+-- payload, never in the key. (⟡fv-cache-splits-the-key)
+--
+-- ⚑⚑ AND A SECOND, LARGER SPLIT: `qname` IS NOT AGDA'S QName IDENTITY.
+-- `Syntax/Abstract/Name.hs` — `instance Eq QName where (==) = (==) `on`
+-- qnameName`, `instance Eq Name where (==) = (==) `on` nameId`, with
+-- `NameId = NameId !Word64 !ModuleNameHash`, and the declaration's own comment:
+-- *"equality on qualified names are just equality on the last name, i.e. the
+-- module part is just for show."* So `nameConcrete`, `nameBindingSite`,
+-- `nameFixity` AND THE WHOLE MODULE PREFIX are irrelevant to identity, while a
+-- structural walk emits them all as children. We SPLIT QNames Agda calls equal.
+-- The fix is to key a QName node on `NameId` alone. (⟡qname-is-nameid)
+--
+-- ⚑ THE PRECISE STATEMENT, and the loose gloss it replaces cost two round trips:
+-- **`QName` identity is the `NameId` of its LAST `Name` — a (Word64, ModuleNameHash)
+-- PAIR.** The module contributes via the HASH, not via the dotted path. "The module
+-- part is just for show" refers to `qnameModule`, the printed `[Name]` prefix kept for
+-- display; it does NOT mean the module is absent from identity. Two names in different
+-- modules with the same Word64 counter are NOT equal, because the second field differs.
+-- Key on BOTH fields; keying on the Word64 alone would merge across modules.
+--
+-- ⚑⚑ AND A LARGER DEFECT SITS UNDER IT: `op_term_id` IS A BARE CONSTRUCTOR NAME, AND A
+-- BARE CONSTRUCTOR NAME IS NOT A TYPE IDENTITY IN HASKELL (⟡ctor-name-is-not-a-type).
+-- Two distinct Agda types are spelled `Name`:
+--
+--     Syntax/Abstract/Name.hs:40   data Name = Name        -- SIX fields
+--       { nameId :: !NameId, nameConcrete :: C.Name, nameCanonical :: C.Name
+--       , nameBindingSite :: Range, nameFixity :: Fixity', nameIsRecordName :: Bool }
+--
+--     Syntax/Concrete/Name.hs:38   data Name               -- THREE, plus NoName with TWO
+--       = Name   { nameRange :: Range, nameInScope :: NameInScope
+--                , nameNameParts :: NameParts }
+--       | NoName { nameRange :: Range, nameId :: NameId }
+--
+-- and `A.Name` CONTAINS TWO `C.Name`s. MEASURED on live by distinct child positions:
+--     3 positions →  5,371 nodes   (C.Name)
+--     6 positions → 32,802 nodes   (A.Name)
+--     other       →    590 nodes   (1.5%)
+-- 38,173 of 38,763 in exactly the two arities the declarations predict — and the 590
+-- tail is CLOSED: measured 590 of 590 are in the multi-child-per-ord population, so it
+-- is the packing below, not a fifth type. (Arities 4,5,7..21 cannot come from any
+-- `Name`-spelled constructor in 2.8.0 — the field counts are fixed at 6/3/2/2.)
+--
+-- ⚑ A THIRD AND FOURTH SPELLING EXIST AND ARE LATENT, NOT LIVE: `C.NoName` (2 fields)
+-- and `Syntax/Common/Aspect.hs:15`'s `Aspect.Name (Maybe NameKind) Bool` (2 fields — a
+-- syntax-HIGHLIGHTING aspect, unrelated to identifiers). Zero nodes at position-count 2
+-- in this bucket, so neither is currently reached by the walk.
+--
+-- ⚑⚑⚑ AND THIS IS **NOT** A DEFECT — I RECORDED IT AS ONE AND WAS CORRECTED (operator,
+-- 2026-08-22: *"that's what would seem to me to be proper. Because a node's children is
+-- its composition. A name is just a name."*).
+--
+-- I had written it up as *"unsound, not merely lossy — sound only by the coincidence
+-- that 6-field and 3-field products cannot collide"*. That argument imports HASKELL'S
+-- TYPE IDENTITY into a forest that never claimed to have one. A node here IS
+-- `(head, children)`; the children ARE the composition. Two things spelled `Name` with
+-- different compositions are different nodes BECAUSE the compositions differ — the key
+-- working, not luck.
+--
+-- ⚑ AND THE HYPOTHETICAL DISSOLVES WHEN STATED FULLY. For the "silent merge" to happen
+-- you need two distinct producer-types, same spelling, same arity, AND structurally
+-- identical children at every position, recursively. But identical composition all the
+-- way down IS the same term shape, and shape is the only claim the SPPF ever made. The
+-- scenario smuggles in *"these differ because the producer's type system says so"*,
+-- which is a fact about the PRODUCER, not about the forest.
+--
+-- ⚑ WHICH ALSO REFRAMES `⟡qname-is-nameid`: keying a `QName` on `NameId` is not
+-- repairing an unsoundness, it is CHOOSING AGDA'S QUOTIENT over the structural one where
+-- Agda's is coarser. A deliberate coarsening, adopted because Agda's `Eq` is the
+-- authority on what a name IS — not a bug fix.
+--
+-- ⚑⚑⚑ AND AGDA'S OWN SERIALISER MAKES THE SAME CHOICE, WHICH SETTLES IT FROM THE FORMAT
+-- RATHER THAN FROM ARGUMENT. `icodeN` carries a tag; its sibling twelve lines down does
+-- not (`Serialise/Base.hs`):
+--
+--     -- | @icodeN'@ is the same as @icodeN@ except that there is no tag
+--     icodeN' _ = … \ !args -> do !node <- icodeArgs (Proxy :: Proxy t) args
+--                                 icodeNode node
+--
+-- For single-constructor types THE NODE IS ITS CHILDREN, full stop. And `icodeN`'s tag is
+-- a WITHIN-TYPE constructor disambiguator — its own doc says *"a tag picked to
+-- disambiguate between different CONSTRUCTORS"*, never between different types.
+--
+-- ⚑⚑ THE DECISIVE CASE IS `Maybe`, WHICH USES NO TAG FOR EITHER CONSTRUCTOR
+-- (`Instances/Common.hs:154`):
+--
+--     icod_ Nothing  = icodeN' Nothing
+--     icod_ (Just x) = icodeN' Just x
+--     value = vcase valu where valu []  = valuN Nothing
+--                              valu [x] = valuN Just x
+--
+-- `Nothing` and `Just x` are told apart BY ARITY ALONE. So in Agda's own interned store
+-- `Nothing` is indistinguishable from every other zero-child node in the file, ACROSS
+-- EVERY TYPE — and Agda has shipped that for years, because the node is its composition
+-- and that is all the format ever claimed.
+--
+-- ⚑ SO EMITTING A MODULE-QUALIFIED TYPE NAME IS *NOT* OWED, and would be actively wrong
+-- as a correctness move: it would SPLIT nodes that are genuinely the same shape, refining
+-- AWAY from Agda's own serialisation choice. Note the two proposals point opposite ways —
+-- `⟡qname-is-nameid` COARSENS toward Agda's `Eq`, a qualified ctor name REFINES away from
+-- Agda's format — so only one of them can claim "following Agda's authority", and it is
+-- not this one. What remains is a consumer-ergonomics wish (a reader seeing `Name` cannot
+-- tell which producer-type it came from without walking children), which is a UX cost, not
+-- a hazard, and is not worth changing the store's meaning for.
+--
+-- ⚑ AND THE WARRANT FOR `⟡qname-is-nameid` IS STRONGER THAN "IT DEDUPS BETTER":
+-- `Eq QName` is what Agda's own TYPECHECKER uses to decide whether two references denote
+-- the same thing. Adopting it makes this store's identity agree with the compiler's.
+--
+-- ⚑ `NoName` CARRIES A `NameId` TOO, so `NameId` nodes reach the store by two routes —
+-- `A.Name`'s identity field and an anonymous concrete name's payload. Any ratio between
+-- `NameId` count and `A.Name` count is therefore meaningless; an earlier "~2.1× split"
+-- figure derived that way is WITHDRAWN.
+--
+-- ⚑ AND OUR INTERNER IS NOT THE PROBLEM: `_seed_node_ids` keys on
+-- `(kind, role, op_term, op_path, lit) + ordered child ids` — content-complete by
+-- induction, the same shape as Agda's `Cons tag node`. The collision is upstream, in
+-- what `op_term` is allowed to be.
+--
+-- ⚑ SEPARATELY, AND NOT A DEFECT: 171,493 of 443,169 nodes carry MULTIPLE CHILDREN PER
+-- ORD (8,766,337 rows over 5,179,038 positions, 1.69×), spread evenly across every
+-- structural head (`Arg`, `El`, `Abs`, `Apply`, `Pi`, `ExtendTel`, …). That is the SPPF
+-- holding several derivations per node — what a shared packed forest is for. Reading
+-- row-count as arity produced a phantom "42% impossible arity"; the even spread across
+-- non-colliding heads is what rules out a collision explanation.
+--
+-- Sources: Agda 2.8.0, Hackage tarball sha256 8684190…9ba0, enumerated by
+-- linux-sources 2026-08-22. Quoted rather than glossed, deliberately: in this exchange
+-- a quote-plus-gloss travelled as the gloss three times, and the quote is what caught it.
+--
+-- ⚑⚑ RANGE IS *MOSTLY* NOT IN THE FILE, AND THE EXCEPTION IS THE ONE WORTH
+-- HAVING. `instance EmbPrj Range where icod_ _ = icodeN' ()` — written as UNIT,
+-- read back as `noRange`. But `A.Name`'s binding site is serialised for real:
+--
+--     icod_ (A.Name a b c d e f) = icodeMemo nameD nameC a $
+--       icodeN' (\a b c -> A.Name a b c . underlyingRange) a b c
+--               (SerialisedRange d) e f
+--     icod_ (SerialisedRange r) =
+--       icodeN' P.intervalsToRange (P.rangeFile r) (P.rangeIntervals r)
+--
+-- `SerialisedRange` is constructed at exactly four sites (`A.Name`,
+-- `CompilerPragma`, `ForeignCode`, `TCWarning`), and only `A.Name` is reachable
+-- from a core term. So the rule inside our walk is exact:
+--
+--     a Range under a `Name`  → REAL — the binding site, decoded from the file
+--     every other Range       → `noRange`, reconstructed, carries nothing
+--
+-- ⚑ THE DISCRIMINATOR IS THE PARENT, NOT THE NODE — which our parent edges
+-- already record. Dropping all `⟨Range'⟩` nodes as noise would discard the only
+-- source-position data the interface preserves; keeping them all would treat
+-- reconstructed `noRange` as provenance. (⟡range-nodes-are-noise, split in two.)
+--
+-- ⚑⚑ AND THE SAME INSTANCE CORROBORATES ⟡qname-is-nameid FROM THE ENCODE SIDE:
+-- `icodeMemo nameD nameC a` memoises a `Name` on `a` — `nameId` — and nothing
+-- else. Two independent witnesses, the serialiser and `instance Eq Name`, give
+-- the same identity. So `nameBindingSite` is SERIALISED but is NOT part of
+-- identity: the range rides as PAYLOAD on a node keyed by `NameId`. That is the
+-- shape `argInfoFreeVariables` is being moved into, arrived at from the other
+-- direction — Agda already does for ranges what we are about to do for the FV
+-- cache, and keying on `NameId` buys dedup WITHOUT giving up the provenance.
+--
+-- ⚑ `defCopy` IS A `Definition` FIELD, NOT A `Term` FIELD — provenance, which a
+-- content-addressed store deliberately does not key on. A module applied twice
+-- yields fresh QNames (`defName = y`) over genuinely substituted types
+-- (`defType d `piApply` ts'`), so different arguments give structurally
+-- different terms and identical arguments give the same term reached two ways.
+-- Merging the latter is correct; it stays a defmark attribute.
+--
+-- ⚑⚑ THREE OF THE FIVE SLOTS ARE NULLABLE AND THE SQL COMPARES THEM WITH
+-- `IS NOT DISTINCT FROM`, NOT `=`. So the equality this record is quotiented
+-- by is NOT `_≡_` on a 5-tuple: it is NULL-equates-NULL on the scalars, and
+-- element-wise equality on the array. Modelling the nullable slots as `Maybe`
+-- and lifting equality through it is what makes that faithful. Writing them
+-- as a bare carrier with a distinguished "absent" element would reproduce the
+-- store's own NULL-vs-`""` asymmetry, which is a MEASURED defect there
+-- (`_seed_node_ids` calls the empty-string spelling "the one lossy spelling"
+-- and maps it back by hand).
+--
+-- ⚑ AND THAT ASYMMETRY IS BYTE-LOAD-BEARING DOWNSTREAM. In the `ekey`
+-- rendering the literal slot is emitted as `, "l": …` ONLY when non-empty, so
+-- presence-vs-absence changes the byte string that `reconstruct` must
+-- reproduce. A formalization that collapses `nothing` and `just ""` cannot
+-- state the round-trip correctly.
+--
+-- ⚑ `sym` IS NOT PART OF THE KEY. `_node.sym` is a display symbol
+-- (`sppf_db.py:1017`: *"head-only: a DISPLAY symbol, NOT the key"*). Treating
+-- it as identity is precisely the historical defect: a key of own-head plus
+-- children's HEADS is depth-2 information, and MEASURED, all 926 `QName`
+-- observations in the sandbox interned to a SINGLE node carrying 52 distinct
+-- qnames. The fix was to key on child NODE IDS, which is what `kids` is here.
+--
+-- ⚑ NAMED `NodeSig`, NOT `Sig`, AND THE GATE IS WHY — CAUGHT, NOT FORESEEN.
+-- The first draft called it `Sig` and `check_sumtype_ratchet` flagged it as a
+-- NEW duplicate against `Substrate.Axes.Signature.Sig`. That collision is a
+-- name clash rather than a semantic duplicate — the two model unrelated
+-- things — but the census keys on the NAME, and a census cannot tell the two
+-- cases apart. Since a NEW key also blocks 27 unrelated paydowns from
+-- recording, the cheap fix is the honest one: say which signature this is.
+--
+-- ⚑ `idx` IS A ℕ HERE, NOT A STRING. The Python spells the de Bruijn index
+-- `"db%d" % idx` and recovers it with `substr(role, 3)`; that round-trip is a
+-- string-surgery detail of the store's encoding, not of the structure. The
+-- injection `idx ↦ "db" ++ show idx` is a serializer concern, deliberately
+-- left to the module that states the serializer hypothesis.
+------------------------------------------------------------------------
+
+module _ (Id : Set) where
+
+  record NodeSig : Set where
+    constructor nodeSig
+    field
+      ctor  : Id                -- event.ctor_id     — always present
+      qname : Maybe Id          -- event.qname_pid   — NULLABLE
+      idx   : Maybe ℕ           -- event.idx         — NULLABLE (de Bruijn)
+      lit   : Maybe Id          -- event.lit_id      — NULLABLE
+      kids  : List Id           -- the children's node ids, in edge.ord order

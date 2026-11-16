@@ -35,18 +35,32 @@
 
 module Substrate.Algebra.R.Trace.EventualPeriod where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _<_)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans)
-open import Substrate.Foundation.Bool using (Bool; not) renaming (true to tt; false to ff)
+open import Substrate.Foundation.Nat.Lt
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Bool.Bool
+open import Substrate.Foundation.Bool.Not
+
+pattern tt = true
+pattern ff = false
 open import Substrate.Foundation.Product using (Σ; _×_; _,_; proj₁; proj₂)
 open import Substrate.Foundation.WellFounded using (Acc; acc)
-open import Substrate.Algebra.Nat.Mod using (_mod-suc_; mod-suc-bound)
-open import Substrate.Algebra.Nat.WellFounded using (<-wellFounded)
+open import Substrate.Foundation.Nat.Nat.ModSuc
+open import Substrate.Algebra.Nat.Mod.ModSucBound
+open import Substrate.Algebra.Nat.Mod.ModSucId
+open import Substrate.Algebra.Nat.Mod.ModSucPeriodic
+open import Substrate.Algebra.Nat.Mod.ModSucSuc
+open import Substrate.Algebra.Nat.Mod.SucModSucLt
+open import Substrate.Algebra.Nat.Mod.SucModSucSelf
+open import Substrate.Algebra.Nat.WellFounded.LtWellFounded
 open import Substrate.Algebra.R.Trace using (RealTrace; head; tail)
-open import Substrate.Algebra.R.Trace.Bisim using (_~_; head~; tail~; ~-trans)
+open import Substrate.Algebra.R.Trace.Bisim.Op
+open import Substrate.Algebra.R.Trace.Bisim.Trans
 open import Substrate.Algebra.R.Trace.RationalAdjunction using (qToRℚ)
 open import Substrate.Algebra.R.Trace.PeriodicCover using (alt; alt-cover)
 open import Substrate.Category.UniversalProperty.ExtrudeCoEmitCyclicGrading using (repeat)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
 
 ------------------------------------------------------------------------
 -- 0. Iterated tail — the depth at which an invariant is read. Searched for an

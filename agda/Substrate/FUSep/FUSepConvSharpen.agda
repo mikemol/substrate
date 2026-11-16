@@ -18,11 +18,20 @@
 
 module Substrate.FUSep.FUSepConvSharpen where
 
-open import Substrate.Foundation.Eq    using (_≡_; refl)
-open import Substrate.Foundation.Empty using (⊥)
-open import Substrate.FUSep.FUSepQCyc using (Stream; hd; tl; _~ₛ_; hd~; tl~;
-                             ~-refl; ~-sym; ~-trans; const;
-                             AllHeads; ah-hd; ah-tl; allHeads~const)
+open import Substrate.Foundation.Empty.Bot
+-- ⚑ `FUSepQCyc` dissolved; 14 names across six leaves. `tl`/`tl~`/`ah-tl` are
+-- record fields sharing a line with their siblings (`field hd : A ; tl : Stream A`),
+-- which `def_index` does not carry — so `rewire_to_leaves` refused, correctly
+-- reporting what IT could not place rather than guessing a home.
+open import Substrate.FUSep.FUSepQCyc.Stream
+open import Substrate.FUSep.FUSepQCyc.Op
+open import Substrate.FUSep.FUSepQCyc.Refl
+open import Substrate.FUSep.FUSepQCyc.Sym
+open import Substrate.FUSep.FUSepQCyc.Trans
+open import Substrate.FUSep.FUSepQCyc.Const
+open import Substrate.FUSep.FUSepQCyc.AllHeads
+open import Substrate.FUSep.FUSepQCyc.AllHeadsconst
+open import Substrate.Foundation.Eq
 
 record _×_ (A B : Set) : Set where
   constructor _,_

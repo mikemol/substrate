@@ -35,7 +35,7 @@
 
 module Substrate.Category.Allegory.Trace where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.List using (List)
 open import Substrate.Foundation.Product using (Σ; proj₂)
 open import Substrate.Algebra.Nat.GCD.ComputeTrace using (compute-trace)

@@ -28,7 +28,13 @@
 
 module Substrate.Algebra.Bijection where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; sym)
+open import Substrate.Foundation.Product using (_×_; _,_)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.Foundation.Eq.Trans
+
 
 ------------------------------------------------------------------------
 -- 1. The bijection record.
@@ -82,7 +88,6 @@ mk↔ₛ′ f g tf ft = record
 -- 4. Transitivity.
 ------------------------------------------------------------------------
 
-open import Substrate.Foundation.Eq using (cong; cong₂; trans)
 
 ↔-trans : {A B C : Set} → A ↔ B → B ↔ C → A ↔ C
 ↔-trans f g = record
@@ -95,8 +100,6 @@ open import Substrate.Foundation.Eq using (cong; cong₂; trans)
 ------------------------------------------------------------------------
 -- 5. Product on bijections.
 ------------------------------------------------------------------------
-
-open import Substrate.Foundation.Product using (_×_; _,_)
 
 _×-↔_ : {A B C D : Set} → A ↔ C → B ↔ D → (A × B) ↔ (C × D)
 f ×-↔ g = record

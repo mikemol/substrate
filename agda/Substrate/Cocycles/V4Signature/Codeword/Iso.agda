@@ -10,7 +10,7 @@
 
 module Substrate.Cocycles.V4Signature.Codeword.Iso where
 
-open import Substrate.Foundation.Bool using (Bool)
+open import Substrate.Foundation.Bool.Bool
 open import Substrate.Foundation.Product using (_×_)
 open import Substrate.Algebra.Bijection using (_↔_; mk↔ₛ′)
 open import Substrate.Axes.Axis using (Axis)

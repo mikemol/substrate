@@ -9,11 +9,12 @@
 -- The proof module (imports the ring Properties); ZRingNorm holds the defs.
 ------------------------------------------------------------------------
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; lookup)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂)
-open import Substrate.Algebra.Z using (ℤ; +_; 0ℤ)
+open import Substrate.Algebra.Z.Int
+open import Substrate.Algebra.Z.ZeroInt
 open import Substrate.Algebra.Z.Add using (_+ℤ_)
 open import Substrate.Algebra.Z.Mul using (_*ℤ_)
 open import Substrate.Algebra.Z.Properties.Add
@@ -23,6 +24,11 @@ open import Substrate.Algebra.Z.Properties.MulFull
          *ℤ-distribˡ-+; *ℤ-distribʳ-+; quadℤ)
 open import Substrate.Algebra.Z.JacobianResidue using (𝔹; tt; ff; and; eqℕ)
 open import Substrate.Foundation.List using (List; []; _∷_)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
 
 module Substrate.Algebra.Z.ZRingNorm.Sound (k : ℕ) (ρ : Vec ℤ k) where
 
@@ -32,7 +38,7 @@ open import Substrate.Algebra.Z.ZRingNorm k ρ
 -- local ℕ / 𝔹 helpers.
 ------------------------------------------------------------------------
 
-powℤ-add : (b : ℤ) (m n : ℕ) → powℤ b (m + n) ≡ powℤ b m *ℤ powℤ b n
+powℤ-add : (b : ℤ) (m n : ℕ) → powℤ b (m ℕ+ n) ≡ powℤ b m *ℤ powℤ b n
 powℤ-add b zero    n = sym (*ℤ-identityˡ (powℤ b n))
 powℤ-add b (suc m) n =
   trans (cong (b *ℤ_) (powℤ-add b m n)) (sym (*ℤ-assoc b (powℤ b m) (powℤ b n)))

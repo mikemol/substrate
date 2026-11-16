@@ -15,7 +15,10 @@
 
 module Substrate.ShadowArchitecture.CellReconstruct where
 
-open import Substrate.Foundation.Unit using (⊤; tt) public
+-- ⚑ `public` RETIRED (Ⓑ2c).  Zero external importers, so nothing reached ⊤/tt
+-- through this file and the forward was dead weight.  The import stays — this
+-- module uses ⊤ itself; only the FORWARDING is retired.
+open import Substrate.Foundation.Unit using (⊤; tt)
 open import Substrate.Foundation.Product using (_,_; _×_)
 
 -- carrier(s) ['evidence'] hoisted to a module PARAMETER ⇒ the record lands at `: Set`.

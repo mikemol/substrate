@@ -12,11 +12,11 @@
 
 module Substrate.Algebra.AbelianGroup where
 
-open import Substrate.Foundation.Eq using (_≡_)
 open import Substrate.Algebra.Magma using (Magma)
 open import Substrate.Algebra.Semigroup using (Semigroup; magma)
 open import Substrate.Algebra.Monoid using (Monoid; semigroup)
 open import Substrate.Algebra.Group using (Group; monoid)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. The AbelianGroup record.

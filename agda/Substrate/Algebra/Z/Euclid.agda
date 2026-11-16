@@ -17,12 +17,15 @@
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.Algebra.Z.Euclid where
+open import Substrate.Algebra.Z.Add
+open import Substrate.Algebra.Z.Mul
 
-open import Substrate.Foundation.Nat using (ℕ; suc; _*_)
-open import Substrate.Foundation.Eq using (_≡_; sym; trans; cong; cong₂)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Times
 open import Substrate.Foundation.Product using (proj₁; proj₂)
-open import Substrate.Algebra.Z using (ℤ; +_; -suc_; -ℤ_)
-open import Substrate.Algebra.Z.Arithmetic using (_+ℤ_; _*ℤ_)
+open import Substrate.Algebra.Z.Int
+open import Substrate.Algebra.Z.Int2
+
 open import Substrate.Algebra.Z.Properties.Mul using (*ℤ-comm)
 open import Substrate.Algebra.Z.Properties.MulFull
   using (*ℤ-assoc; *ℤ-distribʳ-+; *ℤ-identityˡ; +ℤ-injective)
@@ -30,6 +33,11 @@ open import Substrate.Algebra.Z.Bezout using (bezout-ℤ)
 open import Substrate.Algebra.Nat.Divides.Type using (_∣_; divides)
 open import Substrate.Algebra.Nat.GCD.GcdN using (gcd-ℕ)
 open import Substrate.Algebra.Nat.GCD.GcdTrace using (gcd-trace)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
 
 -- ℤ→ℕ divisibility readback for a POSITIVE divisor.
 ℤ-pos-divides : (z : ℤ) (m′ y : ℕ) → (+ y) ≡ z *ℤ (+ suc m′) → suc m′ ∣ y

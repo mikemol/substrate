@@ -9,19 +9,21 @@
 
 module Substrate.Foundation.Fin.Combine.RemQuotInverse where
 
-open import Substrate.Foundation.Nat using (ℕ; suc; _*_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Times
 open import Substrate.Foundation.Fin.Combine
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.RemQuot
 open import Substrate.Foundation.Fin.SplitAt
 open import Substrate.Foundation.Product using (_×_; _,_)
-open import Substrate.Foundation.Sum using (inj₁; inj₂)
-open import Substrate.Foundation.Eq using (_≡_; refl; cong)
+open import Substrate.Foundation.Sum.Sum
 open import Substrate.Foundation.Fin.SplitAt using (splitAt)
 open import Substrate.Foundation.Fin.SplitAt.InjectIdentity using (splitAt-inject)
 open import Substrate.Foundation.Fin.SplitAt.RaiseIdentity using (splitAt-raise)
 open import Substrate.Foundation.Fin.Combine using (combine)
 open import Substrate.Foundation.Fin.RemQuot using (remQuot)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
 
 remQuot-combine :
   ∀ {m n} (i : Fin m) (j : Fin n) →

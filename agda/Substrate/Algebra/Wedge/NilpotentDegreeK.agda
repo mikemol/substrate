@@ -15,20 +15,22 @@
 
 module Substrate.Algebra.Wedge.NilpotentDegreeK where
 
-open import Substrate.Foundation.Eq  using (_≡_; refl)
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _∸_; _<_; _<?_)
+open import Substrate.Foundation.Nat.Lt2
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
 open import Substrate.Foundation.Product using (Σ; _,_)
-open import Substrate.Foundation.Negation using (Dec; yes; no)
+open import Substrate.Foundation.Negation.Dec
 open import Substrate.Algebra.Wedge using (DivStr; ℕ-div)
 open import Substrate.Algebra.Wedge.Mul using (MulDivStr; pow; Nilpotent)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- capped-collapse addition at level k: add, collapse to 0 once the count reaches
 -- (suc k). Decidable-< keeps it --safe and refl-computable on literals.
 ------------------------------------------------------------------------
 addCap : (k x y : ℕ) → ℕ
-addCap k x y with (x + y) <? suc k
-... | yes _ = x + y          -- still below the cap: keep the shift count
+addCap k x y with (x ℕ+ y) <? suc k
+... | yes _ = x ℕ+ y          -- still below the cap: keep the shift count
 ... | no  _ = 0              -- reached/passed the cap: collapse (the nilpotent)
 
 -- the truncated carrier Rₖ as a MulDivStr (base ℕ-div, z = 0).
@@ -41,7 +43,7 @@ gen = 1
 
 ------------------------------------------------------------------------
 -- THE DEGREE-k NILPOTENT, validated concretely at k = 3 (nilpotency degree 4):
--- pow (Rk 3) gen n = 1 + n while 1+n < 4, then collapses. pow uses pow x 0 = x,
+-- pow (Rk 3) gen n = 1 ℕ+ n while 1+n < 4, then collapses. pow uses pow x 0 = x,
 -- pow x (suc n) = mul x (pow x n), so:
 --   pow gen 0 = 1, pow gen 1 = 2, pow gen 2 = 3, pow gen 3 = 0  (1+3=4 ≥ cap 4).
 -- degree EXACTLY 4: the 3rd power is 0, the 2nd is not.

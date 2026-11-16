@@ -23,12 +23,13 @@
 
 module Substrate.Algebra.Wedge.Shape.Register.FromTrace where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.List using ([]; _∷_)
 open import Substrate.Foundation.Product using (Σ; _,_)
 open import Substrate.Algebra.Wedge using (Trace; done; more; quot; ℕ-div)
 open import Substrate.Algebra.Wedge.Shape using (shape)
 open import Substrate.Algebra.Wedge.Shape.Register using (Register; _∈ᴿ_; intern)
+open import Substrate.S5.S5Carrier
 
 -- Intern every suffix of a trace's shape, bottom-up. Structural recursion on
 -- the inductive trace ⟹ terminating + acyclic for free (no well-founded

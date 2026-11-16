@@ -5,7 +5,7 @@
 --
 -- This predicate was inlined as the GOAL TYPE across every Hom file
 -- in Substrate.Groups.Actions.S3-on-V4.Hom{Rotations,Swaps} — five
--- files, each with the same `∀ v₁ v₂ → f (v₁ · v₂) ≡ f v₁ · f v₂`
+-- files, each with the same `∀ v₁ v₂ → f (v₁ ·₄ v₂) ≡ f v₁ ·₄ f v₂`
 -- shape, varying only in which specific `f = act-on-canonical N H`
 -- the goal targets.
 --
@@ -23,11 +23,11 @@
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.Groups.V4.IsHomomorphism where
-open import Substrate.Groups.V4.Operations using (_·_)
+open import Substrate.Groups.V4.Operations using (_·₄_)
 
 import Substrate.Groups.V4.Operations as V4
-open import Substrate.Groups.V4.Bijection using (V₄)
-open import Substrate.Foundation.Eq using (_≡_)
+open import Substrate.Groups.V4.Bijection.V4
+open import Substrate.Foundation.Eq
 
 IsHomomorphism : (V₄ → V₄) → Set
-IsHomomorphism f = ∀ v₁ v₂ → f (v₁ · v₂) ≡ f v₁ · f v₂
+IsHomomorphism f = ∀ v₁ v₂ → f (v₁ ·₄ v₂) ≡ f v₁ ·₄ f v₂

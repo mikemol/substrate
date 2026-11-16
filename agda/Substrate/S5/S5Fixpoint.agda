@@ -19,6 +19,15 @@ open import Substrate.S5.S5Verdict using (_≡_; refl; sym; trans; cong; ℕ; ze
 open import Substrate.Foundation.Empty    using (⊥) public
 open import Substrate.Foundation.Negation using (Dec; yes; no) public
 open import Substrate.Foundation.Bool     using (Bool; true; false) public
+open import Substrate.Foundation.Bool.Bool
+open import Substrate.Foundation.Negation.Dec
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Empty.Bot
+open import Substrate.Foundation.Empty.BotElim
 
 module Machine
   (S : Set)

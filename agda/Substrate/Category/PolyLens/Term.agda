@@ -9,7 +9,8 @@
 
 module Substrate.Category.PolyLens.Term where
 
-open import Substrate.Foundation.Nat using (ℕ; _+_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
 open import Substrate.Category.Poly.Term
   using (PolyTerm; []ₚ; _++ₚ_; poly-product)
 
@@ -21,7 +22,7 @@ PolyLensTerm = PolyTerm
 id-PolyLensTerm : PolyLensTerm 0
 id-PolyLensTerm = []ₚ
 
-_++ₗₚ_ : {m n : ℕ} → PolyLensTerm m → PolyLensTerm n → PolyLensTerm (m + n)
+_++ₗₚ_ : {m n : ℕ} → PolyLensTerm m → PolyLensTerm n → PolyLensTerm (m ℕ+ n)
 _++ₗₚ_ = _++ₚ_
 
 infixr 4 _++ₗₚ_

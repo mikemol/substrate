@@ -16,7 +16,7 @@
 
 module Substrate.Algebra.PontryaginDual.Term where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 
 -- A character of Z/n indexed by a power. The CharTerm IS the
 -- power; concrete Coxeter-Word integration happens at use-site

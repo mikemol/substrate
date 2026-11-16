@@ -33,13 +33,16 @@
 
 module Substrate.Algebra.Wedge.Shape.Register where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; suc-injective) renaming (_≟_ to _≟ⁿ_)
-open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.Foundation.Negation using (Dec; yes; no; ¬_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.SucInjective
+open import Substrate.Foundation.Negation.Dec
+open import Substrate.Foundation.Negation.Not
 open import Substrate.Foundation.List using (List; []; _∷_; _++_)
 open import Substrate.Foundation.Product using (Σ; _,_)
 open import Substrate.Algebra.Wedge using (ℕ-div)
 open import Substrate.Algebra.Wedge.Shape using (WedgeShape)
+open import Substrate.Foundation.Eq
+open import Substrate.S5.S5Carrier
 
 ------------------------------------------------------------------------
 -- 1. Decidable equality on shapes (the CMP loop) — built from ℕ's.

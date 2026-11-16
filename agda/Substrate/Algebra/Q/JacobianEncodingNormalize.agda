@@ -31,11 +31,11 @@
 
 module Substrate.Algebra.Q.JacobianEncodingNormalize where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.Algebra.Z using (+_; -suc_)
+open import Substrate.Algebra.Z.Int
 open import Substrate.Algebra.Z.MPolyNormalize using (normalize)
 open import Substrate.Algebra.Z.JacobianResidue as R
   using (MPoly; X; Y; Z₁; 𝟙P; kP; _*P_; _+P_)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. Cᴹfᵢ — HALF A's C.fᵢ (JacobianCollision) transcribed into MPoly-over-ℤ,

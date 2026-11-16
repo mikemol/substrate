@@ -19,13 +19,13 @@
 
 module Substrate.Logic.Evidence.NedgeBridge where
 
-open import Substrate.Foundation.Bool    using (Bool)
+open import Substrate.Foundation.Bool.Bool
 open import Substrate.Foundation.Product using (_×_; _,_)
-open import Substrate.Foundation.Eq      using (_≡_; refl)
 
 open import Substrate.Logic.Evidence.Verdict
   using (Evidence; ⟨_,_⟩; _∧E_; _∨E_; _⊗E_; _⊕E_; swapE)
 import Substrate.Logic.Evidence.DualRail as DR
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- The carrier iso: Verdict.Evidence ≅ EvCarrier Bool = Bool × Bool.

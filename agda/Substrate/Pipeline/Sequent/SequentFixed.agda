@@ -9,8 +9,9 @@
 
 module Substrate.Pipeline.Sequent.SequentFixed where
 
-open import Substrate.Foundation.Eq using (_≡_)
 open import Substrate.Pipeline.Sequent.CanonicalSpec using (CanonicalSpec)
+open import Substrate.Foundation.Eq
+open import Substrate.Algebra.Quotient.Canonical
 
 -- ⟡set1-paydown: cascades from CanonicalSpec — the predicate `Canonical` is now a
 -- module param (was `CanonicalSpec.Canonical spec`). Take (A, Canonical) as params so

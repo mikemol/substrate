@@ -21,20 +21,24 @@
 
 module Substrate.Category.UniversalProperty.ExtrudeSKINVertex where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans)
-open import Substrate.Foundation.Empty using (⊥; ⊥-elim)
+open import Substrate.Foundation.Empty.Bot
+open import Substrate.Foundation.Empty.BotElim
 open import Substrate.Foundation.Product using (Σ; _,_; _×_)
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Algebra.R.Trace.SKIShedDuality using (S; K; I; _∙_) renaming (Tm to Tm⟦533ef80d⟧)
+open import Substrate.Algebra.R.Trace.SKIShedDuality.Tm
 import Substrate.Algebra.R.Trace.SKIReductionToList as R
 open R using (_⇒_)
 open import Substrate.Foundation.RewriteConfluence (R._⇒_) using (_⇒*_; done; _◅_; Converge)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Algebra.R.Trace.SKIShedDuality.Tm
 
 ------------------------------------------------------------------------
 -- a normal form only reduces to itself (positive; no decision):
 ------------------------------------------------------------------------
-nf-fixed : {n : Tm⟦533ef80d⟧} → ({c : Tm⟦533ef80d⟧} → n ⇒ c → ⊥) → {c : Tm⟦533ef80d⟧} → n ⇒* c → n ≡ c
+nf-fixed : {n : Tm} → ({c : Tm} → n ⇒ c → ⊥) → {c : Tm} → n ⇒* c → n ≡ c
 nf-fixed n-nf done    = refl
 nf-fixed n-nf (s ◅ _) = ⊥-elim (n-nf s)
 
@@ -45,8 +49,8 @@ nf-fixed n-nf (s ◅ _) = ⊥-elim (n-nf s)
 ------------------------------------------------------------------------
 record VertexFamily (n : ℕ) : Set where
   field
-    vtx        : Fin n → Tm⟦533ef80d⟧
-    vtx-normal : (i : Fin n) {c : Tm⟦533ef80d⟧} → vtx i ⇒ c → ⊥
+    vtx        : Fin n → Tm
+    vtx-normal : (i : Fin n) {c : Tm} → vtx i ⇒ c → ⊥
     vtx-inj    : {i j : Fin n} → vtx i ≡ vtx j → i ≡ j
 
   -- ② THE NEGATIVES BY EXHAUSTION: distinct vertices DON'T CONVERGE — 255's lemma, general n. From NF-ness
@@ -63,11 +67,11 @@ record VertexFamily (n : ℕ) : Set where
 ski3 : VertexFamily 3
 ski3 = record { vtx = v ; vtx-normal = v-nf ; vtx-inj = v-inj }
   where
-    v : Fin 3 → Tm⟦533ef80d⟧
+    v : Fin 3 → Tm
     v zero             = S
     v (suc zero)       = K
     v (suc (suc zero)) = I
-    v-nf : (i : Fin 3) {c : Tm⟦533ef80d⟧} → v i ⇒ c → ⊥
+    v-nf : (i : Fin 3) {c : Tm} → v i ⇒ c → ⊥
     v-nf zero             ()
     v-nf (suc zero)       ()
     v-nf (suc (suc zero)) ()

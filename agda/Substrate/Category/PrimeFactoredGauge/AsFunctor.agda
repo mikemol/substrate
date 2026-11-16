@@ -27,7 +27,7 @@
 
 open import Substrate.Foundation.Level using (Level)
 
-open import Substrate.Category.CategoryOf using (CategoryOf)
+open import Substrate.Category.CategoryOf.CategoryOf
 open import Substrate.Category.Functor using (Functor)
 
 module Substrate.Category.PrimeFactoredGauge.AsFunctor
@@ -48,7 +48,6 @@ module Substrate.Category.PrimeFactoredGauge.AsFunctor
 
 open import Substrate.Category.Functor.AsNamed
   SylowGroupCat PFGCat PFG-assign public
-  renaming (named-Functor to PFG-Functor)
 ------------------------------------------------------------------------
 -- 2. Capstone — PFG as M1 Functor.
 --

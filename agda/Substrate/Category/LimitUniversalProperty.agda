@@ -30,11 +30,11 @@
 
 module Substrate.Category.LimitUniversalProperty where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Category.Cone using (Cone)
 open import Substrate.Category.UniversalProperty using (UPArrowP; mkUP)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. THE LIMIT CENTER. Dual of FreeUP. (Discrete base ⇒ product.)

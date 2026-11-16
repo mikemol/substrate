@@ -20,7 +20,6 @@
 
 module Substrate.Algebra.Module.Hom where
 
-open import Substrate.Foundation.Eq using (_≡_)
 open import Substrate.Algebra.Magma using (Magma)
 open import Substrate.Algebra.Semigroup using (Semigroup; magma)
 open import Substrate.Algebra.Monoid using (Monoid; semigroup)
@@ -28,6 +27,7 @@ open import Substrate.Algebra.Group using (Group; monoid)
 open import Substrate.Algebra.AbelianGroup using (AbelianGroup; group)
 open import Substrate.Algebra.Ring using (Ring)
 open import Substrate.Algebra.Module using (Module; M-abelian; _·ₛ_)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. The ModuleHom record.

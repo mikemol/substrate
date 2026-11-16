@@ -10,8 +10,25 @@
 -- It also needs only the LIGHT `MixColumns.Base` — never `gmul-dot4`, never `air` —
 -- so nothing here pays the `GF256.MulLaws` closure that `G.Air` must.
 module Substrate.Algebra.F2.MixColumns.Proof.G.Equiv where
-open import Substrate.Algebra.F2.GF256.Mul
+open import Substrate.Algebra.F2.GF256.Mul.Gmul
 open import Substrate.Algebra.F2.MixColumns.Base
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+-- ⚑ Ⓑ1: `cong₂` was unbound. `resolve_notinscope` reports FIVE providers —
+-- three `FUSep.*`, one `Category.UniversalProperty.ExtrudeSKIFVector`, and this
+-- one. The Foundation leaf is the right one on the same evidence the file
+-- already carries: its siblings `Foundation.Eq` and `Foundation.Eq.Trans` are
+-- imported two lines up. ⚑ Five homes for one name is itself the finding — that
+-- is Ⓐ6/Ⓕ-DUPNAME territory, recorded rather than silently picked past.
+open import Substrate.Foundation.Eq.Cong2
+-- ⚑ AND `cong` TOO, WHICH THE LOG COULD NOT HAVE TOLD ME. Scope checking halts
+-- at the first failure, so fixing `cong₂` at :22 merely advanced the error to
+-- `cong` at :68. Same lesson as Ⓑ4ᵃ, one build cycle later: a build log is a
+-- record of what the compiler REACHED, never of what a file is missing.
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Algebra.F2.Vector
+open import Substrate.Foundation.Vec
+open import Substrate.FUSep.FUSepQHexagon.Private
 
 i0 : (x01 : Vector 8)
    → ((a : Vector 8) → gmul x01 a ≡ a) → ((a : Vector 8) → gmul 𝟎ⱽ a ≡ 𝟎ⱽ)

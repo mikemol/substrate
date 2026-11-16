@@ -2,9 +2,9 @@
 -- Substrate.Foundation.Unit.Polymorphic
 --
 -- Universe-polymorphic unit type. Distinguished from
--- Substrate.Foundation.Unit (mono-universe, ⊤ : Set) for use in
+-- Substrate.Foundation.Unit (mono-universe, ⊤ᵖ : Set) for use in
 -- higher-universe contexts (categories, polynomial functors, etc.)
--- where ⊤ : Set ℓ is needed.
+-- where ⊤ᵖ : Set ℓ is needed.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
@@ -17,5 +17,5 @@ private
   variable
     ℓ : Level
 
-record ⊤ {ℓ} : Set ℓ where
+record ⊤ᵖ {ℓ} : Set ℓ where
   constructor tt

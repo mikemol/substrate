@@ -31,7 +31,6 @@
 
 module Substrate.Cocycles.V4Signature.FullS4Route where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; trans; cong)
 
 import Substrate.Groups.S4-Composed as S4C
 
@@ -41,7 +40,7 @@ open import Substrate.Cocycles.V4Signature.S4Iso.Classify
 
 -- (2) Permutation ↔ tower's compositional carrier, + the roundtrip
 open import Substrate.Groups.S4-Iso.Extract    using (perm-to-compositional)
-open import Substrate.Groups.S4-Iso.Embedding  using (compositional-to-perm)
+open import Substrate.Groups.S4-Iso.Embedding.CompositionalToPerm
 open import Substrate.Groups.S4-Iso.Roundtrip  using (perm-roundtrip-≈)
 open import Substrate.Cocycles.V4Signature.S4GroupIso   using (≈-respects-s4-to-total)
 open import Substrate.Cocycles.V4Signature.S4Iso.Roundtrips using (total-round-trip)
@@ -49,6 +48,9 @@ open import Substrate.Axes.Axis
 open import Substrate.Groups.Symmetric.Permutation Axis
 open import Substrate.Groups.Symmetric.Eq Axis
 open import Substrate.Groups.Symmetric.EqRefl Axis
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 -- (3) the tower's rung-3 carrier is exactly S4C.Carrier
 TowerRung3 : Set

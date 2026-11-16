@@ -51,7 +51,19 @@
 module Substrate.Algebra.Quotient.PhaseB where
 
 open import Substrate.Algebra.Quotient.PhaseA
-open import Substrate.Algebra.Quotient.F2Parity
+open import Substrate.Algebra.Quotient.F2Parity.Approx
+open import Substrate.Algebra.Quotient.F2Parity.ApproxCanonical
+open import Substrate.Algebra.Quotient.F2Parity.CanonicalParity
+open import Substrate.Algebra.Quotient.F2Parity.CanonicalParityIdem
+open import Substrate.Algebra.Quotient.F2Parity.CanonicalParityRespects
+open import Substrate.Algebra.Quotient.F2Parity.CanonicalRep
+open import Substrate.Algebra.Quotient.F2Parity.NatparityCanonical
+open import Substrate.Algebra.Quotient.F2Parity.NatparityQuotient
+open import Substrate.Algebra.Quotient.F2Parity.Parity0
+open import Substrate.Algebra.Quotient.F2Parity.Parity1
+open import Substrate.Algebra.Quotient.F2Parity.ParityCanonicalRep
+open import Substrate.Algebra.Quotient.F2Parity.Preamble
+open import Substrate.Algebra.Quotient.F2Parity.Private
 -- Substrate.Algebra.Quotient.V4Cosets is held back from re-export
 -- until the stdlib-Algebra.Bundles chain in S4 / Symmetric finishes
 -- migrating to Substrate.Algebra.Group. The V4Cosets instance is

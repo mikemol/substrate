@@ -26,10 +26,12 @@
 
 module Substrate.WitnessTower.Hodge where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.From
-open import Substrate.Foundation.Eq using (_≡_; refl; cong; trans)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Trans
 
 ------------------------------------------------------------------------
 -- 1. Rung grades of the ambient n-simplex: a face has a grade in

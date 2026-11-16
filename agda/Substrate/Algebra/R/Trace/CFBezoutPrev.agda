@@ -23,15 +23,18 @@
 
 module Substrate.Algebra.R.Trace.CFBezoutPrev where
 
-open import Substrate.Foundation.Nat using (ℕ; suc)
-open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym)
-open import Substrate.Algebra.Z using (ℤ; +_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Algebra.Z.Int
 open import Substrate.Algebra.Z.Add using (_⊖_)
-open import Substrate.Algebra.Z.Arithmetic using (_*ℤ_)
+
 open import Substrate.Algebra.R.Trace using (RealTrace)
 open import Substrate.Algebra.R.Trace.Properties using (det4; det-after; det²≡1)
 
-open import Substrate.Foundation.Nat using (_*_)
+open import Substrate.Foundation.Nat.Times
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Algebra.Z.Mul
 
 ------------------------------------------------------------------------
 -- the Bézout combination of the PREVIOUS convergent (p₀,q₀)=(pₙ₋₁,qₙ₋₁) as

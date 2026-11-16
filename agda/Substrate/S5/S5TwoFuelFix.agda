@@ -20,12 +20,21 @@ open S5Fixpoint using (⊥; Dec; yes; no)
 open import Substrate.Foundation.Bool    using (Bool; true; false)
 open import Substrate.Foundation.Product using (_×_; _,_) renaming (proj₁ to fst; proj₂ to snd)
 open import Substrate.Foundation.List    using (List; []; _∷_)
-open import Substrate.Foundation.Nat     using (_+_; _≤_; z≤n; s≤s)
+open import Substrate.Foundation.Nat.Le
+open import Substrate.Foundation.Nat.Plus
 
 open import Substrate.Foundation.List.Length using (length)   -- ⟡dedup: was a local re-derivation
 
 -- the dedupe machinery + its L3 length-bound: LIFTED to the shared parent.
 open import Substrate.S5.Dedupe using (module Dedupe)
+open import Substrate.Foundation.Bool.Bool
+open import Substrate.Foundation.Negation.Dec
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Empty.Bot
 
 ------------------------------------------------------------------------
 -- the trace-keeping runner over S5Fixpoint's kernel: next : S → S, stop at a

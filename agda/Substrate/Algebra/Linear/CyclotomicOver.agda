@@ -22,7 +22,10 @@
 
 {-# OPTIONS --safe --without-K #-}
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Algebra.F2.Vector
+open import Substrate.Algebra.F2.Linear.Preserves
+open import Substrate.Algebra.F2.Linear.Cyclotomic
 
 module Substrate.Algebra.Linear.CyclotomicOver
   {Vector : ℕ → Set} {Linear : ℕ → ℕ → Set}

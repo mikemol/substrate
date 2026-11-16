@@ -15,24 +15,25 @@
 
 module Substrate.Category.UniversalProperty.DiagonalYCombinator where
 
-open import Substrate.Algebra.R.Trace.SKIShedDuality using (S; K; I; _∙_) renaming (Tm to Tm⟦533ef80d⟧)
-open import Substrate.Algebra.R.Trace.SKIReductionToList using (β-I; β-K; β-S; cong-l; cong-r) renaming (_⇒_ to _⇒⟦66d2c034⟧_)
+open import Substrate.Algebra.R.Trace.SKIShedDuality.Tm
+open import Substrate.Algebra.R.Trace.SKIReductionToList using (β-I; β-K; β-S; cong-l; cong-r)
 open import Substrate.Foundation.RewriteConfluence
   (Substrate.Algebra.R.Trace.SKIReductionToList._⇒_) using (_⇒*_; done; _◅_)
 open import Substrate.Category.UniversalProperty.DiagonalLawvereSKI
   using (ω-term; ω-step; ω-left; ω-right)
+open import Substrate.Algebra.R.Trace.SKIShedDuality.Tm
 
 ------------------------------------------------------------------------
 -- ① THE PER-f RECURSOR W f = S (K f) ω. It satisfies W f ∙ x ⇒* f (x ∙ x): S (K f) ω x ⇒⟦66d2c034⟧ (K f x)(ω x)
 --    ⇒ f (ω x) ⇒* f (x x). This is λx. f (x x) in SKI — the bracket-abstraction of self-application-under-f.
 ------------------------------------------------------------------------
-W : Tm⟦533ef80d⟧ → Tm⟦533ef80d⟧
+W : Tm → Tm
 W f = (S ∙ (K ∙ f)) ∙ ω-term
 
 ------------------------------------------------------------------------
 -- ② THE FIXED-POINT OPERATOR Y-of f = W f ∙ W f. This is (λx. f (x x))(λx. f (x x)) — the fixed point.
 ------------------------------------------------------------------------
-Y-of : Tm⟦533ef80d⟧ → Tm⟦533ef80d⟧
+Y-of : Tm → Tm
 Y-of f = (W f) ∙ (W f)
 
 ------------------------------------------------------------------------
@@ -40,7 +41,7 @@ Y-of f = (W f) ∙ (W f)
 --    CONSTRUCTED). The 5 steps: β-S unfolds the outer S; β-K selects f; the ω-steps (reused, 247) reduce
 --    ω(W f) ⇒* (W f)(W f) = Y-of f, lifted under cong-r f. So every f has a fixed point up to ⇒*.
 ------------------------------------------------------------------------
-Y-fix : (f : Tm⟦533ef80d⟧) → (Y-of f) ⇒* (f ∙ (Y-of f))
+Y-fix : (f : Tm) → (Y-of f) ⇒* (f ∙ (Y-of f))
 Y-fix f =
   -- Y-of f = ((S (K f)) ω) (W f) ⇒⟦66d2c034⟧ ((K f)(W f)) (ω (W f))
   β-S (K ∙ f) ω-term (W f)

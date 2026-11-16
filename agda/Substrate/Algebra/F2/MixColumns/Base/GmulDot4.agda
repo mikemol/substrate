@@ -6,10 +6,20 @@
 -- and escape that floor entirely.
 module Substrate.Algebra.F2.MixColumns.Base.GmulDot4 where
 open import Substrate.Algebra.F2.MixColumns.Base
-open import Substrate.Algebra.F2.GF256.MulLaws
-open import Substrate.Algebra.F2.GF256.Mul
+open import Substrate.Algebra.F2.GF256.MulLaws.GmulAssoc
+open import Substrate.Algebra.F2.GF256.MulLaws.GmulIdentityL
+open import Substrate.Algebra.F2.GF256.MulLaws.GmulIdentityR
+open import Substrate.Algebra.F2.GF256.MulLaws.GmulZeroL
+open import Substrate.Algebra.F2.GF256.MulLaws.GmulZeroR
+open import Substrate.Algebra.F2.GF256.Mul.Gmul
+open import Substrate.Algebra.F2.GF256.Mul.GmulDistribL
 open import Substrate.Algebra.F2.Vector
 open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.FUSep.FUSepQHexagon.Private
+open import Substrate.ShadowArchitecture.Raven.Semantics.Cotypes
 
 gmul-dot4 : (k c0 c1 c2 c3 a0 a1 a2 a3 : Vector 8) → gmul k (dot4 c0 c1 c2 c3 a0 a1 a2 a3)
           ≡ dot4 (gmul k c0) (gmul k c1) (gmul k c2) (gmul k c3) a0 a1 a2 a3

@@ -12,7 +12,7 @@
 module Substrate.Groups.Actions.S3-on-V4.Dispatch.ActOnCanonical where
 
 import Substrate.Groups.V4.Operations as V4
-open import Substrate.Groups.V4.Bijection using (V₄; e; α; β; γ)
+open import Substrate.Groups.V4.Bijection.V4
 import Substrate.Groups.Coxeter.Cyclic.Base 1 as Z₂-Base
 import Substrate.Groups.Coxeter.Cyclic.Base 2 as Z₃-Base
 open import Substrate.Groups.Coxeter.Word using (Word; []; _∷_)

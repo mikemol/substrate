@@ -15,9 +15,9 @@
 
 module Substrate.Foundation.Fin.Exists where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Negation using (Dec; yes; no)
+open import Substrate.Foundation.Negation.Dec
 open import Substrate.Foundation.Product using (∃-syntax; _,_)
 
 -- Decide ∃ over Fin k: returns a witness with its proof, or a refutation.

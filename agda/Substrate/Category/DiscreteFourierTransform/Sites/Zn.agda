@@ -19,7 +19,7 @@
 
 module Substrate.Category.DiscreteFourierTransform.Sites.Zn where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 
 open import Substrate.Category.DiscreteFourierTransform
 

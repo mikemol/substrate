@@ -32,7 +32,7 @@
 module Substrate.Category.Pushout where
 
 open import Substrate.Foundation.Level using (Level; _⊔_)
-open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Eq
 
 private
   variable

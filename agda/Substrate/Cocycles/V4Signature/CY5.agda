@@ -21,11 +21,11 @@
 module Substrate.Cocycles.V4Signature.CY5 where
 
 open import Substrate.Cocycle using (IsomorphicCocycleStructure)
-open import Substrate.Groups.V4.Bijection using (V₄)
-open import Substrate.Foundation.Eq using (_≡_)
+open import Substrate.Groups.V4.Bijection.V4
 open import Substrate.Cocycles.V4Signature.OrbitKey.Type  using (OrbitKey)
 open import Substrate.Cocycles.V4Signature.V4GroupSetoid  using (V₄-Group-Setoid)
 open import Substrate.Cocycles.V4Signature.Fiber          using (Fiber; fiber-torsor)
+open import Substrate.Foundation.Eq
 
 -- ⟡set1-paydown: ICS carrier/family fields are now module params — they move into the type
 -- annotation and leave the record literal.

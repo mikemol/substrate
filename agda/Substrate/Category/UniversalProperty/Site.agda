@@ -25,6 +25,7 @@ open import Substrate.Category.UniversalProperty.Term
   using (UPGen; lift; UPTerm; []; _∷_; _++ᵤ_) public
 open import Substrate.Category.UniversalProperty.Category
   using (UPCategory; UPCategory-canonical) public
+open import Substrate.Probability.MarkovCategory
 
 ------------------------------------------------------------------------
 -- The site telescope: fix the object alphabet O and the Hom generators.

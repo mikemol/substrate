@@ -11,7 +11,7 @@
 
 module Substrate.Algebra.F2.Polynomial.Wedge.WedgePoly where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Algebra.F2.Polynomial using (Polynomial)
 
 record Wedge-Poly {n m : ℕ} (p : Polynomial n) (q : Polynomial m) : Set where

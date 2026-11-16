@@ -23,18 +23,24 @@
 
 module Substrate.Category.FreeUniversalProperty.FreeF2Module where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using (Vec; []; _∷_)
-open import Substrate.Foundation.Eq using (_≡_; refl; cong; cong₂; sym; trans)
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
-open import Substrate.Algebra.F2 using (F₂; 𝟘; 𝟙; _+_; +-identityʳ)
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.PlusF
+open import Substrate.Algebra.F2.PlusIdentityR
 open import Substrate.Algebra.F2.Vector
   using (Vector; 𝟎ⱽ; _+ⱽ_; basis;
          +ⱽ-identityˡ; +ⱽ-identityʳ; +ⱽ-assoc; +ⱽ-comm; +ⱽ-self-inverse)
 open import Substrate.Category.FreeOverBasis using (AlgebraClass; mkAlgebraClass)
 open import Substrate.Category.FreeUniversalProperty using (FreeUP)
 open import Substrate.Algebra.Medial using (medial)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
 
 ------------------------------------------------------------------------
 -- 1. The F₂-module structure (= F₂-vector space: abelian, self-inverse).
@@ -89,7 +95,7 @@ module _ {M : Set} (Mod : F2Mod M) where
   rearrange = medial _⊕_ ⊕-assoc ⊕-comm
 
   -- scalar distributes over F₂ addition — the a=b=𝟙 case USES ⊕-self.
-  scalar-dist : (a b : F₂) (m : M) → ((a + b) ·? m) ≡ ((a ·? m) ⊕ (b ·? m))
+  scalar-dist : (a b : F₂) (m : M) → ((a +F b) ·? m) ≡ ((a ·? m) ⊕ (b ·? m))
   scalar-dist 𝟘 𝟘 m = sym (⊕-idˡ 𝟎)
   scalar-dist 𝟘 𝟙 m = sym (⊕-idˡ m)
   scalar-dist 𝟙 𝟘 m = sym (⊕-idʳ m)

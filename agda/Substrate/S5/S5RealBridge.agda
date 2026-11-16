@@ -25,8 +25,9 @@
 
 module Substrate.S5.S5RealBridge where
 
-open import Substrate.Foundation.Nat     using (ℕ; zero; suc; _+_; _*_)
-open import Substrate.Foundation.Eq      using (_≡_; refl; cong)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Times
 open import Substrate.Foundation.List     using (List; []; _∷_)
 open import Substrate.Foundation.Product using (_×_; _,_)
 
@@ -34,6 +35,9 @@ import Substrate.S5.S5Real      as S5R
 import Substrate.S5.S5RealConv  as S5C
 import Substrate.Algebra.R.Trace as T
 open import Substrate.Algebra.R.Trace.Bisim using (_~_; head~; tail~)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Algebra.R.Trace.Bisim.Op
 
 ------------------------------------------------------------------------
 -- 1. the transport (coinductive; identity on head/tail) + round-trip up to ~.

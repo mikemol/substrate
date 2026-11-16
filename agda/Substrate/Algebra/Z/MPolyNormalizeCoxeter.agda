@@ -23,14 +23,19 @@
 
 module Substrate.Algebra.Z.MPolyNormalizeCoxeter where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong₂)
 open import Substrate.Foundation.List using ([]; _++_)
 open import Substrate.Algebra.Z.Add using (_+ℤ_)
 open import Substrate.Algebra.Z.JacobianResidue using (MPoly; tt)
 open import Substrate.Algebra.Z.MPolyNormalize using (isSortedB; normalize)
-open import Substrate.Algebra.Z.MPolyNormalize.Properties
-  using (normalize-sorted; normalize-fixed; coeff-normalize; coeff-++)
+open import Substrate.Algebra.Z.MPolyNormalize.Properties.CoeffAppend
+open import Substrate.Algebra.Z.MPolyNormalize.Properties.CoeffNormalize
+open import Substrate.Algebra.Z.MPolyNormalize.Properties.NormalizeFixed
+open import Substrate.Algebra.Z.MPolyNormalize.Properties.NormalizeSorted
 open import Substrate.Algebra.Z.MPolySemiring using (coeff-canonicity; ++-assoc)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong2
 
 -- The ONE new obligation: normalize is a monoid hom onto sorted forms.
 normalize-distrib : (a b : MPoly) →

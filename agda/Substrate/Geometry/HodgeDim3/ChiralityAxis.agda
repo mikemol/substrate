@@ -27,16 +27,52 @@ open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Literals using (₂)
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
 open import Substrate.Foundation.Vec using ([]; _∷_; lookup)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; trans; cong; cong-trans; sym-trans)
 
-open import Substrate.Algebra.F2
+open import Substrate.Algebra.F2.AbsorbL
+open import Substrate.Algebra.F2.AbsorbR
+open import Substrate.Algebra.F2.Assoc
+open import Substrate.Algebra.F2.Comm
+open import Substrate.Algebra.F2.Dec
+open import Substrate.Algebra.F2.DistribLPlus
+open import Substrate.Algebra.F2.DistribRPlus
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.F2Cases
+open import Substrate.Algebra.F2.Idempotent
+open import Substrate.Algebra.F2.IdentityL
+open import Substrate.Algebra.F2.IdentityR
+open import Substrate.Algebra.F2.InvOfOne
+open import Substrate.Algebra.F2.OneNeqZero
+open import Substrate.Algebra.F2.Op
+open import Substrate.Algebra.F2.Op2
+open import Substrate.Algebra.F2.PlusAssoc
+open import Substrate.Algebra.F2.PlusComm
+open import Substrate.Algebra.F2.PlusF
+open import Substrate.Algebra.F2.PlusIdentityL
+open import Substrate.Algebra.F2.PlusIdentityR
+open import Substrate.Algebra.F2.PlusInverseL
+open import Substrate.Algebra.F2.PlusInverseR
+open import Substrate.Algebra.F2.PlusSelfInverse
+open import Substrate.Algebra.F2.ZeroNeqOne
 open import Substrate.Algebra.F2.Vector
-open import Substrate.Algebra.F2.Linear
+open import Substrate.Algebra.F2.Linear.CompL
+open import Substrate.Algebra.F2.Linear.CompLAssoc
+open import Substrate.Algebra.F2.Linear.CompLIdentityL
+open import Substrate.Algebra.F2.Linear.CompLIdentityR
+open import Substrate.Algebra.F2.Linear.IdL
+open import Substrate.Algebra.F2.Linear.Linear
+open import Substrate.Algebra.F2.Linear.Preserves
 open import Substrate.Algebra.F2.Linear.FromImages
 open import Substrate.Algebra.F2.Linear.KernelPredBridge
   using (pred-at-i→kernel-at-i; kernel-at-i→pred-at-i)
 open import Substrate.Algebra.F2.Code
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.CongTrans
+open import Substrate.Foundation.Eq.SymTrans
+open import Substrate.Algebra.Z.Int
+open import Substrate.WitnessTower.Wedge.OrientationDistributorAssoc.P1
 
 ------------------------------------------------------------------------
 -- Basis-images of the "project V₄-coords" linear map.
@@ -83,10 +119,10 @@ apply-ChirAxis-Selector-lookup-0 :
   lookup (apply ChiralityAxis-Selector v) zero ≡ lookup v zero
 apply-ChirAxis-Selector-lookup-0 (a ∷ b ∷ c ∷ []) =
   -- opaque `linear-from-images` → reach the dense sum via its characterising
-  -- lemma: a · 𝟙 + (b · 𝟘 + (c · 𝟘 + 𝟘)), which collapses to a.
+  -- lemma: a · 𝟙 +F (b · 𝟘 +F (c · 𝟘 +F 𝟘)), which collapses to a.
   trans (apply-linear-from-images-lookup v4-coords-images (a ∷ b ∷ c ∷ []) zero)
-  (cong-trans (_+ (b · 𝟘 + (c · 𝟘 + 𝟘))) (·-identityʳ a)
-  (cong-trans (a +_) (cong (_+ (c · 𝟘 + 𝟘)) (·-absorbʳ b))
+  (cong-trans (_+ (b · 𝟘 +F (c · 𝟘 +F 𝟘))) (·-identityʳ a)
+  (cong-trans (a +_) (cong (_+ (c · 𝟘 +F 𝟘)) (·-absorbʳ b))
   (cong-trans (a +_) (+-identityˡ _)
   (cong-trans (a +_) (cong (_+ 𝟘) (·-absorbʳ c))
   (cong-trans (a +_) (+-identityˡ _)
@@ -97,11 +133,11 @@ apply-ChirAxis-Selector-lookup-1 :
   lookup (apply ChiralityAxis-Selector v) (suc zero) ≡ lookup v (suc zero)
 apply-ChirAxis-Selector-lookup-1 (a ∷ b ∷ c ∷ []) =
   -- opaque `linear-from-images` → reach the dense sum via its characterising
-  -- lemma: a · 𝟘 + (b · 𝟙 + (c · 𝟘 + 𝟘)), which collapses to b.
+  -- lemma: a · 𝟘 +F (b · 𝟙 +F (c · 𝟘 +F 𝟘)), which collapses to b.
   trans (apply-linear-from-images-lookup v4-coords-images (a ∷ b ∷ c ∷ []) (suc zero))
-  (cong-trans (_+ (b · 𝟙 + (c · 𝟘 + 𝟘))) (·-absorbʳ a)
+  (cong-trans (_+ (b · 𝟙 +F (c · 𝟘 +F 𝟘))) (·-absorbʳ a)
   (trans (+-identityˡ _)
-  (cong-trans (_+ (c · 𝟘 + 𝟘)) (·-identityʳ b)
+  (cong-trans (_+ (c · 𝟘 +F 𝟘)) (·-identityʳ b)
   (cong-trans (b +_) (cong (_+ 𝟘) (·-absorbʳ c))
   (cong-trans (b +_) (+-identityˡ _)
          (+-identityʳ b))))))

@@ -29,7 +29,7 @@ module Substrate.Algebra.TopologicalGroup.Sites.V4 where
 
 open import Substrate.Algebra.Group using (Group)
 open import Substrate.Algebra.TopologicalGroup using (TopologicalGroup)
-open import Substrate.Groups.V4.Bijection using (V₄)
+open import Substrate.Groups.V4.Bijection.V4
 open import Substrate.Groups.V4.Bundle using (V₄-Group)
 
 ------------------------------------------------------------------------

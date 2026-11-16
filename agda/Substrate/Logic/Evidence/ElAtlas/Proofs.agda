@@ -29,7 +29,6 @@
 
 module Substrate.Logic.Evidence.ElAtlas.Proofs where
 
-open import Substrate.Foundation.Eq      using (_≡_; cong)
 open import Substrate.Foundation.Product using (_,_)
 open import Substrate.Logic.Evidence.Verdict using (Evidence; verdict; swapE; swapV)
 open import Substrate.Logic.Evidence.ElAtlas
@@ -43,8 +42,10 @@ open import Substrate.Logic.Evidence.SWP using (posR-section)
 open import Substrate.Logic.Evidence.Verdict.Properties  using (intertwine; deMorgan-∧∨)
 open import Substrate.Logic.Evidence.Verdict.NoCollapse  using (no-single-rail-quotient; faithful-refines-verdict)
 open import Substrate.Logic.Evidence.Verdict.NedgeShadow using (bias-cannot-carry-verdict; recode; unrecode)
-open import Substrate.Logic.Evidence.Verdict.Phase       using (N₊-S-noncommute)
+open import Substrate.Logic.Evidence.Verdict.Phase.NSNoncommute
 open import Substrate.Logic.Evidence.Warrant.Properties  using (⊓w-assoc)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- The Π. Total over `Claim`; every case is a typechecked witness.

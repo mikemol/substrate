@@ -18,7 +18,7 @@
 
 module Substrate.Algebra.List.Wedge where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.List using (List; []; _++_)
 open import Substrate.Foundation.List.Length using (length)
 open import Substrate.Algebra.Wedge using (DivStr)

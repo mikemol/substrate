@@ -39,13 +39,15 @@
 
 module Substrate.Algebra.Z.JacobianNegCodec where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.Foundation.Empty using (⊥)
-open import Substrate.Algebra.Z using (ℤ; +_; -suc_)
-open import Substrate.Algebra.Q using (ℚ; mkℚ; 1ℚ; -1ℚ)
+open import Substrate.Foundation.Empty.Bot
+open import Substrate.Algebra.Z.Int
+open import Substrate.Algebra.Q.OneRat
+open import Substrate.Algebra.Q.OneRat2
+open import Substrate.Algebra.Q.Rat
 open import Substrate.Algebra.Q.Mul using (_*ℚ_)
 open import Substrate.Algebra.Q.Equiv using (_≈ℚ_)
 open import Substrate.Logic.Evidence.GValueLSpace.Primes using (module ZPow)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. A NON-TRIVIAL BASE — (2, ½).

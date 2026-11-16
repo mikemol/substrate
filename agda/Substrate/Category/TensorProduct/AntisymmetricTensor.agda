@@ -2,7 +2,7 @@
 -- Substrate.Category.TensorProduct.AntisymmetricTensor
 --
 -- The antisymmetric subspace of TensorProduct n n packaged as a
--- Σ-type subtype: TensorProduct + symmetry constraint + diagonal-zero
+-- Σ-type subtype: TensorProduct +F symmetry constraint +F diagonal-zero
 -- constraint.
 --
 -- At F₂ (char 2), antisymmetric tensors satisfy:
@@ -22,7 +22,7 @@
 --
 -- Per [[feedback-multi-reading-ambient-discipline]]: at F₂ the
 -- "symmetric vs antisymmetric" distinction collapses at the subspace
--- level (T = Tᵀ ⇔ T + Tᵀ = 0). Both readings (symmetric Λ²; cyclic
+-- level (T = Tᵀ ⇔ T +F Tᵀ = 0). Both readings (symmetric Λ²; cyclic
 -- difference) project to the same subspace. The subtype here is the
 -- ambient predicate; downstream Bivector-bridge work attaches a
 -- specific reading.
@@ -33,12 +33,36 @@
 module Substrate.Category.TensorProduct.AntisymmetricTensor where
 
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Vec using (lookup)
-open import Substrate.Foundation.Eq using (_≡_)
 
-open import Substrate.Algebra.F2
+open import Substrate.Algebra.F2.AbsorbL
+open import Substrate.Algebra.F2.AbsorbR
+open import Substrate.Algebra.F2.Assoc
+open import Substrate.Algebra.F2.Comm
+open import Substrate.Algebra.F2.Dec
+open import Substrate.Algebra.F2.DistribLPlus
+open import Substrate.Algebra.F2.DistribRPlus
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.F2Cases
+open import Substrate.Algebra.F2.Idempotent
+open import Substrate.Algebra.F2.IdentityL
+open import Substrate.Algebra.F2.IdentityR
+open import Substrate.Algebra.F2.InvOfOne
+open import Substrate.Algebra.F2.OneNeqZero
+open import Substrate.Algebra.F2.Op
+open import Substrate.Algebra.F2.Op2
+open import Substrate.Algebra.F2.PlusAssoc
+open import Substrate.Algebra.F2.PlusComm
+open import Substrate.Algebra.F2.PlusF
+open import Substrate.Algebra.F2.PlusIdentityL
+open import Substrate.Algebra.F2.PlusIdentityR
+open import Substrate.Algebra.F2.PlusInverseL
+open import Substrate.Algebra.F2.PlusInverseR
+open import Substrate.Algebra.F2.PlusSelfInverse
+open import Substrate.Algebra.F2.ZeroNeqOne
 open import Substrate.Category.TensorProduct using (TensorProduct)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- N-1: AntisymmetricTensor — the subtype.
@@ -68,7 +92,7 @@ open AntisymmetricTensor public
 --
 --   * AntisymmetricTensor n : Set — the antisymmetric subspace of
 --     TensorProduct n n at F₂, packaged as a Σ-type with explicit
---     symmetric + diag-zero witnesses.
+--     symmetric +F diag-zero witnesses.
 --
 -- Substrate-wide consequence: any operation that requires the input
 -- tensor to BE antisymmetric (e.g., the reverse direction of the
@@ -93,7 +117,7 @@ open AntisymmetricTensor public
 --     subtype-witnessed output (the projection's image IS in the
 --     subspace by construction).
 --
---   * **AntisymmetricTensor + algebraic operations**: addition and
+--   * **AntisymmetricTensor +F algebraic operations**: addition and
 --     scalar multiplication restrict to the subspace; structural
 --     lemmas would package these as the subspace's induced algebra.
 ------------------------------------------------------------------------

@@ -26,14 +26,18 @@
 module Substrate.Category.UniversalProperty.InternalLogic where
 
 open import Substrate.Foundation.Unit using (⊤)
-open import Substrate.Foundation.Empty using (⊥)
+open import Substrate.Foundation.Empty.Bot
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
-open import Substrate.Foundation.Sum using (_⊎_; inj₁; inj₂; [_,_])
-open import Substrate.Foundation.Eq using (_≡_; subst; sym)
+open import Substrate.Foundation.Sum.Op
+open import Substrate.Foundation.Sum.Sum
 open import Substrate.Category.UniversalProperty.Term using (UPTerm; _++ᵤ_)
 open import Substrate.Category.UniversalProperty.Category using (++ᵤ-assoc)
 open import Substrate.Category.UniversalProperty.Sieve
   using (Sieve; max-Sieve; closure)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Subst
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Probability.MarkovCategory
 
 module _ (O : Set) (Hom : O → O → Set) where
 

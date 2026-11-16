@@ -30,8 +30,7 @@
 
 module Substrate.TokiPona.SemanticSpace where
 
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Eq using (_≡_; refl; cong)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Category.CommutativeMonoid using (CommutativeMonoid)
 
 -- Re-export the underlying F₂-Vector machinery publicly so consumers
@@ -42,6 +41,7 @@ open import Substrate.Algebra.F2.Vector
   using (Vector; 𝟎ⱽ; _+ⱽ_; basis;
          +ⱽ-identityˡ; +ⱽ-identityʳ; +ⱽ-comm; +ⱽ-assoc;
          +ⱽ-self-inverse)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. Linguistic alias: SemVec m IS the F₂-Vector of dimension m.

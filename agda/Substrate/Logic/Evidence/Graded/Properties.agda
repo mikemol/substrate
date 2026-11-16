@@ -13,7 +13,6 @@
 
 module Substrate.Logic.Evidence.Graded.Properties where
 
-open import Substrate.Foundation.Eq using (_≡_; trans; cong₂)
 open import Substrate.Category.CommutativeMonoid using (CommutativeMonoid)
 
 open import Substrate.Logic.Evidence.Verdict using (Evidence; _∧E_; _∨E_; ⊤t; ⊥t)
@@ -22,6 +21,9 @@ open import Substrate.Logic.Evidence.Verdict.Properties
 open import Substrate.Logic.Evidence.Warrant using (Warrant; _⊓w_; ⊤w)
 open import Substrate.Logic.Evidence.Warrant.Properties using (⊓w-comm; ⊓w-assoc; ⊓w-identityʳ)
 open import Substrate.Logic.Evidence.Graded
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong2
 
 ∧G-comm : (x y : GradedEvidence) → x ∧G y ≡ y ∧G x
 ∧G-comm (a at g) (b at h) = cong₂ _at_ (∧E-comm a b) (⊓w-comm g h)

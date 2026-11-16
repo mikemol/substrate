@@ -13,7 +13,7 @@
 --
 -- Contrast with the affine slice (ReservedToBivectorAffine.agda):
 --
---   * Affine rung: sacrificed F₂-linearity, kept bijectivity +
+--   * Affine rung: sacrificed F₂-linearity, kept bijectivity +F
 --     cardinality. V₄ acts non-trivially on both sides (regular
 --     representation on Reserved, translation on SelfDual).
 --
@@ -32,13 +32,9 @@
 
 module Substrate.Cocycles.V4Signature.Codeword.ReservedToBivectorCardinality where
 
-open import Substrate.Foundation.Bool using (Bool; true; false; _xor_)
+open import Substrate.Foundation.Bool.Bool
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂; Σ)
-open import Substrate.Foundation.Vec using ([]; _∷_)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; cong)
 
-open import Substrate.Algebra.F2
 open import Substrate.Algebra.F2.Vector
 open import Substrate.Algebra.F2.HodgeDim4.Bivector
 open import Substrate.Algebra.F2.HodgeDim4.SelfDual
@@ -47,6 +43,7 @@ open import Substrate.Cocycles.V4Signature.Codeword.Subtypes using (Reserved)
 open import Substrate.Cocycles.V4Signature.Codeword.Type using (Codeword)
 open import Substrate.Cocycles.V4Signature.Codeword.ReservedToBivectorAffine.ActReserved using (v4-act-reserved)
 open import Substrate.Cocycles.V4Signature.Codeword.ReservedToBivectorAffine.V4 using (V₄; _+V₄_)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- The 2-element target subspace.
@@ -127,10 +124,10 @@ collapse-section _ = refl
 --
 -- Compare with the affine rung (ReservedToBivectorAffine.agda):
 --
---   * Affine: sacrificed F₂-linearity; kept cardinality + bijectivity;
+--   * Affine: sacrificed F₂-linearity; kept cardinality +F bijectivity;
 --             V₄ acts non-trivially on both sides (regular rep ↔
 --             translation).
---   * Cardinality (this rung): sacrificed cardinality + bijectivity;
+--   * Cardinality (this rung): sacrificed cardinality +F bijectivity;
 --                              kept F₂-linearity; V₄ acts trivially
 --                              on both sides.
 --
@@ -139,8 +136,8 @@ collapse-section _ = refl
 -- unformalised.
 --
 -- **Tetrative metacircularity observation** (per user, 2026-05-18):
--- by formalising multiple sacrifice rungs + the gauge-freedom space
--- + the alignment-axis-space meta-symmetry, the substrate is becoming
+-- by formalising multiple sacrifice rungs +F the gauge-freedom space
+-- +F the alignment-axis-space meta-symmetry, the substrate is becoming
 -- a system that describes its own gauge-choice structure at multiple
 -- levels of meta-reflection. Each level "tetrates" the previous (the
 -- structure-of-the-structure-of-the-structure, etc.). The fractal

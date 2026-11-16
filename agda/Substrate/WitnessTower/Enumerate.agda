@@ -24,13 +24,19 @@
 
 module Substrate.WitnessTower.Enumerate where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_; _^_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Pow
+open import Substrate.Foundation.Nat.Times
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; map; tabulate)
 open import Substrate.Foundation.List using (List; []; _∷_; _++_)
-open import Substrate.Foundation.Eq using (_≡_; refl; cong; cong₂; trans)
 open import Substrate.Foundation.Nat.Properties.Mul using (*-comm)
 open import Substrate.Foundation.Fin.Punctured using (punchIn)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.Foundation.Eq.Trans
 
 ------------------------------------------------------------------------
 -- 0. List helpers (map / concatMap not in Foundation.List; local).
@@ -105,7 +111,7 @@ length-all-positions (suc n) =
 
 -- length distributes over append.
 length-++ : ∀ {a} {A : Set a} (xs ys : List A) →
-            lengthL (xs ++ ys) ≡ lengthL xs + lengthL ys
+            lengthL (xs ++ ys) ≡ lengthL xs ℕ+ lengthL ys
 length-++ []       ys = refl
 length-++ (x ∷ xs) ys = cong suc (length-++ xs ys)
 
@@ -118,7 +124,7 @@ length-concatMapL-const :
 length-concatMapL-const c g []       hyp = refl
 length-concatMapL-const c g (x ∷ xs) hyp =
   trans (length-++ (g x) (concatMapL g xs))
-        (cong₂ _+_ (hyp x) (length-concatMapL-const c g xs hyp))
+        (cong₂ _ℕ+_ (hyp x) (length-concatMapL-const c g xs hyp))
 
 -- THE GLUE, proved in general (not just spot-checked): |perms n| = n!.
 -- |perms (suc n)| = |perms n| · (n+1) because each smaller perm spawns

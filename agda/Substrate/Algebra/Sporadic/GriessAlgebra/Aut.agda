@@ -44,12 +44,12 @@
 {-# OPTIONS --safe --without-K #-}
 
 open import Substrate.Foundation.Level using (Level; 0ℓ)
-open import Substrate.Foundation.Eq using (_≡_)
 
 open import Substrate.Category.CommutativeNonAssociativeAlgebra
   using (CommutativeNonAssociativeAlgebra)
 open import Substrate.Category.AutomorphismGroup
   using (AutomorphismGroup)
+open import Substrate.Foundation.Eq
 
 module Substrate.Algebra.Sporadic.GriessAlgebra.Aut
   -- The Griess algebra (= an X4 CommutativeNonAssociativeAlgebra

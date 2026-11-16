@@ -32,13 +32,14 @@
 
 module Substrate.Algebra.F2.Linear.SpectralTower where
 
-open import Substrate.Foundation.Nat using (ℕ; suc; _*_; _∸_)
-open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Times
 
 open import Substrate.WitnessTower.PhiMultiplicity using (mult2; nullity2)
 open import Substrate.Algebra.F2.Linear.KernelSpan using (KernelDim)
 open import Substrate.Algebra.F2.Linear.SpectralCycle using (Φσ)
-open import Substrate.Algebra.F2.Linear.SpectralCycleDim using (dim-ker-Φσ)
+open import Substrate.Algebra.F2.Linear.SpectralCycleDim.DimKer
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- The per-factor Φ_p dimension, spectrally grounded (a): for the p-cycle

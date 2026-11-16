@@ -28,14 +28,14 @@ open import Substrate.WitnessTower.EvenInComm
   using (Tri; tri-eq; tri-adj; tri-adj'; tri-sep; tri-sep';
          AllInj1; ai-nil; ai-cons)
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Op
-open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym; cong; cong₂; subst)
-open import Substrate.Foundation.Negation using (¬_; Dec; yes; no)
-open import Substrate.Foundation.Empty using (⊥-elim)
+open import Substrate.Foundation.Negation.Dec
+open import Substrate.Foundation.Negation.Not
+open import Substrate.Foundation.Empty.BotElim
 open import Substrate.Foundation.Vec using (lookup; tabulate)
-open import Substrate.Foundation.Vec.Properties using (lookup∘tabulate)
+open import Substrate.Foundation.Vec.Properties.LookupComptabulate
 
 open import Substrate.WitnessTower.Enumerate using (Perm)
 open import Substrate.WitnessTower.FirstAppearance using (id-perm; compose)
@@ -44,7 +44,7 @@ open import Substrate.WitnessTower.SnGroup
   using (apply; apply-compose; apply-id; apply-injective;
          compose-is-perm; compose-id-left; compose-id-right)
 open import Substrate.WitnessTower.CyclicGrounding using (compose-assoc)
-open import Substrate.WitnessTower.Wedge.OrientationRigCatSym using (inv-unique)
+open import Substrate.WitnessTower.Wedge.OrientationRigCatSym.InvUnique
 open import Substrate.WitnessTower.SignCommutator
   using (inverse; inverse-right; commutator)
 open import Substrate.WitnessTower.CommutatorSubgroup using (InComm; ic-id; ic-comm; ic-∘)
@@ -54,13 +54,20 @@ open import Substrate.WitnessTower.Wedge.OrientationRigCatPermCoxeterGeneral.Pro
   using (coxeter-complete)
 open import Substrate.WitnessTower.Wedge.OrientationRigCatPermSign
   using (tp; sadj-realizes; sadj-is-perm; sign; signW; sign-wd; inj1≢suc)
-open import Substrate.WitnessTower.Wedge.OrientationRigCatPermCoxeterBraid
-  using (Sep; sep0; sepS; cox-braid)
+open import Substrate.WitnessTower.Wedge.OrientationRigCatPermCoxeterBraid.CoxBraid
+open import Substrate.WitnessTower.Wedge.OrientationRigCatPermCoxeterBraid.Sep
 open import Substrate.WitnessTower.SignAbelianization using (sadj-involution)
 open import Substrate.WitnessTower.SignGrade2Generated using (flatten; even→grade2)
 open import Substrate.Algebra.ParityKernel.Universal using (Gr2Gen; g2-nil; g2-pair)
-open import Substrate.Foundation.Bool using (Bool; false)
+open import Substrate.Foundation.Bool.Bool
 open import Substrate.Groups.Coxeter.Word using (Word; []; _∷_; _++_)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.Foundation.Eq.Subst
+open import Substrate.WitnessTower.Wedge.OrientationBimonoidal
 
 ------------------------------------------------------------------------
 -- STEP 0.  An adjacent transposition is its own inverse.
@@ -80,42 +87,42 @@ inverse-sadj {n} j =
 ------------------------------------------------------------------------
 
 swapFin : {n : ℕ} (a b x : Fin n) → Fin n
-swapFin a b x with x ≟ a
+swapFin a b x with x ≟ᶠ a
 ... | yes _ = b
-... | no  _ with x ≟ b
+... | no  _ with x ≟ᶠ b
 ...   | yes _ = a
 ...   | no  _ = x
 
 swapFin-here : {n : ℕ} (a b : Fin n) → swapFin a b a ≡ b
-swapFin-here a b with a ≟ a
+swapFin-here a b with a ≟ᶠ a
 ... | yes _ = refl
 ... | no ¬p = ⊥-elim (¬p refl)
 
 swapFin-there : {n : ℕ} (a b : Fin n) → ¬ (b ≡ a) → swapFin a b b ≡ a
-swapFin-there a b b≢a with b ≟ a
+swapFin-there a b b≢a with b ≟ᶠ a
 ... | yes p = ⊥-elim (b≢a p)
-... | no  _ with b ≟ b
+... | no  _ with b ≟ᶠ b
 ...   | yes _ = refl
 ...   | no ¬q = ⊥-elim (¬q refl)
 
 swapFin-else : {n : ℕ} (a b x : Fin n) → ¬ (x ≡ a) → ¬ (x ≡ b) → swapFin a b x ≡ x
-swapFin-else a b x x≢a x≢b with x ≟ a
+swapFin-else a b x x≢a x≢b with x ≟ᶠ a
 ... | yes p = ⊥-elim (x≢a p)
-... | no  _ with x ≟ b
+... | no  _ with x ≟ᶠ b
 ...   | yes q = ⊥-elim (x≢b q)
 ...   | no  _ = refl
 
 swapFin-at-b : {n : ℕ} (a b : Fin n) → swapFin a b b ≡ a
-swapFin-at-b a b with b ≟ a
+swapFin-at-b a b with b ≟ᶠ a
 ... | yes q = q
-... | no ¬q with b ≟ b
+... | no ¬q with b ≟ᶠ b
 ...   | yes _ = refl
 ...   | no ¬r = ⊥-elim (¬r refl)
 
 swapFin-invol : {n : ℕ} (a b x : Fin n) → swapFin a b (swapFin a b x) ≡ x
-swapFin-invol a b x with x ≟ a
+swapFin-invol a b x with x ≟ᶠ a
 ... | yes p = trans (swapFin-at-b a b) (sym p)
-... | no ¬p with x ≟ b
+... | no ¬p with x ≟ᶠ b
 ...   | yes q = trans (swapFin-here a b) (sym q)
 ...   | no ¬q = swapFin-else a b x ¬p ¬q
 
@@ -163,9 +170,9 @@ inverse-gtransp a b =
 
 swapFin-suc : {n : ℕ} (a b i : Fin n) →
               swapFin (fsuc a) (fsuc b) (fsuc i) ≡ fsuc (swapFin a b i)
-swapFin-suc a b i with i ≟ a
+swapFin-suc a b i with i ≟ᶠ a
 ... | yes _ = refl
-... | no  _ with i ≟ b
+... | no  _ with i ≟ᶠ b
 ...   | yes _ = refl
 ...   | no  _ = refl
 
@@ -202,14 +209,14 @@ conj-gtransp {n} w pw a b = apply-injective step
     -- the pointwise heart, after stripping the two composes.
     core : (x : Fin n) → apply w (swapFin a b (apply iv x))
                         ≡ swapFin (apply w a) (apply w b) x
-    core x with apply iv x ≟ a
+    core x with apply iv x ≟ᶠ a
     ... | yes p =
       sym (trans (cong (swapFin (apply w a) (apply w b)) x≡wa)
                  (swapFin-here (apply w a) (apply w b)))
       where
         x≡wa : x ≡ apply w a
         x≡wa = trans (sym (wy x)) (cong (apply w) p)
-    ... | no ¬p with apply iv x ≟ b
+    ... | no ¬p with apply iv x ≟ᶠ b
     ...   | yes q =
       sym (trans (cong (swapFin (apply w a) (apply w b)) x≡wb)
                  (swapFin-at-b (apply w a) (apply w b)))

@@ -14,7 +14,15 @@
 
 {-# OPTIONS --safe --without-K #-}
 
-open import Substrate.Foundation.Eq using (_≡_; refl; sym)
+
+-- ⚑ A NAME USED IN THE TELESCOPE MUST BE IMPORTED BEFORE THE MODULE HEADER.
+-- A parameter list is scope-checked before anything inside `where`, so an
+-- import placed after the header is too late.  The splitter emits the
+-- prelude after the header (right for a body, wrong for a telescope), so
+-- every leaf whose PARAMETERS mention the name inherited this.
+-- MEASURED: 11 sites tree-wide.
+open import Substrate.Foundation.Eq
+open import Substrate.Algebra.Quotient.Canonical
 
 module Substrate.Groups.Coxeter.Core.HigherArity.Chain
   (Word : Set)
@@ -27,11 +35,13 @@ module Substrate.Groups.Coxeter.Core.HigherArity.Chain
     (a b : Word) → normalize (a ++ b) ≡ normalize (normalize a ++ normalize b))
   where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; map)
 
 open import Substrate.Groups.Coxeter.Core.HigherArity.Step
   Word _++_ Canonical normalize normalize-canonical canonical-is-fixed normalize-distrib
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
 
 -- Right-nested ++-fold of a non-empty Vec of Words.
 chain : {n : ℕ} → Vec Word (suc n) → Word

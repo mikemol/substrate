@@ -34,13 +34,11 @@
 
 module Substrate.Lojban.Functoriality where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Level using (Level; _⊔_)
-open import Substrate.Foundation.Eq using (_≡_; refl; cong)
 
-open import Substrate.Lojban.PlaceStructure
-  using (Selbri; apply; selbri-postcompose;
-         selbri-postcompose-id; selbri-postcompose-compose)
+open import Substrate.Lojban.PlaceStructure.Selbri
+open import Substrate.Lojban.PlaceStructure.SelbriPostcompose
 open import Substrate.Lojban.Bridi
   using (Bridi; mkBridi; selbri; args;
          bridi-postcompose; interpret; interpret-postcompose)
@@ -48,6 +46,9 @@ open import Substrate.Lojban.Cmavo
   using (CmavoWrapper; sem-op; apply-cmavo; identity-cmavo;
          _∘-cmavo_; interpret-apply-cmavo;
          apply-cmavo-compose)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Lojban.Fragment.Carriers
 
 private
   variable

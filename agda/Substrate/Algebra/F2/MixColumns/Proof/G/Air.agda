@@ -6,12 +6,11 @@
 -- x02 x03)` would re-elaborate this whole term inside every consumer. Taking the
 -- constants as ordinary arguments makes each use a REFERENCE instead.
 module Substrate.Algebra.F2.MixColumns.Proof.G.Air where
-open import Substrate.Algebra.F2.GF256.Mul
+open import Substrate.Algebra.F2.GF256.Mul.Gmul
 open import Substrate.Algebra.F2.MixColumns.Base
 open import Substrate.Algebra.F2.MixColumns.Base.GmulDot4
 open import Substrate.Algebra.F2.MixColumns.Mul02  -- pe2 pb2 pd2 p92 (= xtime of inv-coeffs)
 open import Substrate.Algebra.F2.MixColumns.Mul03  -- pe3 pb3 pd3 p93 (= xtime ⊕ id)
-open import Substrate.Algebra.F2.MixColumns.Collapse
 
 air : (x01 x02 x03 e0 e1 e2 e3 a0 a1 a2 a3 : Vector 8)
   → dot4 e0 e1 e2 e3 (dot4 x02 x03 x01 x01 a0 a1 a2 a3) (dot4 x01 x02 x03 x01 a0 a1 a2 a3)

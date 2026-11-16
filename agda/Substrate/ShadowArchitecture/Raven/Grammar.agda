@@ -40,7 +40,7 @@ module Substrate.ShadowArchitecture.Raven.Grammar where
 
 open import Substrate.Foundation.List using (List; []; _∷_)
 open import Substrate.Foundation.List.Length using (length)
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 
 ------------------------------------------------------------------------
 -- 1. The four Kēlen relations.
@@ -53,16 +53,16 @@ data KelenRelation : Set where
   la : KelenRelation  -- equational identity
 
 ------------------------------------------------------------------------
--- 2. Terminal classification (the attribute after the final `pi`).
+-- 2. Terminal-Raven classification (the attribute after the final `pi`).
 --
 -- Only the two architecturally-load-bearing attributes are
 -- distinguished; everything else collapses to `other-attr`.
 ------------------------------------------------------------------------
 
-data Terminal : Set where
-  awen-taso  : Terminal  -- L₇ holds steady (open phase)
-  añelē      : Terminal  -- L₇ locked / Nevermore (lockup phase)
-  other-attr : Terminal  -- any other Toki Pona attribute
+data Terminal-Raven : Set where      -- ⟦shape:ac030497 awen-taso,añelē,other-attr⟧
+  awen-taso  : Terminal-Raven  -- L₇ holds steady (open phase)
+  añelē      : Terminal-Raven  -- L₇ locked / Nevermore (lockup phase)
+  other-attr : Terminal-Raven  -- any other Toki Pona attribute
 
 ------------------------------------------------------------------------
 -- 3. Whether L₇-añelē appears as the OBJECT of the line's relation
@@ -88,7 +88,7 @@ record Line : Set where      -- ⟦shape:d00b0e66 rel,terminal,L7-reference⟧
   constructor mk-line
   field
     rel           : KelenRelation
-    terminal      : Terminal
+    terminal      : Terminal-Raven
     L7-reference  : L7-Body-Reference
 
 ------------------------------------------------------------------------
@@ -108,10 +108,10 @@ record Stanza : Set where
 -- Last-line terminal of a stanza. Implemented as a fold so that the
 -- closing line's `terminal` is selected; for the empty list we return
 -- `other-attr` as a default (never realised in practice).
-stanza-terminal : Stanza → Terminal
+stanza-terminal : Stanza → Terminal-Raven
 stanza-terminal s = go (Stanza.lines s)
   where
-    go : List Line → Terminal
+    go : List Line → Terminal-Raven
     go []        = other-attr
     go (ℓ ∷ [])  = Line.terminal ℓ
     go (_ ∷ ℓs)  = go ℓs

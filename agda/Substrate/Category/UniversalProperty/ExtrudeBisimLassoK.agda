@@ -22,13 +22,19 @@
 
 module Substrate.Category.UniversalProperty.ExtrudeBisimLassoK where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; subst)
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Function.Iterate using (iterate; HasFixedOrder)
-open import Substrate.Algebra.R.Trace.SKIShedDuality using () renaming (Tm to Tm⟦533ef80d⟧)
+
 open import Substrate.Category.UniversalProperty.ExtrudeMinimalRun using (step)
 open import Substrate.Category.UniversalProperty.ExtrudeBisimRun
   using (RedTrace; run-trace; more; _≈_; ≈-refl)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Subst
+open import Substrate.Algebra.R.Trace.SKIShedDuality.Tm
+open import Substrate.Lifecycle.Fragment
 
 ------------------------------------------------------------------------
 -- ① THE k-STEP SHIFT: iterate the residue `more` k times — the trace after k reduction steps.
@@ -41,7 +47,7 @@ more^ (suc k) s = more (more^ k s)
 -- ② THE SHIFT IS k REDUCTIONS: shifting the trace k steps IS the trace of the k-fold reduct. (more∘run-trace
 --    = run-trace∘step definitionally; iterate (suc k) step = step ∘ iterate k step; so cong more threads it.)
 ------------------------------------------------------------------------
-more^-run : (k : ℕ) (t : Tm⟦533ef80d⟧) → more^ k (run-trace t) ≡ run-trace (iterate k step t)
+more^-run : (k : ℕ) (t : Tm) → more^ k (run-trace t) ≡ run-trace (iterate k step t)
 more^-run zero    t = refl
 more^-run (suc k) t = cong more (more^-run k t)
 
@@ -49,7 +55,7 @@ more^-run (suc k) t = cong more (more^-run k t)
 -- ③ THE k-CYCLE LASSO: a term whose k-fold reduct is itself (iterate k step t ≡ t) has a k-PERIODIC trace —
 --    bisimilar to its k-shifted tail. The run's `loop` at any period, witnessed by bisimilarity, no decision.
 ------------------------------------------------------------------------
-lasso-k : (t : Tm⟦533ef80d⟧) (k : ℕ) → iterate k step t ≡ t → run-trace t ≈ more^ k (run-trace t)
+lasso-k : (t : Tm) (k : ℕ) → iterate k step t ≡ t → run-trace t ≈ more^ k (run-trace t)
 lasso-k t k cyc =
   subst (λ s → run-trace t ≈ s) (sym shift≡t) (≈-refl (run-trace t))
   where
@@ -60,14 +66,14 @@ lasso-k t k cyc =
 -- ④ 278's loop-from-fixed IS the k=1 case (iterate 1 step t = step t; more^ 1 = more): the fixed-point lasso
 --    is the tightest cycle, recovered here.
 ------------------------------------------------------------------------
-loop-from-fixed-is-lasso-1 : (t : Tm⟦533ef80d⟧) → step t ≡ t → run-trace t ≈ more^ 1 (run-trace t)
+loop-from-fixed-is-lasso-1 : (t : Tm) → step t ≡ t → run-trace t ≈ more^ 1 (run-trace t)
 loop-from-fixed-is-lasso-1 t p = lasso-k t 1 p
 
 ------------------------------------------------------------------------
 -- ⑤ THE ORDER COROLLARY: if step has finite order k on every term (HasFixedOrder, 275b/Function.Iterate),
 --    then EVERY trace is a k-lasso — the globally k-periodic case.
 ------------------------------------------------------------------------
-lasso-from-order : (k : ℕ) → HasFixedOrder step k → (t : Tm⟦533ef80d⟧) → run-trace t ≈ more^ k (run-trace t)
+lasso-from-order : (k : ℕ) → HasFixedOrder step k → (t : Tm) → run-trace t ≈ more^ k (run-trace t)
 lasso-from-order k ord t = lasso-k t k (ord t)
 
 ------------------------------------------------------------------------

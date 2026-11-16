@@ -43,12 +43,35 @@ module Substrate.Geometry.Fano where
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Literals using (₁; ₂; ₃; ₄; ₅; ₆; ₇)
 open import Substrate.Foundation.Vec using ([]; _∷_; lookup)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl)
 
-open import Substrate.Algebra.F2
+open import Substrate.Algebra.F2.AbsorbL
+open import Substrate.Algebra.F2.AbsorbR
+open import Substrate.Algebra.F2.Assoc
+open import Substrate.Algebra.F2.Comm
+open import Substrate.Algebra.F2.Dec
+open import Substrate.Algebra.F2.DistribLPlus
+open import Substrate.Algebra.F2.DistribRPlus
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.F2Cases
+open import Substrate.Algebra.F2.Idempotent
+open import Substrate.Algebra.F2.IdentityL
+open import Substrate.Algebra.F2.IdentityR
+open import Substrate.Algebra.F2.InvOfOne
+open import Substrate.Algebra.F2.OneNeqZero
+open import Substrate.Algebra.F2.Op
+open import Substrate.Algebra.F2.Op2
+open import Substrate.Algebra.F2.PlusAssoc
+open import Substrate.Algebra.F2.PlusComm
+open import Substrate.Algebra.F2.PlusF
+open import Substrate.Algebra.F2.PlusIdentityL
+open import Substrate.Algebra.F2.PlusIdentityR
+open import Substrate.Algebra.F2.PlusInverseL
+open import Substrate.Algebra.F2.PlusInverseR
+open import Substrate.Algebra.F2.PlusSelfInverse
+open import Substrate.Algebra.F2.ZeroNeqOne
 open import Substrate.Algebra.F2.Vector
 open import Substrate.Codes.Hamming.H-7-4-3 using (H-cols)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- Points.
@@ -82,13 +105,13 @@ Collinear-Three p₁ p₂ p₃ =
 -- The 7 lines of the Fano plane, each as a triple of collinear points.
 --
 -- The 7 lines (under our H-cols ordering = LSB-first binary indexing):
---   {1, 2, 3}  : (1,0,0) + (0,1,0) + (1,1,0) = 𝟎ⱽ
---   {1, 4, 5}  : (1,0,0) + (0,0,1) + (1,0,1) = 𝟎ⱽ
---   {1, 6, 7}  : (1,0,0) + (0,1,1) + (1,1,1) = 𝟎ⱽ
---   {2, 4, 6}  : (0,1,0) + (0,0,1) + (0,1,1) = 𝟎ⱽ
---   {2, 5, 7}  : (0,1,0) + (1,0,1) + (1,1,1) = 𝟎ⱽ
---   {3, 4, 7}  : (1,1,0) + (0,0,1) + (1,1,1) = 𝟎ⱽ
---   {3, 5, 6}  : (1,1,0) + (1,0,1) + (0,1,1) = 𝟎ⱽ
+--   {1, 2, 3}  : (1,0,0) +F (0,1,0) +F (1,1,0) = 𝟎ⱽ
+--   {1, 4, 5}  : (1,0,0) +F (0,0,1) +F (1,0,1) = 𝟎ⱽ
+--   {1, 6, 7}  : (1,0,0) +F (0,1,1) +F (1,1,1) = 𝟎ⱽ
+--   {2, 4, 6}  : (0,1,0) +F (0,0,1) +F (0,1,1) = 𝟎ⱽ
+--   {2, 5, 7}  : (0,1,0) +F (1,0,1) +F (1,1,1) = 𝟎ⱽ
+--   {3, 4, 7}  : (1,1,0) +F (0,0,1) +F (1,1,1) = 𝟎ⱽ
+--   {3, 5, 6}  : (1,1,0) +F (1,0,1) +F (0,1,1) = 𝟎ⱽ
 --
 -- (Index notation: 1..7 in the catalog ↔ Fin 7 zero..fin-6 here,
 -- 0-indexed.)

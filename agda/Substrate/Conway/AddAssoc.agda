@@ -11,12 +11,15 @@
 
 module Substrate.Conway.AddAssoc where
 
-open import Substrate.Foundation.Nat using (ℕ; suc; _+_)
-open import Substrate.Foundation.Nat.Properties.Add using (+-assoc)
-open import Substrate.Foundation.Eq
-  using (_≡_; sym; cong; subst)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Properties.Add.PlusAssoc
 open import Substrate.Conway.SurrealFinite using (SurrealFinite)
-open import Substrate.Conway.AddGeneral using (ConwayAddType)
+open import Substrate.Conway.AddGeneral.ConwayAddType
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Subst
 
 ------------------------------------------------------------------------
 -- 1. The associativity obligation.
@@ -33,9 +36,9 @@ ConwayAddAssociativity add =
   (a : SurrealFinite (suc m))
   (b : SurrealFinite (suc n))
   (c : SurrealFinite (suc k)) →
-  add (m + n) k (add m n a b) c
-    ≡ subst SurrealFinite (cong suc (sym (+-assoc m n k)))
-            (add m (n + k) a (add n k b c))
+  add (m ℕ+ n) k (add m n a b) c
+    ≡ subst SurrealFinite (cong suc (sym (+ℕ-assoc m n k)))
+            (add m (n ℕ+ k) a (add n k b c))
 
 ------------------------------------------------------------------------
 -- 2. Capstone for G4.

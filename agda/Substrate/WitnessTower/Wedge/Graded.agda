@@ -24,13 +24,13 @@
 
 module Substrate.WitnessTower.Wedge.Graded where
 
-open import Substrate.Foundation.Nat using (ℕ; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using ([]; _∷_)
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.WitnessTower.Enumerate using (Perm; insert-at)
 open import Substrate.Algebra.Wedge.Graded
   using (GradedDivStr; GradedWedge; recon; gforget; gcell)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. The tower as a graded wedge-carrier: C = Perm, R n = Fin (suc n),

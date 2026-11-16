@@ -9,8 +9,12 @@
 
 module Substrate.Foundation.Bool.Properties where
 
-open import Substrate.Foundation.Bool using (Bool; true; false; _xor_; _∧_; _∨_; not)
-open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Bool.And
+open import Substrate.Foundation.Bool.Bool
+open import Substrate.Foundation.Bool.Not
+open import Substrate.Foundation.Bool.Or
+open import Substrate.Foundation.Bool.Xor
+open import Substrate.Foundation.Eq
 
 -- ⟡A5: the ANF-of-OR (OR = XOR ⊕ AND at the Bool level) — the canonical foundational home for the
 -- identity, read by CayleyDickson/Grade (∨-anf) and Algebra.F2.FromBool (∨-as-xor-recon derives from it).

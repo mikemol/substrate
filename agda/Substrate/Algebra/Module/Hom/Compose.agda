@@ -11,12 +11,13 @@
 
 module Substrate.Algebra.Module.Hom.Compose where
 
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; trans; cong)
 open import Substrate.Algebra.Ring using (Ring)
 open import Substrate.Algebra.Module using (Module)
 open import Substrate.Algebra.Module.Hom
   using (ModuleHom; apply; preserves-+; preserves-scalar)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- 1. Identity ModuleHom.

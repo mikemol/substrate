@@ -24,11 +24,13 @@
 
 module Substrate.Algebra.Wedge.IsoGroupoid where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans)
 open import Substrate.Algebra.Wedge using (DivStr)
 open import Substrate.Algebra.Wedge.Bridge using (translate)
 open import Substrate.Algebra.Wedge.Iso
   using (WedgeIso; fwd; bwd; bwd∘fwd; fwd∘bwd; iso-id; iso-sym; iso-∘)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
 
 ------------------------------------------------------------------------
 -- 1. The setoid enrichment: pointwise equality of the forward maps. (Funext-

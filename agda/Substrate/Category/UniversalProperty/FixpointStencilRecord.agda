@@ -19,10 +19,11 @@
 module Substrate.Category.UniversalProperty.FixpointStencilRecord where
 
 open import Substrate.Algebra.Wedge using (DivStr)
-open import Substrate.Category.Allegory.Refinement using (_⊑ᶠ_)
+open import Substrate.Category.Allegory.Refinement.SqsubF
 open import Substrate.Algebra.Wedge.TraceMuStep using (Idx; Φ-step; TraceF)
 import Substrate.Algebra.Wedge.TraceKleeneColimit as Kμ
 import Substrate.Algebra.Wedge.TraceNuColimit as Kν
+open import Substrate.Algebra.Wedge.TraceNuConstructive
 
 ------------------------------------------------------------------------
 -- ① THE RECORD: a fixed-point presented by TWO framings, related level-wise. The μ-frame

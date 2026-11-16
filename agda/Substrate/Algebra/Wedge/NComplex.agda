@@ -19,12 +19,12 @@
 
 module Substrate.Algebra.Wedge.NComplex where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.Foundation.Empty using (⊥)
+open import Substrate.Foundation.Empty.Bot
 open import Substrate.Foundation.Product using (Σ; _,_)
 open import Substrate.Algebra.Wedge using (DivStr)
 open import Substrate.Algebra.Wedge.Mul
   using (MulDivStr; pow; Nilpotent; square-zero)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- The carrier: 𝟘, the differential η (= d), and its square sq (= d²).

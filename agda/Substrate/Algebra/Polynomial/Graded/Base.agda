@@ -15,7 +15,7 @@
 
 module Substrate.Algebra.Polynomial.Graded.Base where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Vec using (Vec; []; _∷_)
 
 module Over {A : Set} (𝟘 : A) where

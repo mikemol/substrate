@@ -18,11 +18,15 @@
 
 module Substrate.WitnessTower.Wedge.IsoDecodeLift where
 
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Eq using (sym)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.WitnessTower.Enumerate using (Perm)
-open import Substrate.WitnessTower.LehmerPath using (LehmerPath; decode; encode; decode-encode)
-open import Substrate.WitnessTower.Wedge.OrientationRigCatSym using (Iso; Iso→IsPerm)
+open import Substrate.WitnessTower.LehmerPath.Decode
+open import Substrate.WitnessTower.LehmerPath.DecodeEncode
+open import Substrate.WitnessTower.LehmerPath.Encode
+open import Substrate.WitnessTower.LehmerPath.LehmerPath
+open import Substrate.WitnessTower.Wedge.OrientationRigCatSym.Iso
+open import Substrate.WitnessTower.Wedge.OrientationRigCatSym.IsoToIsPerm
+open import Substrate.Foundation.Eq.Sym
 
 -- lift a property proven for every decode-image to any permutation-with-Iso.
 on-iso : ∀ {n} {P : Perm n → Set} →

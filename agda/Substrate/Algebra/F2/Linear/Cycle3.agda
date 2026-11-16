@@ -10,7 +10,7 @@
 -- cone-step lifting one rung to all rungs).
 --
 -- σ = the 3-cycle shift (a∷b∷c ↦ b∷c∷a), a coordinate permutation, so
--- F₂-linear by `refl`. Its cyclotomic operator Φ₃(σ) = id + σ + σ² is the
+-- F₂-linear by `refl`. Its cyclotomic operator Φ₃(σ) = id +F σ +F σ² is the
 -- AUGMENTATION: every coordinate of Φ₃(σ)v is a+b+c. So
 --   ker Φ₃(σ) = the even-weight subspace {v : a+b+c = 𝟘},
 -- and `KernelDim Φσ 2` exhibits the iso F₂² ≅ ker — dimension 2 = degΦ₃ =
@@ -26,14 +26,47 @@ module Substrate.Algebra.F2.Linear.Cycle3 where
 
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using (_∷_; []; lookup)
-open import Substrate.Foundation.Eq using (_≡_; refl; cong; trans; sym)
 
-open import Substrate.Algebra.F2
+open import Substrate.Algebra.F2.AbsorbL
+open import Substrate.Algebra.F2.AbsorbR
+open import Substrate.Algebra.F2.Assoc
+open import Substrate.Algebra.F2.Comm
+open import Substrate.Algebra.F2.Dec
+open import Substrate.Algebra.F2.DistribLPlus
+open import Substrate.Algebra.F2.DistribRPlus
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.F2Cases
+open import Substrate.Algebra.F2.Idempotent
+open import Substrate.Algebra.F2.IdentityL
+open import Substrate.Algebra.F2.IdentityR
+open import Substrate.Algebra.F2.InvOfOne
+open import Substrate.Algebra.F2.OneNeqZero
+open import Substrate.Algebra.F2.Op
+open import Substrate.Algebra.F2.Op2
+open import Substrate.Algebra.F2.PlusAssoc
+open import Substrate.Algebra.F2.PlusComm
+open import Substrate.Algebra.F2.PlusF
+open import Substrate.Algebra.F2.PlusIdentityL
+open import Substrate.Algebra.F2.PlusIdentityR
+open import Substrate.Algebra.F2.PlusInverseL
+open import Substrate.Algebra.F2.PlusInverseR
+open import Substrate.Algebra.F2.PlusSelfInverse
+open import Substrate.Algebra.F2.ZeroNeqOne
 open import Substrate.Algebra.F2.Vector
-open import Substrate.Algebra.F2.Linear
+open import Substrate.Algebra.F2.Linear.CompL
+open import Substrate.Algebra.F2.Linear.CompLAssoc
+open import Substrate.Algebra.F2.Linear.CompLIdentityL
+open import Substrate.Algebra.F2.Linear.CompLIdentityR
+open import Substrate.Algebra.F2.Linear.IdL
+open import Substrate.Algebra.F2.Linear.Linear
+open import Substrate.Algebra.F2.Linear.Preserves
 open import Substrate.Algebra.F2.Linear.Cyclotomic using (ΦL)
 open import Substrate.Algebra.F2.Linear.Kernel using (inKer)
 open import Substrate.Algebra.F2.Linear.KernelSpan using (KernelDim)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Sym
 
 ------------------------------------------------------------------------
 -- The 3-cycle shift σ : rotate-left. Linearity is refl (componentwise).
@@ -46,7 +79,7 @@ open import Substrate.Algebra.F2.Linear.KernelSpan using (KernelDim)
   ; preserves-*ₛ = λ { s (a ∷ b ∷ c ∷ []) → refl }
   }
 
--- Φ₃(σ) = id + σ + σ²  (the cyclotomic operator at the orbit shift).
+-- Φ₃(σ) = id +F σ +F σ²  (the cyclotomic operator at the orbit shift).
 Φσ : Linear 3 3
 Φσ = ΦL σ 3
 
@@ -71,18 +104,18 @@ ev∈ker (suc zero) = refl
 ------------------------------------------------------------------------
 
 -- F₂ middle-four interchange (the only non-refl bit of `into`'s linearity).
-+-swap : (a b c d : F₂) → ((a + c) + (b + d)) ≡ ((a + b) + (c + d))
++-swap : (a b c d : F₂) → ((a +F c) +F (b +F d)) ≡ ((a +F b) +F (c +F d))
 +-swap a b c d =
-  trans (+-assoc a c (b + d))
-  (trans (cong (a +_) (sym (+-assoc c b d)))
-  (trans (cong (λ z → a + (z + d)) (+-comm c b))
-  (trans (cong (a +_) (+-assoc b c d))
-         (sym (+-assoc a b (c + d))))))
+  trans (+-assoc a c (b +F d))
+  (trans (cong (a +F_) (sym (+-assoc c b d)))
+  (trans (cong (λ z → a +F (z +F d)) (+-comm c b))
+  (trans (cong (a +F_) (+-assoc b c d))
+         (sym (+-assoc a b (c +F d))))))
 
--- into (x₀∷x₁) = x₀·ev₀ + x₁·ev₁ = x₀ ∷ (x₀+x₁) ∷ x₁.
+-- into (x₀∷x₁) = x₀·ev₀ +F x₁·ev₁ = x₀ ∷ (x₀+x₁) ∷ x₁.
 into : Linear 2 3
 into = record
-  { apply        = λ { (x₀ ∷ x₁ ∷ []) → x₀ ∷ (x₀ + x₁) ∷ x₁ ∷ [] }
+  { apply        = λ { (x₀ ∷ x₁ ∷ []) → x₀ ∷ (x₀ +F x₁) ∷ x₁ ∷ [] }
   ; preserves-+  = λ { (x₀ ∷ x₁ ∷ []) (y₀ ∷ y₁ ∷ []) →
       ≡-from-lookup _ _ (λ { zero → refl
                            ; (suc zero) → +-swap x₀ x₁ y₀ y₁
@@ -103,7 +136,7 @@ retr = record
 
 -- The kernel condition (a+b)+c = 𝟘 forces b = a+c — the one F₂ fact `spans`
 -- needs, read off by exhausting F₂³ (4 valid, 4 absurd).
-b-eq : (a b c : F₂) → ((a + b) + c) ≡ 𝟘 → b ≡ (a + c)
+b-eq : (a b c : F₂) → ((a +F b) +F c) ≡ 𝟘 → b ≡ (a +F c)
 b-eq 𝟘 𝟘 𝟘 _ = refl
 b-eq 𝟘 𝟙 𝟙 _ = refl
 b-eq 𝟙 𝟘 𝟙 _ = refl

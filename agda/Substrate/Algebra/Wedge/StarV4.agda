@@ -30,9 +30,16 @@
 
 module Substrate.Algebra.Wedge.StarV4 where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; cong; cong₂)
 open import Substrate.Foundation.Product using (_×_; _,_)
 open import Substrate.Algebra.Wedge using (DivStr; recon)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.Algebra.Q.HetBasisNest
+open import Substrate.Category.UniversalProperty.ExtrudeCoEmitGraded.Bar
+open import Substrate.Algebra.Nat.GCD.EEATrace
+open import Substrate.Algebra.Wedge.FourPointV4
+open import Substrate.Category.Lawvere
 
 ------------------------------------------------------------------------
 -- 1. *-DivStr: a wedge carrier equipped with a conjugation (a *-involution

@@ -19,8 +19,6 @@
 
 module Substrate.Linguistic.MorphismSetoid where
 
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; trans)
 
 open import Substrate.Category.FreeOverBasis
   using (LanguageWitness)
@@ -29,6 +27,9 @@ open import Substrate.Linguistic.Morphism
 open import Substrate.Linguistic.CategoryLaws
   using (_≈M_; basis-≈; carrier-≈; ≈M-refl)
 open import Substrate.Algebra.Setoid using (Setoid)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
 
 ------------------------------------------------------------------------
 -- 1. Symmetry of _≈M_.

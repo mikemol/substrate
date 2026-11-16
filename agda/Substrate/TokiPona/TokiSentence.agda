@@ -29,13 +29,15 @@
 
 module Substrate.TokiPona.TokiSentence where
 
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; cong; sym)
+open import Substrate.Foundation.Nat.Nat
 
 open import Substrate.TokiPona.SemanticSpace
   using (SemVec; ∅; _⊕_; ⊕-assoc; ⊕-comm;
          ⊕-identityˡ; ⊕-identityʳ)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Algebra.R.Trace.V4FullCocycle
 
 private
   variable

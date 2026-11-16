@@ -29,7 +29,7 @@
 
 open import Substrate.Foundation.Level using (Level)
 
-open import Substrate.Category.CategoryOf using (CategoryOf)
+open import Substrate.Category.CategoryOf.CategoryOf
 open import Substrate.Category.Functor using (Functor)
 
 module Substrate.Category.GrothendieckConstruction.AsFunctor
@@ -51,7 +51,6 @@ module Substrate.Category.GrothendieckConstruction.AsFunctor
 
 open import Substrate.Category.Functor.AsNamed
   FunctorCat CatOverBase ∫ public
-  renaming (named-Functor to Grothendieck-Functor)
 ------------------------------------------------------------------------
 -- 2. Capstone — Grothendieck construction as M1 Functor.
 --

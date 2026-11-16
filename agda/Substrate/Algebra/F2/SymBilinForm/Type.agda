@@ -9,7 +9,7 @@
 
 module Substrate.Algebra.F2.SymBilinForm.Type where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Product using (Σ; proj₁; proj₂)
 open import Substrate.Algebra.F2.SymBilinForm.BilinForm using (BilinForm)
 open import Substrate.Algebra.F2.SymBilinForm.IsSymmetric using (IsSymmetric)

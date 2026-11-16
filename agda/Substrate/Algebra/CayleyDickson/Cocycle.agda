@@ -24,10 +24,14 @@
 
 module Substrate.Algebra.CayleyDickson.Cocycle where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Eq using (_≡_; refl; cong; cong₂; subst; trans; sym)
-open import Substrate.Foundation.Bool using (Bool; true; false; not; _xor_)
-open import Substrate.Foundation.Bool.Properties using (xor-comm; xor-assoc; xor-same; xor-identityʳ)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Bool.Bool
+open import Substrate.Foundation.Bool.Not
+open import Substrate.Foundation.Bool.Xor
+open import Substrate.Foundation.Bool.Properties.XorAssoc
+open import Substrate.Foundation.Bool.Properties.XorComm
+open import Substrate.Foundation.Bool.Properties.XorIdentityR
+open import Substrate.Foundation.Bool.Properties.XorSame
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; zipWith)
 open import Substrate.Foundation.Product using (_,_)
 open import Substrate.Algebra.CayleyDickson
@@ -36,6 +40,12 @@ open import Substrate.Algebra.CayleyDickson.Setoid
   using (≈#-refl; ≈#-sym; ≈#-trans; neg-zero#; conj-zero#; mul-oneˡ; mul-oneʳ;
          add-cong; sub-cong; mul-cong; neg-cong; add-zeroˡ; add-zeroʳ; sub-zeroʳ;
          mul-zeroˡ; mul-zeroʳ; neg-invol; mul-negˡ; mul-negʳ)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.Foundation.Eq.Subst
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Sym
 
 -- F₂ⁿ index → CD basis unit: 1ℚ at the leaf addressed by the n bits.
 e : (n : ℕ) → Vec Bool n → Carrier n

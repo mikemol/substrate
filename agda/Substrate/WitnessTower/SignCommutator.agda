@@ -31,20 +31,28 @@
 
 module Substrate.WitnessTower.SignCommutator where
 
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂)
-open import Substrate.Foundation.Bool using (Bool; false; _xor_)
-open import Substrate.Foundation.Bool.Properties
-  using (xor-identityˡ; xor-identityʳ; xor-same; xor-assoc)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Bool.Bool
+open import Substrate.Foundation.Bool.Xor
+open import Substrate.Foundation.Bool.Properties.XorAssoc
+open import Substrate.Foundation.Bool.Properties.XorIdentityL
+open import Substrate.Foundation.Bool.Properties.XorIdentityR
+open import Substrate.Foundation.Bool.Properties.XorSame
 open import Substrate.Foundation.Product using (proj₁; proj₂)
 open import Substrate.WitnessTower.Enumerate using (Perm)
 open import Substrate.WitnessTower.FirstAppearance using (id-perm; compose)
 open import Substrate.WitnessTower.IsPermutation using (IsPerm)
 open import Substrate.WitnessTower.SnGroup using (compose-is-perm)
-open import Substrate.WitnessTower.Wedge.OrientationRigCatSym
-  using (IsPerm→Iso; left-inv→isperm)
+open import Substrate.WitnessTower.Wedge.OrientationRigCatSym.IsPermToIso
+open import Substrate.WitnessTower.Wedge.OrientationRigCatSym.LeftInvToisperm
 open import Substrate.WitnessTower.Wedge.OrientationRigCatPermSign
   using (sign; sign-id; sign-hom)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.WitnessTower.Wedge.OrientationRigCatPermCoxeter4.Elements
 
 ------------------------------------------------------------------------
 -- 1. THE PERM INVERSE — the Iso witness, projected. (SnGroup:21's "inverse

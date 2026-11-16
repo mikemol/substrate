@@ -13,7 +13,6 @@ open import Substrate.Axes.VOfAxis using (v-of-axis)
 open import Substrate.Axes.AxisOfV using (axis-of-v)
 open import Substrate.Axes.V4Roundtrip using (v-of-axis-axis-of-v)
 open import Substrate.Axes.ActAxis using (act-axis)
-import Substrate.Groups.V4.Operations as V4
 open import Substrate.Groups.V4.Axioms.Assoc using (·-assoc)
 import Substrate.Groups.S3 as S₃
 import Substrate.Groups.S4-Composed as S4C
@@ -25,10 +24,23 @@ open import Substrate.Groups.Symmetric.Permutation Axis
 open import Substrate.Groups.Symmetric.Permutation.Compose Axis using (_·_)
 open import Substrate.Groups.Symmetric.Eq Axis using (_≈_)
 open import Substrate.Foundation.Product using (_,_)
-open import Substrate.Foundation.Eq using (_≡_; trans; sym; cong; trans-sym)
 
 open import Substrate.Groups.S4-Iso.Foundation
-open import Substrate.Groups.S4-Iso.Embedding
+open import Substrate.Groups.S4-Iso.Embedding.CompositionalToPerm
+open import Substrate.Groups.S4-Iso.Embedding.CongV
+open import Substrate.Groups.S4-Iso.Embedding.EmbedS3
+open import Substrate.Groups.S4-Iso.Embedding.S3Apply
+open import Substrate.Groups.S4-Iso.Embedding.S3ApplyInvR
+open import Substrate.Groups.S4-Iso.Embedding.S3InvApply
+open import Substrate.Groups.S4-Iso.Embedding.S3InvApplyL
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.TransSym
+open import Substrate.Algebra.Z.ZRingNorm
+open import Substrate.Category.Comonoid.Sites.V4
+import Substrate.Groups.V4.Operations as V4
 ------------------------------------------------------------------------
 -- forward-hom: pointwise homomorphism property.
 ------------------------------------------------------------------------
@@ -83,5 +95,6 @@ forward-hom (v₁ , sa) (v₂ , sb) x = trans-sym LHS-form RHS-form
       Canon
         ∎
       where
-        open import Substrate.Foundation.Eq using (module ≡-Reasoning)
+        open import Substrate.Foundation.Eq
+        open import Substrate.Foundation.Eq.EqReasoning
         open ≡-Reasoning

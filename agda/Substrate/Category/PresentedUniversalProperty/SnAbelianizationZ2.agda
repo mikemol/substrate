@@ -16,14 +16,14 @@
 -- the free extension sending every generator ↦ 𝟙.
 --
 -- THE NET-NEW MATHEMATICAL CONTENT (`gen-eq`/`collapse`): in ANY monoid
--- image respecting these relations, braid + commute + involution FORCE
+-- image respecting these relations, braid +F commute +F involution FORCE
 -- every h(sᵢ) equal to a common g with g² = ε — so h factors through
 -- parity : Fin(suc n)* → F₂. Without braid the abelianisation would be
 -- (Z/2)ⁿ⁺¹; braid (chained along the adjacency path) is exactly what
 -- collapses it to one bit. That collapse IS the whole theorem.
 --
 -- DESIGN (deviates from the plan's Route C, which specified a
--- `comm-monoid-class` + `word-commmonoid`): `CommMonoidOn (Word Gen)` is
+-- `comm-monoid-class` +F `word-commmonoid`): `CommMonoidOn (Word Gen)` is
 -- NOT constructible — word concatenation is not commutative. So instead
 -- the target class stays the PLAIN `monoid-class` (F = Word Gen, already
 -- built) and commutativity lives in R as the `commute` relations. This
@@ -42,17 +42,27 @@
 
 module Substrate.Category.PresentedUniversalProperty.SnAbelianizationZ2 where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; suc-injective)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.SucInjective
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.To
-open import Substrate.Foundation.Fin.Sucinjective
-open import Substrate.Foundation.Eq using (_≡_; refl; cong; sym; trans)
 open import Substrate.Foundation.Product using (_,_; proj₁; proj₂)
-open import Substrate.Algebra.F2 using (F₂; 𝟘; 𝟙; _+_; +-assoc; +-identityˡ; +-identityʳ)
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.PlusAssoc
+open import Substrate.Algebra.F2.PlusF
+open import Substrate.Algebra.F2.PlusIdentityL
+open import Substrate.Algebra.F2.PlusIdentityR
 open import Substrate.Groups.Coxeter.Word using (Word; []; _∷_; _++_)
 open import Substrate.Category.FreeUniversalProperty.FreeMonoid
   using (MonoidOn; MonoidHom; monoid-class; word-monoid; foldW; word-extend-preserves)
 open import Substrate.Category.PresentedUniversalProperty using (PresentedUP)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Algebra.Wedge
+open import Substrate.Cocycles.KRule
+open import Substrate.Category.PresentedUniversalProperty.CyclicZ2
 
 ------------------------------------------------------------------------
 -- 0. weaken (inject₁): the position-preserving Fin n → Fin (suc n).
@@ -74,7 +84,7 @@ module _ (n : ℕ) where
   Gen = Fin (suc n)
 
   ------------------------------------------------------------------------
-  -- 1. The presentation data: relations + their two sides.
+  -- 1. The presentation data: relations +F their two sides.
   ------------------------------------------------------------------------
 
   data Rel : Set where
@@ -97,7 +107,7 @@ module _ (n : ℕ) where
 
   z2-monoid : MonoidOn F₂
   z2-monoid = record
-    { ε = 𝟘 ; _∙_ = _+_
+    { ε = 𝟘 ; _∙_ = _+F_
     ; ∙-assoc = +-assoc ; ε-left = +-identityˡ ; ε-right = +-identityʳ
     }
 
@@ -136,7 +146,7 @@ module _ (n : ℕ) where
                      (cong (hg a ∙M_) (proj₂ h-hom (b ∷ []) (c ∷ [])))
 
     ------------------------------------------------------------------------
-    -- 3a. THE COLLAPSE. braid + commute + involution ⟹ adjacent generators
+    -- 3a. THE COLLAPSE. braid +F commute +F involution ⟹ adjacent generators
     --     have equal image; chaining along the path ⟹ all equal to hg fzero.
     ------------------------------------------------------------------------
 
@@ -194,7 +204,7 @@ module _ (n : ℕ) where
     fac-pres : MonoidHom z2-monoid hM fac
     fac-pres = proj₁ h-hom , dist
       where
-        dist : (u v : F₂) → fac (u + v) ≡ (fac u ∙M fac v)
+        dist : (u v : F₂) → fac (u +F v) ≡ (fac u ∙M fac v)
         dist 𝟘 𝟘 = proj₂ h-hom [] []
         dist 𝟘 𝟙 = proj₂ h-hom [] (fzero ∷ [])
         dist 𝟙 𝟘 = proj₂ h-hom (fzero ∷ []) []

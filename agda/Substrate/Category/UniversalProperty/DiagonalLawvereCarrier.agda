@@ -18,10 +18,10 @@
 
 module Substrate.Category.UniversalProperty.DiagonalLawvereCarrier where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Foundation.Product using (Σ; _,_)
 open import Substrate.Foundation.Unit using (⊤; tt)
 open import Substrate.Category.Lawvere using (PointSurjective; lawvere-fixed-point)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- ① THE REFLEXIVE CARRIER (Lawvere's positive hypothesis, packaged). A carrier A that point-surjects

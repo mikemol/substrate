@@ -29,11 +29,14 @@
 
 module Substrate.Algebra.Wedge.Shape.Double where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
 open import Substrate.Algebra.Wedge using (DivStr; Trace)
 open import Substrate.Algebra.Wedge.Shape using (Corresponds)
 open import Substrate.Algebra.Wedge.Bridge using (Bridge; translate; transport-trace)
 open import Substrate.Algebra.Wedge.Shape.Transport using (shape-transport; mapL)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- 1. Vertical: the correspondence groupoid (shape-equality, same carrier).

@@ -24,13 +24,13 @@
 module Substrate.Algebra.F2.HodgeDim4.Cone-HodgeStar-EdgeApex where
 
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Eq using (_≡_; refl)
 
 open import Substrate.Algebra.F2.Vector using (Vector)
-open import Substrate.Algebra.F2.Linear using (apply)
+open import Substrate.Algebra.F2.Linear.Linear
 open import Substrate.Algebra.F2.HodgeDim4.Bivector using (Bivector)
 open import Substrate.Algebra.F2.HodgeDim4.HodgeStar using (hodge-star)
 open import Substrate.Category.Cone.EdgeApex
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- N-1: The Bivector → Bivector edge from Hodge ★.

@@ -25,8 +25,9 @@
 
 module Substrate.WitnessTower.Wedge.OrientationDistributorCoherence where
 
-open import Substrate.Foundation.Nat using (ℕ; _+_; _*_)
-open import Substrate.Foundation.Nat.Properties.Add using (+-identityʳ)
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Times
+open import Substrate.Foundation.Nat.Properties.Add.PlusIdentityR
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.To
 open import Substrate.Foundation.Fin.Inject using (inject+)
@@ -35,20 +36,25 @@ open import Substrate.Foundation.Fin.Combine using (combine)
 open import Substrate.Foundation.Fin.RemQuot using (remQuot)
 open import Substrate.Foundation.Fin.Combine.RemQuotInverse using (remQuot-combine)
 open import Substrate.Foundation.Fin.Combine.CombineRemQuotInverse using (combine-remQuot)
-open import Substrate.Foundation.Fin.Combine.Assoc using (toℕ-inject+; toℕ-combine)
+open import Substrate.Foundation.Fin.Combine.Assoc.ToNatCombine
+open import Substrate.Foundation.Fin.Combine.Assoc.ToNatInjectPlus
 open import Substrate.Foundation.Fin.SplitAt using (splitAt)
 open import Substrate.Foundation.Fin.SplitAt.InjectIdentity using (splitAt-inject)
 open import Substrate.Foundation.Fin.SplitAt.RaiseIdentity using (splitAt-raise)
 open import Substrate.Foundation.Fin.SplitAt.View using (splitAt-view; fromₗ; fromᵣ)
-open import Substrate.Foundation.Sum using (_⊎_; inj₁; inj₂)
+open import Substrate.Foundation.Sum.Sum
 open import Substrate.Foundation.Product using (_,_; proj₁; proj₂)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; subst)
 open import Substrate.WitnessTower.Wedge.OrientationSumComm
   using (blockSwap; blockSwap-L; blockSwap-R)
 open import Substrate.WitnessTower.Wedge.OrientationProductComm
   using (factorSwap; factorSwap-combine)
 open import Substrate.WitnessTower.Wedge.OrientationHexagon using (_⊕map_; ⊕map-inject; ⊕map-raise)
 open import Substrate.WitnessTower.Wedge.OrientationDistributor using (δ; δ-inject; δ-raise)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Subst
 
 ------------------------------------------------------------------------
 -- 1. The functorial ⊗ on MORPHISMS (the ⊗ analog of ⊕map): act by f on the first factor,
@@ -68,18 +74,18 @@ _⊗map_ : ∀ {m n m' n'} → (Fin m → Fin m') → (Fin n → Fin n') →
 -- 2. THE DISTRIBUTIVITY–BRAIDING HEXAGON. δ commutes with the ⊕-braiding.
 ------------------------------------------------------------------------
 
-δ-⊕braid : ∀ a b c (k : Fin (a * (b + c))) →
+δ-⊕braid : ∀ a b c (k : Fin (a * (b ℕ+ c))) →
            blockSwap (a * b) (a * c) (δ a b c k)
-             ≡ δ a c b ((_⊗map_ {a} {b + c} {a} {c + b} (λ x → x) (blockSwap b c)) k)
+             ≡ δ a c b ((_⊗map_ {a} {b ℕ+ c} {a} {c ℕ+ b} (λ x → x) (blockSwap b c)) k)
 δ-⊕braid a b c k =
   subst (λ z → blockSwap (a * b) (a * c) (δ a b c z)
-                 ≡ δ a c b ((_⊗map_ {a} {b + c} {a} {c + b} (λ x → x) (blockSwap b c)) z))
-        (combine-remQuot a (b + c) k)
-        (aux (proj₁ (remQuot {a} (b + c) k)) (proj₂ (remQuot {a} (b + c) k)))
+                 ≡ δ a c b ((_⊗map_ {a} {b ℕ+ c} {a} {c ℕ+ b} (λ x → x) (blockSwap b c)) z))
+        (combine-remQuot a (b ℕ+ c) k)
+        (aux (proj₁ (remQuot {a} (b ℕ+ c) k)) (proj₂ (remQuot {a} (b ℕ+ c) k)))
   where
-  aux : (i : Fin a) (k' : Fin (b + c)) →
+  aux : (i : Fin a) (k' : Fin (b ℕ+ c)) →
         blockSwap (a * b) (a * c) (δ a b c (combine i k'))
-          ≡ δ a c b ((_⊗map_ {a} {b + c} {a} {c + b} (λ x → x) (blockSwap b c)) (combine i k'))
+          ≡ δ a c b ((_⊗map_ {a} {b ℕ+ c} {a} {c ℕ+ b} (λ x → x) (blockSwap b c)) (combine i k'))
   aux i k' with splitAt-view b {c} k'
   ... | fromₗ j =
     trans (trans (cong (blockSwap (a * b) (a * c)) (δ-inject a b c i j))
@@ -101,19 +107,19 @@ _⊗map_ : ∀ {m n m' n'} → (Fin m → Fin m') → (Fin n → Fin n') →
 --    (Every index is in the b-part — the 0-part is empty; δ-inject then toℕ, one b+0=b step.)
 ------------------------------------------------------------------------
 
-δ-⊕unit0 : ∀ a b (k : Fin (a * (b + 0))) → toℕ (δ a b 0 k) ≡ toℕ k
+δ-⊕unit0 : ∀ a b (k : Fin (a * (b ℕ+ 0))) → toℕ (δ a b 0 k) ≡ toℕ k
 δ-⊕unit0 a b k =
-  subst (λ z → toℕ (δ a b 0 z) ≡ toℕ z) (combine-remQuot a (b + 0) k)
-        (aux (proj₁ (remQuot {a} (b + 0) k)) (proj₂ (remQuot {a} (b + 0) k)))
+  subst (λ z → toℕ (δ a b 0 z) ≡ toℕ z) (combine-remQuot a (b ℕ+ 0) k)
+        (aux (proj₁ (remQuot {a} (b ℕ+ 0) k)) (proj₂ (remQuot {a} (b ℕ+ 0) k)))
   where
-  aux : (i : Fin a) (k' : Fin (b + 0)) → toℕ (δ a b 0 (combine i k')) ≡ toℕ (combine i k')
+  aux : (i : Fin a) (k' : Fin (b ℕ+ 0)) → toℕ (δ a b 0 (combine i k')) ≡ toℕ (combine i k')
   aux i k' with splitAt-view b {0} k'
   ... | fromₗ j =
     trans (trans (cong toℕ (δ-inject a b 0 i j))
                  (trans (toℕ-inject+ (a * 0) (combine i j)) (toℕ-combine i j)))
-          (trans (cong (λ z → toℕ i * z + toℕ j) (sym (+-identityʳ b)))
+          (trans (cong (λ z → toℕ i * z ℕ+ toℕ j) (sym (+ℕ-identityʳ b)))
                  (sym (trans (toℕ-combine i (inject+ 0 j))
-                             (cong (toℕ i * (b + 0) +_) (toℕ-inject+ 0 j)))))
+                             (cong (toℕ i * (b ℕ+ 0) ℕ+_) (toℕ-inject+ 0 j)))))
   ... | fromᵣ ()
 
 ------------------------------------------------------------------------
@@ -121,8 +127,8 @@ _⊗map_ : ∀ {m n m' n'} → (Fin m → Fin m') → (Fin n → Fin n') →
 --    right distributors are conjugate by the ⊗-braiding (factorSwap).
 ------------------------------------------------------------------------
 
-δR : ∀ b c a → Fin ((b + c) * a) → Fin (b * a + c * a)
-δR b c a k with remQuot {b + c} a k
+δR : ∀ b c a → Fin ((b ℕ+ c) * a) → Fin (b * a ℕ+ c * a)
+δR b c a k with remQuot {b ℕ+ c} a k
 ... | (k1 , i) with splitAt b {c} k1
 ...   | inj₁ j = inject+ (c * a) (combine j i)
 ...   | inj₂ l = raise (b * a) (combine l i)
@@ -130,25 +136,25 @@ _⊗map_ : ∀ {m n m' n'} → (Fin m → Fin m') → (Fin n → Fin n') →
 δR-inject : ∀ b c a (j : Fin b) (i : Fin a) →
              δR b c a (combine (inject+ c j) i) ≡ inject+ (c * a) (combine j i)
 δR-inject b c a j i
-  rewrite remQuot-combine {b + c} {a} (inject+ c j) i | splitAt-inject b {c} j = refl
+  rewrite remQuot-combine {b ℕ+ c} {a} (inject+ c j) i | splitAt-inject b {c} j = refl
 
 δR-raise : ∀ b c a (l : Fin c) (i : Fin a) →
             δR b c a (combine (raise b l) i) ≡ raise (b * a) (combine l i)
 δR-raise b c a l i
-  rewrite remQuot-combine {b + c} {a} (raise b l) i | splitAt-raise b {c} l = refl
+  rewrite remQuot-combine {b ℕ+ c} {a} (raise b l) i | splitAt-raise b {c} l = refl
 
-δ-⊗braid : ∀ a b c (k : Fin ((b + c) * a)) →
+δ-⊗braid : ∀ a b c (k : Fin ((b ℕ+ c) * a)) →
            δR b c a k
-             ≡ (factorSwap a b ⊕map factorSwap a c) (δ a b c (factorSwap (b + c) a k))
+             ≡ (factorSwap a b ⊕map factorSwap a c) (δ a b c (factorSwap (b ℕ+ c) a k))
 δ-⊗braid a b c k =
   subst (λ z → δR b c a z
-                 ≡ (factorSwap a b ⊕map factorSwap a c) (δ a b c (factorSwap (b + c) a z)))
-        (combine-remQuot (b + c) a k)
-        (aux (proj₁ (remQuot {b + c} a k)) (proj₂ (remQuot {b + c} a k)))
+                 ≡ (factorSwap a b ⊕map factorSwap a c) (δ a b c (factorSwap (b ℕ+ c) a z)))
+        (combine-remQuot (b ℕ+ c) a k)
+        (aux (proj₁ (remQuot {b ℕ+ c} a k)) (proj₂ (remQuot {b ℕ+ c} a k)))
   where
-  aux : (k1 : Fin (b + c)) (i : Fin a) →
+  aux : (k1 : Fin (b ℕ+ c)) (i : Fin a) →
         δR b c a (combine k1 i)
-          ≡ (factorSwap a b ⊕map factorSwap a c) (δ a b c (factorSwap (b + c) a (combine k1 i)))
+          ≡ (factorSwap a b ⊕map factorSwap a c) (δ a b c (factorSwap (b ℕ+ c) a (combine k1 i)))
   aux k1 i with splitAt-view b {c} k1
   ... | fromₗ j =
     trans (δR-inject b c a j i)

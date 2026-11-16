@@ -19,12 +19,12 @@ module Substrate.WitnessTower.Wedge.OrientationRigCatPermCoxeter4 where
 
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using (Vec; []; _∷_)
-open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.Foundation.Sum using (_⊎_; inj₁; inj₂)
+open import Substrate.Foundation.Sum.Sum
 open import Substrate.WitnessTower.Enumerate using (Perm)
 open import Substrate.WitnessTower.FirstAppearance using (id-perm; compose)
 open import Substrate.WitnessTower.Wedge.OrientationRigCatPermCoxeter4.Elements
 open import Substrate.WitnessTower.Wedge.OrientationRigCatPermCoxeter4.Tail
+open import Substrate.Foundation.Eq
 
 AllAdjGen4 : Perm 4 → Set
 AllAdjGen4 σ = (σ ≡ e0) ⊎ ((σ ≡ e1) ⊎ ((σ ≡ e2) ⊎ ((σ ≡ e3) ⊎ ((σ ≡ e4) ⊎ ((σ ≡ e5) ⊎ ((σ ≡ e6) ⊎ ((σ ≡ e7) ⊎ ((σ ≡ e8) ⊎ ((σ ≡ e9) ⊎ ((σ ≡ e10) ⊎ ((σ ≡ e11) ⊎ (AllAdjGen4-tail σ))))))))))))

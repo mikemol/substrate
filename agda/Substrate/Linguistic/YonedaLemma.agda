@@ -24,9 +24,9 @@
 
 module Substrate.Linguistic.YonedaLemma where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
 
-open import Substrate.Linguistic.Roster using (Lang; witness-of)
+open import Substrate.Linguistic.Roster.Lang
+open import Substrate.Linguistic.Roster.WitnessOf
 open import Substrate.Linguistic.Morphism using (LanguageMorphism)
 open import Substrate.Linguistic.IdMorphism using (id-morphism)
 open import Substrate.Linguistic.Compose using (_∘L_)
@@ -35,6 +35,7 @@ open import Substrate.Linguistic.CategoryLaws
 open import Substrate.Linguistic.HomFunctor using (Hom-contra)
 open import Substrate.Linguistic.YonedaEmbedding
   using (よ; PresheafMorphism; よ-presheaf-mor; よ-on-morphism)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. The Yoneda forward direction.
@@ -112,7 +113,7 @@ yoneda-reconstruction = yoneda-forward-backward
 -- from its Yoneda image via the reconstruction lemma.
 ------------------------------------------------------------------------
 
-open import Substrate.Linguistic.Roster using (lojban)
+open import Substrate.Linguistic.Roster.Lang
 
 reconstruction-id-lojban :
   yoneda-forward (よ-on-morphism (id-morphism (witness-of lojban))) (yoneda-backward (id-morphism (witness-of lojban)))

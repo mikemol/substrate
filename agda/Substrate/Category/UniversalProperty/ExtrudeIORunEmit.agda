@@ -16,22 +16,24 @@
 
 module Substrate.Category.UniversalProperty.ExtrudeIORunEmit where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; cong)
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.List using (List; []; _∷_)
 open import Substrate.Foundation.Product using (_×_; _,_)
 open import Substrate.Foundation.Unit using (⊤; tt)
-open import Substrate.Algebra.R.Trace.SKIShedDuality using () renaming (Tm to Tm⟦533ef80d⟧)
+
 open import Substrate.Category.UniversalProperty.ExtrudeStepDecidable using (HeadShape)
 open import Substrate.Category.UniversalProperty.ExtrudeBisimRun using (run-trace; take-obs)
 
 -- specialize the emit-monad at O = HeadShape (the caller supplies the concrete output type — parametrized):
 open import Substrate.Category.UniversalProperty.ExtrudeIO HeadShape using (IO; ret; emit; emit-list)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Algebra.R.Trace.SKIShedDuality.Tm
 
 ------------------------------------------------------------------------
 -- ① THE RUN EMITS: observe a bounded prefix of the reduction (take-obs, 278) and EMIT each head-shape.
 ------------------------------------------------------------------------
-run-emit : ℕ → Tm⟦533ef80d⟧ → IO ⊤
+run-emit : ℕ → Tm → IO ⊤
 run-emit fuel t = emit-list (take-obs fuel (run-trace t))
 
 ------------------------------------------------------------------------
@@ -51,7 +53,7 @@ collect-emit-list []       = refl
 collect-emit-list (o ∷ os) = cong (λ r → (o ∷ proj₁ r) , proj₂ r) (collect-emit-list os)
   where open import Substrate.Foundation.Product using (proj₁; proj₂)
 
-run-emit-collect : (fuel : ℕ) (t : Tm⟦533ef80d⟧) →
+run-emit-collect : (fuel : ℕ) (t : Tm) →
                    collect (run-emit fuel t) ≡ (take-obs fuel (run-trace t) , tt)
 run-emit-collect fuel t = collect-emit-list (take-obs fuel (run-trace t))
 

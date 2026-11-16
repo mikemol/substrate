@@ -26,18 +26,18 @@
 ------------------------------------------------------------------------
 
 module Substrate.Algebra.R.Trace.CFBezoutCross where
+open import Substrate.Algebra.Z.Mul
 
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.Foundation.Product using (Σ; _,_)
-open import Substrate.Algebra.Z using (ℤ; +_)
-open import Substrate.Algebra.Z.Arithmetic using (_*ℤ_; _+ℤ_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Algebra.Z.Int
+
 open import Substrate.Algebra.Nat.GCD.EEATrace using (EEATrace)
 open import Substrate.Algebra.Z.Bezout using (BezoutℤWitness; bezout-ℤ)
 open import Substrate.Algebra.Wedge.CrossMul using (cross)
 open import Substrate.Algebra.Q.HetCrossMix using (ℚ-crossmix)
 open import Substrate.Algebra.Q.CrossMixBezout
   using (CrossmixBezout; crossmix-from-trace; bezout-bridges-crossmix; cross-summand)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- On the common carrier ℤ, a Bézout witness for (a,b,g) is EXACTLY a pair of

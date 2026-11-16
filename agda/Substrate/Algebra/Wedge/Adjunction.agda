@@ -31,13 +31,25 @@
 
 module Substrate.Algebra.Wedge.Adjunction where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
 open import Substrate.Foundation.Product using (Σ; _,_; _×_)
-open import Substrate.Algebra.Wedge using (DivStr; z; recon; quot; rem; wedge-eq; forget; forget-correct) renaming (Wedge to Wedge⟦478f66a6⟧)
-open import Substrate.Algebra.Quotient
-open import Substrate.Foundation.Nat using (ℕ; suc)
-open import Substrate.Algebra.Wedge using (ℕ-div; fromℕ-Wedge) renaming (Wedge to Wedge⟦478f66a6⟧)
+open import Substrate.Algebra.Wedge using (DivStr; z; recon; quot; rem; wedge-eq; forget; forget-correct) renaming (Wedge to Wedge)
+open import Substrate.Algebra.Quotient.ApproxcanonicalEq
+open import Substrate.Algebra.Quotient.Canonical
+open import Substrate.Algebra.Quotient.CanonicalEqApprox
+open import Substrate.Algebra.Quotient.IdemCanonical
+open import Substrate.Algebra.Quotient.KerQuotient
+open import Substrate.Algebra.Quotient.KerRel
+open import Substrate.Algebra.Quotient.Quotient
+open import Substrate.Algebra.Quotient.SplitCanonical
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Algebra.Wedge using (ℕ-div; fromℕ-Wedge) renaming (Wedge to Wedge)
 open import Substrate.Algebra.Nat.GCD.ConstructWedge using (construct-wedge)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Algebra.Wedge
+open import Substrate.Algebra.Wedge.Coalgebra
 
 ------------------------------------------------------------------------
 -- 0. The witness read twice cancels.
@@ -63,15 +75,15 @@ Term {C} D a b = Σ C (λ q → Σ C (λ r → a ≡ recon D q b r))
 -- 2. The hom-set bijection Wedge ≅ Term, uniform in D — DEFINITIONAL.
 ------------------------------------------------------------------------
 
-to : {C : Set} {D : DivStr C} {a b : C} → Wedge⟦478f66a6⟧ D a b → Term D a b
+to : {C : Set} {D : DivStr C} {a b : C} → Wedge D a b → Term D a b
 to w = quot w , rem w , wedge-eq w
 
-from : {C : Set} {D : DivStr C} {a b : C} → Term D a b → Wedge⟦478f66a6⟧ D a b
+from : {C : Set} {D : DivStr C} {a b : C} → Term D a b → Wedge D a b
 from (q , r , e) = record { quot = q ; rem = r ; wedge-eq = e }
 
 -- One round-trip is definitional: re-packaging a wedge as a term and back
 -- is the identity (Σ/record eta), b flowing straight from w's type.
-from∘to : {C : Set} {D : DivStr C} {a b : C} (w : Wedge⟦478f66a6⟧ D a b) → from (to w) ≡ w
+from∘to : {C : Set} {D : DivStr C} {a b : C} (w : Wedge D a b) → from (to w) ≡ w
 from∘to _ = refl
 
 -- The other direction (`to (from t) ≡ t`) is ALSO definitional, but cannot
@@ -88,16 +100,16 @@ from∘to _ = refl
 --    This is the Free orientation read backward; reading it twice is id.
 ------------------------------------------------------------------------
 
-eval-eq : {C : Set} {D : DivStr C} {a b : C} (w : Wedge⟦478f66a6⟧ D a b) →
+eval-eq : {C : Set} {D : DivStr C} {a b : C} (w : Wedge D a b) →
           eval D (quot w) b (rem w) ≡ a
 eval-eq w = sym (wedge-eq w)
 
-triangle : {C : Set} {D : DivStr C} {a b : C} (w : Wedge⟦478f66a6⟧ D a b) → forget w ≡ a
+triangle : {C : Set} {D : DivStr C} {a b : C} (w : Wedge D a b) → forget w ≡ a
 triangle = forget-correct
 
 -- re-orienting the witness twice is the identity (the adjunction is the
 -- witness read twice — here, literally).
-reorient : {C : Set} {D : DivStr C} {a b : C} (w : Wedge⟦478f66a6⟧ D a b) →
+reorient : {C : Set} {D : DivStr C} {a b : C} (w : Wedge D a b) →
            sym (eval-eq w) ≡ wedge-eq w
 reorient w = sym-sym (wedge-eq w)
 
@@ -113,7 +125,7 @@ reorient w = sym-sym (wedge-eq w)
 --    residue branch, and the residue is the correction (z ⟺ the iso corner).
 ------------------------------------------------------------------------
 
-module FreeForgetful {C : Set} (D : DivStr C) (b : C) (divide : (a : C) → Wedge⟦478f66a6⟧ D a b) where
+module FreeForgetful {C : Set} (D : DivStr C) (b : C) (divide : (a : C) → Wedge D a b) where
 
   Repr : Set
   Repr = C × C                                  -- (quotient, remainder) against b

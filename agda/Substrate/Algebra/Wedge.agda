@@ -41,10 +41,15 @@
 
 module Substrate.Algebra.Wedge where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Times
 import Substrate.Algebra.Nat.GCD.Wedge as N
 import Substrate.Algebra.Nat.GCD.EEATrace as NT
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- 1. The carrier interface: what a type needs to host a wedge.
@@ -146,14 +151,19 @@ trace-fold-unique {D = D} {T = T} bi si h h-done h-more {a = a} {g = g} (more b 
         (cong (si {a} {g} b w) (trace-fold-unique {D = D} {T = T} bi si h h-done h-more tr))
 
 ------------------------------------------------------------------------
--- 4. THE INTERFACE TEST: ℕ instance, and the existing wedge + trace fall out.
+-- 4. THE INTERFACE TEST: ℕ instance, and the existing wedge ℕ+ trace fall out.
 ------------------------------------------------------------------------
 
 ℕ-div : DivStr ℕ
-ℕ-div = record { z = zero ; recon = λ q b r → q * b + r }
+ℕ-div = record { z = zero ; recon = λ q b r → q * b ℕ+ r }
 
 -- the existing ℕ wedge is a generic wedge (forgetting only `rem < b`).
-fromℕ-Wedge : {a b : ℕ} → N.Wedge a b → Wedge ℕ-div a b
+-- ⚑ Ⓝ6: `N.Wedge` → `N.Wedge-GCD`, renamed at source (⟡collision-sweep). THIS LINE
+-- IS WHY `rename_at_source` held this file back as AMBIGUOUS: it names BOTH homes
+-- — the GCD wedge (qualified `N.`) and this module's own (bare `Wedge`) — so a
+-- blind rewrite would have hit the wrong one. The classifier refusing to guess is
+-- what left the fix to the compiler, which named the site exactly.
+fromℕ-Wedge : {a b : ℕ} → N.Wedge-GCD a b → Wedge ℕ-div a b
 fromℕ-Wedge w = record
   { quot = N.quotient w ; rem = N.remainder w ; wedge-eq = N.wedge-eq w }
 

@@ -44,8 +44,7 @@
 
 module Substrate.WitnessTower.TowerFamilyApex where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Nat.Nat
 
 ------------------------------------------------------------------------
 -- 1. THE APEX: FamilyWitness (DAG), and Core (linear gauge) beneath it.
@@ -62,6 +61,7 @@ open import Substrate.WitnessTower.FamilyWitness
 
 -- witness that Core carries no branching: the whole rung is determined.
 open import Substrate.WitnessTower.Enumerate using (perms; factorial; perms-length; lengthL)
+open import Substrate.Foundation.Eq
 core-is-one-spine : ∀ {k} (x y : WSimplex k) → x ≡ y
 core-is-one-spine = WSimplex-unique
 

@@ -9,9 +9,12 @@
 module Substrate.Category.UniversalProperty.ExtrudeBisimUpTo where
 
 open import Substrate.Algebra.R.Trace using (RealTrace; head; tail)
-open import Substrate.Algebra.R.Trace.Bisim using (_~_; head~; tail~; ~-refl; ~-trans)
-open import Substrate.Foundation.Eq using (_≡_) renaming (trans to ≡-trans)
+open import Substrate.Algebra.R.Trace.Bisim.Op
+open import Substrate.Algebra.R.Trace.Bisim.Refl
+open import Substrate.Algebra.R.Trace.Bisim.Trans
 open import Substrate.Foundation.Product using (Σ; _×_; _,_; proj₁; proj₂)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
 
 module _ (R : RealTrace → RealTrace → Set)
          (head-cond : {x y : RealTrace} → R x y → head x ≡ head y)
@@ -19,7 +22,7 @@ module _ (R : RealTrace → RealTrace → Set)
 
   -- go threads (x ~ w) as data; the corecursive call is guarded under tail~, the ~-trans is in its argument.
   go : {x y : RealTrace} → Σ RealTrace (λ w → (x ~ w) × R w y) → x ~ y
-  head~ (go (w , x~w , Rwy)) = ≡-trans (head~ x~w) (head-cond Rwy)
+  head~ (go (w , x~w , Rwy)) = trans (head~ x~w) (head-cond Rwy)
   tail~ (go {x} {y} (w , x~w , Rwy)) with tail-cond Rwy
   ... | (z , tw~z , Rz-ty) = go (z , ~-trans (tail~ x~w) tw~z , Rz-ty)
 

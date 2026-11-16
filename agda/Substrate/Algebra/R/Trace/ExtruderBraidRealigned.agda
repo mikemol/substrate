@@ -17,7 +17,6 @@
 
 module Substrate.Algebra.R.Trace.ExtruderBraidRealigned where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Foundation.Product using (_×_)
 open import Substrate.Algebra.Wedge using (DivStr)
 open import Substrate.Algebra.Wedge.Cross using (_⊗ᴰ_)
@@ -26,6 +25,7 @@ open import Substrate.Algebra.Wedge.Correspondence using (_⊚_)
 open import Substrate.Algebra.Wedge.Iso using (WedgeIso)
 open import Substrate.Algebra.Wedge.Monoidal
   using (_⊗ᵇ_; braid→; braidᴰ; braid-involutive; hexagon; assoc→; assoc-nat)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- ① FUSepQConfluence.σ / braided-diamond / σ-self-inverse IS the monoidal

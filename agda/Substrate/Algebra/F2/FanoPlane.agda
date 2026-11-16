@@ -24,12 +24,11 @@ module Substrate.Algebra.F2.FanoPlane where
 
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Product using (_×_; _,_)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl)
 
 open import Substrate.Algebra.F2.Vector using (Vector; basis; _+ⱽ_)
-open import Substrate.Algebra.F2.Linear using (Linear)
+open import Substrate.Algebra.F2.Linear.Linear
 open import Substrate.Algebra.F2.Linear.FromImages using (linear-from-images)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. Points: 7 named constructors corresponding to the 7 nonzero

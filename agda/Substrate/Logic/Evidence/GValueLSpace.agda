@@ -30,11 +30,16 @@
 
 module Substrate.Logic.Evidence.GValueLSpace where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Algebra.Q using (ℚ; 1ℚ)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Algebra.Q.OneRat
+open import Substrate.Algebra.Q.Rat
 open import Substrate.Algebra.Q.Mul using (_*ℚ_)
 open import Substrate.Algebra.Q.Equiv using (_≈ℚ_)
-open import Substrate.Algebra.ExpLogCodec public using (ExpLogCodec)
+-- ⚑ `public` RETIRED (Ⓑ2c).  A consumer needing `ExpLogCodec` binds
+-- `Algebra.ExpLogCodec` — the carrier-generic home this module's own note below
+-- names as the single source.  Forwarding it made this file a second route to
+-- the same record, which is what the ban retires.
+open import Substrate.Algebra.ExpLogCodec using (ExpLogCodec)
 
 ------------------------------------------------------------------------
 -- THE CODEC INTERFACE is now the carrier-generic `Algebra.ExpLogCodec`

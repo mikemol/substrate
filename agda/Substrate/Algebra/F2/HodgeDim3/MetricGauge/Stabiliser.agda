@@ -35,12 +35,40 @@ open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.CongruenceAct using (cong
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Literals using (₀; ₁; ₂; ₃; ₄; ₅)
 open import Substrate.Foundation.Vec using ([]; _∷_; lookup)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; trans; cong; cong-trans)
 
-open import Substrate.Algebra.F2
+open import Substrate.Algebra.F2.AbsorbL
+open import Substrate.Algebra.F2.AbsorbR
+open import Substrate.Algebra.F2.Assoc
+open import Substrate.Algebra.F2.Comm
+open import Substrate.Algebra.F2.Dec
+open import Substrate.Algebra.F2.DistribLPlus
+open import Substrate.Algebra.F2.DistribRPlus
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.F2Cases
+open import Substrate.Algebra.F2.Idempotent
+open import Substrate.Algebra.F2.IdentityL
+open import Substrate.Algebra.F2.IdentityR
+open import Substrate.Algebra.F2.InvOfOne
+open import Substrate.Algebra.F2.OneNeqZero
+open import Substrate.Algebra.F2.Op
+open import Substrate.Algebra.F2.Op2
+open import Substrate.Algebra.F2.PlusAssoc
+open import Substrate.Algebra.F2.PlusComm
+open import Substrate.Algebra.F2.PlusF
+open import Substrate.Algebra.F2.PlusIdentityL
+open import Substrate.Algebra.F2.PlusIdentityR
+open import Substrate.Algebra.F2.PlusInverseL
+open import Substrate.Algebra.F2.PlusInverseR
+open import Substrate.Algebra.F2.PlusSelfInverse
+open import Substrate.Algebra.F2.ZeroNeqOne
 open import Substrate.Algebra.F2.Vector
-open import Substrate.Algebra.F2.Linear
+open import Substrate.Algebra.F2.Linear.CompL
+open import Substrate.Algebra.F2.Linear.CompLAssoc
+open import Substrate.Algebra.F2.Linear.CompLIdentityL
+open import Substrate.Algebra.F2.Linear.CompLIdentityR
+open import Substrate.Algebra.F2.Linear.IdL
+open import Substrate.Algebra.F2.Linear.Linear
+open import Substrate.Algebra.F2.Linear.Preserves
 open import Substrate.Algebra.F2.Linear.FromImages
   using (linear-from-images; apply-linear-from-images-basis)
 open import Substrate.Algebra.F2.HodgeDim3.MetricGauge
@@ -48,6 +76,10 @@ open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.BilinearFormSteps
   using (diag-bf-step; off-diag-bf-step)
 open import Substrate.Category.Coalgebra
   using (FixedPoint)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.CongTrans
 
 ------------------------------------------------------------------------
 -- N-1: s₁ — basis swap of e₀ and e₁.
@@ -125,8 +157,8 @@ s₂-on-e₂ = apply-linear-from-images-basis s₂-images ₂
 -- bilinear form is invariant under basis permutations).
 --
 -- Per-entry proof template mirrors congruence-id-to-mixed from
--- MetricGauge.agda: ≡-from-lookup + cong over the s₁-on-eᵢ helpers
--- + Agda's F₂-arithmetic evaluation.
+-- MetricGauge.agda: ≡-from-lookup +F cong over the s₁-on-eᵢ helpers
+-- +F Agda's F₂-arithmetic evaluation.
 ------------------------------------------------------------------------
 
 s₁-stabilises-metric-id :
@@ -185,7 +217,7 @@ s₂-stabilises-metric-id = ≡-from-lookup _ _ goal
 --   |GL(3, F₂)|         = 168
 --   |orbit(metric-id)|  = 28   (= number of non-degenerate sym forms)
 --   |stabiliser|        = 6    (= S₃, witnessed by this slice's 2
---                                  Coxeter generators + identity)
+--                                  Coxeter generators +F identity)
 --
 --   28 · 6 = 168  ✓   (orbit-stabiliser theorem at the L_metric node)
 --
@@ -194,14 +226,14 @@ s₂-stabilises-metric-id = ≡-from-lookup _ _ goal
 -- explicit witnesses for all three quantities:
 --
 --   * |GL(3, F₂)| = 168: documented in the parent metric-gauge
---     slice + memory `project_reserved_selfdual_bijection_gauge`.
+--     slice +F memory `project_reserved_selfdual_bijection_gauge`.
 --   * |orbit| = 28: characterised inferentially via the
 --     NonDegenerate predicate in MetricGauge.agda; the orbit's
 --     single-class structure has been demonstrated across 3
 --     exemplars (id, mixed, fully-coupled) via concrete
 --     transitivity witnesses.
 --   * |stabiliser| = 6: witnessed by this slice's 2 Coxeter
---     generators + the implicit identity, with the Coxeter
+--     generators +F the implicit identity, with the Coxeter
 --     presentation documenting the full 6-element group structure.
 --
 -- Deferred coalgebraic-unfolding slices:

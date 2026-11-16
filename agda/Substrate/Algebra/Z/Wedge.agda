@@ -17,9 +17,12 @@
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.Algebra.Z.Wedge where
+open import Substrate.Algebra.Z.Add
+open import Substrate.Algebra.Z.Mul
 
-open import Substrate.Algebra.Z using (ℤ; 0ℤ)
-open import Substrate.Algebra.Z.Arithmetic using (_+ℤ_; _*ℤ_)
+open import Substrate.Algebra.Z.Int
+open import Substrate.Algebra.Z.ZeroInt
+
 open import Substrate.Algebra.Wedge using (DivStr)
 
 ℤ-div : DivStr ℤ

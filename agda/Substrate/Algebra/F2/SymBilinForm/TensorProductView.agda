@@ -25,18 +25,44 @@
 module Substrate.Algebra.F2.SymBilinForm.TensorProductView where
 
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Vec using (lookup; _∷_)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; trans; cong)
 
-open import Substrate.Algebra.F2
+open import Substrate.Algebra.F2.AbsorbL
+open import Substrate.Algebra.F2.AbsorbR
+open import Substrate.Algebra.F2.Assoc
+open import Substrate.Algebra.F2.Comm
+open import Substrate.Algebra.F2.Dec
+open import Substrate.Algebra.F2.DistribLPlus
+open import Substrate.Algebra.F2.DistribRPlus
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.F2Cases
+open import Substrate.Algebra.F2.Idempotent
+open import Substrate.Algebra.F2.IdentityL
+open import Substrate.Algebra.F2.IdentityR
+open import Substrate.Algebra.F2.InvOfOne
+open import Substrate.Algebra.F2.OneNeqZero
+open import Substrate.Algebra.F2.Op
+open import Substrate.Algebra.F2.Op2
+open import Substrate.Algebra.F2.PlusAssoc
+open import Substrate.Algebra.F2.PlusComm
+open import Substrate.Algebra.F2.PlusF
+open import Substrate.Algebra.F2.PlusIdentityL
+open import Substrate.Algebra.F2.PlusIdentityR
+open import Substrate.Algebra.F2.PlusInverseL
+open import Substrate.Algebra.F2.PlusInverseR
+open import Substrate.Algebra.F2.PlusSelfInverse
+open import Substrate.Algebra.F2.ZeroNeqOne
 open import Substrate.Algebra.F2.Vector
 open import Substrate.Algebra.F2.Vector.Universal using (sum-F₂; sum-F₂-cong)
 open import Substrate.Algebra.F2.SymBilinForm.BilinForm using (BilinForm)
 open import Substrate.Algebra.F2.SymBilinForm.BilinearFormOf using (bilinear-form-of)
 open import Substrate.Algebra.F2.SymBilinForm.Bilinearity using (sum-F₂-scalar)
 open import Substrate.Category.TensorProduct using (TensorProduct; pair)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- N-1: bilinear-form-of-via-tensor — linear evaluation of a tensor
@@ -61,7 +87,7 @@ bilinear-form-of-via-tensor {n} M T =
 ------------------------------------------------------------------------
 -- N-2: Helper — the factor shuffle.
 --
--- v · (M · w) ≡ v · w · M  (= (v · w) · M, after ·-assoc + ·-comm)
+-- v · (M · w) ≡ v · w · M  (= (v · w) · M, after ·-assoc +F ·-comm)
 -- We need: lookup v i · lookup w j · M i j ≡ lookup v i · (M i j · lookup w j)
 --
 -- Direct chain: x · y · z ≡ x · (y · z) [·-assoc] ≡ x · (z · y) [·-comm on y, z]
@@ -146,7 +172,7 @@ bilinear-form-of-via-tensor-agrees {n} M v w =
 -- Substrate.Algebra.F2.SymBilinForm.Bilinearity.
 --
 -- Substrate-wide implication: any bilinear operation on F₂-vector
--- spaces FACTORS through TensorProduct via pair + a specific linear
+-- spaces FACTORS through TensorProduct via pair +F a specific linear
 -- map. The Adjunction primitive (#4) handles single-argument linear;
 -- TensorProduct (#7) handles two-argument bilinear; both together
 -- name the universal free-construction infrastructure that the

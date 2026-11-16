@@ -44,11 +44,9 @@
 module Substrate.Algebra.F2.HodgeDim4.ReservedBridge.GaugeTorsor where
 
 open import Substrate.Foundation.Product using (Σ; _,_)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; trans; cong)
 
 open import Substrate.Algebra.F2.Vector using (Vector)
-open import Substrate.Algebra.F2.Linear using (Linear; apply)
+open import Substrate.Algebra.F2.Linear.Linear
 open import Substrate.Algebra.F2.HodgeDim4.Bivector using (Bivector)
 open import Substrate.Algebra.F2.HodgeDim4.ReservedBridge
   using (vector3-to-selfdual)
@@ -56,6 +54,10 @@ open import Substrate.Algebra.GL3F2
   using (GL3F2; mkGL3F2; id-GL; _·G_; _⁻¹G; applyG; L; L⁻¹;
          L-left; L-right)
 open import Substrate.Category.GTorsor using (GTorsor; mkGTorsor)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- 1. Pointwise equivalence on GL3F2 (via apply on Vector 3).

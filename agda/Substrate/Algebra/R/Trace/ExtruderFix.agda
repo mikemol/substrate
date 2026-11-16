@@ -19,8 +19,13 @@
 
 module Substrate.Algebra.R.Trace.ExtruderFix where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
 open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Category.Lawvere
+open import Substrate.WitnessTower.GradeMapInvariant
 
 -- A COMBINATOR ALGEBRA: a carrier with application and the S/K laws (I derived).
 -- ⟡set1-paydown: parameterize C

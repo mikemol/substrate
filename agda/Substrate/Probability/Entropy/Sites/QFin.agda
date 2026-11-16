@@ -15,13 +15,10 @@
 
 module Substrate.Probability.Entropy.Sites.QFin where
 
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Level using (Level; 0ℓ)
 
-open import Substrate.Algebra.Q using (ℚ; mkℚ)
-open import Substrate.Algebra.Z using (0ℤ)
+open import Substrate.Algebra.Q.Rat
+open import Substrate.Algebra.Z.ZeroInt
 
-open import Substrate.Probability.Simplex
 open import Substrate.Probability.Simplex.Sites.QSimplex using (ℚ-PS)
 open import Substrate.Probability.Entropy
 

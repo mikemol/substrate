@@ -54,8 +54,8 @@
 
 module Substrate.WitnessTower.GradeMapInvariant where
 
-open import Substrate.Foundation.Nat using (ℕ; suc)
-open import Substrate.Foundation.Bool using (Bool; true; false)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Bool.Bool
 
 ------------------------------------------------------------------------
 -- The four grade-roles as explicit map SHAPES over a ℕ-graded carrier. Tagging
@@ -170,7 +170,7 @@ Preserve : (ℕ → Set) → (ℕ → Set) → Set
 Preserve C D = {n : ℕ} → C n → D n
 
 open import Substrate.WitnessTower.FaithfulnessApex using (detectP; apex-kernel)
-open import Substrate.Algebra.F2 using (F₂; 𝟘)
+open import Substrate.Algebra.F2.F2
 
 -- the detector is a within-grade map (Perm n → Perm n → F₂): grade n in, grade
 -- n out. Its kernel law (apex-kernel: detect σ τ ≡ 𝟘 ⟹ σ ≡ τ) IS faithfulness —
@@ -184,7 +184,7 @@ preserve-detector = detectP
 -- grade-PRESERVING morphism CONSTANT ON EACH V₄-COSET (the coset = the fibre of
 -- s-for; sign-of-stable witnesses s-for idempotent-on-sign). This is the total
 -- sign morphism the raw carrier could not carry, built by feeding the concrete
--- even-V₄ base through the permutation generator (SignEmbedVEven + SignStabTotal).
+-- even-V₄ base through the permutation generator (SignEmbedVEven +F SignStabTotal).
 -- Honestly scoped: this is the n=4 (S₄) PRESERVE flagship; preserve-detector is
 -- the general-n within-grade witness. Both inhabit PRESERVE.
 open import Substrate.WitnessTower.SignStabTotal
@@ -217,9 +217,9 @@ changes-grade? preserve = false
 --   raise    : insert-at, with-apex, tower-graded recon, ladder(+1 law)
 --   lower    : lower-decomp (typed, decomp-tail); also gforget, forget-to-magma
 --   fix      : ★  (the FaceSet stabilizer)
---   mod-2    : mod2-sign (typed Mod2 Perm) + mod2-lifts (sign-parity-lifts,
+--   mod-2    : mod2-sign (typed Mod2 Perm) +F mod2-lifts (sign-parity-lifts,
 --              the general-n lift FLAGSHIP), V4-F2Graded  (parity — reappears/lifts)
---   preserve : preserve-detector (detectP, general-n) + preserve-sign-morphism
+--   preserve : preserve-detector (detectP, general-n) +F preserve-sign-morphism
 --              (sign-factors-through-s-for, the n=4 sign-stab FLAGSHIP, coset-constant)
 -- 21/21 session files inhabit one of these (hand-verified, ritual#8 G8).
 

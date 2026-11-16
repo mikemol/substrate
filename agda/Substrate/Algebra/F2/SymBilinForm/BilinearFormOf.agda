@@ -13,7 +13,8 @@
 module Substrate.Algebra.F2.SymBilinForm.BilinearFormOf where
 
 open import Substrate.Foundation.Vec using (lookup)
-open import Substrate.Algebra.F2 using (F₂; _·_)
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.Op
 open import Substrate.Algebra.F2.Vector using (Vector)
 open import Substrate.Algebra.F2.Vector.Universal using (sum-F₂)
 open import Substrate.Algebra.F2.SymBilinForm.BilinForm using (BilinForm)

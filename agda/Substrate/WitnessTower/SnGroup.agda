@@ -26,16 +26,19 @@
 
 module Substrate.WitnessTower.SnGroup where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using (lookup)
-open import Substrate.Foundation.Vec.Properties using (lookup∘tabulate)
-open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym; cong)
+open import Substrate.Foundation.Vec.Properties.LookupComptabulate
 
 open import Substrate.WitnessTower.Enumerate using (Perm)
 open import Substrate.WitnessTower.FirstAppearance using (compose; id-perm)
 open import Substrate.WitnessTower.IsPermutation using (IsPerm)
 open import Substrate.WitnessTower.Decompose using (lookup-ext)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- 1. apply = lookup; the homomorphism and unit laws (apply level).

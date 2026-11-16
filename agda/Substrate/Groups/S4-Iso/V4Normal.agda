@@ -19,8 +19,7 @@ open import Substrate.Groups.Symmetric.Permutation Axis
 open import Substrate.Groups.Symmetric.InverseCong Axis using (⁻¹-cong)
 open import Substrate.Foundation.Product using (_,_; proj₁; proj₂)
 
-open import Substrate.Groups.S4-Iso.Embedding
-  using (compositional-to-perm)
+open import Substrate.Groups.S4-Iso.Embedding.CompositionalToPerm
 open import Substrate.Groups.S4-Iso.Extract
   using (perm-to-compositional)
 open import Substrate.Groups.S4-Iso.ForwardHom using (forward-hom)
@@ -28,7 +27,14 @@ open import Substrate.Groups.S4-Iso.Roundtrip
   using (perm-roundtrip-≈; embed-as-N-injection)
 open import Substrate.Groups.S4-Iso.IsoTransport
   using (forward-inv; compositional-to-perm-cong)
-open import Substrate.Groups.V4.Bijection
+open import Substrate.Groups.V4.Bijection.FromC
+open import Substrate.Groups.V4.Bijection.FromCCanonical
+open import Substrate.Groups.V4.Bijection.FromTo
+open import Substrate.Groups.V4.Bijection.Private
+open import Substrate.Groups.V4.Bijection.ToC
+open import Substrate.Groups.V4.Bijection.ToCCanonical
+open import Substrate.Groups.V4.Bijection.ToFromCanonical
+open import Substrate.Groups.V4.Bijection.V4
 open import Substrate.Groups.Symmetric.Permutation.Compose Axis
 open import Substrate.Groups.Symmetric.Permutation.Inverse Axis
 open import Substrate.Groups.Symmetric.Eq Axis

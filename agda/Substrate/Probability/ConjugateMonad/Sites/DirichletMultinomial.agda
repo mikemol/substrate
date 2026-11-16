@@ -26,12 +26,11 @@ module Substrate.Probability.ConjugateMonad.Sites.DirichletMultinomial where
 
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Op
-open import Substrate.Foundation.Negation using (yes; no)
-open import Substrate.Foundation.Nat using (ℕ; suc; zero; _+_)
-open import Substrate.Foundation.Level using (Level; 0ℓ)
+open import Substrate.Foundation.Negation.Dec
+open import Substrate.Foundation.Nat.Nat
 
-open import Substrate.Algebra.Q using (ℚ; mkℚ)
-open import Substrate.Algebra.Z using (0ℤ)
+open import Substrate.Algebra.Q.Rat
+open import Substrate.Algebra.Z.ZeroInt
 
 open import Substrate.Probability.ConjugateMonad
 
@@ -50,7 +49,7 @@ CountVector n = Fin n → ℕ
 -- at the observed index is incremented, all others unchanged.
 
 update-counts : ∀ {n} → CountVector n → Fin n → CountVector n
-update-counts cv obs i with i ≟ obs
+update-counts cv obs i with i ≟ᶠ obs
 ... | yes _ = suc (cv i)
 ... | no  _ = cv i
 

@@ -32,11 +32,14 @@
 
 module Substrate.Algebra.Wedge.Species where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Product using (Σ; _,_; _×_)
 open import Substrate.Algebra.Wedge using (DivStr; z)
 open import Substrate.Algebra.Wedge.Mul using (MulDivStr; base; mul; pow; Nilpotent)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- The genus: the cross of the pair vanishes under powers (Coherent's spine).

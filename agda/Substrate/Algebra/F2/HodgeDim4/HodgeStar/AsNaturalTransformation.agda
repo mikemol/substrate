@@ -37,7 +37,7 @@
 
 open import Substrate.Foundation.Level using (Level)
 
-open import Substrate.Category.CategoryOf using (CategoryOf)
+open import Substrate.Category.CategoryOf.CategoryOf
 open import Substrate.Category.Functor using (Functor)
 open import Substrate.Category.NaturalTransformation
   using (NaturalTransformation)
@@ -66,7 +66,6 @@ module Substrate.Algebra.F2.HodgeDim4.HodgeStar.AsNaturalTransformation
 
 open import Substrate.Category.NaturalTransformation.AsNamed
   Vect Vect' Λᵏ Λⁿ⁻ᵏ ★ public
-  renaming (named-NaturalTransformation to HodgeStar-NaturalTransformation)
 
 ------------------------------------------------------------------------
 -- 2. Capstone — HodgeStar as M2 NaturalTransformation.

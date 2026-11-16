@@ -25,8 +25,8 @@
 
 module Substrate.Category.UniversalProperty.Discriminator where
 
-open import Substrate.Foundation.Eq      using (_≡_)
 open import Substrate.Foundation.Product using (_×_; _,_)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- A discriminated structure: a carrier with an invariant (Sh, e.g. CF shape) and a

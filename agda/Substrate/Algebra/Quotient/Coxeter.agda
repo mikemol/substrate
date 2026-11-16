@@ -24,7 +24,14 @@
 
 {-# OPTIONS --safe --without-K #-}
 
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans)
+
+-- ⚑ A NAME USED IN THE TELESCOPE MUST BE IMPORTED BEFORE THE MODULE HEADER.
+-- A parameter list is scope-checked before anything inside `where`, so an
+-- import placed after the header is too late.  The splitter emits the
+-- prelude after the header (right for a body, wrong for a telescope), so
+-- every leaf whose PARAMETERS mention the name inherited this.
+-- MEASURED: 11 sites tree-wide.
+open import Substrate.Foundation.Eq
 
 module Substrate.Algebra.Quotient.Coxeter
   -- Coxeter Core's interface (same shape as ListPresentation's
@@ -35,7 +42,11 @@ module Substrate.Algebra.Quotient.Coxeter
     (w : Word) → normalize (normalize w) ≡ normalize w)
   where
 
-open import Substrate.Algebra.Quotient using (Quotient; Canonical)
+open import Substrate.Algebra.Quotient.Canonical
+open import Substrate.Algebra.Quotient.Quotient
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
 
 ------------------------------------------------------------------------
 -- 1. The Coxeter equivalence: w₁ ≈ w₂ iff normalize w₁ ≡ normalize w₂.

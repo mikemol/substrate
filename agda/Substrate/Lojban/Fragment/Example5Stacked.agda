@@ -15,7 +15,6 @@
 module Substrate.Lojban.Fragment.Example5Stacked where
 
 open import Substrate.Foundation.Vec using ([]; _∷_)
-open import Substrate.Foundation.Eq using (_≡_; refl)
 
 open import Substrate.Lojban.Gismu using (nelci)
 open import Substrate.Lojban.Cmavo using (pu; _∘-cmavo_)
@@ -24,6 +23,7 @@ open import Substrate.Lojban.Cmavo using (apply-cmavo)
 open import Substrate.Lojban.Functoriality using (cmavo-compose-coherent)
 open import Substrate.Lojban.Fragment.Carriers
   using (Sumti; mi; do-pn; Sem; fact; pu-of; na-of; gismu-to-selbri; PU; NA)
+open import Substrate.Foundation.Eq
 
 example-stacked : Bridi 2 Sumti Sem
 example-stacked =

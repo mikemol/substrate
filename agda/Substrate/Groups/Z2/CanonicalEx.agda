@@ -14,6 +14,7 @@ module Substrate.Groups.Z2.CanonicalEx where
 open import Substrate.Groups.Coxeter.Word
 open import Substrate.Groups.Coxeter.Cyclic.Base 1
 open import Substrate.Groups.Coxeter.Cyclic.Existential 1
+open import Substrate.Groups.Coxeter.Cyclic.Base.Gen
 
 Canonical₂ : Word Gen → Set
 Canonical₂ = Canonical-ex

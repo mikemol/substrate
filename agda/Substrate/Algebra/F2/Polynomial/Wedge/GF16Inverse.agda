@@ -4,8 +4,8 @@
 -- Ⓐ.gfinv-witness — the EEA-inverse template (Wedge.Inverse) WITNESSED at a
 -- SECOND field, GF(2⁴) = F₂[x]/(x⁴+x+1). This proves the GF(2⁸) inverse-law is
 -- one INSTANCE of a field-generic construction (the "AES isn't restricted to
--- 8-bit bytes" point made concrete): the same `fuel-bezout` + generic
--- `inverse-from-bezout` + generic `is-unit-q`/`unit-q-nth0` machinery, re-aimed
+-- 8-bit bytes" point made concrete): the same `fuel-bezout` +F generic
+-- `inverse-from-bezout` +F generic `is-unit-q`/`unit-q-nth0` machinery, re-aimed
 -- at (d=3, m-lo₄). Only the irreducibility witness is new — and at GF(2⁴) it is
 -- a cheap 16-nibble reflection (vs 256 bytes at GF(2⁸)).
 --
@@ -20,46 +20,49 @@
 
 module Substrate.Algebra.F2.Polynomial.Wedge.GF16Inverse where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Vec using (Vec; []; _∷_)
 open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂)
-open import Substrate.Foundation.Eq using (_≡_; refl; subst)
-open import Substrate.Foundation.Bool using (Bool; true; false; _∨_)
-import Substrate.Algebra.F2 as F2
+open import Substrate.Foundation.Bool.Bool
+open import Substrate.Foundation.Bool.Or
+open import Substrate.Algebra.F2.F2
 open import Substrate.Algebra.F2.CommRing using (F₂-CommRing)
 open import Substrate.Algebra.F2.Polynomial.Wedge.EEATrace using (QPoly; divisor-q)
 open import Substrate.Algebra.F2.Polynomial.Wedge.FuelEEA using (fuel-bezout)
 open import Substrate.Algebra.F2.Polynomial.Wedge.BezoutFold.Base using (BezoutNthWitness)
 open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit using (is-unit-q; ∨-elim-false; unit-q-nth0; unit-q-nths)
-open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit.Base using (all-vec; all-vec-sound)
+open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit.Base.AllVec
+open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit.Base.AllVecSound
 import Substrate.Algebra.Polynomial.Graded.ModZero as MZ
 import Substrate.Algebra.Polynomial.Graded.FromCommRing as F
 import Substrate.Algebra.Polynomial.Graded.Mod as M
 import Substrate.Algebra.Polynomial.Graded.Quotient as Q
 import Substrate.Algebra.Polynomial.Graded.Div as D
 
--- GF(2⁴) modulus  x⁴ + x + 1  (low part, x⁰..x³ = 1,1,0,0; the leading x⁴ implicit).
+-- GF(2⁴) modulus  x⁴ +F x +F 1  (low part, x⁰..x³ = 1,1,0,0; the leading x⁴ implicit).
 open F.Over F₂-CommRing using (Poly)
-m-lo₄ : Vec F2.F₂ 4
-m-lo₄ = F2.𝟙 ∷ F2.𝟙 ∷ F2.𝟘 ∷ F2.𝟘 ∷ []
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Subst
+m-lo₄ : Vec F₂ 4
+m-lo₄ = 𝟙 ∷ 𝟙 ∷ 𝟘 ∷ 𝟘 ∷ []
 
 
 open M.Over F₂-CommRing 3 m-lo₄ using (reduce-mod-f; oneC)
 open Q.Over F₂-CommRing 3 m-lo₄ using (_*Q_)
 module M₄ = MZ.Over F₂-CommRing 3 m-lo₄
 
-is-zero4 : Vec F2.F₂ 4 → Bool
-is-zero4 (F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ []) = true
+is-zero4 : Vec F₂ 4 → Bool
+is-zero4 (𝟘 ∷ 𝟘 ∷ 𝟘 ∷ 𝟘 ∷ []) = true
 is-zero4 _ = false
 
 -- the fuel-EEA Bézout run for a nibble (fuel 8 ≥ 4 EEA steps).
 W₄ : (a : Poly 4) → Σ QPoly (BezoutNthWitness (4 , a) (divisor-q 3 m-lo₄))
 W₄ a = fuel-bezout 8 (4 , a) 3 m-lo₄
 
-gcd-of₄ : Vec F2.F₂ 4 → QPoly
+gcd-of₄ : Vec F₂ 4 → QPoly
 gcd-of₄ a = proj₁ (W₄ a)
 
-check₄ : Vec F2.F₂ 4 → Bool
+check₄ : Vec F₂ 4 → Bool
 check₄ a = is-unit-q (gcd-of₄ a) ∨ is-zero4 a
 
 -- THE IRREDUCIBILITY WITNESS: every nonzero nibble's gcd with m is the unit
@@ -67,7 +70,7 @@ check₄ a = is-unit-q (gcd-of₄ a) ∨ is-zero4 a
 all-pass₄ : all-vec check₄ ≡ true
 all-pass₄ = refl
 
-unit-of₄ : (a : Vec F2.F₂ 4) → is-zero4 a ≡ false → is-unit-q (gcd-of₄ a) ≡ true
+unit-of₄ : (a : Vec F₂ 4) → is-zero4 a ≡ false → is-unit-q (gcd-of₄ a) ≡ true
 unit-of₄ a z =
   ∨-elim-false (subst (λ b → (is-unit-q (gcd-of₄ a) ∨ b) ≡ true) z
                       (all-vec-sound check₄ all-pass₄ a))

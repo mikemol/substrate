@@ -19,12 +19,12 @@
 --
 -- After this slice: StabiliserClosure's 3-cycle proof (and any other
 -- Coxeter-element-composition stabilisation) reduces to a 3-line
--- corollary via congruence-compose-3 + individual generator stabiliser
+-- corollary via congruence-compose-3 +F individual generator stabiliser
 -- FixedPoint witnesses.
 --
 -- Per `feedback_categorical_name_first`: the dim-3 specific composition
 -- law is now a derived corollary of the generic universal property
--- (congruence-compose-pointwise) + the dim-3 bridge.
+-- (congruence-compose-pointwise) +F the dim-3 bridge.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
@@ -34,13 +34,41 @@ module Substrate.Algebra.F2.HodgeDim3.MetricGauge.CongruenceBridge where
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Literals using (₁; ₂; ₃; ₄; ₅)
 open import Substrate.Foundation.Vec using (lookup)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; trans; cong)
 
-open import Substrate.Algebra.F2
+open import Substrate.Algebra.F2.AbsorbL
+open import Substrate.Algebra.F2.AbsorbR
+open import Substrate.Algebra.F2.Assoc
+open import Substrate.Algebra.F2.Comm
+open import Substrate.Algebra.F2.Dec
+open import Substrate.Algebra.F2.DistribLPlus
+open import Substrate.Algebra.F2.DistribRPlus
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.F2Cases
+open import Substrate.Algebra.F2.Idempotent
+open import Substrate.Algebra.F2.IdentityL
+open import Substrate.Algebra.F2.IdentityR
+open import Substrate.Algebra.F2.InvOfOne
+open import Substrate.Algebra.F2.OneNeqZero
+open import Substrate.Algebra.F2.Op
+open import Substrate.Algebra.F2.Op2
+open import Substrate.Algebra.F2.PlusAssoc
+open import Substrate.Algebra.F2.PlusComm
+open import Substrate.Algebra.F2.PlusF
+open import Substrate.Algebra.F2.PlusIdentityL
+open import Substrate.Algebra.F2.PlusIdentityR
+open import Substrate.Algebra.F2.PlusInverseL
+open import Substrate.Algebra.F2.PlusInverseR
+open import Substrate.Algebra.F2.PlusSelfInverse
+open import Substrate.Algebra.F2.ZeroNeqOne
 open import Substrate.Algebra.F2.Vector
 open import Substrate.Algebra.F2.Vector.Universal using (sum-F₂; sum-F₂-cong)
-open import Substrate.Algebra.F2.Linear
+open import Substrate.Algebra.F2.Linear.CompL
+open import Substrate.Algebra.F2.Linear.CompLAssoc
+open import Substrate.Algebra.F2.Linear.CompLIdentityL
+open import Substrate.Algebra.F2.Linear.CompLIdentityR
+open import Substrate.Algebra.F2.Linear.IdL
+open import Substrate.Algebra.F2.Linear.Linear
+open import Substrate.Algebra.F2.Linear.Preserves
 open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.BilinearFormOf using (bilinear-form-of)
 open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.CongruenceAct using (congruence-act)
 open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.Type using (SymBilinForm-3)
@@ -56,13 +84,17 @@ open import Substrate.Algebra.F2.SymBilinForm.CongruenceCompose
   using (congruence-compose-pointwise)
 open import Substrate.Algebra.F2.SymBilinForm.Symmetry
   using (bilinear-form-of-sym-arg)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- N-1: congruence-act-bridge-3.
 --
 -- 9 cases: diagonal (3), upper off-diagonal (3), lower off-diagonal (3).
--- Diagonals + upper-tri: direct bilinear-form-of-bridge-3.
--- Lower-tri: bilinear-form-of-bridge-3 + bilinear-form-of-sym-arg
+-- Diagonals +F upper-tri: direct bilinear-form-of-bridge-3.
+-- Lower-tri: bilinear-form-of-bridge-3 +F bilinear-form-of-sym-arg
 -- (since the dim-3 packing folds (i, j) and (j, i) to the same
 -- off-diagonal slot).
 ------------------------------------------------------------------------
@@ -184,7 +216,7 @@ bridge-injectivity-3 M₁ M₂ eq =
 --                                                      [compose-pointwise]
 --             ≡ congruence-act-generic T₂ (bridge (congruence-act T₁ M)) i j
 --                                                      [congruence-act-generic-cong
---                                                       + sym congruence-act-bridge-3]
+--                                                       +F sym congruence-act-bridge-3]
 --             ≡ RHS_brid
 --   Then bridge-injectivity-3 lifts to SymBilinForm-3 equality.
 ------------------------------------------------------------------------
@@ -220,9 +252,9 @@ congruence-compose-3 T₁ T₂ M =
 --
 -- congruence-compose-3 is the dim-3 specific composition law for
 -- congruence-act, derived as a corollary of the generic
--- congruence-compose-pointwise + the dim-3 bridge (with bilinear-
+-- congruence-compose-pointwise +F the dim-3 bridge (with bilinear-
 -- form-of-sym-arg handling lower-triangular index swap, and
--- bilinear-form-of-generic-cong + congruence-act-generic-cong
+-- bilinear-form-of-generic-cong +F congruence-act-generic-cong
 -- substituting pointwise-equal arguments without function extensionality).
 --
 -- Use case: StabiliserClosure's `s₁∘s₂-stabilises-metric-id` (and

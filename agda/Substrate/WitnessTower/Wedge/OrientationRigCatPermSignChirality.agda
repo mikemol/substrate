@@ -52,13 +52,22 @@
 
 module Substrate.WitnessTower.Wedge.OrientationRigCatPermSignChirality where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using (Vec; []; _∷_)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂)
-open import Substrate.Foundation.Bool using (Bool; true; false; _xor_; boolToℕ)  -- ⟡A4: single source
+open import Substrate.Foundation.Bool.Bool
+open import Substrate.Foundation.Bool.BoolToNat
+open import Substrate.Foundation.Bool.Xor   -- ⟡A4: single source
 
-open import Substrate.Algebra.F2 using (F₂; 𝟘; 𝟙) renaming (_+_ to _+F_)
+-- ⚑ THE BAN SWEEP DROPPED THE BINDING, NOT JUST THE `renaming`.  This read
+-- `open import Substrate.Algebra.F2 using (F₂; 𝟘; 𝟙) renaming (_+_ to _+F_)`;
+-- the sweep removed it wholesale (correctly — `renaming` is banned, and that
+-- barrel no longer exists), leaving `_+F_` UNBOUND and the file failing with
+-- NoParseForApplication at the `cong₂ _+F_ …` site.  The ban's remedy is
+-- rename-at-source, and `_+F_` is already spelled that way at its own home.
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.PlusF
 open import Substrate.Algebra.F2.FromBool using (bool→F₂; bool→F₂-xor)
 open import Substrate.Algebra.N-to-F2-Parity using (parity; parity-+)
 open import Substrate.Algebra.R.Trace.ChiralityBridge using (det-sign; det-sign-is-parity)
@@ -68,6 +77,11 @@ open import Substrate.WitnessTower.FirstAppearance using (compose)
 open import Substrate.WitnessTower.IsPermutation using (IsPerm)
 open import Substrate.WitnessTower.Wedge.OrientationRigCatPermSign
   using (sign; parityLess; finLt; sign-hom)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
 
 ------------------------------------------------------------------------
 -- 0. Bool → F₂ is a homomorphism xor → +F, and factors through parity.
@@ -94,11 +108,11 @@ bool→F₂-parity false = refl
 
 countLess : {m n : ℕ} → Fin m → Vec (Fin m) n → ℕ
 countLess x []       = 0
-countLess x (y ∷ ys) = boolToℕ (finLt y x) + countLess x ys
+countLess x (y ∷ ys) = boolToℕ (finLt y x) ℕ+ countLess x ys
 
 invCount : {m n : ℕ} → Vec (Fin m) n → ℕ
 invCount []       = 0
-invCount (x ∷ xs) = countLess x xs + invCount xs
+invCount (x ∷ xs) = countLess x xs ℕ+ invCount xs
 
 ------------------------------------------------------------------------
 -- 2. The per-element bridge: parityLess IS the Bool-parity of countLess.

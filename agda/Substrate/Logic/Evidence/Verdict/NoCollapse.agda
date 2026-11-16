@@ -27,13 +27,16 @@
 
 module Substrate.Logic.Evidence.Verdict.NoCollapse where
 
-open import Substrate.Foundation.Bool  using (Bool; true; false)
-open import Substrate.Foundation.Empty using (⊥)
-open import Substrate.Foundation.Eq    using (_≡_; refl; sym; trans; cong)
-open import Substrate.Foundation.Sum   using (_⊎_; inj₁; inj₂)
-open import Substrate.Algebra.Quotient using (Quotient; ≈-refl; ≈-sym; ≈-trans)
+open import Substrate.Foundation.Bool.Bool
+open import Substrate.Foundation.Empty.Bot
+open import Substrate.Foundation.Sum.Sum
+open import Substrate.Algebra.Quotient.Quotient
 
 open import Substrate.Logic.Evidence.Verdict
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- The kernel of a map: x and y are identified iff they share an image.

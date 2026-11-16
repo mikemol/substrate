@@ -9,7 +9,7 @@
 
 module Substrate.Cocycles.V4Signature.Codeword.ReservedToBivectorAffine.ShiftSelfDual where
 
-open import Substrate.Foundation.Bool using (false; true)
+open import Substrate.Foundation.Bool.Bool
 open import Substrate.Foundation.Product using (_,_)
 open import Substrate.Algebra.F2.HodgeDim4.SelfDual
   using (SelfDual-Pred; sd-zero; sd-pair-01-23; sd-pair-02-13;

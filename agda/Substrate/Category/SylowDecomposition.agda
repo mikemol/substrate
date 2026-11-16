@@ -32,10 +32,11 @@
 
 module Substrate.Category.SylowDecomposition where
 
-open import Substrate.Foundation.Level using (Level; _⊔_) renaming (suc to lsuc)
+open import Substrate.Foundation.Level using (Level; _⊔_)
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Product using (Σ; _,_)
+open import Substrate.Algebra.GL3F2
 
 private
   variable

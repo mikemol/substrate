@@ -24,10 +24,10 @@
 
 module Substrate.Logic.Evidence.ElAtlas.OrbitCloud where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; lookup)
-open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- A permutation as a lookup table; application is `lookup` (a table index).

@@ -11,10 +11,17 @@
 -- What is left here is only the C₄ assembly: coordinate 0 is `rt-head`; coordinates
 -- 1,2,3 are `rt-head` on the rotated column, pulled back through f's equivariance.
 module Substrate.Algebra.F2.MixColumns.Proof.G where
-open import Substrate.Algebra.F2.GF256.Mul
-open import Substrate.Algebra.F2.MixColumns.Base
+open import Substrate.Algebra.F2.GF256.Mul.Gmul
 open import Substrate.Algebra.F2.MixColumns.Proof.G.Equiv
 open import Substrate.Algebra.F2.MixColumns.Proof.G.Head
+open import Substrate.Algebra.F2.Vector
+open import Substrate.Foundation.Vec
+open import Substrate.FUSep.FUSepQHexagon.Private
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
 
 module G
   (x01 x02 x03 x09 x0b x0d x0e : Vector 8)

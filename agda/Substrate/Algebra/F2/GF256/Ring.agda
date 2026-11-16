@@ -11,20 +11,24 @@
 
 module Substrate.Algebra.F2.GF256.Ring where
 
-open import Substrate.Foundation.Eq using (refl)
 open import Substrate.Algebra.F2.Vector using (Vector; _+ⱽ_; 𝟎ⱽ; +ⱽ-identityˡ; +ⱽ-identityʳ;
   +ⱽ-comm; +ⱽ-assoc; +ⱽ-self-inverse)
-open import Substrate.Algebra.Magma using (Magma)
-open import Substrate.Algebra.Semigroup using (Semigroup)
 open import Substrate.Algebra.Monoid using (Monoid)
-open import Substrate.Algebra.Group using (Group)
 open import Substrate.Algebra.AbelianGroup using (AbelianGroup)
 open import Substrate.Algebra.Semiring using (Semiring)
 open import Substrate.Algebra.Ring using (Ring)
-open import Substrate.Algebra.F2.GF256.Idempotent using (one₈)
-open import Substrate.Algebra.F2.GF256.Mul using (gmul; gmul-distribˡ; gmul-distribʳ)
-open import Substrate.Algebra.F2.GF256.MulLaws using (gmul-identityˡ; gmul-identityʳ;
-  gmul-zeroˡ; gmul-zeroʳ; gmul-assoc)
+open import Substrate.Algebra.F2.GF256.Idempotent.One
+open import Substrate.Algebra.F2.GF256.Mul.Gmul
+open import Substrate.Algebra.F2.GF256.Mul.GmulDistribL
+open import Substrate.Algebra.F2.GF256.Mul.GmulDistribR
+open import Substrate.Algebra.F2.GF256.MulLaws.GmulAssoc
+open import Substrate.Algebra.F2.GF256.MulLaws.GmulIdentityL
+open import Substrate.Algebra.F2.GF256.MulLaws.GmulIdentityR
+open import Substrate.Algebra.F2.GF256.MulLaws.GmulZeroL
+open import Substrate.Algebra.F2.GF256.MulLaws.GmulZeroR
+open import Substrate.Foundation.Eq
+open import Substrate.Algebra.Group
+open import Substrate.Algebra.Semigroup
 
 -- ONE additive monoid, shared by the semiring AND the abelian group ⇒ +-coherent = refl.
 +ⱽ-monoid : Monoid (Vector 8)

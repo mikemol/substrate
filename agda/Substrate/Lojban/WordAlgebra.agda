@@ -25,14 +25,17 @@
 
 module Substrate.Lojban.WordAlgebra where
 
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; cong)
 open import Substrate.Groups.Coxeter.Word using (Word; []; _∷_)
 open import Substrate.Lojban.Gismu using (Gismu)
 open import Substrate.Lojban.Word Gismu
   using (LojbanWord; ε; single; free-merge;
          free-merge-assoc;
          free-merge-identity-left; free-merge-identity-right)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Linguistic.Morphism
+open import Substrate.Algebra.Group
 
 ------------------------------------------------------------------------
 -- 1. Monoid laws record.

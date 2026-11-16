@@ -21,11 +21,10 @@
 
 module Substrate.WitnessTower.Sn where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Eq using (_≡_; refl; cong; sym; subst)
-open import Substrate.Foundation.Empty using (⊥-elim)
-open import Substrate.Foundation.Negation using (¬_)
+open import Substrate.Foundation.Empty.BotElim
+open import Substrate.Foundation.Negation.Not
 open import Substrate.Foundation.Product using (Σ; _,_)
 open import Substrate.Foundation.List using (List; []; _∷_)
 
@@ -34,7 +33,11 @@ open import Substrate.WitnessTower.Enumerate
 open import Substrate.WitnessTower.IsPermutation using (IsPerm; All; perms-all-perm)
 open import Substrate.WitnessTower.Complete using (_∈_; here; there; perms-complete)
 open import Substrate.WitnessTower.DuplicateFree using (NoDup; perms-nodup)
-  renaming (_∷_ to _◅_)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Subst
+open import Substrate.Foundation.RewriteConfluence
 
 ------------------------------------------------------------------------
 -- 0. List indexing + its interaction with All / membership / NoDup.

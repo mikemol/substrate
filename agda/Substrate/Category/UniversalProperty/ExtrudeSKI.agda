@@ -21,18 +21,19 @@
 module Substrate.Category.UniversalProperty.ExtrudeSKI where
 
 open import Substrate.Foundation.Product using (Σ; _,_)
-open import Substrate.Algebra.R.Trace.SKIShedDuality using (_∙_) renaming (Tm to Tm⟦533ef80d⟧)
+open import Substrate.Algebra.R.Trace.SKIShedDuality.Tm
 import Substrate.Algebra.R.Trace.SKIReductionToList as R
 open import Substrate.Foundation.RewriteConfluence (R._⇒_) using (_⇒*_)
 open import Substrate.Category.UniversalProperty.DiagonalLawvereSKI using (self-app)
 open import Substrate.Category.UniversalProperty.DiagonalYCombinator using (W; Y-of; Y-fix)
+open import Substrate.Algebra.R.Trace.SKIShedDuality.Tm
 
 ------------------------------------------------------------------------
 -- ① THE SKI DIAGONAL WITNESS (⇒*-concrete image of ExtruderFix's "Σ C (λ t → t · t ≡ f · (t · t))").
 --    For each f, the term W f self-applies to a fixed point: (W f)(W f) ⇒* f ((W f)(W f)). This is
 --    Lawvere's diagonal φ a a = ω_f ω_f, realized on Tm⟦533ef80d⟧ at the reduction equality.
 ------------------------------------------------------------------------
-ski-diagonal : (f : Tm⟦533ef80d⟧) → Σ Tm⟦533ef80d⟧ (λ t → (t ∙ t) ⇒* (f ∙ (t ∙ t)))
+ski-diagonal : (f : Tm) → Σ Tm (λ t → (t ∙ t) ⇒* (f ∙ (t ∙ t)))
 ski-diagonal f = (W f) , Y-fix f
 
 ------------------------------------------------------------------------
@@ -42,7 +43,7 @@ ski-diagonal f = (W f) , Y-fix f
 --    So the SKI self-interpreter extruder's core (a fixed point of one-step-interpret) IS Y-of (248):
 --    the μ-search collapses to the explicit self-applicative construction.
 ------------------------------------------------------------------------
-extrude-fixpoint : (f : Tm⟦533ef80d⟧) → Σ Tm⟦533ef80d⟧ (λ t → t ⇒* (f ∙ t))
+extrude-fixpoint : (f : Tm) → Σ Tm (λ t → t ⇒* (f ∙ t))
 extrude-fixpoint f = (Y-of f) , Y-fix f
 
 ------------------------------------------------------------------------

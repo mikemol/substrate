@@ -20,9 +20,10 @@
 
 module Substrate.FUSep.FoldUnfold where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Foundation.Product using (Σ; _,_; _×_)
 open import Substrate.Algebra.Magma using (Magma)   -- the canonical magma (carrier param + _·_)
+open import Substrate.Foundation.Eq
+open import Substrate.Algebra.R.Trace.Bisim.Op
 
 -- a magma: a carrier with application (the SKI applicative structure). The carrier
 -- is the module parameter below; the canonical Algebra.Magma provides _·_.

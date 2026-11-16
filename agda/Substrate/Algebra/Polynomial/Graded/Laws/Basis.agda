@@ -3,14 +3,18 @@
 -- so each module's elaboration peak stays under the 128MB cap. Re-exported by
 -- `Substrate.Algebra.Polynomial.Graded` — the public API is unchanged.
 module Substrate.Algebra.Polynomial.Graded.Laws.Basis where
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _≟_) renaming (_+_ to _ℕ+_)
-open import Substrate.Foundation.Nat.Properties.Add using () renaming (+-comm to +ℕ-comm; +-assoc to +ℕ-assoc)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Properties.Add.PlusAssoc
+open import Substrate.Foundation.Nat.Properties.Add.PlusComm
+open import Substrate.Foundation.Nat.Properties.Add.PlusIdentityL
+open import Substrate.Foundation.Nat.Properties.Add.PlusIdentityR
+open import Substrate.Foundation.Nat.Properties.Add.PlusSuc
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; replicate)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂; subst)
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.To
-open import Substrate.Foundation.Negation using (¬_; yes; no)
-open import Substrate.Foundation.Empty using (⊥-elim)
+open import Substrate.Foundation.Negation.Dec
+open import Substrate.Foundation.Negation.Not
+open import Substrate.Foundation.Empty.BotElim
 open import Substrate.Algebra.Module.Free.Basis using (basis-vec)
 open import Substrate.Algebra.Medial using (medial)
 import Substrate.Algebra.Polynomial.Graded.Base as Base
@@ -19,6 +23,12 @@ import Substrate.Algebra.Polynomial.Graded.Laws.Nth as A1
 import Substrate.Algebra.Polynomial.Graded.Laws.Conv as A2
 import Substrate.Algebra.Polynomial.Graded.Laws.Distrib as A3
 import Substrate.Algebra.Polynomial.Graded.Laws.Scalar as A4
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.Foundation.Eq.Subst
 module Over {A : Set}
   (_+_ : A → A → A) (_*_ : A → A → A) (𝟘 𝟙 : A)
   (+-assoc     : (a b c : A) → (a + b) + c ≡ a + (b + c))
@@ -38,6 +48,13 @@ module Over {A : Set}
   -- 145KB, ~10KB/link) — AssocLinearP/Q/R sit at 61-65KB purely because they dropped it.
   -- This link now re-exports only what it defines.
   open A0.Over _+_ _*_ 𝟘 𝟙 +-assoc +-comm +-identityˡ +-identityʳ *-assoc *-comm *-identityˡ *-distribˡ *-absorbˡ *-absorbʳ
+  -- ⛑ Ⓡ2ᵈ: the `Defs` LEAVES this shard cites, derived by
+  -- `rewire_fcr --siblings Defs <file>` — a SET, not a prefix. `Defs`'s
+  -- re-opens are bare (Ⓡ1), so a leaf-defined name no longer arrives
+  -- through the root. Each leaf carries its OWN minimal telescope, so the
+  -- argument lists differ by leaf and are read from each header.
+  open import Substrate.Algebra.Polynomial.Graded.Defs.C _+_ _*_ 𝟘 𝟙
+  open import Substrate.Algebra.Polynomial.Graded.Defs.PlusP _+_ 𝟘 𝟙
   open A1.Over _+_ _*_ 𝟘 𝟙 +-assoc +-comm +-identityˡ +-identityʳ *-assoc *-comm *-identityˡ *-distribˡ *-absorbˡ *-absorbʳ
   open A2.Over _+_ _*_ 𝟘 𝟙 +-assoc +-comm +-identityˡ +-identityʳ *-assoc *-comm *-identityˡ *-distribˡ *-absorbˡ *-absorbʳ
   open A3.Over _+_ _*_ 𝟘 𝟙 +-assoc +-comm +-identityˡ +-identityʳ *-assoc *-comm *-identityˡ *-distribˡ *-absorbˡ *-absorbʳ
@@ -57,6 +74,10 @@ module Over {A : Set}
 
   sumA-zero : sumA {n} (λ _ → 𝟘) ≡ 𝟘
   sumA-zero {zero}   = refl
+  -- ⚑ CARRIER `_+_`, NOT `_+P_` — `sumA` folds over `A` (its own type above says
+  -- `sumA {n} (λ _ → 𝟘) ≡ 𝟘` with 𝟘 : A), and the very next argument
+  -- `+-identityˡ 𝟘` is the CARRIER identity law.  `_+P_` is polynomial addition
+  -- (`Poly n → Poly n → Poly n`), so `𝟘 +P_` demanded `𝟘 : Poly _` ⇒ `A !=< Vec A`.
   sumA-zero {suc n'} = trans (cong (𝟘 +_) (sumA-zero {n'})) (+-identityˡ 𝟘)
 
   -- the polynomial-level Fin sum (fold +P), its congruence, and nth through it.

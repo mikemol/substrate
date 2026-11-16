@@ -7,7 +7,7 @@
 -- conditional theorem (abstract Limit = νΦ-step under wrem-uniq) is NON-VACUOUS.
 --
 -- HONEST (the ADD-165 sharpening): generic Wedge ℕ-div rem-uniqueness is FALSE
--- (a = q·(suc b) + r has many (q,r) without r < suc b). It holds for the CERTIFIED
+-- (a = q·(suc b) ℕ+ r has many (q,r) without r < suc b). It holds for the CERTIFIED
 -- wedge (Wedge.Certified.CertifiedWedge ℕ-div idℕ), which BUNDLES smallness
 -- (rem < b). recon-bounded-unique (ℕ-div's recon is injective on bounded residues)
 -- then gives rem-uniqueness. So the ω-continuity hypothesis is satisfied EXACTLY on
@@ -16,12 +16,17 @@
 
 module Substrate.Algebra.Wedge.NuAbstractLimitInstance where
 
-open import Substrate.Foundation.Eq  using (_≡_; refl; sym; trans)
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _<_; _*_; _+_)
+open import Substrate.Foundation.Nat.Lt
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Times
 open import Substrate.Foundation.Product using (Σ; _,_; _×_; proj₁; proj₂)
 open import Substrate.Algebra.Wedge using (DivStr; z; quot; rem; wedge-eq; recon; ℕ-div)
 open import Substrate.Algebra.Wedge.Certified using (CertifiedWedge; wedge; small; idℕ)
 open import Substrate.Algebra.Wedge.BoundedIso using (recon-bounded-unique)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
 
 ------------------------------------------------------------------------
 -- ① rem-UNIQUENESS for certified wedges over ℕ-div at divisor (suc b). Two certified

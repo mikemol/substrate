@@ -20,13 +20,14 @@
 
 module Substrate.Algebra.Wedge.Shape.Double.Interned where
 
-open import Substrate.Foundation.Eq using (_≡_)
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Algebra.Wedge using (Trace; ℕ-div)
 open import Substrate.Algebra.Wedge.Shape using (shape)
 open import Substrate.Algebra.Wedge.Shape.Double using (Corr)
 open import Substrate.Algebra.Wedge.Shape.Register using (Register; _∈ᴿ_; idx; idx-inj)
 open import Substrate.Algebra.Wedge.Shape.Register.Properties using (NoDupᴿ; idx-cong)
+open import Substrate.Foundation.Eq
+open import Substrate.S5.S5Carrier
 
 -- (At ℕ-div, where the Register lives — its shapes are the ℕ quotient sequences;
 -- Corr is the same-carrier correspondence.)

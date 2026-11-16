@@ -17,10 +17,14 @@
 module Substrate.Category.UniversalProperty.TruthValues where
 
 open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂)
-open import Substrate.Foundation.Eq using (_≡_; trans; sym; cong)
 open import Substrate.Category.UniversalProperty.Term using (UPTerm; _++ᵤ_)
 open import Substrate.Category.UniversalProperty.Category using (++ᵤ-assoc)
 open import Substrate.Category.UniversalProperty.Sieve using (Sieve)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Probability.MarkovCategory
 
 module _ (O : Set) (Hom : O → O → Set) where
 

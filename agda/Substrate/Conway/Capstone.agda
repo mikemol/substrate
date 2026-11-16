@@ -51,10 +51,8 @@
 module Substrate.Conway.Capstone where
 
 -- Game-induction tower
-open import Substrate.Conway.BirthdayOrdered
-  using (BirthdayOrdered; bday)
-open import Substrate.Conway.AddGeneral
-  using (ConwayAddType; ConwayAddSignature)
+open import Substrate.Conway.AddGeneral.ConwayAddSignature
+open import Substrate.Conway.AddGeneral.ConwayAddType
 open import Substrate.Conway.AddComm
   using (ConwayAddCommutativity)
 open import Substrate.Conway.AddAssoc
@@ -63,7 +61,11 @@ open import Substrate.Conway.OrderTrans
   using (ConwayOrderTransitivity)
 open import Substrate.Conway.OrderAntisym
   using (ConwayOrderAntisymmetry)
-open import Substrate.Conway.Mul
+-- ⚑ `Conway.Mul` dissolved into two leaves; `ConwayMulSignature` is `.Anon`'s.
+-- The neighbouring `AddGeneral.ConwayAddSignature`/`.ConwayAddType` imports above
+-- are the same split already rewired — this one was missed.
+open import Substrate.Conway.Mul.Anon
+open import Substrate.Conway.Mul.ConwayMulType
   using (ConwayMulType; ConwayMulSignature)
 open import Substrate.Conway.AsField
   using (SurrealFieldObligation)

@@ -34,15 +34,12 @@
 
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.List using (List)
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Product using (Σ; _,_)
-open import Substrate.Foundation.Eq using (_≡_)
 
-open import Substrate.Category.SylowDecomposition using (InGenerated)
 open import Substrate.Category.SylowDecomposition.FromWord
   using (evaluate-word)
-open import Substrate.Category.PrimeFactoredGauge.FromPresented
-  using (joint-gen-from-presentation-≡)
+open import Substrate.Foundation.Eq
 
 module Substrate.Algebra.Sporadic.HappyFamily.JointGenViaDescent where
 
@@ -88,7 +85,6 @@ module Generic-Descent
     nGen gen-H gen-H-sylow
     represent-H represent-H-correct
     public
-    renaming (joint-gen to H-joint-gen)
 
 ------------------------------------------------------------------------
 -- Capstone — HF-wide joint-gen propagation framework.

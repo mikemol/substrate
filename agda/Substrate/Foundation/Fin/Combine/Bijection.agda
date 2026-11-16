@@ -12,7 +12,8 @@
 
 module Substrate.Foundation.Fin.Combine.Bijection where
 
-open import Substrate.Foundation.Nat using (ℕ; _*_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Times
 open import Substrate.Foundation.Fin.Combine
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.RemQuot

@@ -15,7 +15,7 @@
 
 module Substrate.Category.UniversalProperty.UnitsBackedGraded where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Product using (Σ; _,_)
 open import Substrate.Algebra.Nat.Units using (IsUnit; one-is-unit)
 open import Substrate.Category.UPArrowGraded using (UPArrowᴳ; mkUP)

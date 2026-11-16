@@ -18,9 +18,9 @@
 
 module Substrate.Algebra.F2.AES.KAT.RoundFin where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Algebra.F2.AES.Round using (final-round)
 open import Substrate.Algebra.F2.AES.KAT.Trace
+open import Substrate.Foundation.Eq
 
 opaque
   unfolding final-round

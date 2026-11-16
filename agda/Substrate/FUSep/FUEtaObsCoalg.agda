@@ -19,13 +19,16 @@
 module Substrate.FUSep.FUEtaObsCoalg where
 
 open import Substrate.Algebra.R.Trace using (RealTrace; head; tail)
-open import Substrate.Algebra.R.Trace.Bisim using (_~_; head~; tail~; ~-refl)
-open import Substrate.Algebra.R.Trace.Final using (Coalg; ana; ana-head; ana-tail)
+open import Substrate.Algebra.R.Trace.Bisim.Op
+open import Substrate.Algebra.R.Trace.Bisim.Refl
+open import Substrate.Algebra.R.Trace.Final.Ana
+open import Substrate.Algebra.R.Trace.Final.AnaTail
+open import Substrate.Algebra.R.Trace.Final.Coalg
 
-open import Substrate.Foundation.Nat     using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Product using (_,_)
-open import Substrate.Foundation.Eq      using (_≡_; refl)
-open import Substrate.Foundation.Empty   using (⊥)
+open import Substrate.Foundation.Empty.Bot
+open import Substrate.Foundation.Eq
 
 -- the STATE SPACE of the observation coalgebra: the three positions the arity gap
 -- passes through. bmi = the stuck B-value (B M I, bare); mHead = the M-headed value

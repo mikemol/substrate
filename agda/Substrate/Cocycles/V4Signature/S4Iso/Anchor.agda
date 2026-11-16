@@ -10,12 +10,20 @@
 module Substrate.Cocycles.V4Signature.S4Iso.Anchor where
 
 open import Substrate.Foundation.Product using (_,_; proj₁; proj₂; Σ; Σ-syntax)
-open import Substrate.Foundation.Eq using (_≡_; trans)
 
 open import Substrate.Axes.Axis using (Axis; D; C; S; W)
 open import Substrate.Groups.Symmetric.Permutation Axis
 open import Substrate.Groups.SemidirectProduct.Stab
-open import Substrate.Groups.SemidirectProduct.V
+open import Substrate.Groups.SemidirectProduct.V.NonDSends
+open import Substrate.Groups.SemidirectProduct.V.Private
+open import Substrate.Groups.SemidirectProduct.V.SelfToD
+open import Substrate.Groups.SemidirectProduct.V.VFor
+open import Substrate.Groups.SemidirectProduct.V.VForAnchor
+open import Substrate.Groups.SemidirectProduct.V.VForAnchorSends
+open import Substrate.Groups.SemidirectProduct.V.VOfAxisAnchor
+open import Substrate.Groups.SemidirectProduct.V.VOfAxisAnchorSends
+open import Substrate.Groups.SemidirectProduct.V.VOfAxisUnique
+open import Substrate.Groups.SemidirectProduct.V.VSendsD
 open import Substrate.Groups.SemidirectProduct.S
 open import Substrate.Groups.SemidirectProduct.Factorisation
 open import Substrate.Groups.V4-Embedding
@@ -44,8 +52,16 @@ open import Substrate.Cocycles.V4Signature.OrbitKey-S3.S3Elements
 open import Substrate.Cocycles.V4Signature.OrbitKey-S3.S3ToOrbitKey
 open import Substrate.Cocycles.V4Signature.OrbitKey-S3.OrbitKeyRoundTrip
 open import Substrate.Cocycles.V4Signature.OrbitKey-S3.SFinApplyInj
-open import Substrate.Cocycles.V4Signature.OrbitKey-S3.SFinRoundTrip
-  using (orbit-key-to-s3; s3-to-orbit-key; orbit-key-to-s3-of-s3-to-orbit-key)
+-- ⚑ THE CLAUSE MIXED THREE HOMES UNDER ONE DEAD PARENT. `orbit-key-to-s3` is
+-- `.OrbitKeyToS3`'s, `s3-to-orbit-key` is `.S3ToOrbitKey`'s — both SIBLINGS of
+-- `SFinRoundTrip` — and only the roundtrip lemma is genuinely under it, in its own
+-- leaf. That mix is why `rewire_to_leaves` refused: a parent maps onto ITS leaves,
+-- and two of these three were never there to map.
+open import Substrate.Cocycles.V4Signature.OrbitKey-S3.OrbitKeyToS3
+open import Substrate.Cocycles.V4Signature.OrbitKey-S3.S3ToOrbitKey
+open import Substrate.Cocycles.V4Signature.OrbitKey-S3.SFinRoundTrip.OrbitKeyToS3OfS3ToOrbitKey
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
 
 ------------------------------------------------------------------------
 -- Parametric anchor dispatcher.

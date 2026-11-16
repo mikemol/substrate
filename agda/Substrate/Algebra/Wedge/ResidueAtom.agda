@@ -27,7 +27,7 @@
 -- is only the certified (r<b) CANONICALITY of that residue (uniqueness of the
 -- comparison representative) — a smallness refinement, not a missing identity.
 -- Both halves are MECHANIZED in Substrate.Algebra.Wedge.ResidueAtom.Properties
--- (keystone-triangle + prove-or-correct over F₂ and ℕ) — the fix is proved,
+-- (keystone-triangle ℕ+ prove-or-correct over F₂ and ℕ) — the fix is proved,
 -- not just claimed.
 --
 -- No data/record declared here (instances are record VALUES) ⟹ exempt from the
@@ -39,14 +39,20 @@
 
 module Substrate.Algebra.Wedge.ResidueAtom where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans)
-open import Substrate.Foundation.Empty using (⊥)
-open import Substrate.Foundation.Sum using (_⊎_; inj₁; inj₂)
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
-open import Substrate.Foundation.Nat.Properties.Add using (+-identityʳ; +-suc)
-open import Substrate.Algebra.F2 using (F₂; 𝟘; 𝟙; 𝟙≢𝟘)
-  renaming (_+_ to _+₂_)
+open import Substrate.Foundation.Empty.Bot
+open import Substrate.Foundation.Sum.Sum
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Properties.Add.PlusIdentityR
+open import Substrate.Foundation.Nat.Properties.Add.PlusSuc
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.OneNeqZero
+open import Substrate.Algebra.F2.PlusF
+  renaming (_+F_ to _+₂_)
 open import Substrate.Category.Lawvere using (FixedPointFree; TorsorAtom; translate-fpf)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
 
 ------------------------------------------------------------------------
 -- 1. F₂ as a torsor atom: g +₂ x ≡ x ⟹ g ≡ 𝟘 (by F₂'s own disjointness).
@@ -65,18 +71,18 @@ F₂-residue-fpf : FixedPointFree F₂
 F₂-residue-fpf = translate-fpf F₂-torsor 𝟙 𝟙≢𝟘
 
 ------------------------------------------------------------------------
--- 2. ℕ as a torsor atom: g + x ≡ x ⟹ g ≡ 0 (cancellation, by induction on x).
+-- 2. ℕ as a torsor atom: g ℕ+ x ≡ x ⟹ g ≡ 0 (cancellation, by induction on x).
 ------------------------------------------------------------------------
 
 suc-inj : {m n : ℕ} → suc m ≡ suc n → m ≡ n
 suc-inj refl = refl
 
 ℕ-torsor : TorsorAtom ℕ
-ℕ-torsor = record { _∙_ = _+_ ; e = zero ; fix→unit = nat-fix }
+ℕ-torsor = record { _∙_ = _ℕ+_ ; e = zero ; fix→unit = nat-fix }
   where
-    nat-fix : (g x : ℕ) → (g + x) ≡ x → g ≡ zero
-    nat-fix g zero    eq = trans (sym (+-identityʳ g)) eq
-    nat-fix g (suc x) eq = nat-fix g x (suc-inj (trans (sym (+-suc g x)) eq))
+    nat-fix : (g x : ℕ) → (g ℕ+ x) ≡ x → g ≡ zero
+    nat-fix g zero    eq = trans (sym (+ℕ-identityʳ g)) eq
+    nat-fix g (suc x) eq = nat-fix g x (suc-inj (trans (sym (+ℕ-suc g x)) eq))
 
 -- the ℕ residue flip (translate by a non-zero suc k): fixed-point-free.
 ℕ-residue-fpf : (k : ℕ) → FixedPointFree ℕ

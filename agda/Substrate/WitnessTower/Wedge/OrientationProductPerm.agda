@@ -17,19 +17,25 @@
 
 module Substrate.WitnessTower.Wedge.OrientationProductPerm where
 
-open import Substrate.Foundation.Nat using (ℕ; _*_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Times
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Combine using (combine)
 open import Substrate.Foundation.Fin.RemQuot using (remQuot)
 open import Substrate.Foundation.Fin.Combine.RemQuotInverse using (remQuot-combine)
 open import Substrate.Foundation.Fin.Combine.CombineRemQuotInverse using (combine-remQuot)
 open import Substrate.Foundation.Vec using (lookup; tabulate)
-open import Substrate.Foundation.Vec.Properties using (lookup∘tabulate)
+open import Substrate.Foundation.Vec.Properties.LookupComptabulate
 open import Substrate.Foundation.Product using (_,_; proj₁; proj₂)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂)
 open import Substrate.WitnessTower.Enumerate using (Perm)
 open import Substrate.WitnessTower.IsPermutation using (IsPerm)
 open import Substrate.WitnessTower.Wedge.OrientationProduct using (_⊗_)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.Algebra.F2.Linear.Cycle3
 
 ⊗-is-perm : ∀ {m n} (σ : Perm m) (τ : Perm n) →
             IsPerm σ → IsPerm τ → IsPerm (σ ⊗ τ)

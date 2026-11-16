@@ -30,7 +30,7 @@
 
 module Substrate.Conway.SurrealFinite where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Groups.Coxeter.Word using (Word; []; _∷_)
 
 ------------------------------------------------------------------------

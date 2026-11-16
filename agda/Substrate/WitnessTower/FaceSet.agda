@@ -14,8 +14,8 @@
 -- the substrate rejects. The constructive object is what is LEFT of the
 -- universe after wedging S out of it: ★ S = universe +ⱽ S. That is exactly
 -- the wedge's residue r in the reconstruction `universe = recon 1 S r`
--- (Algebra.F2.Wedge: recon q b r = scale q b + r; here q=1, scale 1 S = S,
--- and + is F₂ XOR). `wedge-recon` proves S +ⱽ ★ S ≡ universe — S and its
+-- (Algebra.F2.Wedge: recon q b r = scale q b +F r; here q=1, scale 1 S = S,
+-- and +F is F₂ XOR). `wedge-recon` proves S +ⱽ ★ S ≡ universe — S and its
 -- residue reconstruct the universe — so ★ S is literally "what S is missing
 -- to be everything", computed, not negated. The involution ★★ = id and the
 -- pairing nothing ↔ universe then follow from the F₂-vector ADDITIVE GROUP
@@ -34,13 +34,17 @@
 
 module Substrate.WitnessTower.FaceSet where
 
-open import Substrate.Foundation.Nat using (ℕ; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Vec using (Vec; _∷_; replicate; head; tail)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
-open import Substrate.Algebra.F2 using (F₂; 𝟘; 𝟙; _+_)
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.PlusF
 open import Substrate.Algebra.F2.Vector
   using (Vector; _+ⱽ_; 𝟎ⱽ;
          +ⱽ-identityˡ; +ⱽ-identityʳ; +ⱽ-comm; +ⱽ-assoc; +ⱽ-self-inverse)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- 1. Faces as subsets. A face of Δⁿ is a subset of its n+1 vertices: an
@@ -98,7 +102,7 @@ cone-split (b ∷ f) = refl
 ★ {n} S = universe n +ⱽ S
 
 -- THE WEDGE EQUATION at the faces: S and its residue ★ S reconstruct the
--- universe — `universe = recon 1 S (★ S)` in F₂ (scale 1 S = S, + = XOR).
+-- universe — `universe = recon 1 S (★ S)` in F₂ (scale 1 S = S, +F = XOR).
 -- So ★ S is genuinely the residue: what S is missing to be everything.
 wedge-recon : {n : ℕ} (S : Face n) → (S +ⱽ ★ S) ≡ universe n
 wedge-recon {n} S =
@@ -137,7 +141,7 @@ wedge-recon {n} S =
 --    total universe — which, conveniently, is something we have for k−1."
 --    Through the cone, the universe at dimension n+1 is its apex bit 𝟙 on
 --    the universe at dimension n; so the residue ★ at dimension n+1 is the
---    apex bit's OWN residue (𝟙 + b) consed onto the residue ★ at dimension
+--    apex bit's OWN residue (𝟙 +F b) consed onto the residue ★ at dimension
 --    n. The split we need at k is assembled from the split at k−1, all the
 --    way down to the point (n=0, the self-dual seed). That descent is the
 --    inductive form of the Free⊣Forgetful reconstruction `a = recon q b r`
@@ -149,8 +153,8 @@ universe-cons : (n : ℕ) → universe (suc n) ≡ 𝟙 ∷ universe n
 universe-cons n = refl
 
 -- THE RECURSION: the residue at dimension n+1 of a face (b ∷ f) is the apex
--- bit's residue (𝟙 + b) consed onto the residue of f at dimension n — the
--- k−1 residue we already have. (𝟙 + b) is itself the apex coordinate's wedge
--- residue: quotient b plus residue (𝟙 + b) gives the universe bit 𝟙.
-★-cons : {n : ℕ} (b : F₂) (f : Face n) → ★ (b ∷ f) ≡ (𝟙 + b) ∷ ★ f
+-- bit's residue (𝟙 +F b) consed onto the residue of f at dimension n — the
+-- k−1 residue we already have. (𝟙 +F b) is itself the apex coordinate's wedge
+-- residue: quotient b plus residue (𝟙 +F b) gives the universe bit 𝟙.
+★-cons : {n : ℕ} (b : F₂) (f : Face n) → ★ (b ∷ f) ≡ (𝟙 +F b) ∷ ★ f
 ★-cons b f = refl

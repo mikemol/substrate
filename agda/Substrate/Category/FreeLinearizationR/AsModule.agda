@@ -30,24 +30,12 @@
 
 module Substrate.Category.FreeLinearizationR.AsModule where
 
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Iff using (_⇔_)
 
 open import Substrate.Algebra.Ring using (Ring)
-open import Substrate.Algebra.Module using (Module)
-open import Substrate.Algebra.Module.Hom using (ModuleHom; apply)
 open import Substrate.Algebra.Module.Free using (FreeCarrier)
-open import Substrate.Algebra.Module.Free.Basis
-  using (free-basis; FreeBasisUniversal; images; extension;
-         extension-on-basis; uniqueness)
-open import Substrate.Algebra.Module.Free.UniqueExtension
-  using (FreeModuleExtensionality;
-         FreeBasisUniversalAt; witness; images-≡;
-         extensionality-from-universal)
 open import Substrate.Category.LinearAlgebra using (LinearAlgebra)
-open import Substrate.Category.FreeLinearizationR using (FreeLinearizationR)
 
 ------------------------------------------------------------------------
 -- 1. Compatibility record: a LinearAlgebra LA "is" a Module-tower

@@ -23,10 +23,13 @@ module Substrate.Category.DeloopingGroup where
 open import Substrate.Algebra.Group using (Group; monoid; inv; inv-left; inv-right)
 open import Substrate.Category.Delooping using (deloop)
 
--- IsIso / IsGroupoid now live in Category.Iso (pure CategoryOf notions);
--- re-exported here so existing importers (WitnessTower.M40Groupoid) are
--- unaffected.
-open import Substrate.Category.Iso using (IsIso; IsGroupoid) public
+-- IsIso / IsGroupoid live in Category.Iso (pure CategoryOf notions).
+-- ⚑ `public` RETIRED (Ⓑ2c).  The removed clause said it was *"re-exported here
+-- so existing importers (WitnessTower.M40Groupoid) are unaffected"* — a shim
+-- naming the ONE consumer it existed for.  That consumer now binds `Category.Iso`
+-- directly (the other, `FourPointGroupoid`, already did), so the shim's stated
+-- reason is discharged rather than merely removed.
+open import Substrate.Category.Iso using (IsIso; IsGroupoid)
 
 ------------------------------------------------------------------------
 -- THE bridge: delooping a Group yields a groupoid. inverse = group inverse;

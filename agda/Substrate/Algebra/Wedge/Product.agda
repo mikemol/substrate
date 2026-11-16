@@ -6,7 +6,7 @@
 -- whose output grade is the SUM of the input grades (degrees add, like the
 -- exterior algebra wedge ∧). A graded monoid.
 --
---   _∧_ : C i → C j → C (i + j)     two input dimensions (i, j), one output (i+j)
+--   _∧_ : C i → C j → C (i ℕ+ j)     two input dimensions (i, j), one output (i+j)
 --
 -- THE THREE LENSES the user named, all realised here:
 --   * "wedge product, two input dimensions, one output dimension" — _∧_ itself;
@@ -34,12 +34,15 @@
 
 module Substrate.Algebra.Wedge.Product where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Times
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; _++_; replicate)
-open import Substrate.Foundation.Eq using (_≡_; refl; cong)
 open import Substrate.Foundation.Product using (Σ; _,_)
 open import Substrate.Algebra.Wedge using (DivStr)
 open import Substrate.Algebra.Wedge.Graded using (GradedDivStr)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- 1. The wedge product: a ℕ-graded carrier with unit and a degree-adding
@@ -55,7 +58,7 @@ module _ (C : ℕ → Set) where
   record GradedProduct : Set where
     field
       u   : C 0                              -- the grade-0 unit (the empty wedge)
-      _∧_ : {i j : ℕ} → C i → C j → C (i + j)
+      _∧_ : {i j : ℕ} → C i → C j → C (i ℕ+ j)
 
   open GradedProduct public
 
@@ -76,7 +79,7 @@ gpower P b (suc n) = _∧_ P b (gpower P b n)
 
 ------------------------------------------------------------------------
 -- 3. GradedDivStr is the +1-step slice: each step wedges with a grade-1
---    increment (on the left, so the output grade 1 + n = suc n). The residue
+--    increment (on the left, so the output grade 1 ℕ+ n = suc n). The residue
 --    type is the grade-1 part — the increment.
 ------------------------------------------------------------------------
 
@@ -120,7 +123,7 @@ vec-recon-cons A n v a = refl
 -- GRADE component `qn` is the count (the flattened carrier carries its own grade,
 -- so the count-as-grade reading is intrinsic — no bare ℕ quotient).
 flatten-recon : {C : ℕ → Set} (P : GradedProduct C) → Σ ℕ C → Σ ℕ C → Σ ℕ C → Σ ℕ C
-flatten-recon P (qn , _) (i , b) (j , r) = (qn * i) + j , _∧_ P (gpower P b qn) r
+flatten-recon P (qn , _) (i , b) (j , r) = (qn * i) ℕ+ j , _∧_ P (gpower P b qn) r
 
 flatten : {C : ℕ → Set} → GradedProduct C → DivStr (Σ ℕ C)
 flatten {C} P = record { z = 0 , u P ; recon = flatten-recon P }

@@ -43,11 +43,17 @@
 
 module Substrate.Category.MultiSylowComposition where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_; _≤_; z≤n; s≤s; _⊔_)
+-- ⚑ THE LAST REFERENCE TO THE RETIRED `Foundation.Nat` BARREL, and it asked for
+-- `_⊔_` — a name with NO definer anywhere in the tree (`agda_defs '_⊔_'`).  So
+-- the `using` list outlived not just the barrel but one of the names it named.
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Times
+open import Substrate.Foundation.Nat.Le
 open import Substrate.Foundation.List using (List; []; _∷_)
 open import Substrate.Foundation.List.Length using (length)
 open import Substrate.Foundation.Product using (_×_; _,_; Σ-syntax)
-open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- A SylowPrime is a prime number ∈ the substrate's gauge group

@@ -13,35 +13,16 @@
 
 module Substrate.Linguistic.ClosureCapstone where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Vec using (Vec; []; _∷_)
-open import Substrate.Foundation.Eq using (_≡_; refl)
 
 -- Re-export the D-arc slices publicly.
-open import Substrate.TokiPona.ModifierBilinear.WithBasisAction
-  using (bilinear-modify; bilinear-modify-on-basis;
-         bilinear-modify-linear-right)
-open import Substrate.Kelen.RelationCompose
-  using (_∘ᴿ_; ∘ᴿ-identityˡ; ∘ᴿ-identityʳ; ∘ᴿ-assoc)
-open import Substrate.Invented.LieFragment.AntiCommutativity
-  using (_≈ₐ_; refl-≈; sym-≈; trans-≈; swap; anti-commutative)
-open import Substrate.Invented.LieFragment.Jacobi
-  using (LieAlgExpr; _≈L_; jacobi-L; swap-L; jacobi-identity)
-open import Substrate.Solresol.FreeLinearTransposition
-  using (transpose-word-on-basis; transpose-word-++;
-         transpose-word-unique)
-open import Substrate.Lojban.AsCCC.RetroactiveAlignment
-  using (lojban-η-is-single; program-on-single-is-op;
-         lojban-witness-class; lojban-witness-name)
-open import Substrate.TokiPona.AsLinearBridge.RetroactiveAlignment
-  using (tokipona-η-is-nimi-as-vector;
-         tokipona-witness-class; tokipona-witness-name)
-open import Substrate.Linguistic.RetroactiveAlignment
-  using (FullRetroactiveAlignment; full-alignment;
-         WitnessAlignment)
-open import Substrate.Linguistic.ClosureLog
-  using (ClosureEntry; closure-log; closure-count;
-         DeferredItem; ClosureSlice)
+open import Substrate.Lojban.AsCCC.RetroactiveAlignment.LojbanWitnessClass
+open import Substrate.TokiPona.AsLinearBridge.RetroactiveAlignment.TokiponaWitnessClass
+open import Substrate.Linguistic.RetroactiveAlignment.FullAlignment
+open import Substrate.Linguistic.RetroactiveAlignment.FullRetroactiveAlignment
+open import Substrate.Linguistic.ClosureLog.ClosureCount
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. Regression imports.

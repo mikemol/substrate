@@ -10,13 +10,13 @@
 
 module Substrate.Cocycles.V4Signature.Codeword.ReservedSignedMaps where
 
-open import Substrate.Foundation.Bool using (Bool; false)
+open import Substrate.Foundation.Bool.Bool
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
-open import Substrate.Foundation.Eq using (refl)
 open import Substrate.Axes.Axis using (Axis)
 open import Substrate.Cocycles.V4Signature.Codeword.Subtypes using (Reserved)
 open import Substrate.Cocycles.V4Signature.Codeword.AxisBits
   using (axis-from-bits; axis-to-bits)
+open import Substrate.Foundation.Eq
 
 reserved-to-signed : Reserved → Axis × Bool
 reserved-to-signed ((b₀v , b₁v , b₂v , _ , _) , _) =

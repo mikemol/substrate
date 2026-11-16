@@ -11,11 +11,11 @@ module Substrate.Groups.Actions.Z2-on-Z3.ActEpsilonN.LetterEpsilon where
 
 import Substrate.Groups.Coxeter.Cyclic.Existential 1 as Z₂E
 open import Substrate.Groups.Coxeter.Word using ([])
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Foundation.Fin.Literals using (₁)
 open import Substrate.Foundation.Fin.Fin
 
 open import Substrate.Groups.Actions.Z2-on-Z3.Act using (act-letter)
+open import Substrate.Foundation.Eq
 
 act-letter-ε : ∀ {h} → Z₂E.Canonical-ex h → act-letter h [] ≡ []
 act-letter-ε (Z₂E.c-pos zero) = refl

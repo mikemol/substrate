@@ -29,7 +29,7 @@
 
 open import Substrate.Foundation.Level using (Level)
 
-open import Substrate.Category.CategoryOf using (CategoryOf)
+open import Substrate.Category.CategoryOf.CategoryOf
 open import Substrate.Category.Functor using (Functor)
 
 module Substrate.Category.LieAlgebra.AsFunctor
@@ -47,7 +47,6 @@ module Substrate.Category.LieAlgebra.AsFunctor
 
 open import Substrate.Category.Functor.AsNamed
   Assoc Lie U-Lie public
-  renaming (named-Functor to UnderlyingLie-Functor)
 ------------------------------------------------------------------------
 -- 2. Capstone — U_Lie : Assoc → Lie as a substrate Functor.
 --

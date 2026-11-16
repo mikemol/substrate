@@ -20,11 +20,11 @@
 
 module Substrate.Algebra.Wedge.InclusionBridge where
 
-open import Substrate.Foundation.Eq using (refl)
-open import Substrate.Algebra.Z using (+_)
+open import Substrate.Algebra.Z.Int
 open import Substrate.Algebra.Z.Wedge using (ℤ-div)
 open import Substrate.Algebra.Wedge using (ℕ-div; Trace)
 open import Substrate.Algebra.Wedge.Bridge using (Bridge; transport-trace)
+open import Substrate.Foundation.Eq
 
 -- ℕ ↪ ℤ: the non-negative coercion respects recon definitionally.
 include-ℕℤ : Bridge ℕ-div ℤ-div

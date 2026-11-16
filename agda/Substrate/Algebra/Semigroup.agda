@@ -11,8 +11,8 @@
 
 module Substrate.Algebra.Semigroup where
 
-open import Substrate.Foundation.Eq using (_≡_)
 open import Substrate.Algebra.Magma using (Magma)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. The Semigroup record.

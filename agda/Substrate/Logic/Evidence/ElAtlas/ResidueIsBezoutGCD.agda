@@ -25,13 +25,13 @@
 
 module Substrate.Logic.Evidence.ElAtlas.ResidueIsBezoutGCD where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Algebra.Nat.GCD.GcdN using (gcd-ℕ)
 open import Substrate.Algebra.Nat.GCD.GcdTrace using (coprime-trace)
 open import Substrate.Algebra.Nat.GCD.EEATrace using (EEATrace)
 open import Substrate.Algebra.Wedge.CrossMul using (cross)
 open import Substrate.Logic.Evidence.ElAtlas.CenterIsStarCRT using (crt-mix; e₁; e₂; clean-cross)
 open import Substrate.Logic.Evidence.ElAtlas.CenterIsStarNumeral using (numeral-mix; obstruction-cross)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. Coprime (gcd ≡ 1) ⟹ orthogonal, no residue (the CRT case). The EEA

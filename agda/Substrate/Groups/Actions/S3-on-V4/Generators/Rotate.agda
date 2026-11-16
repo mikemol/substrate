@@ -9,7 +9,7 @@
 module Substrate.Groups.Actions.S3-on-V4.Generators.Rotate where
 
 import Substrate.Groups.V4.Operations as V4
-open import Substrate.Groups.V4.Bijection using (V₄; e; α; β; γ)
+open import Substrate.Groups.V4.Bijection.V4
 
 rotate : V₄ → V₄
 rotate e = e

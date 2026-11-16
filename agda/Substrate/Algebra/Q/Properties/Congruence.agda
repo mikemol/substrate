@@ -15,16 +15,25 @@
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.Algebra.Q.Properties.Congruence where
+open import Substrate.Algebra.Z.Add
+open import Substrate.Algebra.Z.Mul
 
-open import Substrate.Foundation.Nat using (suc; _*_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Times
 open import Substrate.Foundation.Nat.Properties.Mul using (*-comm; *-assoc)
-open import Substrate.Foundation.Eq using (_≡_; sym; trans; cong; cong₂)
-open import Substrate.Algebra.Z using (ℤ; +_)
-open import Substrate.Algebra.Z.Arithmetic using (_+ℤ_; _*ℤ_)
+open import Substrate.Algebra.Z.Int
+
 open import Substrate.Algebra.Z.Properties.MulFull using (*ℤ-assoc; *ℤ-distribʳ-+; quadℤ)
-open import Substrate.Algebra.Q using (ℚ; mkℚ; num; den-1)
+open import Substrate.Algebra.Q.Rat
 open import Substrate.Algebra.Q.Arithmetic using (_+ℚ_; _*ℚ_)
 open import Substrate.Algebra.Q.Equiv using (_≈ℚ_)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.Algebra.Q.Mul
+open import Substrate.Algebra.Q.Add
 
 ------------------------------------------------------------------------
 -- Multiplication respects ≈ℚ.

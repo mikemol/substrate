@@ -11,8 +11,7 @@
 
 {-# OPTIONS --safe --without-K #-}
 
-open import Substrate.Foundation.Level using (Level)
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 
 open import Substrate.Category.VertexOperatorAlgebra
   using (VertexOperatorAlgebra)

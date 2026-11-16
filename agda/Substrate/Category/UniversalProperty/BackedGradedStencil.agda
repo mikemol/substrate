@@ -22,21 +22,28 @@
 
 module Substrate.Category.UniversalProperty.BackedGradedStencil where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _<_)
+open import Substrate.Foundation.Nat.Lt
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Unit using (⊤)
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
-open import Substrate.Foundation.Eq using (_≡_)
 open import Substrate.Algebra.Wedge using (recon; ℕ-div; rem; wedge-eq)
 open import Substrate.Algebra.Wedge.Coalgebra using (WedgeCoalg; divide)
-open import Substrate.Algebra.Nat.Mod using (mod-suc-bound)
+open import Substrate.Foundation.Nat.Nat.ModSuc
+open import Substrate.Algebra.Nat.Mod.ModSucBound
+open import Substrate.Algebra.Nat.Mod.ModSucId
+open import Substrate.Algebra.Nat.Mod.ModSucPeriodic
+open import Substrate.Algebra.Nat.Mod.ModSucSuc
+open import Substrate.Algebra.Nat.Mod.SucModSucLt
+open import Substrate.Algebra.Nat.Mod.SucModSucSelf
 open import Substrate.Algebra.R.Trace using (RealTrace; head; tail)
-open import Substrate.Algebra.R.Trace.Bisim using (_~_)
+open import Substrate.Algebra.R.Trace.Bisim.Op
 open import Substrate.Algebra.Wedge.NuShapeIso
   using (QState; quotient-coalg; shape-stream; shape-is-canonical)
 open import Substrate.Category.UniversalProperty.NuBackedGraded using (nu-solve; ℕ-coalg)
 open import Substrate.Category.UniversalProperty.BackedGradedUnique using (nu-step-uniqueᴳ)
 open import Substrate.Category.UniversalProperty.UniquenessStencilAbstract
   using (UniquenessStencil; PerSource; MapLevel)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- The predicate slots (the CrossMul "coherence" gates + witness specs).

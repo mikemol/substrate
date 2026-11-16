@@ -20,7 +20,7 @@
 
 module Substrate.Conway.OrderTrans where
 
-open import Substrate.Foundation.Nat using (ℕ; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Conway.SurrealFinite using (SurrealFinite)
 open import Substrate.Conway.Order using (_≤ⁿ_)
 

@@ -21,10 +21,10 @@
 --
 -- THE GROUP STRUCTURE IS FREE (§5): `sign` is already a homomorphism
 -- (`sign-hom`, `sign-id`), so post-composing the proven Bool↔F₂ additive
--- op-hom gives `sign₂ : Perm N → F₂` with `sign₂ (σ∘τ) ≡ sign₂ σ + sign₂ τ`.
+-- op-hom gives `sign₂ : Perm N → F₂` with `sign₂ (σ∘τ) ≡ sign₂ σ +F sign₂ τ`.
 -- The section `s` need NOT be a hom — `split-Canonical` uses it only through
 -- `cong s` — which is why the group iso costs nothing beyond the section.
--- (Precedent: `factor-Canonical` + `product-++`, Nat/Prime/Properties — the
+-- (Precedent: `factor-Canonical` +F `product-++`, Nat/Prime/Properties — the
 -- fold is a monoid hom ⟹ the induced bijection is a monoid iso.)
 --
 -- ⚑ ARITY (load-bearing): `sadj n j` needs `j : Fin n` and lands in
@@ -45,12 +45,19 @@
 
 module Substrate.Algebra.Quotient.PermSign where
 
-open import Substrate.Foundation.Nat using (ℕ; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Bool using (Bool; true; false)
-open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym; cong)
-open import Substrate.Algebra.Quotient
-open import Substrate.Algebra.F2 using (F₂; 𝟘; _+_)
+open import Substrate.Foundation.Bool.Bool
+open import Substrate.Algebra.Quotient.ApproxcanonicalEq
+open import Substrate.Algebra.Quotient.Canonical
+open import Substrate.Algebra.Quotient.CanonicalEqApprox
+open import Substrate.Algebra.Quotient.IdemCanonical
+open import Substrate.Algebra.Quotient.KerQuotient
+open import Substrate.Algebra.Quotient.KerRel
+open import Substrate.Algebra.Quotient.Quotient
+open import Substrate.Algebra.Quotient.SplitCanonical
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.PlusF
 open import Substrate.Algebra.F2.FromBool using (bool→F₂; bool→F₂-xor)
 open import Substrate.WitnessTower.Enumerate using (Perm)
 open import Substrate.WitnessTower.FirstAppearance using (id-perm; compose)
@@ -61,6 +68,10 @@ open import Substrate.WitnessTower.Wedge.OrientationRigCatPermCoxeterGeneral
   using (sadj)
 open import Substrate.WitnessTower.CommutatorSubgroup using (InComm; InComm→even)
 open import Substrate.WitnessTower.EvenInComm.Properties using (even→InComm-perm)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Cong
 
 module _ (n' : ℕ) where
 
@@ -130,7 +141,7 @@ module _ (n' : ℕ) where
 
   ------------------------------------------------------------------------
   -- 5. THE GROUP ISO, in F₂. `sign` is a hom into (Bool, xor, false); the
-  --    proven additive op-hom `bool→F₂-xor` carries it to (F₂, +, 𝟘).
+  --    proven additive op-hom `bool→F₂-xor` carries it to (F₂, +F, 𝟘).
   ------------------------------------------------------------------------
 
   sign₂ : Perm N → F₂
@@ -140,7 +151,7 @@ module _ (n' : ℕ) where
   sign₂-id = cong bool→F₂ (sign-id {N})
 
   sign₂-hom : (σ τ : Perm N) → IsPerm σ → IsPerm τ →
-              sign₂ (compose σ τ) ≡ (sign₂ σ + sign₂ τ)
+              sign₂ (compose σ τ) ≡ (sign₂ σ +F sign₂ τ)
   sign₂-hom σ τ pσ pτ =
     trans (cong bool→F₂ (sign-hom σ τ pσ pτ))
           (bool→F₂-xor (sign σ) (sign τ))
@@ -153,7 +164,7 @@ module _ (n' : ℕ) where
 --     representatives are the two-element set {id-perm, sadj₀} ≅ Z/2;
 --   · §4 identifies ker sign's identity-class with the commutator subgroup
 --     [Sₙ,Sₙ] (= Aₙ), so that quotient IS the abelianization;
---   · §5 makes it a GROUP iso into (F₂, +, 𝟘), for free from `sign-hom`.
+--   · §5 makes it a GROUP iso into (F₂, +F, 𝟘), for free from `sign-hom`.
 -- Together: the sign is THE nontrivial abelian character of Sₙ on the
 -- concrete carrier — "the whole abelianization is one bit."
 ------------------------------------------------------------------------

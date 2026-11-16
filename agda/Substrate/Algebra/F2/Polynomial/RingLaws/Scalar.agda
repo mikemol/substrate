@@ -10,14 +10,25 @@
 
 module Substrate.Algebra.F2.Polynomial.RingLaws.Scalar where
 
-open import Substrate.Algebra.F2 using (F₂; _+_; _·_; ·-comm; ·-assoc; ·-absorbʳ; ·-distribˡ-+)
+open import Substrate.Algebra.F2.AbsorbR
+open import Substrate.Algebra.F2.Assoc
+open import Substrate.Algebra.F2.Comm
+open import Substrate.Algebra.F2.DistribLPlus
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.Op
+open import Substrate.Algebra.F2.PlusF
 open import Substrate.Algebra.F2.Vector using (_+ⱽ_; _*ₛ_)
 open import Substrate.Algebra.F2.Polynomial using (Polynomial; _*P_)
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Vec using ([]; _∷_)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂; subst)
 open import Substrate.Algebra.F2.Polynomial.RingLaws.Nth using (nth; nth-*ₛ)
 open import Substrate.Algebra.F2.Polynomial.RingLaws.Conv using (convCoeff; nth-*P; nth-ext)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.Foundation.Eq.Subst
 
 swap-· : (a c x : F₂) → a · (c · x) ≡ c · (a · x)
 swap-· a c x = trans (sym (·-assoc a c x)) (trans (cong (_· x) (·-comm a c)) (·-assoc c a x))
@@ -28,7 +39,7 @@ convCoeff-scalarˡ : ∀ {n m} (c : F₂) (p : Polynomial n) (q : Polynomial m) 
 convCoeff-scalarˡ c []      q k       = sym (·-absorbʳ c)
 convCoeff-scalarˡ c (a ∷ p) q zero    = ·-assoc c a (nth q zero)
 convCoeff-scalarˡ c (a ∷ p) q (suc k) =
-  trans (cong₂ _+_ (·-assoc c a (nth q (suc k))) (convCoeff-scalarˡ c p q k))
+  trans (cong₂ _+F_ (·-assoc c a (nth q (suc k))) (convCoeff-scalarˡ c p q k))
         (sym (·-distribˡ-+ c (a · nth q (suc k)) (convCoeff p q k)))
 
 *P-scalarˡ : ∀ {n m} (c : F₂) (p : Polynomial n) (q : Polynomial m)
@@ -45,7 +56,7 @@ convCoeff-scalarʳ c []      q k       = sym (·-absorbʳ c)
 convCoeff-scalarʳ c (a ∷ p) q zero    =
   trans (cong (a ·_) (nth-*ₛ c q zero)) (swap-· a c (nth q zero))
 convCoeff-scalarʳ c (a ∷ p) q (suc k) =
-  trans (cong₂ _+_ (trans (cong (a ·_) (nth-*ₛ c q (suc k))) (swap-· a c (nth q (suc k))))
+  trans (cong₂ _+F_ (trans (cong (a ·_) (nth-*ₛ c q (suc k))) (swap-· a c (nth q (suc k))))
                    (convCoeff-scalarʳ c p q k))
         (sym (·-distribˡ-+ c (a · nth q (suc k)) (convCoeff p q k)))
 

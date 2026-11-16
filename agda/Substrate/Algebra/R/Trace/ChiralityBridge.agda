@@ -20,11 +20,13 @@
 
 module Substrate.Algebra.R.Trace.ChiralityBridge where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Eq using (_≡_; refl; cong)
-open import Substrate.Algebra.F2 using (F₂; 𝟘; 𝟙; _+_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.PlusF
 open import Substrate.Algebra.N-to-F2-Parity using (parity)
 open import Substrate.Cocycles.V4Signature.Chirality.Type using (Chirality; even; odd)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- det-sign n : the CF-determinant's SIGN (in ℤ/2 = F₂) after n Euclidean
@@ -34,7 +36,7 @@ open import Substrate.Cocycles.V4Signature.Chirality.Type using (Chirality; even
 ------------------------------------------------------------------------
 det-sign : ℕ → F₂
 det-sign zero    = 𝟘
-det-sign (suc n) = 𝟙 + det-sign n
+det-sign (suc n) = 𝟙 +F det-sign n
 
 ------------------------------------------------------------------------
 -- BRIDGE 1: det-sign IS parity — the det-flip ℤ/2 (per-step negation) equals
@@ -44,7 +46,7 @@ det-sign (suc n) = 𝟙 + det-sign n
 ------------------------------------------------------------------------
 det-sign-is-parity : (n : ℕ) → det-sign n ≡ parity n
 det-sign-is-parity zero    = refl
-det-sign-is-parity (suc n) = cong (𝟙 +_) (det-sign-is-parity n)
+det-sign-is-parity (suc n) = cong (𝟙 +F_) (det-sign-is-parity n)
 
 ------------------------------------------------------------------------
 -- BRIDGE 2: the F₂ ℤ/2 relabels to CY5's Chirality (even/odd). 𝟘 ↦ even
@@ -68,7 +70,7 @@ chirality-is-parity n = cong chirality (det-sign-is-parity n)
 ------------------------------------------------------------------------
 det-sign-involutive : (n : ℕ) → det-sign (suc (suc n)) ≡ det-sign n
 det-sign-involutive n = flip²
-  where flip² : 𝟙 + (𝟙 + det-sign n) ≡ det-sign n
+  where flip² : 𝟙 +F (𝟙 +F det-sign n) ≡ det-sign n
         flip² with det-sign n
         ... | 𝟘 = refl
         ... | 𝟙 = refl

@@ -9,13 +9,13 @@
 
 module Substrate.Algebra.GL3F2.MultiRouteEquivariance.Cycle3GL where
 
-open import Substrate.Foundation.Eq using (_≡_)
 open import Substrate.Algebra.F2.Vector using (Vector)
-open import Substrate.Algebra.F2.Linear using (apply)
+open import Substrate.Algebra.F2.Linear.Linear
 open import Substrate.Algebra.GL3F2 using (GL3F2; mkGL3F2)
 open import Substrate.Algebra.GL3F2.GaugeGenerators
   using (cycle3-Linear; HasOrder-cycle3)
 open import Substrate.Algebra.GL3F2.MultiRouteEquivariance.Cycle3Inv using (cycle3-inv)
+open import Substrate.Foundation.Eq
 
 cycle3-GL : GL3F2
 cycle3-GL = mkGL3F2 cycle3-Linear cycle3-inv left-witness right-witness

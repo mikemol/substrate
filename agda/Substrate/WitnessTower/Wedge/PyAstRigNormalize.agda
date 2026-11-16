@@ -31,18 +31,23 @@
 
 module Substrate.WitnessTower.Wedge.PyAstRigNormalize where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Op
-open import Substrate.Foundation.Eq using (_≡_; refl; cong; cong₂; trans; sym)
-open import Substrate.Foundation.Empty using (⊥-elim)
-open import Substrate.Foundation.Negation using (Dec; yes; no)
+open import Substrate.Foundation.Empty.BotElim
+open import Substrate.Foundation.Negation.Dec
 open import Substrate.Foundation.List using (List; []; _∷_; _++_)
 open import Substrate.Algebra.Semiring.SPPF using (SPPF; gen; one; _⊗_; _⊕_)
 open import Substrate.WitnessTower.Enumerate using (Perm)
 open import Substrate.WitnessTower.SnGroup using (apply)
 open import Substrate.WitnessTower.IsPermutation using (IsPerm)
 open import Substrate.WitnessTower.Wedge.PyAstRig using (Objpy; mapSPPF; mapSPPF-∘; act)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Algebra.Polynomial.Graded.Mod
 
 ------------------------------------------------------------------------
 -- list map (local; keeps this module's imports minimal) + its ++-law.
@@ -85,7 +90,7 @@ positions-map f (a ⊕ b) =
 
 rank : {n : ℕ} → List (Fin n) → Fin n → ℕ
 rank []       y = zero
-rank (x ∷ xs) y with x ≟ y
+rank (x ∷ xs) y with x ≟ᶠ y
 ... | yes _ = zero
 ... | no  _ = suc (rank xs y)
 
@@ -97,7 +102,7 @@ rank-inj : {n m : ℕ} (f : Fin n → Fin m) →
            (xs : List (Fin n)) (y : Fin n) →
            rank (mapL f xs) (f y) ≡ rank xs y
 rank-inj f inj []       y = refl
-rank-inj f inj (x ∷ xs) y with f x ≟ f y | x ≟ y
+rank-inj f inj (x ∷ xs) y with f x ≟ᶠ f y | x ≟ᶠ y
 ... | yes _ | yes _ = refl
 ... | yes p | no ¬q = ⊥-elim (¬q (inj x y p))
 ... | no ¬p | yes q = ⊥-elim (¬p (cong f q))

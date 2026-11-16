@@ -62,12 +62,11 @@
 
 module Substrate.WitnessTower.LeibnizDet where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.Algebra.F2 using (F₂; 𝟘; 𝟙)
+open import Substrate.Algebra.F2.F2
 open import Substrate.WitnessTower.Enumerate using (perms; lengthL)
-open import Substrate.WitnessTower.LehmerPath using (encode)
+open import Substrate.WitnessTower.LehmerPath.Encode
 open import Substrate.WitnessTower.TowerCocycleGraded using (signF)
 open import Substrate.WitnessTower.Sn using (enumerate; enumerate-is-perm)
 import Substrate.WitnessTower.LeibnizMonomial as LM
@@ -77,6 +76,10 @@ open import Substrate.Algebra.Magma     using (Magma)
 open import Substrate.Algebra.Semigroup using (magma)
 open import Substrate.Algebra.Monoid    using (semigroup; ε)
 open import Substrate.Algebra.Semiring  using (Semiring; +-monoid; *-monoid)
+open import Substrate.Foundation.Eq
+open import Substrate.Category.DiscreteFourierTransform
+open import Substrate.Algebra.F2.PlusF
+open import Substrate.Algebra.Z.MPolySemiring
 
 ------------------------------------------------------------------------
 -- 1. THE DETERMINANT SUM.
@@ -122,7 +125,7 @@ module Det (A : Set) (S : Semiring A) where
 -- 3. NON-VACUITY POLES at ℤ.
 --
 -- The order-2 root of unity is ℤ's −1, `-suc 0`, and its `ε₂-sq` obligation
--- `(-suc 0) *ℤ (-suc 0) ≡ + 1` is DISCHARGED BY THE SEMIRING INSTANCE'S OWN
+-- `(-suc 0) *ℤ (-suc 0) ≡ +F 1` is DISCHARGED BY THE SEMIRING INSTANCE'S OWN
 -- WITNESS — `Semiring.Instances.Z` §4 `mul-sign-computes`, which is there
 -- precisely as "the SIGN rule (−1)·(−1) = 1". So the sign the determinant
 -- spends here IS the semiring's own μ₂, applied by multiplication — no negation
@@ -133,7 +136,7 @@ module Det (A : Set) (S : Semiring A) where
 -- EEAUnitBezout — so the pole is homed here rather than off in Algebra.Z.)
 ------------------------------------------------------------------------
 
-open import Substrate.Algebra.Z using (ℤ; +_; -suc_)
+open import Substrate.Algebra.Z.Int
 open import Substrate.Algebra.Semiring.Instances.Z using (ℤ-semiring; mul-sign-computes)
 
 open Det ℤ ℤ-semiring using (Mat)
@@ -141,26 +144,26 @@ open Det.WithSign ℤ ℤ-semiring (-suc 0) mul-sign-computes using (det)
 
 -- M2 = [[2,3],[5,7]]; det = 2·7 − 3·5 = 14 − 15 = −1.
 M2 : Mat 2
-M2 zero                   = + 2
-M2 (suc zero)             = + 3
-M2 (suc (suc zero))       = + 5
-M2 (suc (suc (suc zero))) = + 7
+M2 zero                   = +F 2
+M2 (suc zero)             = +F 3
+M2 (suc (suc zero))       = +F 5
+M2 (suc (suc (suc zero))) = +F 7
 
 det-M2 : det {2} M2 ≡ -suc 0
 det-M2 = refl
 
--- M3 = [[1,2,3],[4,5,6],[7,8,10]]; det = 1(50−48) − 2(40−42) + 3(32−35) = −3.
+-- M3 = [[1,2,3],[4,5,6],[7,8,10]]; det = 1(50−48) − 2(40−42) +F 3(32−35) = −3.
 -- All six signed 3×3 terms — the full enumerate/encode/mono/sign/sum pipeline.
 M3 : Mat 3
-M3 zero                                     = + 1
-M3 (suc zero)                               = + 2
-M3 (suc (suc zero))                         = + 3
-M3 (suc (suc (suc zero)))                   = + 4
-M3 (suc (suc (suc (suc zero))))             = + 5
-M3 (suc (suc (suc (suc (suc zero)))))       = + 6
-M3 (suc (suc (suc (suc (suc (suc zero)))))) = + 7
-M3 (suc (suc (suc (suc (suc (suc (suc zero))))))) = + 8
-M3 (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))) = + 10
+M3 zero                                     = +F 1
+M3 (suc zero)                               = +F 2
+M3 (suc (suc zero))                         = +F 3
+M3 (suc (suc (suc zero)))                   = +F 4
+M3 (suc (suc (suc (suc zero))))             = +F 5
+M3 (suc (suc (suc (suc (suc zero)))))       = +F 6
+M3 (suc (suc (suc (suc (suc (suc zero)))))) = +F 7
+M3 (suc (suc (suc (suc (suc (suc (suc zero))))))) = +F 8
+M3 (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))) = +F 10
 
 det-M3 : det {3} M3 ≡ -suc 2
 det-M3 = refl

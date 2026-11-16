@@ -12,13 +12,10 @@
 
 module Substrate.Probability.KLDivergence.Sites.QFin where
 
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Level using (Level)
 
-open import Substrate.Algebra.Q using (ℚ; mkℚ)
-open import Substrate.Algebra.Z using (0ℤ)
+open import Substrate.Algebra.Q.Rat
+open import Substrate.Algebra.Z.ZeroInt
 
-open import Substrate.Probability.Entropy
 open import Substrate.Probability.Entropy.Sites.QFin using (ℚ-EntropyFunctor)
 open import Substrate.Probability.KLDivergence
 

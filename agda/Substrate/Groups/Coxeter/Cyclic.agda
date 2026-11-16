@@ -33,9 +33,10 @@
 
 {-# OPTIONS --safe --without-K #-}
 
-open import Substrate.Foundation.Nat using (ℕ)
 
+-- ⚑ ABOVE THE HEADER because the telescope names these types;
+-- an import below the header binds nothing for the header itself.
+open import Substrate.Foundation.Nat.Nat
 module Substrate.Groups.Coxeter.Cyclic (n : ℕ) where
 
-open import Substrate.Groups.Coxeter.Cyclic.NthPower     n
 open import Substrate.Groups.Coxeter.Cyclic.InvCanonical n

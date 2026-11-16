@@ -25,9 +25,7 @@
 
 module Substrate.Groups.S4-AsOpcodeAlgebra where
 
-open import Substrate.Foundation.Level using (Level; _⊔_) renaming (suc to lsuc)
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Product using (Σ; _,_)
+open import Substrate.Foundation.Nat.Nat
 
 open import Substrate.Category.OpcodeAlgebra
   using (OpcodeAlgebra; OpcodeCategory;
@@ -35,6 +33,7 @@ open import Substrate.Category.OpcodeAlgebra
          grown-composite; sequitur-control; stack-control;
          lambda-var; introspection;
          categorise; apply; execute)
+open import Substrate.Algebra.F2.Polynomial.Wedge.SBoxTable
 
 ------------------------------------------------------------------------
 -- 1. The opcode index type for the codec's S₄ algebra.

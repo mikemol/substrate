@@ -15,12 +15,10 @@ module Substrate.Pedagogy.RosettaToSection where
 open import Substrate.Groups.Coxeter.Word using (Word; []; _∷_)
 open import Substrate.Category.FreeOverBasis
   using (name; class)
-open import Substrate.Linguistic.Roster using (witness-of)
-open import Substrate.Linguistic.RosettaTable
-  using (RosettaEntry)
+open import Substrate.Linguistic.Roster.WitnessOf
+open import Substrate.Linguistic.RosettaTable.RosettaEntry
 open RosettaEntry public
-open import Substrate.Linguistic.Classification
-  using (_⊎-OR_; here; there)
+open import Substrate.Linguistic.Classification.SumOR
 open import Substrate.Pedagogy.MarkdownToken
   using (MarkdownToken; TextSymbol;
          txt-rosetta-table; txt-name; txt-class; txt-vs;

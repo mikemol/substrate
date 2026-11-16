@@ -8,8 +8,8 @@
 -- TRANSPOSITION. A signed value becomes a pair of ℕ rails ⟨positive, negative⟩,
 -- and every claim about it is re-stated as a ℕ equation with no subtraction:
 --
---     a − b ≡ c − d      becomes      a + d ≡ c + b          (`_≈D_`)
---     det   ≡ −2         becomes      det⁺ + 2 ≡ det⁻ + 0    (§4)
+--     a − b ≡ c − d      becomes      a ℕ+ d ≡ c ℕ+ b          (`_≈D_`)
+--     det   ≡ −2         becomes      det⁺ ℕ+ 2 ≡ det⁻ ℕ+ 0    (§4)
 --
 -- That rewriting IS the gauge. Nothing below mentions `-ℤ_`.
 --
@@ -19,7 +19,7 @@
 -- and it was wrong the usual way: the saturation searched by NAME
 -- (`Grothendieck|difference pair|_⊖_|posPart|negPart`, which finds only
 -- `Category/GrothendieckConstruction.agda`'s fibrations) instead of by SHAPE.
--- The structure is `GradedProductOver _+_ 0 C` (`OrientationBimonoidal.agda:33`)
+-- The structure is `GradedProductOver _ℕ+_ 0 C` (`OrientationBimonoidal.agda:33`)
 -- at the constant family `C = λ _ → ℕ`: the GRADE is one rail, the CARRIER is
 -- the other, and `_∧_` together with the grading op `_+_` IS pairwise addition.
 -- The fit is exact, not analogical — `_×_ A B = Σ A (λ _ → B)`
@@ -39,18 +39,25 @@
 
 module Substrate.Algebra.Z.JacobianNegSemiring where
 
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; trans; cong; subst; subst-const)
-open import Substrate.Foundation.Empty using (⊥)
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
-open import Substrate.Foundation.Nat.Properties.Add using (+-suc; +-identityʳ; +-assoc)
+open import Substrate.Foundation.Empty.Bot
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Properties.Add.PlusAssoc
+open import Substrate.Foundation.Nat.Properties.Add.PlusIdentityR
+open import Substrate.Foundation.Nat.Properties.Add.PlusSuc
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
 open import Substrate.WitnessTower.Wedge.OrientationBimonoidal
   using (GradedProductOver; GradedAssocOver)
-open import Substrate.Algebra.Z using (ℤ; +_; -suc_)
+open import Substrate.Algebra.Z.Int
 open import Substrate.Algebra.Z.Add using (_⊖_; _+ℤ_)
 open import Substrate.Algebra.Z.JacobianResidue
   using (mono; detJac; coeff; constant-part)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Subst
+open import Substrate.Foundation.Eq.SubstConst
 
 ------------------------------------------------------------------------
 -- 1. THE CARRIER — an instance of the existing graded product.
@@ -63,26 +70,26 @@ open import Substrate.Algebra.Z.JacobianResidue
 -- Foundation copy.
 ------------------------------------------------------------------------
 
-Diff : GradedProductOver _+_ zero (λ _ → ℕ)
-Diff = record { u = zero ; _∧_ = _+_ }
+Diff : GradedProductOver _ℕ+_ zero (λ _ → ℕ)
+Diff = record { u = zero ; _∧_ = _ℕ+_ }
 
 -- and it is a genuine graded monoid: associativity is `+-assoc`, generically.
-Diff-assoc : GradedAssocOver +-assoc Diff
+Diff-assoc : GradedAssocOver +ℕ-assoc Diff
 Diff-assoc {i} {j} {k} a b c =
-  trans (subst-const (+-assoc i j k) ((a + b) + c)) (+-assoc a b c)
+  trans (subst-const (+ℕ-assoc i j k) ((a ℕ+ b) ℕ+ c)) (+ℕ-assoc a b c)
 
 ------------------------------------------------------------------------
 -- 2. THE TWO RAILS, AND THE SUBTRACTION-FREE EQUALITY.
 ------------------------------------------------------------------------
 
--- the pairwise operation the graded product's grade-op + `_∧_` induce.
+-- the pairwise operation the graded product's grade-op ℕ+ `_∧_` induce.
 _⊞_ : (ℕ × ℕ) → (ℕ × ℕ) → (ℕ × ℕ)
-(a , b) ⊞ (c , d) = (a + c , b + d)
+(a , b) ⊞ (c , d) = (a ℕ+ c , b ℕ+ d)
 
 -- ⚑ THE GAUGE, IN ONE LINE: "a − b ≡ c − d" written WITHOUT subtraction.
 -- This is the Grothendieck equivalence; it is why the semiring suffices.
 _≈D_ : (ℕ × ℕ) → (ℕ × ℕ) → Set
-(a , b) ≈D (c , d) = a + d ≡ c + b
+(a , b) ≈D (c , d) = a ℕ+ d ≡ c ℕ+ b
 
 split : ℤ → ℕ × ℕ
 split (+ n)    = (n , zero)
@@ -101,17 +108,17 @@ split (-suc n) = (zero , suc n)
 split-⊖ : (m n : ℕ) → split (m ⊖ n) ≈D (m , n)
 split-⊖ m       zero    = refl
 split-⊖ zero    (suc n) = refl
-split-⊖ (suc m) (suc n) = trans (+-suc _ n) (cong suc (split-⊖ m n))
+split-⊖ (suc m) (suc n) = trans (+ℕ-suc _ n) (cong suc (split-⊖ m n))
 
 split-hom : (x y : ℤ) → split (x +ℤ y) ≈D (split x ⊞ split y)
 split-hom (+ m)    (+ n)    = refl
 split-hom (+ m)    (-suc n) =
   subst (λ z → split (m ⊖ suc n) ≈D (z , suc n))
-        (sym (+-identityʳ m)) (split-⊖ m (suc n))
+        (sym (+ℕ-identityʳ m)) (split-⊖ m (suc n))
 split-hom (-suc m) (+ n)    =
   subst (λ z → split (n ⊖ suc m) ≈D (n , z))
-        (sym (+-identityʳ (suc m))) (split-⊖ n (suc m))
-split-hom (-suc m) (-suc n) = cong suc (+-suc m n)
+        (sym (+ℕ-identityʳ (suc m))) (split-⊖ n (suc m))
+split-hom (-suc m) (-suc n) = cong suc (+ℕ-suc m n)
 
 ------------------------------------------------------------------------
 -- 4. THE DETERMINANT, READ IN THIS GAUGE.
@@ -132,7 +139,7 @@ det-rails = cong split constant-part
 -- ⚑ THE FLAGSHIP. "det Jac F ≡ −2" in the semiring gauge. No `-ℤ_`, no ring,
 -- no codec — the negation has been transposed across the equality and what
 -- remains is arithmetic in ℕ.
-route-C : det⁺ + 2 ≡ det⁻ + 0
+route-C : det⁺ ℕ+ 2 ≡ det⁻ ℕ+ 0
 route-C = refl
 
 ------------------------------------------------------------------------
@@ -142,7 +149,7 @@ route-C = refl
 -- would make §4 vacuous.
 ------------------------------------------------------------------------
 
--- the rails are not collapsed: ⟨0,2⟩ and ⟨0,0⟩ are distinguished (0 + 0 ≢ 0 + 2).
+-- the rails are not collapsed: ⟨0,2⟩ and ⟨0,0⟩ are distinguished (0 ℕ+ 0 ≢ 0 ℕ+ 2).
 D-discriminates : (zero , 2) ≈D (zero , zero) → ⊥
 D-discriminates ()
 

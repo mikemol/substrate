@@ -15,7 +15,7 @@
 
 module Substrate.Algebra.F2.AES.Cipher where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Vec using (Vec; []; _∷_)
 open import Substrate.Algebra.F2.AES.Round using (State; round; final-round; addKey)
 

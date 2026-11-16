@@ -31,16 +31,16 @@
 module Substrate.ShadowArchitecture.SelfReference where
 open import Substrate.Algebra.F2.FanoPlane using (Point; FanoLine)
 
-open import Substrate.Foundation.Empty using (⊥; ⊥-elim)
-open import Substrate.Foundation.Sum using (_⊎_; inj₁; inj₂)
-open import Substrate.Foundation.Negation using (¬_)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl)
+open import Substrate.Foundation.Empty.Bot
+open import Substrate.Foundation.Empty.BotElim
+open import Substrate.Foundation.Sum.Sum
+open import Substrate.Foundation.Negation.Not
 
 open import Substrate.ShadowArchitecture.FanoLabeling
-open import Substrate.ShadowArchitecture.Duality using (normal-vector)
+open import Substrate.ShadowArchitecture.Duality.NormalVector
 open import Substrate.ShadowArchitecture.Weight
   using (point-orbit; line-orbit; wt-3)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. Point-on-line predicate.

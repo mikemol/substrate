@@ -11,7 +11,6 @@
 module Substrate.Cocycles.V4Signature.Codeword.ReservedToBivectorAffine.V4EquivarianceProj where
 
 open import Substrate.Foundation.Product using (_,_; proj₁)
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Cocycles.V4Signature.Codeword.Subtypes using (Reserved)
 open import Substrate.Cocycles.V4Signature.Codeword.ReservedToBivectorAffine.V4
   using (V₄)
@@ -25,6 +24,7 @@ open import Substrate.Cocycles.V4Signature.Codeword.ReservedToBivectorAffine.Aff
   using (reserved-to-selfdual-affine)
 open import Substrate.Cocycles.V4Signature.Codeword.ReservedToBivectorAffine.BivectorEquivariance
   using (bivector-equivariance)
+open import Substrate.Foundation.Eq
 
 v4-equivariance-proj :
   (v : V₄) (r : Reserved) →

@@ -15,17 +15,18 @@
 
 module Substrate.Category.UniversalProperty.LimitBackedGraded where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Unit using (⊤; tt)
-open import Substrate.Foundation.Eq using (_≡_; cong)
-open import Substrate.Foundation.Negation using (¬_)
+open import Substrate.Foundation.Negation.Not
 open import Substrate.Foundation.Product using (_,_)
 open import Substrate.Category.LimitUniversalProperty using (product-mediate)
 open import Substrate.Category.UniversalProperty using (SourceP; TargetP)
-open import Substrate.Category.UniversalProperty.Instances using (ConeLimit-UP)
+open import Substrate.Category.UniversalProperty.Instances.ConeLimitUP
 open import Substrate.Category.UPArrowGraded using (UPArrowᴳ; mkUP)
 open import Substrate.Category.UniversalProperty.BackedGraded using (BackedUPᴳ)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
 
 -- solve = mediate into the concrete product limit (product-LimitUP 1 (λ _ → ℕ), apex ⊤ — the same
 -- instance ConeLimit-UP wraps). Inlined (NOT a top-level `theLimit : LimitUP` def) so no Set₁-inhabiting

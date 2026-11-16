@@ -9,11 +9,11 @@
 
 module Substrate.Algebra.Torsor where
 
-open import Substrate.Foundation.Eq using (_≡_)
 open import Substrate.Foundation.Product using (∃; _,_)
 open import Substrate.Algebra.Monoid using (ε)
 open import Substrate.Algebra.Group using (Group; monoid)
 open import Substrate.Algebra.GroupAction using (Actionᴳ; act)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- A G-torsor on a carrier T: an Actionᴳ that is free + transitive.

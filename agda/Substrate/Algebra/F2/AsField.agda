@@ -4,7 +4,7 @@
 -- M9 of the Algebra Ladder arc per [scratch/m_mod_arc_plan.md].
 --
 -- Packages F₂ as a Field instance. The substrate's existing F₂
--- infrastructure (Substrate.Algebra.F2 + F2-CommutativeMonoid) is
+-- infrastructure (Substrate.Algebra.F2 +F F2-CommutativeMonoid) is
 -- already discharged at the operational level; this slice wires
 -- it into the M-arc records.
 --
@@ -18,19 +18,29 @@
 
 module Substrate.Algebra.F2.AsField where
 
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; cong; trans)
-open import Substrate.Foundation.Negation using (¬_)
+open import Substrate.Foundation.Negation.Not
 
-open import Substrate.Algebra.F2
-  using (F₂; 𝟘; 𝟙; _+_; _·_; -_;
-         +-assoc; +-comm; +-identityˡ; +-identityʳ;
-         +-inverseˡ; +-inverseʳ;
-         ·-assoc; ·-comm; ·-identityˡ; ·-identityʳ;
-         ·-absorbˡ; ·-absorbʳ;
-         +-self-inverse;
-         ·-distribˡ-+; ·-distribʳ-+;
-         𝟘≢𝟙; 𝟙≢𝟘)
+open import Substrate.Algebra.F2.AbsorbL
+open import Substrate.Algebra.F2.AbsorbR
+open import Substrate.Algebra.F2.Assoc
+open import Substrate.Algebra.F2.Comm
+open import Substrate.Algebra.F2.DistribLPlus
+open import Substrate.Algebra.F2.DistribRPlus
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.IdentityL
+open import Substrate.Algebra.F2.IdentityR
+open import Substrate.Algebra.F2.OneNeqZero
+open import Substrate.Algebra.F2.Op
+open import Substrate.Algebra.F2.Op2
+open import Substrate.Algebra.F2.PlusAssoc
+open import Substrate.Algebra.F2.PlusComm
+open import Substrate.Algebra.F2.PlusF
+open import Substrate.Algebra.F2.PlusIdentityL
+open import Substrate.Algebra.F2.PlusIdentityR
+open import Substrate.Algebra.F2.PlusInverseL
+open import Substrate.Algebra.F2.PlusInverseR
+open import Substrate.Algebra.F2.PlusSelfInverse
+open import Substrate.Algebra.F2.ZeroNeqOne
 
 open import Substrate.Algebra.Magma using (Magma)
 open import Substrate.Algebra.Semigroup using (Semigroup)
@@ -40,6 +50,10 @@ open import Substrate.Algebra.AbelianGroup using (AbelianGroup)
 open import Substrate.Algebra.Semiring using (Semiring)
 open import Substrate.Algebra.Ring using (Ring)
 open import Substrate.Algebra.Field using (Field)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Trans
 
 ------------------------------------------------------------------------
 -- 1. F₂'s additive structure: Magma → Semigroup → Monoid → Group
@@ -47,7 +61,7 @@ open import Substrate.Algebra.Field using (Field)
 ------------------------------------------------------------------------
 
 F₂-+-Magma : Magma F₂
-F₂-+-Magma = record { _·_ = _+_ }
+F₂-+-Magma = record { _·_ = _+F_ }
 
 F₂-+-Semigroup : Semigroup F₂
 F₂-+-Semigroup = record
@@ -99,7 +113,7 @@ F₂-·-Monoid = record
   }
 
 ------------------------------------------------------------------------
--- 3. F₂ as Semiring: combine additive + multiplicative monoids.
+-- 3. F₂ as Semiring: combine additive +F multiplicative monoids.
 ------------------------------------------------------------------------
 
 F₂-Semiring : Semiring F₂
@@ -113,7 +127,7 @@ F₂-Semiring = record
   }
 
 ------------------------------------------------------------------------
--- 4. F₂ as Ring: Semiring + additive AbelianGroup.
+-- 4. F₂ as Ring: Semiring +F additive AbelianGroup.
 ------------------------------------------------------------------------
 
 F₂-Ring : Ring F₂
@@ -124,7 +138,7 @@ F₂-Ring = record
   }
 
 ------------------------------------------------------------------------
--- 5. F₂ as Field: Ring + multiplicative inverse + 0 ≠ 1.
+-- 5. F₂ as Field: Ring +F multiplicative inverse +F 0 ≠ 1.
 --
 -- In F₂, the only non-zero element is 𝟙, and its multiplicative
 -- inverse is itself (𝟙 · 𝟙 = 𝟙). The inverse function is the

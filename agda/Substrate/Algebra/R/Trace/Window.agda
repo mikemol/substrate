@@ -21,15 +21,17 @@
 -- the real, the prefix is an exact observation of it to depth n
 -- ([[feedback_suspended_generators_not_approximations]]).
 --
--- Reuses B1 wholesale: `convergent` (structural on n) + `digits-of-EEA` (the EEA
--- quotients ARE a CF) + `compute-trace`. The "reason about ℝ via ℚ in a window."
+-- Reuses B1 wholesale: `convergent` (structural on n) ℕ+ `digits-of-EEA` (the EEA
+-- quotients ARE a CF) ℕ+ `compute-trace`. The "reason about ℝ via ℚ in a window."
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K --guardedness #-}
 
 module Substrate.Algebra.R.Trace.Window where
 
-open import Substrate.Foundation.Nat     using (ℕ; _+_; _*_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Times
 open import Substrate.Foundation.List    using (List)
 open import Substrate.Foundation.Product using (_,_)
 
@@ -43,14 +45,14 @@ open import Substrate.Algebra.R.Trace.Windowed using (windowed-cf)
 ------------------------------------------------------------------------
 
 homographic-cf : ℕ → ℕ → ℕ → ℕ → ℕ → RealTrace → List ℕ
-homographic-cf a b c d = windowed-cf (λ p q → a * p + b * q , c * p + d * q)
+homographic-cf a b c d = windowed-cf (λ p q → a * p ℕ+ b * q , c * p ℕ+ d * q)
 
 scaleℕ-cf : ℕ → ℕ → RealTrace → List ℕ
 scaleℕ-cf k n x = homographic-cf k 0 0 1 n x
 
 ------------------------------------------------------------------------
 -- Worked example (computed, but left as a comment — the combined
--- convergent + EEA-trace reduction is heavy for the typechecker; the pieces
+-- convergent ℕ+ EEA-trace reduction is heavy for the typechecker; the pieces
 -- are checked by refl in B1 and the probes):
 --   2·√2 = [2;1,4,1,4,…].  scaleℕ-cf 2 6 sqrt2  ≡  2 ∷ 1 ∷ 4 ∷ 1 ∷ 5 ∷ []
 -- (2·99/70 = 99/35, CF [2;1,4,1,5]): the reliable prefix [2,1,4,1] matches; the

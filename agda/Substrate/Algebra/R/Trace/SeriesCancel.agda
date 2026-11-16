@@ -45,15 +45,18 @@
 
 module Substrate.Algebra.R.Trace.SeriesCancel where
 
-open import Substrate.Foundation.Nat  using (ℕ; zero; suc; _∸_)
+open import Substrate.Foundation.Nat.Monus
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.List using (List; []; _∷_; _++_; foldr)
-open import Substrate.Foundation.Eq   using (_≡_; refl)
 
-open import Substrate.Algebra.Z using (ℤ; +_; -suc_)
-open import Substrate.Algebra.Q       using (ℚ; mkℚ; 0ℚ; 1ℚ; num)
+open import Substrate.Algebra.Z.Int
+open import Substrate.Algebra.Q.OneRat
+open import Substrate.Algebra.Q.Rat
+open import Substrate.Algebra.Q.ZeroRat
 open import Substrate.Algebra.Q.Add   using (_+ℚ_)
 open import Substrate.Algebra.Q.Mul   using (_*ℚ_)
 open import Substrate.Algebra.Q.Equiv using (_≈ℚ_)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- A power series (truncated) = its coefficient list; index = degree in u.

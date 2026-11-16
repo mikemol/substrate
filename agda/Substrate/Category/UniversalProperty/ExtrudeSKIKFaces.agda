@@ -5,9 +5,9 @@
 -- beyond vertices (258), with the face DIMENSION defined AS BISIMILAR WITH THE TOWER'S BUILD (operator:
 -- "isn't this just bisimilarity with the tower's build pattern? any attribute you derive from it can be
 -- bisimilar with it") — NOT a fresh popcount. A face IS its build-trace: the sequence of with-apex/
--- without-apex cone choices up the rungs (FaceSet). weight recurses via the cone vocabulary (apex-bit +
+-- without-apex cone choices up the rungs (FaceSet). weight recurses via the cone vocabulary (apex-bit ℕ+
 -- base-face), so it CO-VARIES with the build; the cone-commutation laws (weight-with/without-apex) are the
--- ELEMENT-SHADOW of FaceCount's Pascal cone-step (faces (suc n)(suc k) ≡ faces n (suc k) + faces n k). So
+-- ELEMENT-SHADOW of FaceCount's Pascal cone-step (faces (suc n)(suc k) ≡ faces n (suc k) ℕ+ faces n k). So
 -- weight is bisimilar with the tower's build, reused not reinvented.
 --
 -- COMMENT HYGIENE (agda_comment_hygiene): the MACHINE-CHECKED content is EXACTLY: weight (via the cone),
@@ -19,14 +19,16 @@
 
 module Substrate.Category.UniversalProperty.ExtrudeSKIKFaces where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; cong)
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using (Vec; []; _∷_)
-open import Substrate.Algebra.F2 using (F₂; 𝟘; 𝟙)
+open import Substrate.Algebra.F2.F2
 open import Substrate.Algebra.F2.Vector using (Vector; 𝟎ⱽ)
 open import Substrate.WitnessTower.FaceSet using (Face; with-apex; without-apex; apex-bit; base-face)
 open import Substrate.Category.UniversalProperty.ExtrudeSKIFaceset using (eᵢ)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- ① THE DIMENSION, BISIMILAR WITH THE BUILD. weight recurses via the tower's cone: an apex-present move
@@ -39,7 +41,7 @@ bit 𝟙 = suc zero
 
 weight : {n : ℕ} → Vec F₂ n → ℕ
 weight []       = zero
-weight (b ∷ f)  = bit b + weight f
+weight (b ∷ f)  = bit b ℕ+ weight f
 
 ------------------------------------------------------------------------
 -- ② THE BISIMILARITY-WITH-BUILD LAWS (the cone-commutation): weight commutes with the tower's build moves.
@@ -47,14 +49,14 @@ weight (b ∷ f)  = bit b + weight f
 --    dimension iff the apex bit is set). So weight is bisimilar with the tower's build, by definition.
 ------------------------------------------------------------------------
 weight-with-apex : {n : ℕ} (f : Face n) → weight (with-apex f) ≡ suc (weight f)
-weight-with-apex f = refl        -- with-apex f = 𝟙 ∷ f ; weight = bit 𝟙 + weight f = suc (weight f)
+weight-with-apex f = refl        -- with-apex f = 𝟙 ∷ f ; weight = bit 𝟙 ℕ+ weight f = suc (weight f)
 
 weight-without-apex : {n : ℕ} (f : Face n) → weight (without-apex f) ≡ weight f
-weight-without-apex f = refl     -- without-apex f = 𝟘 ∷ f ; weight = 0 + weight f = weight f
+weight-without-apex f = refl     -- without-apex f = 𝟘 ∷ f ; weight = 0 ℕ+ weight f = weight f
 
--- the cone-split reconstruction (FaceSet) means EVERY face's weight is its apex-bit contribution + its
+-- the cone-split reconstruction (FaceSet) means EVERY face's weight is its apex-bit contribution ℕ+ its
 -- base-face weight — weight is fully determined by the build history:
-weight-cone : {n : ℕ} (f : Face (suc n)) → weight f ≡ bit (apex-bit f) + weight (base-face f)
+weight-cone : {n : ℕ} (f : Face (suc n)) → weight f ≡ bit (apex-bit f) ℕ+ weight (base-face f)
 weight-cone (b ∷ f) = refl
 
 ------------------------------------------------------------------------
@@ -71,7 +73,7 @@ is-vertex = is-kface 0                  -- a vertex = a 0-face = weight 1
 -- 258's singleton indicator eᵢ has weight 1 — it is a vertex (dimension-0 face), bisimilar-with-build:
 𝟎-weight : {n : ℕ} → weight (𝟎ⱽ {n}) ≡ zero
 𝟎-weight {zero}  = refl
-𝟎-weight {suc n} = 𝟎-weight {n}       -- 𝟎ⱽ {suc n} = 𝟘 ∷ 𝟎ⱽ {n} ; weight = 0 + weight 𝟎ⱽ = weight 𝟎ⱽ
+𝟎-weight {suc n} = 𝟎-weight {n}       -- 𝟎ⱽ {suc n} = 𝟘 ∷ 𝟎ⱽ {n} ; weight = 0 ℕ+ weight 𝟎ⱽ = weight 𝟎ⱽ
 
 eᵢ-weight : {n : ℕ} (i : Fin n) → weight (eᵢ i) ≡ suc zero
 eᵢ-weight {suc n} zero    = cong suc (𝟎-weight {n})  -- eᵢ zero = 𝟙 ∷ 𝟎ⱽ ; weight = suc (weight 𝟎ⱽ) = suc zero

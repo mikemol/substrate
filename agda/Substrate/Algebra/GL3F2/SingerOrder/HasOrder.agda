@@ -17,16 +17,18 @@
 
 module Substrate.Algebra.GL3F2.SingerOrder.HasOrder where
 
-open import Substrate.Foundation.Eq using (sym; trans)
 
 open import Substrate.Algebra.F2.Vector using (basis)
-open import Substrate.Algebra.F2.Linear using (apply; id-L)
+open import Substrate.Algebra.F2.Linear.IdL
+open import Substrate.Algebra.F2.Linear.Linear
 open import Substrate.Algebra.F2.Linear.Universal using (linear-extensionality)
 open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Order
   using (L-iterate; iterate-apply-as-L-iterate)
 open import Substrate.Algebra.F2.FanoPlane using (singer-Linear)
 open import Substrate.Category.Coalgebra.FiniteOrder using (HasOrder)
 open import Substrate.Algebra.GL3F2.SingerOrder.OnBasis using (order-on-basis)
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
 
 HasOrder-singer : HasOrder (apply singer-Linear) 7
 HasOrder-singer v =

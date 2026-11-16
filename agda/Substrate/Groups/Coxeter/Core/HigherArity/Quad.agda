@@ -7,7 +7,15 @@
 
 {-# OPTIONS --safe --without-K #-}
 
-open import Substrate.Foundation.Eq using (_≡_)
+
+-- ⚑ A NAME USED IN THE TELESCOPE MUST BE IMPORTED BEFORE THE MODULE HEADER.
+-- A parameter list is scope-checked before anything inside `where`, so an
+-- import placed after the header is too late.  The splitter emits the
+-- prelude after the header (right for a body, wrong for a telescope), so
+-- every leaf whose PARAMETERS mention the name inherited this.
+-- MEASURED: 11 sites tree-wide.
+open import Substrate.Foundation.Eq
+open import Substrate.Algebra.Quotient.Canonical
 
 module Substrate.Groups.Coxeter.Core.HigherArity.Quad
   (Word : Set)
@@ -23,6 +31,7 @@ module Substrate.Groups.Coxeter.Core.HigherArity.Quad
 open import Substrate.Foundation.Vec using (_∷_; [])
 open import Substrate.Groups.Coxeter.Core.HigherArity.Chain
   Word _++_ Canonical normalize normalize-canonical canonical-is-fixed normalize-distrib
+open import Substrate.Foundation.Eq
 
 -- Named arity-4 instance of the generic normalize-chain (chain reduces
 -- definitionally to the right-nested ++, so this is a one-line projection).

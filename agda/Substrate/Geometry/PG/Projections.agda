@@ -10,13 +10,13 @@
 
 module Substrate.Geometry.PG.Projections where
 
-open import Substrate.Foundation.Nat using (suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Product using (proj₁; proj₂)
-open import Substrate.Foundation.Eq using (_≡_)
-open import Substrate.Foundation.Negation using (¬_)
+open import Substrate.Foundation.Negation.Not
 
 open import Substrate.Algebra.F2.Vector
 open import Substrate.Geometry.PG.Type using (PG)
+open import Substrate.Foundation.Eq
 
 PG-coords : ∀ {n} → PG n → Vector (suc n)
 PG-coords = proj₁

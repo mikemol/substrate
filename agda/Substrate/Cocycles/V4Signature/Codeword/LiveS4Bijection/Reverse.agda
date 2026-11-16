@@ -13,8 +13,6 @@
 module Substrate.Cocycles.V4Signature.Codeword.LiveS4Bijection.Reverse where
 
 open import Substrate.Foundation.Product using (_,_; proj₁)
-open import Substrate.Foundation.Eq
-  using (_≡_; sym; trans; cong; cong₂; cong-trans)
 
 open import Substrate.Axes.Axis using (Axis; D; C; S)
 open import Substrate.Axes.ActAxis using (act-axis)
@@ -29,8 +27,8 @@ open import Substrate.Cocycles.V4Signature.Codeword
   using (Live)
 open import Substrate.Cocycles.V4Signature.Codeword.Live
   using (Selector; live-to-axis-selector; axis-selector-to-live)
-open import Substrate.Cocycles.V4Signature.Codeword.LiveS4
-  using (stab-from-selector; live-to-permutation)
+open import Substrate.Cocycles.V4Signature.Codeword.LiveS4.LiveToPermutation
+open import Substrate.Cocycles.V4Signature.Codeword.LiveS4.StabFromSelector
 open import Substrate.Cocycles.V4Signature.Codeword.LiveS4Iso
   using (axis-of-v; axis-of-v-v-of-axis-id;
          classify-CS-to-selector; selector-from-stab;
@@ -40,8 +38,24 @@ open import Substrate.Cocycles.V4Signature.Codeword.LiveS4Bijection.Roundtrips
   using (stab-from-selector-fixes-D; axis-selector-roundtrip-cw)
 open import Substrate.Groups.SemidirectProduct.S
 open import Substrate.Axes.VOfAxis
-open import Substrate.Groups.SemidirectProduct.V
+open import Substrate.Groups.SemidirectProduct.V.NonDSends
+open import Substrate.Groups.SemidirectProduct.V.Private
+open import Substrate.Groups.SemidirectProduct.V.SelfToD
+open import Substrate.Groups.SemidirectProduct.V.VFor
+open import Substrate.Groups.SemidirectProduct.V.VForAnchor
+open import Substrate.Groups.SemidirectProduct.V.VForAnchorSends
+open import Substrate.Groups.SemidirectProduct.V.VOfAxisAnchor
+open import Substrate.Groups.SemidirectProduct.V.VOfAxisAnchorSends
+open import Substrate.Groups.SemidirectProduct.V.VOfAxisUnique
+open import Substrate.Groups.SemidirectProduct.V.VSendsD
 open import Substrate.Cocycles.V4Signature.Codeword.Subtypes
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.Foundation.Eq.CongTrans
+open import Substrate.Algebra.Wedge.BinMul.Sel
 
 ------------------------------------------------------------------------
 -- Helper: selector-from-stab respects pointwise equivalence on Stab(D).

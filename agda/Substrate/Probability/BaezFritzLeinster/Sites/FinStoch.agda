@@ -19,8 +19,8 @@ module Substrate.Probability.BaezFritzLeinster.Sites.FinStoch where
 open import Substrate.Probability.BaezFritzLeinster
 open import Substrate.Probability.Entropy.Sites.QFin using (ℚ-EntropyFunctor)
 open import Substrate.Probability.Simplex.Sites.QSimplex using (ℚ-PS)
-open import Substrate.Algebra.Q using (ℚ; mkℚ)
-open import Substrate.Algebra.Z using (0ℤ)
+open import Substrate.Algebra.Q.Rat
+open import Substrate.Algebra.Z.ZeroInt
 
 ------------------------------------------------------------------------
 -- The BFL entropy functor at ℚ-valued FinStoch entropy.

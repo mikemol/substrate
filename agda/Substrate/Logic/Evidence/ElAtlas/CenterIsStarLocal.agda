@@ -23,17 +23,30 @@
 
 module Substrate.Logic.Evidence.ElAtlas.CenterIsStarLocal where
 
-open import Substrate.Foundation.Nat
-  using (ℕ; zero; suc; _+_; _*_; _^_; _<_; _≤_; z≤n; s≤s; _∸_)
+open import Substrate.Foundation.Nat.Le
+open import Substrate.Foundation.Nat.Lt
+open import Substrate.Foundation.Nat.Monus
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Pow
+open import Substrate.Foundation.Nat.Times
 open import Substrate.Foundation.Nat.Properties.Order using (≤-trans; m≤m+n; n≤m+n)
-open import Substrate.Algebra.Nat.Mod using (_mod-suc_; mod-suc-id; suc-mod-suc-self)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; subst)
-open import Substrate.Foundation.Empty using (⊥)
+open import Substrate.Foundation.Nat.Nat.ModSuc
+open import Substrate.Algebra.Nat.Mod.ModSucBound
+open import Substrate.Algebra.Nat.Mod.ModSucId
+open import Substrate.Algebra.Nat.Mod.ModSucPeriodic
+open import Substrate.Algebra.Nat.Mod.ModSucSuc
+open import Substrate.Algebra.Nat.Mod.SucModSucLt
+open import Substrate.Algebra.Nat.Mod.SucModSucSelf
+open import Substrate.Foundation.Empty.Bot
 open import Substrate.Foundation.Product using (_,_)
 open import Substrate.Algebra.Wedge using (DivStr)
 open import Substrate.Algebra.Wedge.Mul using (MulDivStr)
 open import Substrate.Algebra.Wedge.Bridge using (id-bridge)
 open import Substrate.Algebra.Wedge.CrossMul using (CrossMix; cross; Coherent)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Subst
 
 ------------------------------------------------------------------------
 -- The apex, parametric in (p′, e′): p = suc (suc p′) ≥ 2 (prime base), and

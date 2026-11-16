@@ -18,15 +18,16 @@
 module Substrate.Algebra.GL3F2.SingerOrder.Commutes where
 
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Eq using (_≡_; refl; trans)
 
 open import Substrate.Algebra.F2.Vector using (Vector; basis; _+ⱽ_)
-open import Substrate.Algebra.F2.Linear using (apply; preserves-+)
+open import Substrate.Algebra.F2.Linear.Linear
 open import Substrate.Algebra.F2.Linear.FromImages
   using (apply-linear-from-images-basis)
 open import Substrate.Algebra.F2.FanoPlane
   using (Point; e₁; e₂; e₃; e₁₂; e₁₃; e₂₃; e₁₂₃;
          point-to-vec; singer; singer-basis; singer-Linear)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
 
 -- +ⱽ is a congruence, used to recombine summands.
 cong₂-+ⱽ : ∀ {a b c d : Vector 3} → a ≡ c → b ≡ d → (a +ⱽ b) ≡ (c +ⱽ d)

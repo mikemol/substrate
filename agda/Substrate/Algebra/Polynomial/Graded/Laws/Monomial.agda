@@ -3,14 +3,23 @@
 -- so each module's elaboration peak stays under the 128MB cap. Re-exported by
 -- `Substrate.Algebra.Polynomial.Graded` — the public API is unchanged.
 module Substrate.Algebra.Polynomial.Graded.Laws.Monomial where
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _≟_) renaming (_+_ to _ℕ+_)
-open import Substrate.Foundation.Nat.Properties.Add using () renaming (+-comm to +ℕ-comm; +-assoc to +ℕ-assoc)
+open import Substrate.Foundation.Nat.Nat
+-- ⚑ `_ℕ+_`'s HOME.  The pre-arc header bound it via `Foundation.Nat renaming (_+_ to
+-- _ℕ+_)`; that barrel is retired and ℕ addition now carries its domain AT SOURCE
+-- (`Nat.Plus._ℕ+_`), so the name comes in BARE — but the import has to be here for it
+-- to come in at all.  The repoint added the `Add.*` law leaves and missed the operator.
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Properties.Add.PlusAssoc
+open import Substrate.Foundation.Nat.Properties.Add.PlusComm
+open import Substrate.Foundation.Nat.Properties.Add.PlusIdentityL
+open import Substrate.Foundation.Nat.Properties.Add.PlusIdentityR
+open import Substrate.Foundation.Nat.Properties.Add.PlusSuc
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; replicate)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂; subst)
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.To
-open import Substrate.Foundation.Negation using (¬_; yes; no)
-open import Substrate.Foundation.Empty using (⊥-elim)
+open import Substrate.Foundation.Negation.Dec
+open import Substrate.Foundation.Negation.Not
+open import Substrate.Foundation.Empty.BotElim
 open import Substrate.Algebra.Module.Free.Basis using (basis-vec)
 open import Substrate.Algebra.Medial using (medial)
 import Substrate.Algebra.Polynomial.Graded.Base as Base
@@ -21,6 +30,12 @@ import Substrate.Algebra.Polynomial.Graded.Laws.Distrib as A3
 import Substrate.Algebra.Polynomial.Graded.Laws.Scalar as A4
 import Substrate.Algebra.Polynomial.Graded.Laws.Basis as A5
 import Substrate.Algebra.Polynomial.Graded.Laws.Linear as A6
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.Foundation.Eq.Subst
 module Over {A : Set}
   (_+_ : A → A → A) (_*_ : A → A → A) (𝟘 𝟙 : A)
   (+-assoc     : (a b c : A) → (a + b) + c ≡ a + (b + c))

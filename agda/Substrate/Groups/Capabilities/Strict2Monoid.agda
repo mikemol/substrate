@@ -14,7 +14,13 @@
 
 module Substrate.Groups.Capabilities.Strict2Monoid where
 
-open import Substrate.Foundation.Eq using (_≡_)
+-- ⚑ `Foundation.Eq` MUST PRECEDE THE RECORD: `++-assoc`/`++-identityˡ` below are
+-- stated with `≡`, and agda binds an import from its position onward, so the
+-- statement at the foot of this file bound nothing for them ([NoParseForApplication]
+-- at :34, because `≡` was not an operator in scope when the field was parsed).
+-- Only THIS import moves — the `Coxeter.Word` open stays below the record for the
+-- reason the next comment gives, and the two constraints are independent.
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- The capability record. (Defined before opening Coxeter.Word to

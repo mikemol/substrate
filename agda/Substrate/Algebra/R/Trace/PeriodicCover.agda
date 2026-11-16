@@ -49,14 +49,21 @@
 
 module Substrate.Algebra.R.Trace.PeriodicCover where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.Foundation.Bool using (Bool; not; boolToℕ) renaming (true to tt; false to ff)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Bool.Bool
+open import Substrate.Foundation.Bool.Not
+open import Substrate.Foundation.Bool.BoolToNat
+
+pattern tt = true
+pattern ff = false
 open import Substrate.Algebra.R.Trace using (RealTrace; head; tail)
-open import Substrate.Algebra.R.Trace.Bisim using (_~_; head~; tail~; ~-sym; ~-trans)
+open import Substrate.Algebra.R.Trace.Bisim.Op
+open import Substrate.Algebra.R.Trace.Bisim.Sym
+open import Substrate.Algebra.R.Trace.Bisim.Trans
 open import Substrate.Algebra.R.Trace.OrbitUniversality using (module OrbitCover)
 open import Substrate.Algebra.R.Trace.OrbitFaithful using (module Faithful)
 open import Substrate.Category.UniversalProperty.ExtrudeCoEmitCyclicGrading using (repeat)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. THE APEX — discrimination, stated ONCE over an arbitrary finite orbit.

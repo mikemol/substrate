@@ -22,7 +22,7 @@
 -- Here the kernel is read only at the reachable convergents, so two kernels that
 -- differ only off-convergent are identified — `windowed-cf` is determined BY the
 -- kernel but does not conversely pin every kernel value. So: a genuine UPArrow with
--- proved instances + pointwise universality, NOT an initial algebra with a unique
+-- proved instances ℕ+ pointwise universality, NOT an initial algebra with a unique
 -- kernel. That distinction is the certificate's exact strength.
 ------------------------------------------------------------------------
 
@@ -30,11 +30,13 @@
 
 module Substrate.Category.UniversalProperty.WindowedCF where
 
-open import Substrate.Foundation.Nat      using (ℕ; _+_; _*_; _∸_)
+open import Substrate.Foundation.Nat.Monus
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Times
 open import Substrate.Foundation.List     using (List; []; _∷_)
 open import Substrate.Foundation.Product  using (_×_; _,_; proj₁; proj₂)
-open import Substrate.Foundation.Eq       using (_≡_; refl; cong)
-open import Substrate.Foundation.Negation using (¬_)
+open import Substrate.Foundation.Negation.Not
 
 open import Substrate.Algebra.R.Trace          using (RealTrace; sqrt2)
 open import Substrate.Algebra.R.Trace.Windowed using (windowed-cf; windowed-cf-determined)
@@ -45,6 +47,8 @@ open import Substrate.Algebra.R.Trace.Window   using (homographic-cf)
 open import Substrate.Category.UniversalProperty            using (UPArrowP; mkUP; WitnessP)
 open import Substrate.Category.UniversalProperty.Vacuity    using (Contentful)
 open import Substrate.Category.UniversalProperty.Recognized using (RecognizedUP)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- The windowed-CF family as a UPArrow: an op is solved by a kernel that computes
@@ -66,13 +70,13 @@ exp-cf-inst terms = refl
 
 log-cf-inst : (terms : ℕ) → WitnessP windowedCF-UP (log-cf terms)
               (λ p q → let sn = p ∸ q
-                           sd = p + q
+                           sd = p ℕ+ q
                            U  = ath terms (2 * terms ∸ 1) (sn * sn) (sd * sd) 0 1
                        in 2 * sn * proj₁ U , sd * proj₂ U)
 log-cf-inst terms = refl
 
 homographic-inst : (a b c d : ℕ)
-                 → WitnessP windowedCF-UP (homographic-cf a b c d) (λ p q → a * p + b * q , c * p + d * q)
+                 → WitnessP windowedCF-UP (homographic-cf a b c d) (λ p q → a * p ℕ+ b * q , c * p ℕ+ d * q)
 homographic-inst a b c d = refl
 
 ------------------------------------------------------------------------

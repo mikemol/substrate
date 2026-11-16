@@ -24,8 +24,15 @@
 
 module Substrate.Algebra.Quotient.Projection where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.Algebra.Quotient
+open import Substrate.Algebra.Quotient.ApproxcanonicalEq
+open import Substrate.Algebra.Quotient.Canonical
+open import Substrate.Algebra.Quotient.CanonicalEqApprox
+open import Substrate.Algebra.Quotient.IdemCanonical
+open import Substrate.Algebra.Quotient.KerQuotient
+open import Substrate.Algebra.Quotient.KerRel
+open import Substrate.Algebra.Quotient.Quotient
+open import Substrate.Algebra.Quotient.SplitCanonical
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. Trivial projection: identity. Always available, regardless of

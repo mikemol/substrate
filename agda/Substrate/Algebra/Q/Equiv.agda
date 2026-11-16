@@ -20,14 +20,18 @@
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.Algebra.Q.Equiv where
+open import Substrate.Algebra.Z.Mul
 
-open import Substrate.Foundation.Nat using (suc)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
-open import Substrate.Algebra.Z using (+_)
-open import Substrate.Algebra.Z.Arithmetic using (_*ℤ_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Algebra.Z.Int
+
 open import Substrate.Algebra.Z.Properties.MulFull using (*ℤ-cancelʳ-pos; *ℤ-swap₂₃)
-open import Substrate.Algebra.Q using (ℚ; mkℚ; num; den-1)
-open import Substrate.Algebra.Quotient using (Quotient)
+open import Substrate.Algebra.Q.Rat
+open import Substrate.Algebra.Quotient.Quotient
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- 1. Cross-multiplication equality. (den = suc (den-1), written literally so

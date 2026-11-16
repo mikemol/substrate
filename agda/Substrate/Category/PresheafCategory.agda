@@ -11,7 +11,7 @@ module Substrate.Category.PresheafCategory where
 
 open import Substrate.Foundation.Level using (Level)
 
-open import Substrate.Category.CategoryOf using (CategoryOf)
+open import Substrate.Category.CategoryOf.CategoryOf
 
 module _
   {ℓO ℓM : Level}

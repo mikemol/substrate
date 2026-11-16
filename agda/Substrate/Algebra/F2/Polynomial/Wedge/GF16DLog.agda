@@ -26,19 +26,31 @@
 
 module Substrate.Algebra.F2.Polynomial.Wedge.GF16DLog where
 
-open import Substrate.Foundation.Nat using (ℕ; _∸_)
+open import Substrate.Foundation.Nat.Monus
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Vec using (Vec; []; _∷_)
-open import Substrate.Foundation.Eq using (_≡_; refl)
-import Substrate.Algebra.F2 as F2
+-- ⚑ WAS `import Substrate.Algebra.F2 as F2`, A QUALIFIED ALIAS ON A BARREL THAT
+-- NO LONGER EXISTS.  `rewire_to_leaves` correctly declined every consumer of
+-- this target — it rewrites `open import`, and a qualified alias additionally
+-- needs every `F2.foo` USE SITE rewritten, which is a different transform.  `as`
+-- is banned on Substrate imports anyway, so the ban's remedy and the dangling
+-- repair coincide: bind the name at its real home and drop the qualifier.
+--
+-- ⚑ AND THE ALIAS WAS NOT DEAD, THOUGH A FIRST EDIT ASSUMED IT WAS.  Deleting the
+-- line outright left `F2.F₂` unbound at :47 — the compiler named the use site in
+-- one run.  The census cannot see this: `--dangling` and `--unused-imports` both
+-- read `open import` statements, and a QUALIFIED reference is invisible to both.
+open import Substrate.Algebra.F2.F2
 open import Substrate.Algebra.F2.CommRing using (F₂-CommRing)
 import Substrate.Algebra.Polynomial.Graded.FromCommRing as F
 import Substrate.Algebra.Polynomial.Graded.Mod as M
 import Substrate.Algebra.Polynomial.Graded.Quotient as Q
 import Substrate.Algebra.Polynomial.Graded.Div as D
+open import Substrate.Foundation.Eq
 
 -- GF(2⁴) = F₂[x]/(x⁴+x+1); x is primitive (multiplicative order 15).
-m-lo₄ : Vec F2.F₂ 4
-m-lo₄ = F2.𝟙 ∷ F2.𝟙 ∷ F2.𝟘 ∷ F2.𝟘 ∷ []
+m-lo₄ : Vec F₂ 4
+m-lo₄ = 𝟙 ∷ 𝟙 ∷ 𝟘 ∷ 𝟘 ∷ []
 
 open F.Over F₂-CommRing using (Poly)
 open M.Over F₂-CommRing 3 m-lo₄ using (oneC; xpow)

@@ -24,13 +24,13 @@
 
 module Substrate.Category.UniversalProperty.ExtrudeNerveDegeneracy where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; cong; sym; trans)
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.List using (List; []; _∷_)
 open import Substrate.Foundation.List.Length using (length)
-open import Substrate.Algebra.F2.Vector using (Vector)
 open import Substrate.WitnessTower.FaceSet using (Face; with-apex)
-open import Substrate.WitnessTower.SimplicialBoundary using (delAt)
+open import Substrate.WitnessTower.SimplicialBoundary.DelAt
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- ① THE DEGENERACY dupAt — the DUAL of the face delAt: where delAt DROPS the i-th vertex (step DOWN), dupAt

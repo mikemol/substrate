@@ -22,13 +22,13 @@
 
 module Substrate.TokiPona.QModifierBilinear where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Vec using (zipWith)
 
-open import Substrate.Algebra.Q using (ℚ)
 open import Substrate.Algebra.Q.Arithmetic using (_*ℚ_)
 open import Substrate.TokiPona.QSemanticSpace
   using (QSemVec; ∅-Q; _⊕Q_)
+open import Substrate.Algebra.Q.Mul
 
 ------------------------------------------------------------------------
 -- 1. Feature-union modifier: vector sum.

@@ -12,16 +12,19 @@
 
 module Substrate.Foundation.Nat.Properties.Cancel where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_)
-open import Substrate.Foundation.Eq using (_≡_; refl; cong)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Times
 
 -- Ⓓ: suc-injective is Foundation.Nat's (it was re-proved here identically);
 -- re-exported with `public` so this module's existing consumers (which import
 -- suc-injective FROM Cancel) are unaffected. +-cancelˡ below uses it.
-open import Substrate.Foundation.Nat using (suc-injective) public
+open import Substrate.Foundation.Nat.SucInjective public
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
 
 -- cancel a left addend.
-+-cancelˡ : (k : ℕ) {m n : ℕ} → (k + m) ≡ (k + n) → m ≡ n
++-cancelˡ : (k : ℕ) {m n : ℕ} → (k ℕ+ m) ≡ (k ℕ+ n) → m ≡ n
 +-cancelˡ zero    eq = eq
 +-cancelˡ (suc k) eq = +-cancelˡ k (suc-injective eq)
 

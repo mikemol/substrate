@@ -42,17 +42,19 @@
 
 module Substrate.WitnessTower.AbelBetaCollapse where
 
-open import Substrate.Foundation.Nat using (ℕ; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Eq using (_≡_; trans; sym; cong)
 open import Substrate.WitnessTower.FirstAppearance using (compose)
 open import Substrate.WitnessTower.CyclicGrounding using (compose-assoc)
 open import Substrate.WitnessTower.SnGroup using (compose-id-left)
 open import Substrate.WitnessTower.SignAbelianization using (sadj-involution)
 open import Substrate.WitnessTower.Wedge.OrientationRigCatPermCoxeterGeneral
   using (sadj; inj1)
-open import Substrate.WitnessTower.Wedge.OrientationRigCatPermCoxeterBraid
-  using (cox-braid)
+open import Substrate.WitnessTower.Wedge.OrientationRigCatPermCoxeterBraid.CoxBraid
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- ◆ip-abel-β-cap — the collapse: sᵢ₊₁ = (sᵢsᵢ₊₁) sᵢ (sᵢ₊₁sᵢ).

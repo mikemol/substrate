@@ -12,13 +12,13 @@
 --       DISTINCTION 2-cochain (detect σ τ = 𝟘 iff σ ≡ τ; kernel = diagonal).
 --
 -- THE CROSSING (grade-map RAISE, degree 1 → 2 by adding an argument):
---   (A) DIAGONAL AGREEMENT: detectP σ σ ≡ signF σ + signF σ (both 𝟘). The two
+--   (A) DIAGONAL AGREEMENT: detectP σ σ ≡ signF σ +F signF σ (both 𝟘). The two
 --       zeros are the SAME phenomenon — self-pairing gives 𝟘: the detector's
---       diagonal law on the degree-2 side, F₂ char-2 self-cancel (x + x = 𝟘) on
+--       diagonal law on the degree-2 side, F₂ char-2 self-cancel (x +F x = 𝟘) on
 --       the degree-1 side.
 --   (B) OFF-DIAGONAL FREENESS: detectP is STRICTLY FINER — a FREE degree-2
 --       companion, NOT a coboundary of signF. Two distinct EVEN perms (id and a
---       3-cycle, both sign 𝟘) have detectP = 𝟙 but signF + signF = 𝟘. detectP
+--       3-cycle, both sign 𝟘) have detectP = 𝟙 but signF +F signF = 𝟘. detectP
 --       separates same-sign unequal perms that no signF-combination can.
 --
 -- So the hinge is REAL and PROVABLE, not gestural: signF (deg 1) and detectP
@@ -32,15 +32,19 @@
 
 module Substrate.WitnessTower.DetectorSignCrossing where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using (Vec; _∷_; [])
-open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym)
-open import Substrate.Foundation.Negation using (¬_)
-open import Substrate.Algebra.F2 using (F₂; 𝟘; 𝟙; _+_; +-self-inverse)
+open import Substrate.Foundation.Negation.Not
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.PlusF
+open import Substrate.Algebra.F2.PlusSelfInverse
 open import Substrate.WitnessTower.Enumerate using (Perm)
 open import Substrate.WitnessTower.FaithfulnessApex using (detectP; action-agreement→detect-𝟘)
 open import Substrate.WitnessTower.TowerCocycleGraded using (signF)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Sym
 
 ------------------------------------------------------------------------
 -- detectP σ σ ≡ 𝟘 : the detector vanishes on the diagonal. From
@@ -51,17 +55,17 @@ detectP-diag : {n : ℕ} (σ : Perm n) → detectP σ σ ≡ 𝟘
 detectP-diag σ = action-agreement→detect-𝟘 (λ i → refl)
 
 ------------------------------------------------------------------------
--- (A) DIAGONAL AGREEMENT. detectP σ σ ≡ signF σ + signF σ (both 𝟘). Degree-2
+-- (A) DIAGONAL AGREEMENT. detectP σ σ ≡ signF σ +F signF σ (both 𝟘). Degree-2
 -- side by detectP-diag; degree-1 side by F₂ self-cancellation.
 ------------------------------------------------------------------------
 
 diagonal-agreement :
-  {n : ℕ} (σ : Perm n) → detectP σ σ ≡ (signF σ + signF σ)
+  {n : ℕ} (σ : Perm n) → detectP σ σ ≡ (signF σ +F signF σ)
 diagonal-agreement σ = trans (detectP-diag σ) (sym (+-self-inverse (signF σ)))
 
 ------------------------------------------------------------------------
 -- (B) OFF-DIAGONAL FREENESS. Two distinct even perms of Perm 3: detectP = 𝟙
--- (they differ) while signF + signF = 𝟘 (same sign). So detectP is finer.
+-- (they differ) while signF +F signF = 𝟘 (same sign). So detectP is finer.
 ------------------------------------------------------------------------
 
 id3 : Perm 3
@@ -73,7 +77,7 @@ cyc3 = suc zero ∷ suc (suc zero) ∷ zero ∷ []
 detect-separates : detectP id3 cyc3 ≡ 𝟙
 detect-separates = refl
 
-signsum-blind : (signF id3 + signF cyc3) ≡ 𝟘
+signsum-blind : (signF id3 +F signF cyc3) ≡ 𝟘
 signsum-blind = refl
 
 𝟙≢𝟘 : ¬ (𝟙 ≡ 𝟘)
@@ -81,5 +85,5 @@ signsum-blind = refl
 
 -- detectP is strictly finer: at (id3 , cyc3) the two disagree, so no signF-
 -- combination equals detectP. The degree-2 companion is free.
-detector-finer-than-sign : ¬ (detectP id3 cyc3 ≡ (signF id3 + signF cyc3))
+detector-finer-than-sign : ¬ (detectP id3 cyc3 ≡ (signF id3 +F signF cyc3))
 detector-finer-than-sign eq = 𝟙≢𝟘 (trans (sym detect-separates) (trans eq signsum-blind))

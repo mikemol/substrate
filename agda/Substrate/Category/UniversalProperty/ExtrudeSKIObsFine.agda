@@ -24,17 +24,18 @@
 
 module Substrate.Category.UniversalProperty.ExtrudeSKIObsFine where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.Foundation.Empty using (⊥)
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Algebra.R.Trace.SKIShedDuality using (S; K; I; _∙_) renaming (Tm to Tm⟦533ef80d⟧)
+open import Substrate.Foundation.Empty.Bot
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Algebra.R.Trace.SKIShedDuality.Tm
+open import Substrate.Foundation.Eq
+open import Substrate.Algebra.R.Trace.SKIShedDuality.Tm
 
 ------------------------------------------------------------------------
 -- ① A NONTRIVIAL OBSERVATION ON THE ATOMS. tag S/K/I to distinct ℕ codes (0/1/2), everything else to 3.
 --    This is TOTAL. It is NOT ≈-invariant on composite terms (that would be undecidable) — but on the
 --    ATOMS it is a genuine distinction, and the atoms are distinct normal forms (non-convertible, CR).
 ------------------------------------------------------------------------
-atom-obs : Tm⟦533ef80d⟧ → ℕ
+atom-obs : Tm → ℕ
 atom-obs S = zero
 atom-obs K = suc zero
 atom-obs I = suc (suc zero)

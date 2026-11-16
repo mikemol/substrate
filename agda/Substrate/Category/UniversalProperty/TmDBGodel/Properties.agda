@@ -7,7 +7,7 @@
 --
 -- THE ONE PROOF is `parse-godel` (induction on the TERM): parsing (godel t ++
 -- rest) with fuel ≥ size t recovers (t, rest). The fuel-accounting closes
--- because `size (app f x) = suc (size f + size x)`, so `size` IS the structural
+-- because `size (app f x) = suc (size f ℕ+ size x)`, so `size` IS the structural
 -- measure — no Acc plumbing (cf. enum-fuel/factorize). From it, `godel-retract :
 -- ungodel (godel t) ≡ t` (decode ∘ encode = id).
 --
@@ -26,18 +26,31 @@
 
 module Substrate.Category.UniversalProperty.TmDBGodel.Properties where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _≤_; z≤n; s≤s)
+open import Substrate.Foundation.Nat.Le
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
 open import Substrate.Foundation.Nat.Properties.Order
   using (≤-refl; ≤-trans; m≤m+n; n≤m+n; +-mono-≤)
 open import Substrate.Foundation.List using (List; []; _∷_; _++_)
 open import Substrate.Foundation.List.Length using (length)
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
-open import Substrate.Foundation.Eq using (_≡_; refl; cong; sym; trans; subst)
-open import Substrate.Algebra.Quotient
+open import Substrate.Algebra.Quotient.ApproxcanonicalEq
+open import Substrate.Algebra.Quotient.Canonical
+open import Substrate.Algebra.Quotient.CanonicalEqApprox
+open import Substrate.Algebra.Quotient.IdemCanonical
+open import Substrate.Algebra.Quotient.KerQuotient
+open import Substrate.Algebra.Quotient.KerRel
+open import Substrate.Algebra.Quotient.Quotient
+open import Substrate.Algebra.Quotient.SplitCanonical
 open import Substrate.Category.UniversalProperty.TmDBGodel
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Subst
 
 ------------------------------------------------------------------------
--- 0. Supporting List lemmas (inline; the dedup advisory on these + `size` is
+-- 0. Supporting List lemmas (inline; the dedup advisory on these ℕ+ `size` is
 --    non-blocking — they are standard and keep this proof self-contained).
 ------------------------------------------------------------------------
 
@@ -49,7 +62,7 @@ open import Substrate.Category.UniversalProperty.TmDBGodel
 ++-identityʳ []       = refl
 ++-identityʳ (x ∷ xs) = cong (x ∷_) (++-identityʳ xs)
 
-length-++ : (xs ys : List ℕ) → length (xs ++ ys) ≡ length xs + length ys
+length-++ : (xs ys : List ℕ) → length (xs ++ ys) ≡ length xs ℕ+ length ys
 length-++ []       ys = refl
 length-++ (x ∷ xs) ys = cong suc (length-++ xs ys)
 
@@ -84,7 +97,7 @@ size≤length-godel S       = ≤-refl _
 size≤length-godel K       = ≤-refl _
 size≤length-godel I       = ≤-refl _
 size≤length-godel (app fn xn) =
-  s≤s (subst (λ z → size fn + size xn ≤ z)
+  s≤s (subst (λ z → size fn ℕ+ size xn ≤ z)
              (sym (length-++ (godel fn) (godel xn)))
              (+-mono-≤ (size≤length-godel fn) (size≤length-godel xn)))
 

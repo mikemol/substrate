@@ -13,10 +13,10 @@
 
 module Substrate.Algebra.Wedge.CombinatorDivStr where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Foundation.List using (List; []; _∷_)
 open import Substrate.Algebra.Wedge using (DivStr; z; recon; Trace; done; more)
 open import Substrate.Algebra.Wedge.Shape using (WedgeShape; shape)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- Combinator reduction as a substrate DivStr: carrier = reduction states S,

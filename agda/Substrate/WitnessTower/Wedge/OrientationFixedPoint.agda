@@ -33,18 +33,22 @@
 
 module Substrate.WitnessTower.Wedge.OrientationFixedPoint where
 
-open import Substrate.Foundation.Nat using (ℕ; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Product using (_,_; proj₁; proj₂)
-open import Substrate.Foundation.Eq using (_≡_; refl; cong₂)
 open import Substrate.WitnessTower.Enumerate using (Perm; insert-at)
 open import Substrate.WitnessTower.IsPermutation using (IsPerm)
 open import Substrate.WitnessTower.DuplicateFree using (insert-at-inj)
-open import Substrate.WitnessTower.LehmerPath
-  using (LehmerPath; start; _◂_; decode; encode; decode-is-perm;
-         decode-encode; encode-decode)
+open import Substrate.WitnessTower.LehmerPath.Decode
+open import Substrate.WitnessTower.LehmerPath.DecodeEncode
+open import Substrate.WitnessTower.LehmerPath.DecodeIsPerm
+open import Substrate.WitnessTower.LehmerPath.Encode
+open import Substrate.WitnessTower.LehmerPath.EncodeDecode2
+open import Substrate.WitnessTower.LehmerPath.LehmerPath
 open import Substrate.Algebra.Wedge.Graded using (recon)
 open import Substrate.WitnessTower.Wedge.Graded using (tower-graded)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong2
 
 ------------------------------------------------------------------------
 -- 1. THE WITNESS POINT IS THE ≡ FOR THE RUNG BELOW.

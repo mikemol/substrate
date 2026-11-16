@@ -14,25 +14,29 @@
 -- XOR that accumulates over ~250 GF products in a ten-round encrypt. The FIPS
 -- rigor is preserved exactly as for the S-box: the table IS the verified `xtime`.
 --
--- The 256-byte `refl` (`xtime-table-check`) is CHEAP (xtime is a shift + one
+-- The 256-byte `refl` (`xtime-table-check`) is CHEAP (xtime is a shift +F one
 -- conditional XOR per byte — no GF inversion, unlike SBoxTable's ~56s reflection).
 -- --safe --without-K, 0 postulates.
 ------------------------------------------------------------------------
 
 module Substrate.Algebra.F2.GF256.XtimeTable where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Vec using (Vec; []; _∷_)
-open import Substrate.Foundation.Eq using (_≡_; refl; trans; cong; sym)
-open import Substrate.Foundation.Bool using (Bool; true)
-import Substrate.Algebra.F2 as F2
-open import Substrate.Algebra.F2.CommRing using (F₂-CommRing)
-open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit.Base using (m-lo; all-vec; all-vec-sound)
+open import Substrate.Foundation.Bool.Bool
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit.Base.AllVec
+open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit.Base.AllVecSound
+open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit.Base.MLo
 import Substrate.Algebra.Polynomial.Graded.Base as GB
-open GB.Over F2.𝟘 using (Poly)
+open GB.Over 𝟘 using (Poly)
 open import Substrate.Algebra.F2.GF256.Xtime using (xtime)
 open import Substrate.Algebra.F2.Polynomial.Wedge.SBoxTable
   using (byte-val; idx; _==ℕ_; ==ℕ-sound; nb; byte-roundtrip)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Sym
 
 -- the canonical ·x table: XTIME[b] = (b<<1 & 0xFF) ⊕ (0x1b if b≥0x80) (Rijndael ·02).
 XTIME : Vec ℕ 256
@@ -58,12 +62,12 @@ XTIME =
 xtime-table-check : all-vec (λ b → byte-val (xtime b) ==ℕ idx XTIME (byte-val b)) ≡ true
 xtime-table-check = refl
 
--- (b) the sbox-is-aes analog: by all-vec-sound + ==ℕ-sound.
+-- (b) the sbox-is-aes analog: by all-vec-sound +F ==ℕ-sound.
 xtime-is-aes : (b : Poly 8) → byte-val (xtime b) ≡ idx XTIME (byte-val b)
 xtime-is-aes b = ==ℕ-sound _ _
   (all-vec-sound (λ x → byte-val (xtime x) ==ℕ idx XTIME (byte-val x)) xtime-table-check b)
 
--- the evaluation-CHEAP, table-driven xtime (a lookup), + the construction retained as theorem.
+-- the evaluation-CHEAP, table-driven xtime (a lookup), +F the construction retained as theorem.
 xtime-tab : Poly 8 → Poly 8
 xtime-tab b = nb (idx XTIME (byte-val b))
 

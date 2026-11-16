@@ -20,13 +20,14 @@
 
 module Substrate.Category.UniversalProperty.ExtrudeBisimUptoLimit where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Bool using (Bool; true; false; _∧_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Bool.And
+open import Substrate.Foundation.Bool.Bool
 open import Substrate.Category.UniversalProperty.ExtrudeStepDecidable using (HeadShape; isS; isK; isI; isApp)
 open import Substrate.Category.UniversalProperty.ExtrudeBisimRun
   using (RedTrace; obs; more; _≈_; obs≈; more≈)
 open import Substrate.Category.UniversalProperty.ExtrudeBisimDetect using (bisim-upto; head-eq)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- ① COMPLETENESS of the head observation: head-eq a b ≡ true ⟹ a ≡ b (the converse of 281's head-eq-sound).

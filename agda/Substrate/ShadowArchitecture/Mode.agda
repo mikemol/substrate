@@ -35,14 +35,13 @@
 module Substrate.ShadowArchitecture.Mode where
 open import Substrate.Algebra.F2.FanoPlane using (FanoLine)
 
-open import Substrate.Category.UniversalProperty.ExtrudeSKISection using (T)
-open import Substrate.Foundation.Bool using (Bool; true; false; _∨_)
-open import Substrate.Foundation.Sum using (inj₁; inj₂)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl)
+open import Substrate.Foundation.Bool.Bool
+open import Substrate.Foundation.Bool.Or
+open import Substrate.Foundation.Sum.Sum
 
 open import Substrate.ShadowArchitecture.FanoLabeling
 open import Substrate.ShadowArchitecture.SelfReference using (_on_)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. The four modes.

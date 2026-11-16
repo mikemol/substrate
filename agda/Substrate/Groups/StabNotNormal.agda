@@ -18,13 +18,13 @@
 
 module Substrate.Groups.StabNotNormal where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.Foundation.Negation using (¬_)
-open import Substrate.Foundation.Empty using (⊥)
+open import Substrate.Foundation.Negation.Not
+open import Substrate.Foundation.Empty.Bot
 open import Substrate.Axes.Axis using (Axis; D; C; S; W)
 open import Substrate.Groups.Symmetric.Permutation Axis
 open import Substrate.Groups.StabNormalCharacterization
   using (member-normal; member-normal→fixes-orbit)
+open import Substrate.Foundation.Eq
 
 -- the orbit-mover (D C): sends D ↦ C, exhibiting C ∈ orbit(D). Its own inverse.
 swapDC : Permutation

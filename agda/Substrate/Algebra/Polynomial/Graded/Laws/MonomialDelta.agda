@@ -3,14 +3,23 @@
 -- so each module's elaboration peak stays under the 128MB cap. Re-exported by
 -- `Substrate.Algebra.Polynomial.Graded` — the public API is unchanged.
 module Substrate.Algebra.Polynomial.Graded.Laws.MonomialDelta where
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _≟_) renaming (_+_ to _ℕ+_)
-open import Substrate.Foundation.Nat.Properties.Add using () renaming (+-comm to +ℕ-comm; +-assoc to +ℕ-assoc)
+open import Substrate.Foundation.Nat.Dec
+open import Substrate.Foundation.Nat.Nat
+-- ⚑ BARE, AND THE NAME IS `+ℕ-comm`.  This leaf's lemma now carries its domain AT
+-- SOURCE, so no filter is earned — and the two uses below are GENUINELY ℕ
+-- (`+ℕ-comm (toℕ i) (toℕ j)`, and `toℕ` returns ℕ), unlike the carrier laws the
+-- telescope binds.  My carrier-restore sweep rewrote them to `+-comm` on the rule
+-- "if the telescope binds the ℕ-suffixed name, every occurrence is the parameter" —
+-- true in 13 shards and FALSE here, because this file uses BOTH: the carrier law
+-- from its telescope and the ℕ law from this import.  A same-token-two-domains file
+-- is exactly what that heuristic cannot see.
+open import Substrate.Foundation.Nat.Properties.Add.PlusComm
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; replicate)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂; subst)
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.To
-open import Substrate.Foundation.Negation using (¬_; yes; no)
-open import Substrate.Foundation.Empty using (⊥-elim)
+open import Substrate.Foundation.Negation.Dec
+open import Substrate.Foundation.Negation.Not
+open import Substrate.Foundation.Empty.BotElim
 open import Substrate.Algebra.Module.Free.Basis using (basis-vec)
 open import Substrate.Algebra.Medial using (medial)
 import Substrate.Algebra.Polynomial.Graded.Base as Base
@@ -22,6 +31,13 @@ import Substrate.Algebra.Polynomial.Graded.Laws.Scalar as A4
 import Substrate.Algebra.Polynomial.Graded.Laws.Basis as A5
 import Substrate.Algebra.Polynomial.Graded.Laws.Linear as A6
 import Substrate.Algebra.Polynomial.Graded.Laws.Monomial as A7
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.Foundation.Eq.Subst
+open import Substrate.Foundation.Nat.Plus
 module Over {A : Set}
   (_+_ : A → A → A) (_*_ : A → A → A) (𝟘 𝟙 : A)
   (+-assoc     : (a b c : A) → (a + b) + c ≡ a + (b + c))
@@ -41,6 +57,12 @@ module Over {A : Set}
   -- 145KB, ~10KB/link) — AssocLinearP/Q/R sit at 61-65KB purely because they dropped it.
   -- This link now re-exports only what it defines.
   open A0.Over _+_ _*_ 𝟘 𝟙 +-assoc +-comm +-identityˡ +-identityʳ *-assoc *-comm *-identityˡ *-distribˡ *-absorbˡ *-absorbʳ
+  -- ⛑ Ⓡ2ᵈ: the `Defs` LEAVES this shard cites, derived by
+  -- `rewire_fcr --siblings Defs <file>` — a SET, not a prefix. `Defs`'s
+  -- re-opens are bare (Ⓡ1), so a leaf-defined name no longer arrives
+  -- through the root. Each leaf carries its OWN minimal telescope, so the
+  -- argument lists differ by leaf and are read from each header.
+  open import Substrate.Algebra.Polynomial.Graded.Defs.TimesP _+_ _*_ 𝟘 𝟙
   open A1.Over _+_ _*_ 𝟘 𝟙 +-assoc +-comm +-identityˡ +-identityʳ *-assoc *-comm *-identityˡ *-distribˡ *-absorbˡ *-absorbʳ
   open A2.Over _+_ _*_ 𝟘 𝟙 +-assoc +-comm +-identityˡ +-identityʳ *-assoc *-comm *-identityˡ *-distribˡ *-absorbˡ *-absorbʳ
   open A3.Over _+_ _*_ 𝟘 𝟙 +-assoc +-comm +-identityˡ +-identityʳ *-assoc *-comm *-identityˡ *-distribˡ *-absorbˡ *-absorbʳ

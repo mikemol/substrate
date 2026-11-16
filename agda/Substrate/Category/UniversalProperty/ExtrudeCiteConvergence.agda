@@ -31,24 +31,27 @@
 
 module Substrate.Category.UniversalProperty.ExtrudeCiteConvergence where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Foundation.Iff using (_⇔_; ⇔-refl)
 open import Substrate.Foundation.Product using (_×_; _,_)
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 
 -- (d) REALIGN-AS-INSTANCE: my reversal is ALREADY an instance, not a re-declaration — my construction
 -- closure ⇐* is RewriteConfluence's _⇒*_ instantiated at the FLIPPED relation (the same machinery dualized),
 -- exactly the realign-as-instance pattern (reuse the existing structure, don't re-declare). Witness it:
-open import Substrate.Algebra.R.Trace.SKIShedDuality using () renaming (Tm to Tm⟦533ef80d⟧)
+
 import Substrate.Algebra.R.Trace.SKIReductionToList as R
 open import Substrate.Category.UniversalProperty.ExtrudeReductionReversal using (_⇐_; Constructs)
+open import Substrate.Foundation.Eq
+open import Substrate.Algebra.R.Trace.SKIShedDuality.Tm
 -- ⇐ IS the flip of R._⇒_ (definitional — the instance, not a fresh relation):
-reversal-is-flip : {a b : Tm⟦533ef80d⟧} → (a ⇐ b) ⇔ (b R.⇒ a)
+reversal-is-flip : {a b : Tm} → (a ⇐ b) ⇔ (b R.⇒ a)
 reversal-is-flip = ⇔-refl
 -- (c) CITE Final's Lambek iso (the neighbour of my ExtrudeReductionReversal fold/unfold), opened not
 -- re-declared — per ExtruderLambekRealigned:
 open import Substrate.Algebra.R.Trace using (RealTrace)
-open import Substrate.Algebra.R.Trace.Final using (out; into; lambek-out-into)
+open import Substrate.Algebra.R.Trace.Final.Into
+open import Substrate.Algebra.R.Trace.Final.LambekOutInto
+open import Substrate.Algebra.R.Trace.Final.Out
 lambek-cited : (ns : ℕ × RealTrace) → out (into ns) ≡ ns
 lambek-cited = lambek-out-into      -- the repo's Lambek build↔fold iso — my reversal's stream-level neighbour
 

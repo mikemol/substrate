@@ -39,6 +39,7 @@ open import Substrate.Foundation.Level using (Level; _⊔_)
 
 open import Substrate.Category.GTorsor using (GTorsor; act)
 open import Substrate.Category.Morphism using (Morphism; mkMorphism)
+open import Substrate.Algebra.GL3F2
 
 private
   variable

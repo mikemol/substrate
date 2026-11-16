@@ -20,8 +20,10 @@
 ------------------------------------------------------------------------
 
 module Substrate.Category.UniversalProperty.StencilAbstract where
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
 
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans)
 
 ------------------------------------------------------------------------
 -- ① THE GENERIC STENCIL as a HetQ-style COSPAN (mirroring HetBasis.CrossEq EXACTLY):

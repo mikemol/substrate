@@ -27,12 +27,13 @@
 
 module Substrate.S5.S5EEABridge where
 
-open import Substrate.Foundation.Eq   using (_≡_; refl; cong)
 open import Substrate.Foundation.List using (List; []; _∷_)
 
 import Substrate.S5.S5EEA             as E
 import Substrate.Algebra.Wedge        as W
 import Substrate.Algebra.Wedge.Shape  as WS
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- 1. the DivStr transport (field-for-field) + the indexed Wedge/Trace transports.

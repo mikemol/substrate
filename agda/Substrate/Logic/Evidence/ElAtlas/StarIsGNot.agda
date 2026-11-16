@@ -33,12 +33,12 @@
 
 module Substrate.Logic.Evidence.ElAtlas.StarIsGNot where
 
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.Algebra.Q using (ℚ)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Algebra.Q.Rat
 open import Substrate.Algebra.Q.Equiv using (_≈ℚ_)
 open import Substrate.Logic.Evidence.GValueAsQ
   using (gvalue; recip; balance; antipode-of; gor; gand; demorgan)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- ★ IS G_NOT: the reciprocal / num-den swap (the conductance↔resistance fold).

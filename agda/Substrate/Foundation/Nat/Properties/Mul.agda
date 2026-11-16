@@ -9,11 +9,20 @@
 
 module Substrate.Foundation.Nat.Properties.Mul where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Times
+open import Substrate.Foundation.Nat.Properties.Add.PlusAssoc
+open import Substrate.Foundation.Nat.Properties.Add.PlusComm
+open import Substrate.Foundation.Nat.Properties.Add.PlusIdentityR
+open import Substrate.Foundation.Nat.Properties.Add.PlusSuc
 open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; trans; cong; cong₂; cong-trans; sym-trans)
-open import Substrate.Foundation.Nat.Properties.Add
-  using (+-identityʳ; +-suc; +-assoc; +-comm)
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.Foundation.Eq.CongTrans
+open import Substrate.Foundation.Eq.SymTrans
 
 *-zeroˡ : (n : ℕ) → zero * n ≡ zero
 *-zeroˡ _ = refl
@@ -23,44 +32,44 @@ open import Substrate.Foundation.Nat.Properties.Add
 *-zeroʳ (suc n) = *-zeroʳ n
 
 *-identityˡ : (n : ℕ) → suc zero * n ≡ n
-*-identityˡ n = +-identityʳ n
+*-identityˡ n = +ℕ-identityʳ n
 
 *-identityʳ : (n : ℕ) → n * suc zero ≡ n
 *-identityʳ zero    = refl
 *-identityʳ (suc n) = cong suc (*-identityʳ n)
 
-*-suc : (m n : ℕ) → m * suc n ≡ m + m * n
+*-suc : (m n : ℕ) → m * suc n ≡ m ℕ+ m * n
 *-suc zero    _ = refl
 *-suc (suc m) n =
   cong suc
-    (cong-trans (n +_) (*-suc m n)
-       (sym-trans (+-assoc n m (m * n))
-          (cong-trans (_+ (m * n)) (+-comm n m)
-             (+-assoc m n (m * n)))))
+    (cong-trans (n ℕ+_) (*-suc m n)
+       (sym-trans (+ℕ-assoc n m (m * n))
+          (cong-trans (_ℕ+ (m * n)) (+ℕ-comm n m)
+             (+ℕ-assoc m n (m * n)))))
 
 *-comm : (m n : ℕ) → m * n ≡ n * m
 *-comm zero    n = sym (*-zeroʳ n)
-*-comm (suc m) n = cong-trans (n +_) (*-comm m n) (sym (*-suc n m))
+*-comm (suc m) n = cong-trans (n ℕ+_) (*-comm m n) (sym (*-suc n m))
 
-*-distribˡ-+ : (a m n : ℕ) → a * (m + n) ≡ a * m + a * n
+*-distribˡ-+ : (a m n : ℕ) → a * (m ℕ+ n) ≡ a * m ℕ+ a * n
 *-distribˡ-+ zero    _ _ = refl
 *-distribˡ-+ (suc a) m n =
   let ih = *-distribˡ-+ a m n
-      lemma : (m + n) + (a * (m + n)) ≡ (m + a * m) + (n + a * n)
-      lemma = cong-trans ((m + n) +_) ih
-              (trans (+-assoc m n (a * m + a * n))
-                     (cong-trans (m +_)
-                        (sym-trans (+-assoc n (a * m) (a * n))
-                           (cong-trans (_+ (a * n)) (+-comm n (a * m))
-                              (+-assoc (a * m) n (a * n))))
-                        (sym (+-assoc m (a * m) (n + a * n)))))
+      lemma : (m ℕ+ n) ℕ+ (a * (m ℕ+ n)) ≡ (m ℕ+ a * m) ℕ+ (n ℕ+ a * n)
+      lemma = cong-trans ((m ℕ+ n) ℕ+_) ih
+              (trans (+ℕ-assoc m n (a * m ℕ+ a * n))
+                     (cong-trans (m ℕ+_)
+                        (sym-trans (+ℕ-assoc n (a * m) (a * n))
+                           (cong-trans (_ℕ+ (a * n)) (+ℕ-comm n (a * m))
+                              (+ℕ-assoc (a * m) n (a * n))))
+                        (sym (+ℕ-assoc m (a * m) (n ℕ+ a * n)))))
   in lemma
 
-*-distribʳ-+ : (a m n : ℕ) → (m + n) * a ≡ m * a + n * a
+*-distribʳ-+ : (a m n : ℕ) → (m ℕ+ n) * a ≡ m * a ℕ+ n * a
 *-distribʳ-+ a m n =
-  trans (*-comm (m + n) a)
+  trans (*-comm (m ℕ+ n) a)
   (trans (*-distribˡ-+ a m n)
-         (cong₂ _+_ (*-comm a m) (*-comm a n)))
+         (cong₂ _ℕ+_ (*-comm a m) (*-comm a n)))
 
 ------------------------------------------------------------------------
 -- Associativity. Reduce on the leftmost factor via *-distribʳ-+.
@@ -70,7 +79,7 @@ open import Substrate.Foundation.Nat.Properties.Add
 *-assoc zero    _ _ = refl
 *-assoc (suc m) n p =
   trans (*-distribʳ-+ p n (m * n))
-        (cong (n * p +_) (*-assoc m n p))
+        (cong (n * p ℕ+_) (*-assoc m n p))
 
 ------------------------------------------------------------------------
 -- Middle-factor interchange of a product of two products (reusable for

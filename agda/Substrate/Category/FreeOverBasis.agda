@@ -37,7 +37,9 @@
 
 module Substrate.Category.FreeOverBasis where
 
-open import Substrate.Foundation.Level using (Level; _⊔_) renaming (suc to lsuc)
+open import Substrate.Foundation.Level using (Level; _⊔_)
+open import Substrate.Foundation.Eq
+open import Substrate.Algebra.Module.Free
 
 private
   variable
@@ -197,8 +199,7 @@ open LanguageWitness public
 -- or different cells (cross-class Rosetta alignment).
 ------------------------------------------------------------------------
 
-open import Substrate.Foundation.Eq using (_≡_)
-open import Substrate.Foundation.Negation using (Dec; yes; no)
+open import Substrate.Foundation.Negation.Dec
 
 same-class? : {B₁ F₁ B₂ F₂ : Set} (w₁ : LanguageWitness B₁ F₁) (w₂ : LanguageWitness B₂ F₂) → Set
 same-class? w₁ w₂ = class w₁ ≡ class w₂

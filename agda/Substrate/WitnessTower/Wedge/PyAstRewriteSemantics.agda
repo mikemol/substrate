@@ -26,11 +26,12 @@
 
 module Substrate.WitnessTower.Wedge.PyAstRewriteSemantics where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; _+_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.To
-open import Substrate.Foundation.Bool using (Bool)
-open import Substrate.WitnessTower.LehmerPath using (decode)
+open import Substrate.Foundation.Bool.Bool
+open import Substrate.WitnessTower.LehmerPath.Decode
 open import Substrate.WitnessTower.Wedge.OrientationUniversal using (LehmerAlgebra; fold)
 open import Substrate.WitnessTower.Wedge.OrientationRigCatPermSign using (sign)
 open import Substrate.WitnessTower.Wedge.PyAstRewrite using (PyRewrite)
@@ -38,7 +39,7 @@ open import Substrate.WitnessTower.Wedge.PyAstRewrite using (PyRewrite)
 -- LENGTH: the transformation's cost = the number of atomic adjacent-transposition rewrites =
 -- Σ of the Lehmer digits. A LehmerAlgebra fold: base 0, each ◂-step adds its digit.
 lengthAlg : LehmerAlgebra (λ _ → ℕ)
-lengthAlg = record { base = zero ; step = λ c p → c + toℕ p }
+lengthAlg = record { base = zero ; step = λ c p → c ℕ+ toℕ p }
 
 pyLength : {n : ℕ} → PyRewrite n → ℕ
 pyLength = fold lengthAlg

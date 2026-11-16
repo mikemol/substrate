@@ -20,16 +20,20 @@
 
 module Substrate.Algebra.Wedge.TraceNuAbstractLimit where
 
-open import Substrate.Foundation.Eq  using (_≡_; refl; subst)
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Empty using (⊥; ⊥-elim)
-open import Substrate.Foundation.Negation using (¬_; Dec; yes; no)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Empty.BotElim
+open import Substrate.Foundation.Negation.Dec
+open import Substrate.Foundation.Negation.Not
 open import Substrate.Foundation.Product using (Σ; _,_; _×_; proj₁; proj₂)
-open import Substrate.Foundation.Sum using (_⊎_; inj₁; inj₂)
-open import Substrate.Algebra.Wedge using (DivStr; z; rem) renaming (Wedge to Wedge⟦478f66a6⟧)
-open import Substrate.Category.Allegory.Refinement using (_⊑ᶠ_; iterate)
+open import Substrate.Foundation.Sum.Sum
+open import Substrate.Algebra.Wedge using (DivStr; z; rem) renaming (Wedge to Wedge)
+open import Substrate.Category.Allegory.Refinement.Iterate
+open import Substrate.Category.Allegory.Refinement.SqsubF
 open import Substrate.Algebra.Wedge.TraceMuStep using (Idx; Φ-step; step-refinement)
 open import Substrate.Algebra.Wedge.TraceNuColimit using (⊤-fam; Limit; coalg-below-limit)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Subst
+open import Substrate.Algebra.Wedge
 
 -- a Dec of a product from two Decs (for the done? decision).
 dec-× : {A B : Set} → Dec A → Dec B → Dec (A × B)
@@ -39,7 +43,7 @@ dec-× (no ¬a) _       = no (λ ab → ¬a (proj₁ ab))
 
 module _ {C : Set} (D : DivStr C)
          (deq : (x y : C) → Dec (x ≡ y))
-         (wrem-uniq : {a b : C} (w w' : Wedge⟦478f66a6⟧ D a b) → rem w ≡ rem w') where
+         (wrem-uniq : {a b : C} (w w' : Wedge D a b) → rem w ≡ rem w') where
 
   -- decide the done case at an index (b ≡ z × g ≡ a) from decidable equality.
   done? : (i : Idx D) → Dec ((proj₁ (proj₂ i) ≡ z D) × (proj₂ (proj₂ i) ≡ proj₁ i))
@@ -59,13 +63,13 @@ module _ {C : Set} (D : DivStr C)
       -- every stage m gives a step-witness (inj₁ contradicts ¬done): the wedge + the
       -- residual membership at THAT wedge's rem.
       step-at : (m : ℕ) →
-        Σ (Wedge⟦478f66a6⟧ D a b) (λ w → iterate (step-refinement D) m (⊤-fam D) (b , rem w , g))
+        Σ (Wedge D a b) (λ w → iterate (step-refinement D) m (⊤-fam D) (b , rem w , g))
       step-at m with l (suc m)
       ... | inj₁ dp       = ⊥-elim (¬done dp)
       ... | inj₂ (w , y)  = w , y
       -- the canonical wedge from stage 0, and the residual limit at its rem —
       -- transporting each stage's witness along wrem-uniq (rem is determinate).
-      w₁ : Wedge⟦478f66a6⟧ D a b
+      w₁ : Wedge D a b
       w₁ = proj₁ (step-at zero)
       residual : Limit D (b , rem w₁ , g)
       residual m =

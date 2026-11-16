@@ -30,9 +30,18 @@
 module Substrate.Algebra.Quotient.IRRetraction where
 
 open import Agda.Primitive using (Level; _⊔_)
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
-open import Substrate.Algebra.Quotient
+open import Substrate.Algebra.Quotient.ApproxcanonicalEq
+open import Substrate.Algebra.Quotient.Canonical
+open import Substrate.Algebra.Quotient.CanonicalEqApprox
+open import Substrate.Algebra.Quotient.IdemCanonical
+open import Substrate.Algebra.Quotient.KerQuotient
+open import Substrate.Algebra.Quotient.KerRel
+open import Substrate.Algebra.Quotient.Quotient
+open import Substrate.Algebra.Quotient.SplitCanonical
+open import Substrate.Foundation.Eq
+open import Substrate.Lifecycle.Fragment.Skeleton
+open import Substrate.WitnessTower.GradeMapInvariant
 
 ------------------------------------------------------------------------
 -- The IR-retraction data, abstract over the three carriers + the maps.

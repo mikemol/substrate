@@ -24,17 +24,47 @@
 module Substrate.S5.S5TorsorWireV4 where
 open import Substrate.Groups.V4.Bundle using (V₄-Monoid)
 
-open import Substrate.S5.S5Verdict using (_≡_; refl; sym; trans; cong)
+-- ⚑⚑ `S5Verdict using (_≡_; refl; sym; trans; cong)` STOOD HERE and no longer resolves.
+-- `S5Verdict:31-32` deliberately re-exports a mini-foundation `public` (`Nat.Nat`, `Nat.Plus`,
+-- `List`) *"so S5 dependents that pull stdlib from S5Verdict keep resolving unchanged"* — but
+-- its `Eq`/`Eq.Sym`/`Eq.Trans`/`Eq.Cong` imports carry NO `public`, so these five never came
+-- through. ⚑ A `using` list is checked against what the module ACTUALLY exports, so this was a
+-- warning (`-W ModuleDoesntExport`), not an error — the names were silently unbound until
+-- something used them. Taken from their real homes instead of widening S5Verdict's re-export,
+-- which the ⟡public-policy commit bans for new surface.
+open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Eq.Sym using (sym)
+open import Substrate.Foundation.Eq.Trans using (trans)
+open import Substrate.Foundation.Eq.Cong using (cong)
 open import Substrate.Foundation.Product using (Σ; _,_) renaming (proj₁ to fst; proj₂ to snd)
 
 -- V₄ = {e,α,β,γ}, exponent 2, self-inverse (inv = id), abelian.
 open import Substrate.Groups.V4.Axioms.EpsilonLeft using (ε-left)
-open import Substrate.Groups.V4.Bijection using (V₄) renaming (e to e₄; α to α₄; β to β₄; γ to γ₄)
-open import Substrate.Groups.V4.Operations using () renaming (_·_ to _·₄_)
+-- ⚑ REPOINTED: `Groups.V4.Bijection` → `.Bijection.V4`. The parent was SPLIT, not deleted, and
+-- the successor provides exactly the five names this line wants (`--provides` → V₄ e α β γ).
+-- ⚑⚑ This is the one dangling target of the original seven that needed a REPOINT rather than a
+-- deletion: the other six had their successor import already present beside the dead line.
+open import Substrate.Groups.V4.Bijection.V4 using (V₄) renaming (e to e₄; α to α₄; β to β₄; γ to γ₄)
+-- ⚑ THE RENAME WAS ALREADY DONE AT SOURCE. This read `using () renaming (_·_ to _·₄_)`, but
+-- `Operations` now exports `_·₄_` directly (`--provides`: `_·₄_ inv v4-cover … ·₄ ε`) — the
+-- decomposition renamed it and this consumer kept renaming a name that no longer exists.
+-- ⚑⚑ A `renaming` of an ABSENT name is a WARNING, not an error, so it sat here silently: the
+-- import succeeded and bound nothing. Same silent shape as the `S5Verdict using (…)` above.
+open import Substrate.Groups.V4.Operations using (_·₄_)
 open import Substrate.Foundation.Unit using (⊤)
 open import Substrate.Category.Delooping using (deloop)
-open import Substrate.Category.CategoryOf using (CategoryOf)
+-- ⚑ REPOINTED: `Category.CategoryOf` → `.CategoryOf.CategoryOf` — the second split-not-deleted
+-- parent in this file, same shape as `V4.Bijection` above (`--grep '^CategoryOf$'` finds the
+-- leaf and no parent).
+open import Substrate.Category.CategoryOf.CategoryOf using (CategoryOf)
 import Substrate.Groups.V4.Bundle as V4B
+open import Substrate.Category.CategoryOf.CategoryOf
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Algebra.R.Trace.OrbitUniversality
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Algebra.Magma
 data KleinV4 : Set where e α β γ : KleinV4      -- ⟦shape:fb526564⟧
 
 _·_ : KleinV4 → KleinV4 → KleinV4

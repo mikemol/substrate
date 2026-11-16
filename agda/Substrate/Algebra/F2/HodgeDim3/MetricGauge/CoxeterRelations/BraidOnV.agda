@@ -11,14 +11,15 @@ module Substrate.Algebra.F2.HodgeDim3.MetricGauge.CoxeterRelations.BraidOnV wher
 
 open import Substrate.Foundation.Product using (_,_)
 open import Substrate.Foundation.Fin.Cover using (fin-cover)
-open import Substrate.Foundation.Eq  using (_≡_)
 open import Substrate.Algebra.F2.Vector using (Vector)
-open import Substrate.Algebra.F2.Linear using (apply; _∘L_)
+open import Substrate.Algebra.F2.Linear.CompL
+open import Substrate.Algebra.F2.Linear.Linear
 open import Substrate.Algebra.F2.Linear.Universal using (linear-extensionality)
 open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.Stabiliser using (s₁; s₂)
 open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.CoxeterRelations.BraidOnE0 using (braid-on-e₀)
 open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.CoxeterRelations.BraidOnE1 using (braid-on-e₁)
 open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.CoxeterRelations.BraidOnE2 using (braid-on-e₂)
+open import Substrate.Foundation.Eq
 
 braid-on-v :
   (v : Vector 3) →

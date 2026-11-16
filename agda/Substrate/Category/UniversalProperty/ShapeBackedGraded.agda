@@ -15,7 +15,7 @@
 
 module Substrate.Category.UniversalProperty.ShapeBackedGraded where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.List using (List; []; _∷_)
 open import Substrate.Foundation.Product using (Σ; _,_)
 open import Substrate.Algebra.Wedge using (DivStr; quot; Trace; done; trace-fold; ℕ-div)

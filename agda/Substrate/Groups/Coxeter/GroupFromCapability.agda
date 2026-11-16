@@ -18,6 +18,7 @@ open import Substrate.Groups.Capabilities.CoxeterGroup
   using (CoxeterGroupCapability)
 open import Substrate.Groups.Coxeter.Word
   using (Word; _++_; []; ++-identity-left; ++-identity-right)
+open import Substrate.Algebra.Quotient.Canonical
 
 -- ⟡set1-paydown: CoxeterGroupCapability now takes (Gen : Set) and the family
 -- (Canonical : Word Gen → Set) as parameters; take them as implicit module

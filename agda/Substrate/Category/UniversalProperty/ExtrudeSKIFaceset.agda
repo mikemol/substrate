@@ -16,13 +16,14 @@
 
 module Substrate.Category.UniversalProperty.ExtrudeSKIFaceset where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; cong)
-open import Substrate.Foundation.Empty using (⊥)
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using (Vec; []; _∷_)
-open import Substrate.Algebra.F2 using (F₂; 𝟘; 𝟙; 𝟘≢𝟙)
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.ZeroNeqOne
 open import Substrate.Algebra.F2.Vector using (Vector; 𝟎ⱽ)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- ① THE VERTEX AS A SINGLETON F₂-INDICATOR (the FaceSet vertex = a weight-1 face). eᵢ i has 𝟙 at position
@@ -57,7 +58,7 @@ eᵢ-inj {suc n} {suc i} {zero}  ()   -- (𝟘 ∷ _) ≡ (𝟙 ∷ _) forces �
 -- tower's rung-n vertex set as faces. The SKI non-degeneracy (distinct vertices don't converge) is thus
 -- carried on the tower's own face geometry, not a stand-in Fin. No spook — a positive geometric identification.
 --
--- HONEST BOUNDARY (⟡H-overclaim): GROUNDED = eᵢ (vertex-as-singleton-face) + eᵢ-inj (injective embedding).
+-- HONEST BOUNDARY (⟡H-overclaim): GROUNDED = eᵢ (vertex-as-singleton-face) +F eᵢ-inj (injective embedding).
 -- SCOPED: the FULL Boolean-lattice face structure of FaceSet (all subsets, with-apex/without-apex cone, the
 -- Hodge ★) beyond the singleton/vertex layer — reused-in-spirit; wiring the k-faces (edges, triangles) to
 -- SKI sub-configurations is ⟡extrude-ski-kfaces. What's grounded: the vertex-index IS the FaceSet singleton

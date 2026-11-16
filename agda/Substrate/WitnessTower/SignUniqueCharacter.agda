@@ -10,7 +10,7 @@
 -- finer than the sign.
 --
 --   · sign-alg              — the parity-step LehmerAlgebra (base 𝟘, step +finParity)
---   · sign-is-fold          — signF ∘ decode IS the fold (fold-unique + insertion-parity-B)
+--   · sign-is-fold          — signF ∘ decode IS the fold (fold-unique +F insertion-parity-B)
 --   · sign-unique-◂-character — any ◂-respecting mod-2 character = signF ∘ decode
 --
 -- Pure assembly of already-green pieces: fold-unique (OrientationUniversal),
@@ -29,16 +29,20 @@
 
 module Substrate.WitnessTower.SignUniqueCharacter where
 
-open import Substrate.Foundation.Nat using (ℕ; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym)
-open import Substrate.Algebra.F2 using (F₂; 𝟘; _+_)
-open import Substrate.WitnessTower.LehmerPath using (LehmerPath; start; _◂_; decode)
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.PlusF
+open import Substrate.WitnessTower.LehmerPath.Decode
+open import Substrate.WitnessTower.LehmerPath.LehmerPath
 open import Substrate.WitnessTower.TowerCocycleGraded using (signF)
-open import Substrate.WitnessTower.LehmerTowerMorphism using (finParity)
+open import Substrate.WitnessTower.LehmerTowerMorphism.FinParity
 open import Substrate.WitnessTower.InsertionParity using (insertion-parity-B)
 open import Substrate.WitnessTower.Wedge.OrientationUniversal
   using (LehmerAlgebra; base; step; fold; fold-unique)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Sym
 
 ------------------------------------------------------------------------
 -- 1. THE PARITY-STEP ALGEBRA. Grade-constant carrier F₂; the step adds the
@@ -46,12 +50,12 @@ open import Substrate.WitnessTower.Wedge.OrientationUniversal
 ------------------------------------------------------------------------
 
 sign-alg : LehmerAlgebra (λ _ → F₂)
-sign-alg = record { base = 𝟘 ; step = λ {_} b p → finParity p + b }
+sign-alg = record { base = 𝟘 ; step = λ {_} b p → finParity p +F b }
 
 ------------------------------------------------------------------------
 -- 2. sign IS THE FOLD. signF ∘ decode agrees with sign-alg on (start, ◂), so
 --    by fold-unique it EQUALS fold sign-alg. insertion-parity-B is precisely
---    the g-step obligation (signF (decode (l ◂ p)) ≡ finParity p + signF (decode l)).
+--    the g-step obligation (signF (decode (l ◂ p)) ≡ finParity p +F signF (decode l)).
 ------------------------------------------------------------------------
 
 sign-base : signF (decode start) ≡ 𝟘
@@ -67,7 +71,7 @@ sign-is-fold = fold-unique sign-alg (λ l → signF (decode l)) sign-base insert
 
 sign-unique-◂-character :
   (g : ∀ {n} → LehmerPath n → F₂) → (g start ≡ 𝟘) →
-  (∀ {n} (l : LehmerPath n) (p : Fin (suc n)) → g (l ◂ p) ≡ (finParity p + g l)) →
+  (∀ {n} (l : LehmerPath n) (p : Fin (suc n)) → g (l ◂ p) ≡ (finParity p +F g l)) →
   ∀ {n} (l : LehmerPath n) → g l ≡ signF (decode l)
 sign-unique-◂-character g gb gs l =
   trans (fold-unique sign-alg g gb gs l) (sym (sign-is-fold l))

@@ -27,7 +27,7 @@ open import Substrate.Groups.Coxeter.Word
 ------------------------------------------------------------------------
 
 open import Substrate.Category.Strict2Monoid.FromCoxeter
-  (Word V₄.Gen)
+  (Word V₄.Gen-V4)
   _++_
   []
   (λ a b c → ++-assoc a b c)

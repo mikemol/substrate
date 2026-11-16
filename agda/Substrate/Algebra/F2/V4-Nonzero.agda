@@ -11,13 +11,13 @@
 --
 --   v4nz-α = (𝟙, 𝟘)     ← first axis, α-pair = {D,C}|{S,W}
 --   v4nz-β = (𝟘, 𝟙)     ← second axis, β-pair = {D,S}|{C,W}
---   v4nz-γ = (𝟙, 𝟙)     ← α + β, γ-pair = {D,W}|{C,S}
+--   v4nz-γ = (𝟙, 𝟙)     ← α +F β, γ-pair = {D,W}|{C,S}
 --
 -- The relation `vec-α +ⱽ vec-β ≡ vec-γ` captures the V₄ group
 -- structure on the nonzero F₂² elements (V₄ ≅ F₂² as additive group).
 --
 -- Mirrors the Fano (M-9) / Hamming (M-7) pattern: `Fin k` for the
--- positional axis + a coords dispatcher into `Vector m`. Pattern-
+-- positional axis +F a coords dispatcher into `Vector m`. Pattern-
 -- matching on a Fin 3 inhabitant is cleaner than carrying a Σ-type
 -- proof component (Angle B in the M-12 plan).
 ------------------------------------------------------------------------
@@ -29,11 +29,34 @@ module Substrate.Algebra.F2.V4-Nonzero where
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Literals using (₂)
 open import Substrate.Foundation.Vec using ([]; _∷_)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl)
 
-open import Substrate.Algebra.F2
+open import Substrate.Algebra.F2.AbsorbL
+open import Substrate.Algebra.F2.AbsorbR
+open import Substrate.Algebra.F2.Assoc
+open import Substrate.Algebra.F2.Comm
+open import Substrate.Algebra.F2.Dec
+open import Substrate.Algebra.F2.DistribLPlus
+open import Substrate.Algebra.F2.DistribRPlus
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.F2Cases
+open import Substrate.Algebra.F2.Idempotent
+open import Substrate.Algebra.F2.IdentityL
+open import Substrate.Algebra.F2.IdentityR
+open import Substrate.Algebra.F2.InvOfOne
+open import Substrate.Algebra.F2.OneNeqZero
+open import Substrate.Algebra.F2.Op
+open import Substrate.Algebra.F2.Op2
+open import Substrate.Algebra.F2.PlusAssoc
+open import Substrate.Algebra.F2.PlusComm
+open import Substrate.Algebra.F2.PlusF
+open import Substrate.Algebra.F2.PlusIdentityL
+open import Substrate.Algebra.F2.PlusIdentityR
+open import Substrate.Algebra.F2.PlusInverseL
+open import Substrate.Algebra.F2.PlusInverseR
+open import Substrate.Algebra.F2.PlusSelfInverse
+open import Substrate.Algebra.F2.ZeroNeqOne
 open import Substrate.Algebra.F2.Vector
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- The positional type.
@@ -74,7 +97,7 @@ coords (suc zero)          = vec-β
 coords ₂       = vec-γ
 
 ------------------------------------------------------------------------
--- The defining F₂-linear relation: α + β = γ.
+-- The defining F₂-linear relation: α +F β = γ.
 --
 -- This captures V₄ ≅ F₂² as an additive group: the three nonzero
 -- elements are closed under XOR up to the V₄ multiplication table.

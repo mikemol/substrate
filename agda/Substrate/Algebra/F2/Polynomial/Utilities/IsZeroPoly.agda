@@ -10,12 +10,12 @@
 
 module Substrate.Algebra.F2.Polynomial.Utilities.IsZeroPoly where
 
-open import Substrate.Foundation.Empty using (⊥)
+open import Substrate.Foundation.Empty.Bot
 open import Substrate.Foundation.Unit using (⊤; tt)
 open import Substrate.Foundation.Vec using ([]; _∷_)
-open import Substrate.Foundation.Negation using (Dec; yes; no)
+open import Substrate.Foundation.Negation.Dec
 
-open import Substrate.Algebra.F2 using (F₂; 𝟘; 𝟙)
+open import Substrate.Algebra.F2.F2
 open import Substrate.Algebra.F2.Polynomial using (Polynomial)
 
 is-zero-poly : ∀ {n} → Polynomial n → Set

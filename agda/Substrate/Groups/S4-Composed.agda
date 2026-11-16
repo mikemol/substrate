@@ -27,7 +27,12 @@ open import Substrate.Algebra.Group.ToSetoid using (to-setoid)
 -- `to-setoid`. S₃ already exports `S₃-Group : SetoidGroup`.
 ------------------------------------------------------------------------
 
-open import Substrate.Groups.Coxeter.SemidirectProductGroup
+-- ⚑ AN APPLIED IMPORT OF A DISSOLVED PARENT, which is why every census read it as
+-- unrewirable: `rewire_to_leaves` reported no importers to move because the statement is
+-- `import … as .#<anon>` (agda's spelling for a parameterized module applied
+-- inline), not a plain `open import`. The six-slot telescope is unchanged — it now
+-- lives on the `.WithAction` leaf verbatim, so the argument list carries over.
+open import Substrate.Groups.Coxeter.SemidirectProductGroup.WithAction
   _ _
   (to-setoid V₄-Group)  -- N (normal subgroup)
   _ _

@@ -9,9 +9,12 @@
 module Substrate.Cocycles.V4Signature.OrbitKey-S3.SFinApplyInj where
 
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Eq using (_≡_; sym; trans; cong)
 import Substrate.Groups.SFin.Apply as SFinA
 import Substrate.Groups.SFin.Permutation as SFinP
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 sfin-apply-inj :
   (s : SFinP.Permutation 3) {i j : Fin 3} →

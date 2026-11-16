@@ -34,7 +34,7 @@ open import Substrate.Groups.Symmetric.Permutation Axis
 open import Substrate.Groups.V4-Cosets
   using (_∼V₄_; ∼V₄-refl; ∼V₄-sym; ∼V₄-trans)
 
-open import Substrate.Algebra.Quotient using (Quotient)
+open import Substrate.Algebra.Quotient.Quotient
 
 ------------------------------------------------------------------------
 -- 1. V₄-coset Quotient instance.

@@ -81,19 +81,22 @@
 
 module Substrate.WitnessTower.Wedge.OrientationRigCatPermUP where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Eq using (_≡_; trans; cong₂)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.WitnessTower.Wedge.OrientationBimonoidal
   using (_∧_)
 open import Substrate.WitnessTower.Wedge.OrientationRigCat
   using (GradedRigCat; _∘_; ⊕obj; braid⊕; braid⊗; Objₛ; ⋆)
-open import Substrate.WitnessTower.Wedge.OrientationRigCatPerm
-  using (orientationRigCatPerm; Objₚ; Homₚ)
+open import Substrate.WitnessTower.Wedge.OrientationRigCatPerm.Hom2
+open import Substrate.WitnessTower.Wedge.OrientationRigCatPerm.Obj
+open import Substrate.WitnessTower.Wedge.OrientationRigCatPerm.OrientationRigCatPerm
 open import Substrate.WitnessTower.Wedge.OrientationRigCatUP
   using ( RigFunctor; F-obj; F-hom; F-∘; F-braid⊕; F-braid⊗
         ; F-⊕obj-u; F-⊕obj-∧; F-⊗obj-u; F-⊗obj-∧; trⱽ )
-open import Substrate.WitnessTower.Wedge.OrientationRigCatUP.Properties
-  using (freeObj)
+open import Substrate.WitnessTower.Wedge.OrientationRigCatUP.Properties.FreeObj
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.Probability.MarkovCategory
 
 ------------------------------------------------------------------------
 -- (1) OBJECT-UP — FORCED, ∀ target. The object map of ANY RigFunctor out of

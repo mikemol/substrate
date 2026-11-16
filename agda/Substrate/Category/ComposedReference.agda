@@ -28,7 +28,14 @@
 module Substrate.Category.ComposedReference where
 
 open import Substrate.Category.ComposedReference.EmissionSource
-open import Substrate.Category.ComposedReference.V4
+open import Substrate.Groups.V4.Bijection.FromC
+open import Substrate.Groups.V4.Bijection.FromCCanonical
+open import Substrate.Groups.V4.Bijection.FromTo
+open import Substrate.Groups.V4.Bijection.Private
+open import Substrate.Groups.V4.Bijection.ToC
+open import Substrate.Groups.V4.Bijection.ToCCanonical
+open import Substrate.Groups.V4.Bijection.ToFromCanonical
+open import Substrate.Groups.V4.Bijection.V4
 open import Substrate.Category.ComposedReference.ActionAlgebra
 open import Substrate.Category.ComposedReference.BasisLabel
 open import Substrate.Category.ComposedReference.Record

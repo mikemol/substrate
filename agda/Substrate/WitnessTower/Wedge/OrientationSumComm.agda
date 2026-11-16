@@ -7,7 +7,7 @@
 -- TRANSPOSITION — the block-swap. This file exhibits that r concretely and proves it is
 -- an honest iso (the ≅ of the symmetric rig groupoid), NOT a strict equality.
 --
---   blockSwap m n : Fin (m + n) → Fin (n + m)     -- the additive-commutativity iso r
+--   blockSwap m n : Fin (m ℕ+ n) → Fin (n ℕ+ m)     -- the additive-commutativity iso r
 --
 -- It is the ⊎-swap read through Fin ≅ ⊎: split the first block off, and send the first
 -- block (inject+) to the second position (raise) and vice-versa. Proven here: it swaps
@@ -27,7 +27,7 @@
 
 module Substrate.WitnessTower.Wedge.OrientationSumComm where
 
-open import Substrate.Foundation.Nat using (ℕ; _+_)
+open import Substrate.Foundation.Nat.Plus
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Inject using (inject+)
 open import Substrate.Foundation.Fin.Raise using (raise)
@@ -35,14 +35,17 @@ open import Substrate.Foundation.Fin.SplitAt using (splitAt)
 open import Substrate.Foundation.Fin.SplitAt.InjectIdentity using (splitAt-inject)
 open import Substrate.Foundation.Fin.SplitAt.RaiseIdentity using (splitAt-raise)
 open import Substrate.Foundation.Fin.SplitAt.View using (splitAt-view; fromₗ; fromᵣ)
-open import Substrate.Foundation.Sum using (_⊎_; inj₁; inj₂; [_,_])
-open import Substrate.Foundation.Eq using (_≡_; refl; trans; cong)
+open import Substrate.Foundation.Sum.Op
+open import Substrate.Foundation.Sum.Sum
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- 1. THE ADDITIVE-COMMUTATIVITY ISO r = blockSwap: the block-transposition.
 ------------------------------------------------------------------------
 
-blockSwap : ∀ m n → Fin (m + n) → Fin (n + m)
+blockSwap : ∀ m n → Fin (m ℕ+ n) → Fin (n ℕ+ m)
 blockSwap m n k = [ raise n , inject+ m ] (splitAt m k)
 
 ------------------------------------------------------------------------
@@ -61,7 +64,7 @@ blockSwap-R m n i = cong [ raise n , inject+ m ] (splitAt-raise m {n} i)
 --    id on the nose (both grades m+n). Case on which block k is in (splitAt-view).
 ------------------------------------------------------------------------
 
-blockSwap-invol : ∀ m n (k : Fin (m + n)) → blockSwap n m (blockSwap m n k) ≡ k
+blockSwap-invol : ∀ m n (k : Fin (m ℕ+ n)) → blockSwap n m (blockSwap m n k) ≡ k
 blockSwap-invol m n k with splitAt-view m {n} k
 ... | fromₗ j = trans (cong (blockSwap n m) (blockSwap-L m n j)) (blockSwap-R n m j)
 ... | fromᵣ i = trans (cong (blockSwap n m) (blockSwap-R m n i)) (blockSwap-L n m i)

@@ -11,10 +11,11 @@
 
 module Substrate.TokiPona.QTokiSentence where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.TokiPona.QSemanticSpace using (QSemVec; ∅-Q; _⊕Q_)
 open import Substrate.TokiPona.QModifierBilinear
   using (modify-Q-sum; modify-Q-prod; _·ℚⱽ_)
+open import Substrate.Algebra.R.Trace.V4FullCocycle
 
 ------------------------------------------------------------------------
 -- 1. The Q-TokiSentence record.

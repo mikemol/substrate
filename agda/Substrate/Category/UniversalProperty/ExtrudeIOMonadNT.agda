@@ -23,9 +23,10 @@
 
 module Substrate.Category.UniversalProperty.ExtrudeIOMonadNT (O : Set) where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; cong)
 open import Substrate.Category.UniversalProperty.ExtrudeIO O
   using (IO; ret; emit; map; _>>=_; join; map-id; map-∘; >>=-assoc)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
 
 private variable A B C : Set
 

@@ -25,14 +25,19 @@
 
 module Substrate.WitnessTower.Wedge.OrientationRigUniversal where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Times
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
-open import Substrate.WitnessTower.LehmerPath using (LehmerPath; start; _◂_)
+open import Substrate.WitnessTower.LehmerPath.LehmerPath
 open import Substrate.WitnessTower.Wedge.OrientationUniversal
   using (LehmerAlgebra; base; step; fold)
 open import Substrate.WitnessTower.Wedge.OrientationProductStructural
   using (offsetDigit; replay-aux; replayOffset; _⊗ˢ_)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- 1. replayᶜ: the algebra-level replay — the C-image of `replay-aux`. Each rung
@@ -40,7 +45,7 @@ open import Substrate.WitnessTower.Wedge.OrientationProductStructural
 ------------------------------------------------------------------------
 
 replayᶜ : ∀ {C} (alg : LehmerAlgebra C) {m} (p : Fin (suc m)) (n : ℕ) {k : ℕ} →
-          LehmerPath k → C (m * n) → C (k + m * n)
+          LehmerPath k → C (m * n) → C (k ℕ+ m * n)
 replayᶜ alg p n start   x = x
 replayᶜ alg p n (l ◂ q) x = step alg (replayᶜ alg p n l x) (offsetDigit p n q)
 

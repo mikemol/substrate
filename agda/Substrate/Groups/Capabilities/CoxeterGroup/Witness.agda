@@ -17,20 +17,27 @@
 
 {-# OPTIONS --safe --without-K #-}
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Groups.Coxeter.Word using (++-assoc)
-open import Substrate.Foundation.Product using (_,_)
 open import Substrate.Groups.Capabilities.CoxeterGroup using (CoxeterGroupCapability)
+open import Substrate.Groups.Coxeter.Cyclic.Base.Gen
+open import Substrate.Groups.Coxeter.Cyclic.Base.Insert
 module Substrate.Groups.Capabilities.CoxeterGroup.Witness (n : ℕ) where
 
-open import Substrate.Groups.Coxeter.Cyclic.Base n using (Gen; c-here; insert)
+open import Substrate.Groups.Coxeter.Cyclic.Base n
 open import Substrate.Groups.Coxeter.Cyclic.Core n using (canonical-is-fixed; insert-append-lemma; normalize-distrib)
-open import Substrate.Groups.Coxeter.Cyclic.Existential n using (c-pos; Canonical-ex; c-ε; insert-canonical-ex; inv-canonical-ex; normalize; normalize-canonical)
+-- ⚑ `normalize`/`normalize-canonical` ARE NOT `Existential`'s (Ⓐ¹³) — they are
+-- `ListPresentation`'s, reached through Existential's own open.  Agda reported
+-- the clause as a WARNING (`ModuleDoesntExport`) and bound nothing.
+open import Substrate.Groups.Coxeter.Cyclic.Existential n
+open import Substrate.Groups.Coxeter.ListPresentation
+  Gen Canonical-ex c-ε insert insert-canonical-ex
 open import Substrate.Groups.Coxeter.Cyclic.InvCanonical.Left n using (inv-left-canonical-ex)
 open import Substrate.Groups.Coxeter.Cyclic.InvCanonical.Right n using (inv-right-canonical-ex)
-open import Substrate.Groups.Coxeter.Cyclic.Inverse n using (inv)
+-- ⚑ `Cyclic.Inverse` DISSOLVED — `inv` is `Inverse.Inv`'s.
+open import Substrate.Groups.Coxeter.Cyclic.Inverse.Inv n using (inv)
 
 
 cap : CoxeterGroupCapability Gen Canonical-ex

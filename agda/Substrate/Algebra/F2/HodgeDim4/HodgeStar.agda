@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------
 -- Substrate.Algebra.F2.HodgeDim4.HodgeStar
 --
--- N-3 + N-4 of M-11.dim4. The Hodge ★ operator at grade 2 in F₂⁴,
+-- N-3 +F N-4 of M-11.dim4. The Hodge ★ operator at grade 2 in F₂⁴,
 -- and its involution property (★² = id).
 --
 -- Hodge ★ : Linear 6 6 — sends each basis 2-blade `e_i ∧ e_j` to its
@@ -12,7 +12,7 @@
 -- The involution proof uses M-3.5 linear-extensionality: ★² agrees
 -- with id-L on all 6 basis 2-blades; by extensionality, equal on all
 -- bivectors. The per-basis step uses `apply-linear-from-images-basis`
--- (foundational primitive from M-11.fano N-1) twice + complement-
+-- (foundational primitive from M-11.fano N-1) twice +F complement-
 -- involution (from Bivector.agda) once.
 --
 -- This is the first F₂-linear operator in the substrate that has
@@ -26,12 +26,40 @@
 module Substrate.Algebra.F2.HodgeDim4.HodgeStar where
 
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; trans; cong)
 
-open import Substrate.Algebra.F2
+open import Substrate.Algebra.F2.AbsorbL
+open import Substrate.Algebra.F2.AbsorbR
+open import Substrate.Algebra.F2.Assoc
+open import Substrate.Algebra.F2.Comm
+open import Substrate.Algebra.F2.Dec
+open import Substrate.Algebra.F2.DistribLPlus
+open import Substrate.Algebra.F2.DistribRPlus
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.F2Cases
+open import Substrate.Algebra.F2.Idempotent
+open import Substrate.Algebra.F2.IdentityL
+open import Substrate.Algebra.F2.IdentityR
+open import Substrate.Algebra.F2.InvOfOne
+open import Substrate.Algebra.F2.OneNeqZero
+open import Substrate.Algebra.F2.Op
+open import Substrate.Algebra.F2.Op2
+open import Substrate.Algebra.F2.PlusAssoc
+open import Substrate.Algebra.F2.PlusComm
+open import Substrate.Algebra.F2.PlusF
+open import Substrate.Algebra.F2.PlusIdentityL
+open import Substrate.Algebra.F2.PlusIdentityR
+open import Substrate.Algebra.F2.PlusInverseL
+open import Substrate.Algebra.F2.PlusInverseR
+open import Substrate.Algebra.F2.PlusSelfInverse
+open import Substrate.Algebra.F2.ZeroNeqOne
 open import Substrate.Algebra.F2.Vector
-open import Substrate.Algebra.F2.Linear
+open import Substrate.Algebra.F2.Linear.CompL
+open import Substrate.Algebra.F2.Linear.CompLAssoc
+open import Substrate.Algebra.F2.Linear.CompLIdentityL
+open import Substrate.Algebra.F2.Linear.CompLIdentityR
+open import Substrate.Algebra.F2.Linear.IdL
+open import Substrate.Algebra.F2.Linear.Linear
+open import Substrate.Algebra.F2.Linear.Preserves
 open import Substrate.Algebra.F2.Linear.FromImages
   using (linear-from-images; apply-linear-from-images-basis)
 open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Involution using (basis-permutation-involution)
@@ -51,6 +79,9 @@ open import Substrate.Algebra.F2.HodgeDim4.Bivector
 
 open import Substrate.Category.Coalgebra using (Endomap)
 open import Substrate.Category.Coalgebra.FiniteOrder using (HasOrder)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 hodge-star-images : Fin 6 → Vector 6
 hodge-star-images i = basis (complement i)
 
@@ -60,7 +91,7 @@ hodge-star-images i = basis (complement i)
 -- Named at the universal-property level: Hodge ★ IS the
 -- basis-permutation-Linear induced by the complement involution on
 -- the 6 basis 2-blade indices. The `linear-from-images` infrastructure
--- + `complement-involution` give ★² = id mechanically.
+-- +F `complement-involution` give ★² = id mechanically.
 ------------------------------------------------------------------------
 
 hodge-star : Linear 6 6

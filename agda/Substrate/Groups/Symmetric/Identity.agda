@@ -8,9 +8,9 @@
 
 module Substrate.Groups.Symmetric.Identity (A : Set) where
 
-open import Substrate.Foundation.Eq using (refl)
 open import Substrate.Foundation.Function using (id)
 open import Substrate.Groups.Symmetric.Permutation A
+open import Substrate.Foundation.Eq
 
 ε : Permutation
 ε = record

@@ -43,7 +43,11 @@ module Substrate.Category.BeckChevalley where
 
 open import Substrate.Foundation.Level using (Level)
 open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; trans; cong)
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Category.UniversalProperty.StencilAbstract
+open import Substrate.Category.PrimeSampledChain
 
 private
   variable

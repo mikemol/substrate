@@ -31,11 +31,12 @@
 
 module Substrate.Algebra.Wedge.Correspondence where
 
-open import Substrate.Foundation.Eq using (trans; cong)
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
 open import Substrate.Algebra.Wedge using (DivStr)
 open import Substrate.Algebra.Wedge.Bridge
   using (Bridge; translate; respects; z-pres; id-bridge)
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- 1. Bridge composition — so correspondences compose.

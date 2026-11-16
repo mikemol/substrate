@@ -31,14 +31,15 @@
 
 module Substrate.Linguistic.YonedaNatural where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
 
-open import Substrate.Linguistic.Roster using (Lang; witness-of)
+open import Substrate.Linguistic.Roster.Lang
+open import Substrate.Linguistic.Roster.WitnessOf
 open import Substrate.Linguistic.Morphism using (LanguageMorphism)
 open import Substrate.Linguistic.Compose using (_∘L_)
 open import Substrate.Linguistic.CategoryLaws
   using (_≈M_; ∘L-assoc)
 open import Substrate.Linguistic.YonedaEmbedding using (よ)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. The Yoneda morphism's component.

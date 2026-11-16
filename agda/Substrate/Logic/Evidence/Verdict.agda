@@ -27,8 +27,11 @@
 
 module Substrate.Logic.Evidence.Verdict where
 
-open import Substrate.Foundation.Bool using (Bool; true; false; _∧_; _∨_; not)
-open import Substrate.Foundation.Eq   using (_≡_; _≢_)
+open import Substrate.Foundation.Bool.And
+open import Substrate.Foundation.Bool.Bool
+open import Substrate.Foundation.Bool.Not
+open import Substrate.Foundation.Bool.Or
+open import Substrate.Foundation.Eq.Neq
 
 ------------------------------------------------------------------------
 -- The dual-rail carrier and the four-corner verdict.
@@ -42,7 +45,7 @@ record Evidence : Set where
 
 open Evidence public
 
-data Verdict : Set where      -- ⟦shape:0ff56923 P F U V⟧
+data Verdict : Set where      -- ⟦shape:a4e49102 P,F,U⟧
   P F U V : Verdict   -- pass / fail / undetermined(both) / vacuous(neither)
 
 verdict : Evidence → Verdict

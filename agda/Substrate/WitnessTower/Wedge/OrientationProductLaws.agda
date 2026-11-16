@@ -18,21 +18,27 @@
 
 module Substrate.WitnessTower.Wedge.OrientationProductLaws where
 
-open import Substrate.Foundation.Nat using (ℕ; _*_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Times
 open import Substrate.Foundation.Nat.Properties.Mul using (*-assoc)
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Combine using (combine)
 open import Substrate.Foundation.Fin.RemQuot using (remQuot)
 open import Substrate.Foundation.Fin.Combine.RemQuotInverse using (remQuot-combine)
 open import Substrate.Foundation.Fin.Combine.CombineRemQuotInverse using (combine-remQuot)
-open import Substrate.Foundation.Fin.Combine.Assoc using (combine-assoc)
+open import Substrate.Foundation.Fin.Combine.Assoc.CombineAssoc
 open import Substrate.Foundation.Vec using (Vec; lookup; tabulate)
-open import Substrate.Foundation.Vec.Properties using (lookup∘tabulate)
+open import Substrate.Foundation.Vec.Properties.LookupComptabulate
 open import Substrate.Foundation.Product using (_,_; proj₁; proj₂)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; subst)
 open import Substrate.WitnessTower.Enumerate using (Perm)
 open import Substrate.WitnessTower.Decompose using (lookup-ext)
 open import Substrate.WitnessTower.Wedge.OrientationProduct using (_⊗_)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Subst
+open import Substrate.FUSep.FUSepQBridge.Anon
 
 ------------------------------------------------------------------------
 -- 1. THE CHARACTERIZATION: lookup of a product at a combine index is the combine of

@@ -3,9 +3,9 @@
 --
 -- The CRT combine — the wedge for two moduli. Given the IDEMPOTENTS
 -- e₁,e₂ : ℕ (the local solutions: e₁ ≡ 1 mod (suc m), ≡ 0 mod (suc n);
--- e₂ the mirror), the reconstruction map combine(a₁,a₂) = a₁·e₁ + a₂·e₂
+-- e₂ the mirror), the reconstruction map combine(a₁,a₂) = a₁·e₁ ℕ+ a₂·e₂
 -- glues the two local truths into the global one, AND its correctness is
--- exactly the modular ring-homomorphism bridge in action (mod-add-hom +
+-- exactly the modular ring-homomorphism bridge in action (mod-add-hom ℕ+
 -- mod-mult-hom). This builds a full CRT-Witness — the glue is the content.
 --
 -- (Deriving e₁,e₂ from a coprimality/Bézout witness — the ℤ→ℕ residue
@@ -16,15 +16,27 @@
 
 module Substrate.Algebra.Quotient.CRT.FromIdempotents where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_)
-open import Substrate.Foundation.Nat.Properties.Add using (+-identityʳ)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Times
+open import Substrate.Foundation.Nat.Properties.Add.PlusIdentityR
 open import Substrate.Foundation.Nat.Properties.Mul using (*-identityʳ; *-zeroʳ)
-open import Substrate.Foundation.Eq using (_≡_; refl; cong; cong₂; trans)
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
-open import Substrate.Algebra.Nat.Mod using (_mod-suc_; mod-suc-id; mod-suc-bound)
+open import Substrate.Foundation.Nat.Nat.ModSuc
+open import Substrate.Algebra.Nat.Mod.ModSucBound
+open import Substrate.Algebra.Nat.Mod.ModSucId
+open import Substrate.Algebra.Nat.Mod.ModSucPeriodic
+open import Substrate.Algebra.Nat.Mod.ModSucSuc
+open import Substrate.Algebra.Nat.Mod.SucModSucLt
+open import Substrate.Algebra.Nat.Mod.SucModSucSelf
 open import Substrate.Algebra.Nat.Mod.Homomorphism using (mod-add-hom; mod-mult-hom)
 open import Substrate.Algebra.Quotient.CRT using (CRT-Witness)
 open import Substrate.Algebra.Quotient.CRT.Idempotents using (CRTIdempotents)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Realizability.Charter
 
 ------------------------------------------------------------------------
 -- 1. mod is idempotent (its output is already reduced).
@@ -54,24 +66,24 @@ mult-idem-0 x e mm e≡0 =
 
 crt-witness : {m n : ℕ} → CRTIdempotents m n → CRT-Witness m n
 crt-witness {m} {n} idem = record
-  { combine       = λ p → proj₁ p * e₁ + proj₂ p * e₂
+  { combine       = λ p → proj₁ p * e₁ ℕ+ proj₂ p * e₂
   ; combine-mod-m = cmm
   ; combine-mod-n = cmn
   }
   where
     open CRTIdempotents idem
-    cmm : (a₁ a₂ : ℕ) → (a₁ * e₁ + a₂ * e₂) mod-suc m ≡ a₁ mod-suc m
+    cmm : (a₁ a₂ : ℕ) → (a₁ * e₁ ℕ+ a₂ * e₂) mod-suc m ≡ a₁ mod-suc m
     cmm a₁ a₂ =
       trans (mod-add-hom (a₁ * e₁) (a₂ * e₂) m)
-      (trans (cong₂ (λ u v → (u + v) mod-suc m)
+      (trans (cong₂ (λ u v → (u ℕ+ v) mod-suc m)
                     (mult-idem-1 a₁ e₁ m e₁-mod-m)
                     (mult-idem-0 a₂ e₂ m e₂-mod-m))
-      (trans (cong (_mod-suc m) (+-identityʳ (a₁ mod-suc m)))
+      (trans (cong (_mod-suc m) (+ℕ-identityʳ (a₁ mod-suc m)))
              (mod-idempotent a₁ m)))
-    cmn : (a₁ a₂ : ℕ) → (a₁ * e₁ + a₂ * e₂) mod-suc n ≡ a₂ mod-suc n
+    cmn : (a₁ a₂ : ℕ) → (a₁ * e₁ ℕ+ a₂ * e₂) mod-suc n ≡ a₂ mod-suc n
     cmn a₁ a₂ =
       trans (mod-add-hom (a₁ * e₁) (a₂ * e₂) n)
-      (trans (cong₂ (λ u v → (u + v) mod-suc n)
+      (trans (cong₂ (λ u v → (u ℕ+ v) mod-suc n)
                     (mult-idem-0 a₁ e₁ n e₁-mod-n)
                     (mult-idem-1 a₂ e₂ n e₂-mod-n))
              (mod-idempotent a₂ n))

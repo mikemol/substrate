@@ -33,14 +33,15 @@
 module Substrate.Algebra.Z.JacobianGradedSource where
 
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.Algebra.Z using (ℤ; +_; -suc_)
+open import Substrate.Algebra.Z.Int
 open import Substrate.Algebra.Semiring.Instances.Z using (ℤ-semiring; mul-sign-computes)
 import Substrate.WitnessTower.LeibnizDet as LD
 import Substrate.Algebra.Z.JacobianResidue as JR
 
 open LD.Det ℤ ℤ-semiring using (Mat)
 open LD.Det.WithSign ℤ ℤ-semiring (-suc 0) mul-sign-computes using (det)
+open import Substrate.Foundation.Eq
+open import Substrate.WitnessTower.LeibnizMonomial
 
 -- The constant part (at the origin) of Jac F, read from f₁/f₂/f₃:
 --   ∂F/∂(x,y,z) at (0,0,0) = [[0,0,1],[0,1,0],[2,0,0]]   (row-major flat Fin 9).

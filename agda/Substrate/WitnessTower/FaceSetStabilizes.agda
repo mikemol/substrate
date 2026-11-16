@@ -40,12 +40,12 @@
 
 module Substrate.WitnessTower.FaceSetStabilizes where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Nat.Nat
 
 open import Substrate.WitnessTower.FaceSet
   using (Face; ★; ★-involution; wedge-recon; universe; nothing-face)
 open import Substrate.Algebra.F2.Vector using (_+ⱽ_)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- (1) ★ is an ENDO (Face n → Face n), not a map to Face (suc n). Re-exported
@@ -70,10 +70,13 @@ star-within = wedge-recon
 -- (2) the ∂ / δ complex is structure ON faces. Re-exported: the simplicial
 --     boundary law (∂∘∂ reduces to the simplicial identity) and the cochain
 --     δ²=0 both act on the face objects, not producing a higher rung.
+--
+-- ⚑ NOT RE-EXPORTED — re-exports are banned.  This file's prose above names
+--     `delAt` as one of the two "level above" candidates; a consumer that needs
+--     it imports `Substrate.WitnessTower.SimplicialBoundary.DelAt` directly.
+--     The claim is about WHAT IS ABOVE FaceSet, and it is carried by the prose
+--     and by `star-is-endo` below, not by forwarding a name.
 ------------------------------------------------------------------------
-
-open import Substrate.WitnessTower.SimplicialBoundary public using (delAt)
-open import Substrate.Algebra.CayleyDickson.Coboundary public using (d²-zero)
 
 ------------------------------------------------------------------------
 -- THE STABILIZATION STATEMENT (prose-in-types): the candidates for "above

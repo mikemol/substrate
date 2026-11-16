@@ -27,13 +27,16 @@
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.Logic.Evidence.ElAtlas.OrbitCloudRung3Wedge where
+open import Substrate.Algebra.Z.Add
 
 open import Substrate.Foundation.Vec using (Vec; _∷_; [])
-open import Substrate.Foundation.Eq using (_≡_; refl; cong)
-open import Substrate.Foundation.Empty using (⊥)
-open import Substrate.Algebra.Z using (ℤ; +_; -ℤ_)
-open import Substrate.Algebra.Z.Arithmetic using (_+ℤ_)
+open import Substrate.Foundation.Empty.Bot
+open import Substrate.Algebra.Z.Int
+open import Substrate.Algebra.Z.Int2
+
 open import Substrate.Logic.Evidence.ElAtlas.CenterWitness using (apply-B₃; w; 𝟎)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
 
 V3 : Set
 V3 = Vec ℤ 3

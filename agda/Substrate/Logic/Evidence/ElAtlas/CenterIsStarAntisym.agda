@@ -22,11 +22,14 @@
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.Logic.Evidence.ElAtlas.CenterIsStarAntisym where
+open import Substrate.Algebra.Z.Mul
+open import Substrate.Algebra.Z.Add
 
 open import Substrate.Foundation.Vec using (_∷_; [])
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂)
-open import Substrate.Algebra.Z using (ℤ; +_; -ℤ_; 0ℤ)
-open import Substrate.Algebra.Z.Arithmetic using (_+ℤ_; _*ℤ_)
+open import Substrate.Algebra.Z.Int
+open import Substrate.Algebra.Z.Int2
+open import Substrate.Algebra.Z.ZeroInt
+
 open import Substrate.Algebra.Z.Properties.Mul using (*ℤ-comm; neg-*-left)
 open import Substrate.Algebra.Z.Properties.MulFull
   using (neg-*-right; *ℤ-assoc; *ℤ-zeroˡ; *ℤ-distribˡ-+)
@@ -34,6 +37,11 @@ open import Substrate.Algebra.Z.Properties.Add
   using (+ℤ-comm; +ℤ-assoc; +ℤ-identityˡ; +ℤ-identityʳ; +ℤ-inverseʳ)
 open import Substrate.Algebra.Medial using (medial)
 open import Substrate.Logic.Evidence.ElAtlas.CenterWitness using (dot; apply-B₃)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
 
 ------------------------------------------------------------------------
 -- ℤ's medial law (the 4-term middle exchange), an instance of Ⓜ.

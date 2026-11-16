@@ -17,15 +17,17 @@
 
 module Substrate.Algebra.F2.AES.Round where
 
-open import Substrate.Foundation.Nat using (ℕ)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; map; zipWith)
-open import Substrate.Algebra.F2 using (F₂; _+_)
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.PlusF
 -- B-deep: canonical table S-box (= the GF-inversion S-box, proven via
 -- SBoxTable.Properties.sbox≡gf); cheap to force.
 open import Substrate.Algebra.F2.Polynomial.Wedge.SBoxTable using (sbox)
 -- forward MixColumns FORCES through the proved xtime TABLE (MixColumns.Fast); the
 -- gmul construction is retained as the theorem mix-fast≡mix (Fast.Properties).
 open import Substrate.Algebra.F2.MixColumns.Fast using (mix-fast)
+open import Substrate.Algebra.F2.Polynomial.Wedge.SBoxTable.Properties
+open import Substrate.Algebra.F2.MixColumns.Base
 
 -- the AES state: 4 columns of 4 bytes; a byte is a Vec F₂ 8.
 Byte  : Set
@@ -51,7 +53,7 @@ MixColumns    = map mix-fast
 -- AddRoundKey (XOR; self-inverse, bit→byte→col→state).
 ------------------------------------------------------------------------
 addKey : State → State → State
-addKey = zipWith (zipWith (zipWith _+_))
+addKey = zipWith (zipWith (zipWith _+F_))
 
 ------------------------------------------------------------------------
 -- ShiftRows (explicit byte permutation).

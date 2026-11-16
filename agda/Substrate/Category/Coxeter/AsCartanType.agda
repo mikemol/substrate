@@ -30,11 +30,11 @@
 
 {-# OPTIONS --safe --without-K #-}
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Eq using (_≡_)
 
 open import Substrate.Category.CartanType using (CartanType; mkCartanType)
+open import Substrate.Foundation.Eq
 
 module Substrate.Category.Coxeter.AsCartanType
   -- The Coxeter system data: rank + relation-orders matrix.

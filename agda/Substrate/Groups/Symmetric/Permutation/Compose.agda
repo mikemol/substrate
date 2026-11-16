@@ -8,8 +8,8 @@
 
 module Substrate.Groups.Symmetric.Permutation.Compose (A : Set) where
 
-open import Substrate.Foundation.Eq using (cong-trans)
 open import Substrate.Groups.Symmetric.Permutation A
+open import Substrate.Foundation.Eq.CongTrans
 
 _·_ : Permutation → Permutation → Permutation
 σ · τ = record

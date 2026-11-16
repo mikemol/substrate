@@ -25,13 +25,13 @@
 
 module Substrate.WitnessTower.Wedge.OrientationSumMonoidal where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Algebra.Wedge.Product using (GradedProduct)
 open import Substrate.Algebra.Wedge.Product.LawTypes
   using (GradedAssoc; GradedUnitˡ; GradedUnitʳ)
 open import Substrate.Algebra.Wedge.Graded.MonoidalAdjunction
   using (GradedMonoidalAdjunction)
-open import Substrate.WitnessTower.LehmerPath using (LehmerPath)
+open import Substrate.WitnessTower.LehmerPath.LehmerPath
 open import Substrate.WitnessTower.Wedge.OrientationSum using (_⊕_; 0#; ⊕-unit-left)
 open import Substrate.WitnessTower.Wedge.OrientationSumLaws using (⊕-assoc; ⊕-unit-right)
 

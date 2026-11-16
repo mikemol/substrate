@@ -32,18 +32,19 @@
 
 module Substrate.Category.UniversalProperty.ObjectUniverse where
 
-open import Substrate.Foundation.Nat using (ℕ; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.To
-open import Substrate.Foundation.Eq using (_≡_)
 open import Substrate.Foundation.Product using (Σ; _,_)
-open import Substrate.WitnessTower.LehmerPath using (LehmerPath; start; _◂_)
+open import Substrate.WitnessTower.LehmerPath.LehmerPath
 open import Substrate.WitnessTower.Wedge.OrientationUniversal
   using (LehmerAlgebra; fold; fold-unique; base; step)
 open import Substrate.Category.UniversalProperty.TmDBGodel using (TmDB; var; I; app)
 open import Substrate.Category.UniversalProperty.Term using (UPTerm)
 open import Substrate.Category.UniversalProperty.Category
   using (UPCategory; UPCategory-canonical)
+open import Substrate.Foundation.Eq
+open import Substrate.Probability.MarkovCategory
 
 ------------------------------------------------------------------------
 -- 1. The graded object-code family C : ℕ → Set — now the REAL codes (⟡odecode-B

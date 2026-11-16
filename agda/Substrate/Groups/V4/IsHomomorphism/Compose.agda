@@ -14,17 +14,19 @@
 module Substrate.Groups.V4.IsHomomorphism.Compose where
 
 import Substrate.Groups.V4.Operations as V4
-open import Substrate.Groups.V4.Bijection using (V₄)
-open import Substrate.Foundation.Eq using (_≡_; refl; trans; cong)
+open import Substrate.Groups.V4.Bijection.V4
 open import Substrate.Groups.V4.IsHomomorphism using (IsHomomorphism)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 -- The identity is a homomorphism.
 id-IsHom : IsHomomorphism (λ v → v)
 id-IsHom _ _ = refl
 
--- Homomorphisms compose: (f ∘ g) preserves · when f and g do.
---   (f∘g)(v₁·v₂) = f (g (v₁·v₂)) ≡ f (g v₁ · g v₂)   [g hom, cong f]
---                ≡ f (g v₁) · f (g v₂)               [f hom]
+-- Homomorphisms compose: (f ∘ g) preserves ·₄ when f and g do.
+--   (f∘g)(v₁·v₂) = f (g (v₁·v₂)) ≡ f (g v₁ ·₄ g v₂)   [g hom, cong f]
+--                ≡ f (g v₁) ·₄ f (g v₂)               [f hom]
 ∘-IsHom : {f g : V₄ → V₄} →
           IsHomomorphism f → IsHomomorphism g →
           IsHomomorphism (λ v → f (g v))

@@ -14,8 +14,7 @@
 
 module Substrate.Algebra.Nat.GCD.TraceDivides where
 
-open import Substrate.Foundation.Nat using (suc)
-open import Substrate.Foundation.Eq using (sym; subst)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Algebra.Nat.Divides.Mul using (m∣m*n; n∣m*n)
 open import Substrate.Algebra.Nat.Divides.Refl using (∣-refl)
 open import Substrate.Algebra.Nat.Divides.Sum using (∣m∣n⇒∣m+n)
@@ -25,6 +24,8 @@ open import Substrate.Algebra.Nat.Divides.Zero using (∣-zero)
 open import Substrate.Algebra.Nat.GCD.Wedge
   using (quotient; remainder; wedge-eq)
 open import Substrate.Algebra.Nat.GCD.EEATrace using (EEATrace; base; step)
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Subst
 
 mutual
   trace-divides-left : ∀ {a b g} → EEATrace a b g → g ∣ a

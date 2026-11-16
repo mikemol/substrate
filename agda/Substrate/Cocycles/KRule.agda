@@ -37,27 +37,28 @@
 
 module Substrate.Cocycles.KRule where
 
-open import Substrate.Foundation.Empty using (⊥; ⊥-elim)
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Empty.BotElim
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Op
-open import Substrate.Foundation.Fin.Op3
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; trans; cong; cong₂)
-open import Substrate.Foundation.Negation using (Dec; yes; no)
+open import Substrate.Foundation.Negation.Dec
 
 open import Substrate.Groups.SFin.Permutation using (Permutation)
 open import Substrate.Groups.SFin.Apply
 open import Substrate.Groups.SFin.Eq using (_≈_)
 open import Substrate.Groups.Symmetric.Permutation.SFinCompose using (_·_)
 open import Substrate.Groups.SFin.Identity using (ε)
-open import Substrate.Groups.Symmetric.Permutation.SFinInverse using (_⁻¹)
 open import Substrate.Groups.SFin.Injective using (σ-injective)
 open import Substrate.Groups.SFin.Group using (S-Group)
 open import Substrate.Cocycle
   using (WeakCocycleStructure)
 open import Substrate.Algebra.SetoidGroup.Action using (Action)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
 
 ------------------------------------------------------------------------
 -- The cocycle is parametric in n (the size of the variable space).
@@ -95,7 +96,7 @@ module _ (n : ℕ) where
   ----------------------------------------------------------------------
 
   dist : Assignment → DistPattern
-  dist (v , w) with v ≟ w
+  dist (v , w) with v ≟ᶠ w
   ... | yes _ = diagonal
   ... | no  _ = off-diagonal
 
@@ -125,7 +126,7 @@ module _ (n : ℕ) where
   ----------------------------------------------------------------------
   -- Gauge invariance of dist.
   --
-  -- The case analysis on `v ≟ w` and `apply σ v ≟ apply σ w`:
+  -- The case analysis on `v ≟ᶠ w` and `apply σ v ≟ᶠ apply σ w`:
   --
   --   yes | yes  ⇒  both diagonal              ⇒  refl
   --   yes | no   ⇒  contradiction:                   the σ-image of a
@@ -138,7 +139,7 @@ module _ (n : ℕ) where
   dist-gauge-inv :
     (σ : Permutation n) (a : Assignment) →
     dist (sn-act σ a) ≡ dist a
-  dist-gauge-inv σ (v , w) with v ≟ w | apply σ v ≟ apply σ w
+  dist-gauge-inv σ (v , w) with v ≟ᶠ w | apply σ v ≟ᶠ apply σ w
   ... | yes _    | yes _      = refl
   ... | yes v≡w  | no  σv≢σw  = ⊥-elim (σv≢σw (cong (apply σ) v≡w))
   ... | no  v≢w  | yes σv≡σw  = ⊥-elim (v≢w (σ-injective σ v w σv≡σw))

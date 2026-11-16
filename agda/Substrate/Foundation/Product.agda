@@ -9,6 +9,8 @@
 module Substrate.Foundation.Product where
 
 open import Substrate.Foundation.Level using (Level; _⊔_)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Subst
 
 private variable
   a b : Level
@@ -76,7 +78,6 @@ swap (x , y) = y , x
 -- Substrate-native replacement for stdlib's Data.Product.Properties.Σ-≡,≡→≡.
 ------------------------------------------------------------------------
 
-open import Substrate.Foundation.Eq using (_≡_; refl; subst)
 
 Σ-≡,≡→≡ :
   {A : Set a} {B : A → Set b}

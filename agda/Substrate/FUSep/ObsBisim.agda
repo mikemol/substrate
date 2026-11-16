@@ -29,9 +29,9 @@
 
 module Substrate.FUSep.ObsBisim where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
 import Substrate.FUSep.ConversionCongruence as ConversionCongruence
 open ConversionCongruence using (ARS)
+open import Substrate.Foundation.Eq
 
 module _ {Carrier : Set} {_⟶_ : Carrier → Carrier → Set}
          (R : ARS Carrier _⟶_) (Obs : Set) (obs : Carrier → Obs)

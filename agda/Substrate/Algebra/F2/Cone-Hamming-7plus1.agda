@@ -28,11 +28,11 @@
 module Substrate.Algebra.F2.Cone-Hamming-7plus1 where
 
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Nat using (ℕ; _+_; _^_)
-open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Nat.Nat
 
 open import Substrate.Category.Cone
 open import Substrate.Category.Cone.FieldFilling
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- N-1: The 7 base readings (each is F₂ = the bit value at that

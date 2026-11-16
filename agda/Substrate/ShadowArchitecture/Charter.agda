@@ -37,7 +37,10 @@
 
 module Substrate.ShadowArchitecture.Charter where
 
-open import Substrate.Foundation.Unit using (⊤; tt) public
+-- ⚑ `public` RETIRED (Ⓑ2c).  All three consumers (`ShadowArchitecture`,
+-- `.Distinction`, `.Symmetry`) already import `Foundation.Unit` at its home, so
+-- this forward was a redundant second route, not a load-bearing one.
+open import Substrate.Foundation.Unit using (⊤; tt)
 open import Substrate.Foundation.Product using (_,_; _×_)
 
 ------------------------------------------------------------------------

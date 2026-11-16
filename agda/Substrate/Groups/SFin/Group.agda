@@ -8,7 +8,7 @@
 
 module Substrate.Groups.SFin.Group where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Algebra.SetoidGroup using (SetoidGroup)
 import Substrate.Groups.Symmetric.Group as SymGrp

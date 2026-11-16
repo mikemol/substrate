@@ -26,12 +26,12 @@ module Substrate.Category.UniversalProperty.DiagonalRank where
 -- illuminating framing, NOT a theorem of this slice; not enforced by the typechecker).
 -- Promoting the framing to a theorem would require the frozen-adversary / no-escalation claim (a prose model, not formalised here).
 
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Bool using (Bool)
-open import Substrate.Foundation.Eq using (_≡_)
-open import Substrate.Foundation.Negation using (¬_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Bool.Bool
+open import Substrate.Foundation.Negation.Not
 open import Substrate.Foundation.Product using (Σ)
 open import Substrate.Category.UniversalProperty.DiagonalDoF using (cantor)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- THE INFINITE-RANK CASE IS THE SAME THEOREM: `cantor` is generic in A, so instantiate it at the

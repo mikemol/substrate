@@ -41,12 +41,10 @@
 
 module Substrate.Logic.Evidence.Verdict.BiasCoequalizer where
 
-open import Substrate.Foundation.Bool     using (true; false)
-open import Substrate.Foundation.Eq       using (_≡_; refl; sym; cong; trans)
+open import Substrate.Foundation.Bool.Bool
 open import Substrate.Foundation.Unit     using (⊤; tt)
-open import Substrate.Foundation.Negation using (¬_)
+open import Substrate.Foundation.Negation.Not
 open import Substrate.Foundation.Product  using (Σ; _,_)
-open import Substrate.Foundation.List     using (List; _∷_)
 
 open import Substrate.Logic.Evidence.Verdict
   using (Evidence; ⟨_,_⟩; Verdict; P; F; U; V; verdict; eP; eF; eU; U≢V)
@@ -54,6 +52,10 @@ open import Substrate.Logic.Evidence.Verdict.NedgeShadow
   using (Bias; net+; net0; net-; bias; eV; bias-conflates-U-V)
 
 open import Substrate.Category.Coequalizer using (Coequalises)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Trans
 ------------------------------------------------------------------------
 -- 1. The two headline facts: bias COEQUALISES the (eU, eV) pair; verdict
 -- does NOT. The second is the non-refl content — a genuine apartness.

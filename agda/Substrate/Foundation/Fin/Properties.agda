@@ -11,18 +11,21 @@
 
 module Substrate.Foundation.Fin.Properties where
 
-open import Substrate.Foundation.Nat
-  using (ℕ; zero; suc; _<_; _≤_; s≤s; z≤n)
-open import Substrate.Foundation.Eq using (_≡_; refl; cong; sym; trans)
+open import Substrate.Foundation.Nat.Le
+open import Substrate.Foundation.Nat.Lt
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.SucInjective
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.From2
 open import Substrate.Foundation.Fin.To
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- The toℕ-bound: every Fin n's underlying ℕ is strictly less than n.
 ------------------------------------------------------------------------
 
-toℕ-bound : ∀ {n} (i : Fin n) → toℕ i Substrate.Foundation.Nat.< n
+toℕ-bound : ∀ {n} (i : Fin n) → toℕ i < n
 toℕ-bound zero    = s≤s z≤n
 toℕ-bound (suc i) = s≤s (toℕ-bound i)
 
@@ -31,7 +34,7 @@ toℕ-bound (suc i) = s≤s (toℕ-bound i)
 -- via toℕ recovers m exactly.
 ------------------------------------------------------------------------
 
-toℕ-fromℕ< : ∀ {m n} (p : m Substrate.Foundation.Nat.< n) →
+toℕ-fromℕ< : ∀ {m n} (p : m < n) →
              toℕ (fromℕ< p) ≡ m
 toℕ-fromℕ< {zero}  {suc _} _       = refl
 toℕ-fromℕ< {suc m} {suc _} (s≤s p) = cong suc (toℕ-fromℕ< p)
@@ -45,4 +48,4 @@ toℕ-fromℕ< {suc m} {suc _} (s≤s p) = cong suc (toℕ-fromℕ< p)
 toℕ-injective : ∀ {n} {i j : Fin n} → toℕ i ≡ toℕ j → i ≡ j
 toℕ-injective {.(suc _)} {zero}  {zero}  _  = refl
 toℕ-injective {.(suc _)} {suc i} {suc j} eq =
-  cong suc (toℕ-injective (Substrate.Foundation.Nat.suc-injective eq))
+  cong suc (toℕ-injective (suc-injective eq))

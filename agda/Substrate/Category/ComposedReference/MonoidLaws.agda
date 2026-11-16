@@ -12,8 +12,8 @@
 
 module Substrate.Category.ComposedReference.MonoidLaws where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Category.ComposedReference.Record using (ComposedReference; length)
+open import Substrate.Foundation.Eq
 
 CompositionMonoidLaws : Set
 CompositionMonoidLaws =

@@ -25,21 +25,24 @@
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.Algebra.Q.HetCrossMix where
+open import Substrate.Algebra.Z.Mul
 
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Iff using (_⇔_; ⇔-refl)
-open import Substrate.Algebra.Z using (ℤ; +_)
-open import Substrate.Algebra.Z.Arithmetic using (_*ℤ_)
+open import Substrate.Algebra.Z.Int
+
 open import Substrate.Algebra.Z.Wedge using (ℤ-div)
 open import Substrate.Algebra.Wedge using (ℕ-div)
 open import Substrate.Algebra.Wedge.Mul using (MulDivStr; base; mul)
 open import Substrate.Algebra.Wedge.Bridge using (Bridge; translate; id-bridge)
 open import Substrate.Algebra.Wedge.InclusionBridge using (include-ℕℤ)
 open import Substrate.Algebra.Wedge.CrossMul using (CrossMix; cross; embA; embB)
-open import Substrate.Algebra.Q using (ℚ; num; den-1; denominator)
+open import Substrate.Algebra.Q.Denominator
+open import Substrate.Algebra.Q.Rat
 open import Substrate.Algebra.Q.Equiv using (_≈ℚ_)
 open import Substrate.Algebra.Q.HetBasis
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
 
 ------------------------------------------------------------------------
 -- 1. ℤ as the common multiplicative carrier R of the cospan.

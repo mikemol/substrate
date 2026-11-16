@@ -31,12 +31,12 @@
 
 module Substrate.Category.Allegory.Power where
 
-open import Substrate.Foundation.Level using (Level; _⊔_; 0ℓ) renaming (suc to lsuc)
-open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Level using (Level; _⊔_; 0ℓ)
 open import Substrate.Foundation.Universe using (U; ⌜bool⌝; El)
-open import Substrate.Category.CategoryOf using (CategoryOf)
+open import Substrate.Category.CategoryOf.CategoryOf
 open import Substrate.Category.SubobjectClassifier using (SubobjectClassifier)
 open import Substrate.Category.Topos using (Topos)
+open import Substrate.Foundation.Eq
 
 -- ⟡rc-tarski-universe: the category of "types & functions" ranges over the
 -- Set₀ Tarski universe U (decoded by El), NOT raw `Set` — so it lands in Set₀

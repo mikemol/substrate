@@ -24,10 +24,9 @@
 
 module Substrate.Category.UniversalProperty.ExtrudeBisimUnfold where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.List using (List)
-open import Substrate.Algebra.R.Trace.SKIShedDuality using () renaming (Tm to Tm⟦533ef80d⟧)
+
 open import Substrate.Algebra.Wedge.Coalgebra using (Unfold; halt; loop; stop)
 open import Substrate.Category.UniversalProperty.ExtrudeMinimalRun using (step)
 open import Substrate.Category.UniversalProperty.ExtrudeStepDecidable using (HeadShape)
@@ -36,13 +35,15 @@ open import Substrate.Category.UniversalProperty.ExtrudeBisimRun
 open import Substrate.Category.UniversalProperty.ExtrudeBisimLassoK using (more^; lasso-k)
 
 open import Substrate.Foundation.Function.Iterate using (iterate)
+open import Substrate.Foundation.Eq
+open import Substrate.Algebra.R.Trace.SKIShedDuality.Tm
 
 ------------------------------------------------------------------------
 -- ① THE POSITIVELY-WITNESSED OUTCOMES: each of the wedge-run's three outcomes, carried as a POSITIVE witness
 --    (no total decision) — a fixed point (halt), a k-cycle + its bisimulation lasso (loop), a bounded prefix
 --    (stop). The loop carries the ≈ witness (279) — it is a bisimulation, not a decided equality.
 ------------------------------------------------------------------------
-data BisimOutcome (t : Tm⟦533ef80d⟧) : Set where
+data BisimOutcome (t : Tm) : Set where
   halted  : step t ≡ t → BisimOutcome t                                            -- normal-form fixed point
   looped  : (k : ℕ) → iterate k step t ≡ t →
             run-trace t ≈ more^ k (run-trace t) → BisimOutcome t                   -- the bisimulation lasso
@@ -52,7 +53,7 @@ data BisimOutcome (t : Tm⟦533ef80d⟧) : Set where
 -- ② THE MAP to Wedge.Coalgebra.Unfold: each witnessed outcome is tagged by the wedge-run's Unfold — the tag
 --    is the OBSERVATION of which bisimilarity outcome holds. My run's outcomes ARE the wedge-run's.
 ------------------------------------------------------------------------
-to-unfold : {t : Tm⟦533ef80d⟧} → BisimOutcome t → Unfold
+to-unfold : {t : Tm} → BisimOutcome t → Unfold
 to-unfold (halted _)     = halt
 to-unfold (looped _ _ _) = loop
 to-unfold (stopped _ _)  = stop
@@ -62,23 +63,23 @@ to-unfold (stopped _ _)  = stop
 --    (via loop-from-fixed, the tightest lasso), a k-cycle → loop (via lasso-k), a fuel bound → stop (via
 --    take-obs observing the bounded prefix). No total DecEq anywhere.
 ------------------------------------------------------------------------
-outcome-halt : (t : Tm⟦533ef80d⟧) → step t ≡ t → BisimOutcome t
+outcome-halt : (t : Tm) → step t ≡ t → BisimOutcome t
 outcome-halt t p = halted p
 
-outcome-loop : (t : Tm⟦533ef80d⟧) (k : ℕ) → iterate k step t ≡ t → BisimOutcome t
+outcome-loop : (t : Tm) (k : ℕ) → iterate k step t ≡ t → BisimOutcome t
 outcome-loop t k cyc = looped k cyc (lasso-k t k cyc)
 
-outcome-stop : (t : Tm⟦533ef80d⟧) (fuel : ℕ) → BisimOutcome t
+outcome-stop : (t : Tm) (fuel : ℕ) → BisimOutcome t
 outcome-stop t fuel = stopped fuel (take-obs fuel (run-trace t))
 
 -- and the tags come out as expected — my run's halt/loop/stop ARE Wedge.Coalgebra's:
-halt-is-halt : (t : Tm⟦533ef80d⟧) (p : step t ≡ t) → to-unfold (outcome-halt t p) ≡ halt
+halt-is-halt : (t : Tm) (p : step t ≡ t) → to-unfold (outcome-halt t p) ≡ halt
 halt-is-halt t p = refl
 
-loop-is-loop : (t : Tm⟦533ef80d⟧) (k : ℕ) (cyc : iterate k step t ≡ t) → to-unfold (outcome-loop t k cyc) ≡ loop
+loop-is-loop : (t : Tm) (k : ℕ) (cyc : iterate k step t ≡ t) → to-unfold (outcome-loop t k cyc) ≡ loop
 loop-is-loop t k cyc = refl
 
-stop-is-stop : (t : Tm⟦533ef80d⟧) (fuel : ℕ) → to-unfold (outcome-stop t fuel) ≡ stop
+stop-is-stop : (t : Tm) (fuel : ℕ) → to-unfold (outcome-stop t fuel) ≡ stop
 stop-is-stop t fuel = refl
 
 ------------------------------------------------------------------------

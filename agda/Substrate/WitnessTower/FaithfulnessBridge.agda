@@ -34,15 +34,14 @@ module Substrate.WitnessTower.FaithfulnessBridge where
 
 open import Substrate.Groups.Z2.Gen
 open import Substrate.Groups.Z3.Gen
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Foundation.Product using (_,_)
 
 open import Substrate.WitnessTower.Enumerate using (Perm)
 open import Substrate.WitnessTower.SnGroup using (apply; apply-injective)
 
-open import Substrate.Groups.V4.Bijection using (α; β)
+open import Substrate.Groups.V4.Bijection.V4
 open import Substrate.Groups.Z2.A
 open import Substrate.Groups.Z3.A
 open import Substrate.Groups.Coxeter.Word using (Word; []; _∷_)
@@ -51,6 +50,7 @@ open import Substrate.Groups.Coxeter.Word using (Word; []; _∷_)
 open import Substrate.Groups.Actions.S3-on-V4.Dispatch.ActOnCanonical using (act-on-canonical)
 open import Substrate.Groups.S4-Iso.Extract using (extract-s-from)
 open import Substrate.Axes.AxisOfV using (axis-of-v)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- (T) The concept, named once at rung n: determined-by-action ⇒ equal.

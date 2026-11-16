@@ -33,12 +33,12 @@
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.Algebra.Quotient.CRT.WedgeBridge where
+open import Substrate.Algebra.Z.Mul
 
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Product using (_,_)
-open import Substrate.Algebra.Z using (ℤ; +_)
-open import Substrate.Algebra.Z.Arithmetic using (_*ℤ_)
+open import Substrate.Algebra.Z.Int
+
 open import Substrate.Algebra.Z.Wedge using (ℤ-div)
 open import Substrate.Algebra.Wedge using (ℕ-div)
 open import Substrate.Algebra.Wedge.Cross using (_⊗ᴰ_)
@@ -54,6 +54,7 @@ open import Substrate.Algebra.Quotient.CRT.FromTrace using (witness-3-5)
 -- the worked coprime CrossMix: orthogonal idempotents, clean (degree-0) cross.
 open import Substrate.Logic.Evidence.ElAtlas.CenterIsStarCRT
   using (crt-mix; e₁; e₂; clean-cross)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. THE CODEC LEG IS THE REGISTRY BRIDGE. The cross-carrier cospan whose

@@ -14,7 +14,7 @@
 
 module Substrate.Algebra.Q.JacobianLiteral2 where
 
-open import Substrate.Algebra.Q using (ℚ)
+open import Substrate.Algebra.Q.Rat
 open import Substrate.Algebra.Q.Equiv using (≈ℚ-trans)
 
 import Substrate.Algebra.Z.JacobianResidue as R

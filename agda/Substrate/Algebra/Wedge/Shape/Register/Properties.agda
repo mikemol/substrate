@@ -24,17 +24,22 @@
 
 module Substrate.Algebra.Wedge.Shape.Register.Properties where
 
-open import Substrate.Foundation.Nat using (suc)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; cong; subst)
-open import Substrate.Foundation.Empty using (⊥-elim)
-open import Substrate.Foundation.Negation using (¬_; yes; no)
-open import Substrate.Foundation.Sum using (_⊎_; inj₁; inj₂)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Empty.BotElim
+open import Substrate.Foundation.Negation.Dec
+open import Substrate.Foundation.Negation.Not
+open import Substrate.Foundation.Sum.Sum
 open import Substrate.Foundation.Product using (proj₁)
 open import Substrate.Foundation.List using (List; []; _∷_; _++_)
 open import Substrate.Algebra.Wedge using (ℕ-div)
 open import Substrate.Algebra.Wedge.Shape using (WedgeShape)
 open import Substrate.Algebra.Wedge.Shape.Register
   using (Register; _∈ᴿ_; here; there; idx; find; intern; ∈ᴿ-snoc)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Subst
+open import Substrate.S5.S5Carrier
 
 ------------------------------------------------------------------------
 -- 1. The heap invariant: no duplicate shapes.

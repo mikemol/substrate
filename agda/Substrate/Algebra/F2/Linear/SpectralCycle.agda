@@ -24,15 +24,15 @@
 
 module Substrate.Algebra.F2.Linear.SpectralCycle where
 
-open import Substrate.Foundation.Nat using (ℕ; suc)
-open import Substrate.Foundation.Eq using (_≡_)
+open import Substrate.Foundation.Nat.Nat
 
 open import Substrate.Algebra.F2.Vector using (Vector)
-open import Substrate.Algebra.F2.Linear using (Linear; apply)
+open import Substrate.Algebra.F2.Linear.Linear
 open import Substrate.Algebra.F2.Linear.Cyclotomic using (ΦL; powL; ΦL-orbit-fixed)
 open import Substrate.Algebra.F2.Linear.FromImages.Permutation.Cyclic
   using (cyclic-Linear; cyclic-HasOrder)
 open import Substrate.Category.Coalgebra.FiniteOrder using (HasOrder)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- The p-cycle shift and its order, INSTANTIATED (p = suc n).

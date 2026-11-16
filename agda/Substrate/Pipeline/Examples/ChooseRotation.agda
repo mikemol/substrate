@@ -20,6 +20,7 @@ open import Substrate.Pipeline.Brick.Witnessing using (D⇒C)
 open import Substrate.Pipeline.Brick.Record using (Brick)
 open import Substrate.Pipeline.Brick.Type using (BrickType)
 open import Substrate.Foundation.Product using (_,_)
+open import Substrate.Category.GeneratorOperad
 module Substrate.Pipeline.Examples.ChooseRotation
   (Window    : Set)
   (RotIdx    : Set)

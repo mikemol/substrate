@@ -16,7 +16,6 @@
 
 module Substrate.TokiPona.Fragment.Example4PiRegrouping where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Groups.Coxeter.Word using ([]; _∷_)
 open import Substrate.TokiPona.SemanticSpace
 open import Substrate.TokiPona.Nimi
@@ -26,6 +25,7 @@ open import Substrate.TokiPona.ModifierBilinear
 open import Substrate.TokiPona.TokiSentence
 open import Substrate.TokiPona.Particles
 open import Substrate.TokiPona.LinearAlgebra
+open import Substrate.Foundation.Eq
 
 -- The right group "soweli wawa" as a sub-modifier.
 right-group-soweli-wawa : SemVec nimi-count

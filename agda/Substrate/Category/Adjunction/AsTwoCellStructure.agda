@@ -11,6 +11,7 @@
 open import Substrate.Foundation.Level using (Level)
 
 open import Substrate.Category.TwoCategory using (TwoCategory)
+open import Substrate.Probability.MarkovCategory
 
 module Substrate.Category.Adjunction.AsTwoCellStructure
   {ℓ0 ℓ1 ℓ2 : Level}

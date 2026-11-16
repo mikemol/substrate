@@ -10,14 +10,16 @@
 
 module Substrate.Algebra.Q.Properties.Decidable.Key where
 
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Eq using (_≡_; refl; subst)
-open import Substrate.Algebra.Q using (ℚ; num; denominator)
-open import Substrate.Algebra.Q.Reduction using (abs-ℤ)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Algebra.Q.Denominator
+open import Substrate.Algebra.Q.Rat
+open import Substrate.Algebra.Q.Reduction.AbsInt
 open import Substrate.Algebra.Nat.GCD.EEATrace using (EEATrace)
 open import Substrate.Algebra.Nat.GCD.GcdTrace using (gcd-trace)
 open import Substrate.Algebra.Wedge using (ℕ-div)
 open import Substrate.Algebra.Wedge.Shape using (ℕ-shape; WedgeShape)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Subst
 
 -- ⟡cap-128-forcing: `q-key` is SEALED.  Unsealed, a `with q-key (reduce a) ≟ˢ
 -- q-key (reduce b)` scrutinee drags the whole EEA/shape-interning stack into

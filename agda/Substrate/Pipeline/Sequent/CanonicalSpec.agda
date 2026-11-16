@@ -9,8 +9,8 @@
 {-# OPTIONS --without-K #-}
 
 module Substrate.Pipeline.Sequent.CanonicalSpec where
+open import Substrate.Foundation.Eq
 
-open import Substrate.Foundation.Eq using (_≡_)
 
 -- ⟡set1-paydown: the Set-valued family `Canonical : A → Set` was a FIELD, forcing
 -- CanonicalSpec to Set₁. Lift it (with the carrier A) to module params → the record

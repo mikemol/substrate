@@ -17,12 +17,12 @@
 
 module Substrate.Algebra.R.Trace.ExtruderNfCrossRealigned where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Algebra.Wedge using (DivStr)
 open import Substrate.Algebra.Wedge.Bridge using (id-bridge)
 open import Substrate.Algebra.Wedge.Mul using (two-div; two-mul; Two; 𝟘; ε)
 open import Substrate.Algebra.Wedge.CrossMul
   using (CrossMix; embA; embB; cross; Coherent; mix-witness; coherent-everywhere)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- ⑤ (completed) FUSepQNf.Wit=redW⊎peelW IS the CrossMul cospan, WITNESSED. The

@@ -10,8 +10,10 @@
 
 module Substrate.Algebra.R.Trace.CFMatrixBridge where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_)
-open import Substrate.Algebra.Z using (ℤ)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Times
+open import Substrate.Algebra.Z.Int
 open import Substrate.Algebra.Z.Add using (_⊖_)
 
 -- the 2×2 CF matrix over the substrate's ℕ.
@@ -30,7 +32,7 @@ M q = mat q (suc zero) (suc zero) zero
 -- 2×2 product (scalar-on-left convention, so the CF step lands as a·p₁+p₀).
 _·_ : Mat → Mat → Mat
 (mat a b c d) · (mat e f g h) =
-  mat (e * a + g * b) (f * a + h * b) (e * c + g * d) (f * c + h * d)
+  mat (e * a ℕ+ g * b) (f * a ℕ+ h * b) (e * c ℕ+ g * d) (f * c ℕ+ h * d)
 
 -- the convergent two-column state AS a matrix: [[p₁,p₀],[q₁,q₀]].
 state : ℕ → ℕ → ℕ → ℕ → Mat

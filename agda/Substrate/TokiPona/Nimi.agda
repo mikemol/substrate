@@ -27,7 +27,7 @@
 
 module Substrate.TokiPona.Nimi where
 
-open import Substrate.Foundation.Nat using (ℕ; suc; zero)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Literals using (₁; ₂; ₃; ₄; ₅; ₆; ₇; ₈; ₉; ₁₀; ₁₁; ₁₂; ₁₃; ₁₄; ₁₅; ₁₆; ₁₇; ₁₈; ₁₉; ₂₀; ₂₁; ₂₂; ₂₃; ₂₄; ₂₅; ₂₆; ₂₇; ₂₈; ₂₉; ₃₀)
 open import Substrate.Foundation.Fin.Fin
 

@@ -15,7 +15,7 @@
 --   S1 (THE DISSOLUTION): `record RigFunctor S T : Set` — Obj/Hom of both the
 --      source and the target are MODULE/RECORD PARAMETERS, so no Set-valued
 --      field forces the bundle up a universe. It type-checks AT `: Set`. That
---      green compile IS the dissolution. + id-RigFunctor + comp-RigFunctor
+--      green compile IS the dissolution. ℕ+ id-RigFunctor ℕ+ comp-RigFunctor
 --      (the category of GradedRigCats).
 --   S2' (THE UP — NO Σ): the universal property is EXPOSED, not ∃-collapsed —
 --      exactly like foldF-free-unique. `freeFunctor` (a CONSTRUCTION) and
@@ -29,7 +29,7 @@
 -- are Set₀. The FULL symmetric UP (free object = the Perm rig category with
 -- permutation morphisms) is ⟡rig-UP-cat-perm-UP and is NOT claimed here.
 --
--- Proof-free notion home (def/proof separation): the record + id + comp + the
+-- Proof-free notion home (def/proof separation): the record ℕ+ id ℕ+ comp ℕ+ the
 -- UP statement live here; the initiality PROOF for the skeletal free object —
 -- which imports the proof-carrying orientationRigCatₛ — lives in .Properties.
 --
@@ -40,12 +40,19 @@
 
 module Substrate.WitnessTower.Wedge.OrientationRigCatUP where
 
-open import Substrate.Foundation.Nat using (ℕ; _+_; _*_)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; subst)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Times
 open import Substrate.WitnessTower.Wedge.OrientationBimonoidal
   using (GradedProductOver; _∧_; u)
 open import Substrate.WitnessTower.Wedge.OrientationRigCat
   using (GradedRigCat; idHom; _∘_; ⊕obj; ⊗obj; braid⊕; braid⊗)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Subst
+open import Substrate.Probability.MarkovCategory
 
 ------------------------------------------------------------------------
 -- trⱽ — transport a morphism along equalities of BOTH its endpoint objects
@@ -94,7 +101,7 @@ trⱽ-nat Fobj Fhom refl refl h = refl
 --   F-idHom, F-∘        — a functor of the underlying categories
 --   F-⊕obj-u/∧,
 --   F-⊗obj-u/∧          — preserves both object-monoid products (⊕ over
---                          (ℕ,+,0), ⊗ over (ℕ,*,1))
+--                          (ℕ,ℕ+,0), ⊗ over (ℕ,*,1))
 --   F-braid⊕, F-braid⊗  — preserves the two braidings; because the braiding's
 --                          source/target objects change under F-obj, the law
 --                          is stated with the ∧-preservation transports (the

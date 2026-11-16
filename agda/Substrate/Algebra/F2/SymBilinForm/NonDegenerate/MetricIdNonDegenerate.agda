@@ -16,7 +16,6 @@ module Substrate.Algebra.F2.SymBilinForm.NonDegenerate.MetricIdNonDegenerate whe
 
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using (lookup)
-open import Substrate.Foundation.Eq using (_≡_; sym; trans)
 
 open import Substrate.Algebra.F2.Vector using (Vector; 𝟎ⱽ; basis; ≡-from-lookup; lookup-𝟎)
 open import Substrate.Algebra.F2.SymBilinForm.MetricId using (metric-id)
@@ -25,6 +24,9 @@ open import Substrate.Algebra.F2.SymBilinForm.NonDegenerate.PairMetricIdWithBasi
   using (pair-metric-id-with-basis-generic)
 
 open import Substrate.Category.Equalizer using (equal)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
 
 metric-id-non-degenerate-generic :
   ∀ {n} → NonDegenerate (metric-id {n})

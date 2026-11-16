@@ -26,8 +26,7 @@
 
 module Substrate.Algebra.Wedge.Graded.Adjunction where
 
-open import Substrate.Foundation.Nat using (ℕ; suc)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Product using (Σ; _,_)
 -- ⟡set1-paydown: GradedDivStr's carrier/remainder families are now its params, so
 -- the old `C G` / `R G` projections become the (implicit) module params C / R here.
@@ -35,6 +34,8 @@ open import Substrate.Algebra.Wedge.Graded
   using (GradedDivStr; recon; GradedWedge; rem; wedge-eq;
          gforget; gforget-correct)
 open import Substrate.Algebra.Wedge.Adjunction using (sym-sym)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
 
 module _ {C : ℕ → Set} {R : ℕ → Set} where
 

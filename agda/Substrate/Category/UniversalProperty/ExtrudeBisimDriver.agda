@@ -25,20 +25,23 @@
 
 module Substrate.Category.UniversalProperty.ExtrudeBisimDriver where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; cong)
-open import Substrate.Foundation.Nat using (ℕ; suc)
-open import Substrate.Foundation.Bool using (Bool; true)
-open import Substrate.Algebra.R.Trace.SKIShedDuality using () renaming (Tm to Tm⟦533ef80d⟧)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Bool.Bool
+
 open import Substrate.Category.UniversalProperty.ExtrudeMinimalRun using (step)
 open import Substrate.Category.UniversalProperty.ExtrudeStepDecidable using (head-shape)
 open import Substrate.Category.UniversalProperty.ExtrudeBisimRun using (RedTrace; run-trace; obs; more)
 open import Substrate.Category.UniversalProperty.ExtrudeBisimDetect using (bisim-upto; head-eq-sound)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Algebra.R.Trace.SKIShedDuality.Tm
 
 ------------------------------------------------------------------------
 -- ① THE FROZEN GENERATOR is the RedTrace (278): a suspended, resumable run — peek the observation (obs),
 --    resume to the next frozen generator (more). freeze = run-trace: freeze a term into its frozen run.
 ------------------------------------------------------------------------
-freeze : Tm⟦533ef80d⟧ → RedTrace
+freeze : Tm → RedTrace
 freeze = run-trace
 
 ------------------------------------------------------------------------
@@ -66,14 +69,14 @@ same?   (drive last cur) = same-1 last cur
 advance (drive last cur) = drive cur (more cur)
 
 -- freeze a term and drive its run (the first generator is its own `last`, so same? starts by self-comparison):
-drive-from : Tm⟦533ef80d⟧ → Driver
+drive-from : Tm → Driver
 drive-from t = drive (freeze t) (freeze t)
 
 ------------------------------------------------------------------------
 -- ④ AT A FIXED POINT the generator IS the same as the last under one step (same? ≡ true) — the driver's
 --    per-step observation flags the normal-form/lasso point WITHOUT any total decision.
 ------------------------------------------------------------------------
-same-at-fixed : (t : Tm⟦533ef80d⟧) → step t ≡ t → same-1 (freeze t) (freeze (step t)) ≡ true
+same-at-fixed : (t : Tm) → step t ≡ t → same-1 (freeze t) (freeze (step t)) ≡ true
 same-at-fixed t p rewrite head-eq-sound (sym (cong head-shape p)) = refl
 
 ------------------------------------------------------------------------

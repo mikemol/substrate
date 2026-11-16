@@ -36,13 +36,13 @@
 
 module Substrate.Algebra.R.Trace.WedgeBridge where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Product using (_×_; _,_)
-open import Substrate.Foundation.Eq using (_≡_; refl)
 
 open import Substrate.Algebra.Wedge            using (DivStr; C; recon; ℕ-div)
 open import Substrate.Algebra.Wedge.Adjunction using (eval)
 open import Substrate.Algebra.R.Trace.RationalAdjunction using (reconStep)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- THE HOOKUP, typechecked: the R-arc's `reconStep` is the general wedge Forgetful

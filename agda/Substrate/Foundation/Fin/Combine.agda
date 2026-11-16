@@ -10,7 +10,8 @@
 
 module Substrate.Foundation.Fin.Combine where
 
-open import Substrate.Foundation.Nat using (ℕ; suc; _*_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Times
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Inject
 open import Substrate.Foundation.Fin.Raise

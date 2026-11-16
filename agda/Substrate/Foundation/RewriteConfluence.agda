@@ -25,9 +25,9 @@ module Substrate.Foundation.RewriteConfluence
   where
 
 open import Substrate.Foundation.Level     using (_⊔_)
-open import Substrate.Foundation.Eq        using (_≡_; refl)
 open import Substrate.Foundation.Product   using (Σ; _,_; proj₁; proj₂; _×_)
 open import Substrate.Foundation.WellFounded using (Acc; acc)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- The reflexive-transitive closure ⇒* (multi-step reduction) and its composition.

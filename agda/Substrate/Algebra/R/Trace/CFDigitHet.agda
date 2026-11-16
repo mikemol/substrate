@@ -21,9 +21,10 @@
 
 module Substrate.Algebra.R.Trace.CFDigitHet where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Foundation.Iff using (_⇔_; ⇔-refl)
 open import Substrate.Algebra.Q.HetBasis using (HetQ; _//_; hnum; hden; module CrossEq; viaBridges)
+open import Substrate.Foundation.Eq
+open import Substrate.Algebra.Q.Properties.AddMonoid
 
 ------------------------------------------------------------------------
 -- The regress "digit" carrier is the GENERATOR carrier A (arbitrary). A

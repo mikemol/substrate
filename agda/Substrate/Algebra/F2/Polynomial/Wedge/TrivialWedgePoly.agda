@@ -9,7 +9,7 @@
 
 module Substrate.Algebra.F2.Polynomial.Wedge.TrivialWedgePoly where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Vec using ([])
 open import Substrate.Algebra.F2.Polynomial using (Polynomial)
 open import Substrate.Algebra.F2.Polynomial.Wedge.WedgePoly using (Wedge-Poly)

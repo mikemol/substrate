@@ -3,23 +3,27 @@
 --
 -- The multiplicative bridge: reducing a product equals the Horner sum over
 -- the left factor — `reduce-mod-m (p *P q) ≡ hsum p (reduce-mod-m q)` — built
--- from the fold + the `xtime`/linearity machinery. No polynomial long division.
+-- from the fold +F the `xtime`/linearity machinery. No polynomial long division.
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.Algebra.F2.GF256.Expand where
 
-open import Substrate.Algebra.F2 using (𝟘)
+open import Substrate.Algebra.F2.F2
 open import Substrate.Algebra.F2.Vector using (Vector; _+ⱽ_; _*ₛ_; 𝟎ⱽ; +ⱽ-identityˡ; *ₛ-absorbˡ)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_)
-open import Substrate.Foundation.Eq using (_≡_; refl; trans; cong; cong₂; subst)
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Nat.Properties.Add using () renaming (+-comm to +ℕ-comm)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Properties.Add.PlusComm
 open import Substrate.Algebra.F2.Polynomial using (Polynomial; _*P_; shift-to-suc-on-left;
   pad-end; x-shift; _·c_)
 open import Substrate.Algebra.F2.GF256.Xtime using (m-lo; xtime; xtime-+ⱽ; xtime-*ₛ)
 open import Substrate.Algebra.F2.GF256.Reduce using (reduce-mod-m; reduce-+ⱽ; reduce-*ₛ)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.Foundation.Eq.Subst
 
 reduce-x-shift : ∀ {n} (q : Vec _ n) → reduce-mod-m (𝟘 ∷ q) ≡ xtime (reduce-mod-m q)
 reduce-x-shift q = +ⱽ-identityˡ (xtime (reduce-mod-m q))

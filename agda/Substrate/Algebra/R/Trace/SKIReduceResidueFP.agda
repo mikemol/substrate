@@ -22,19 +22,19 @@
 
 module Substrate.Algebra.R.Trace.SKIReduceResidueFP where
 
-open import Substrate.Foundation.Eq  using (_≡_; refl)
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.List using (List; []; _∷_)
-open import Substrate.Foundation.Sum using (_⊎_; inj₁; inj₂)
-open import Substrate.Foundation.Empty using (⊥)
+open import Substrate.Foundation.Sum.Sum
 open import Substrate.Foundation.Product using (Σ; _,_)
 
 open import Substrate.Algebra.Wedge using (DivStr; z; recon; Trace; done; more)
 open import Substrate.Algebra.Wedge.Trace.Residues using (trace-residues; trace-classify)
 open import Substrate.Algebra.Wedge.ResidueAtom using (ℕ-torsor; ℕ-zero?)
 open import Substrate.Algebra.R.Trace using (RealTrace; head; tail)
-open import Substrate.Algebra.R.Trace.Bisim using (_~_; ~-refl; head~; tail~)
+open import Substrate.Algebra.R.Trace.Bisim.Op
+open import Substrate.Algebra.R.Trace.Bisim.Refl
 open import Substrate.Category.Lawvere using (FixedPointFree; TorsorAtom; e)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. The SHEDDING CARRIER. A reduction state carries a residue = the redex-cost

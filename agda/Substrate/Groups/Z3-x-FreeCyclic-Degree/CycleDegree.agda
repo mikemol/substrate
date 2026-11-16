@@ -9,7 +9,7 @@
 
 module Substrate.Groups.Z3-x-FreeCyclic-Degree.CycleDegree where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Product using (_,_)
 
 import Substrate.Groups.Capabilities.xFreeCyclic.Witness as xFreeCyclicW

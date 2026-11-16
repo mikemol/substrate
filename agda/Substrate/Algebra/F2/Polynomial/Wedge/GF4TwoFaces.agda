@@ -23,17 +23,18 @@
 
 module Substrate.Algebra.F2.Polynomial.Wedge.GF4TwoFaces where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; subst)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_)
 open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂)
-open import Substrate.Foundation.Bool using (Bool; true; false; _∨_)
-import Substrate.Algebra.F2 as F2
+open import Substrate.Foundation.Bool.Bool
+open import Substrate.Foundation.Bool.Or
+open import Substrate.Algebra.F2.F2
 open import Substrate.Algebra.F2.CommRing using (F₂-CommRing)
 open import Substrate.Algebra.F2.Polynomial.Wedge.EEATrace using (QPoly; divisor-q)
 open import Substrate.Algebra.F2.Polynomial.Wedge.FuelEEA using (fuel-bezout)
 open import Substrate.Algebra.F2.Polynomial.Wedge.BezoutFold.Base using (BezoutNthWitness)
 open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit using (is-unit-q; ∨-elim-false; unit-q-nth0; unit-q-nths)
-open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit.Base using (all-vec; all-vec-sound)
+open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit.Base.AllVec
+open import Substrate.Algebra.F2.Polynomial.Wedge.GUnit.Base.AllVecSound
 import Substrate.Algebra.Polynomial.Graded.ModZero as MZ
 import Substrate.Algebra.Polynomial.Graded.FromCommRing as F
 import Substrate.Algebra.Polynomial.Graded.Mod as M
@@ -47,6 +48,11 @@ open M.Over F₂-CommRing 1 m-lo₂
 open Q.Over F₂-CommRing 1 m-lo₂
 open D.Over F₂-CommRing 1 m-lo₂
   using (Poly; _*Q_; oneC; reduce-mod-f; *Q-comm; *Q-assoc; *Q-identityˡ; *Q-identityʳ)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Subst
 module M₂ = MZ.Over F₂-CommRing 1 m-lo₂
 
 ------------------------------------------------------------------------
@@ -67,17 +73,17 @@ inv-unique a b c ab ac =
 -- FACE 1 — the EEA-Bézout inverse at GF(4) (mirror of GF16Inverse at d=1).
 ------------------------------------------------------------------------
 
-is-zero2 : Vec F2.F₂ 2 → Bool
-is-zero2 (F2.𝟘 ∷ F2.𝟘 ∷ []) = true
+is-zero2 : Vec F₂ 2 → Bool
+is-zero2 (𝟘 ∷ 𝟘 ∷ []) = true
 is-zero2 _                   = false
 
 W₂ : (a : Poly 2) → Σ QPoly (BezoutNthWitness (2 , a) (divisor-q 1 m-lo₂))
 W₂ a = fuel-bezout 4 (2 , a) 1 m-lo₂
 
-gcd-of₂ : Vec F2.F₂ 2 → QPoly
+gcd-of₂ : Vec F₂ 2 → QPoly
 gcd-of₂ a = proj₁ (W₂ a)
 
-check₂ : Vec F2.F₂ 2 → Bool
+check₂ : Vec F₂ 2 → Bool
 check₂ a = is-unit-q (gcd-of₂ a) ∨ is-zero2 a
 
 -- x²+x+1 is irreducible over F₂ → every nonzero element's gcd with m is the unit
@@ -85,7 +91,7 @@ check₂ a = is-unit-q (gcd-of₂ a) ∨ is-zero2 a
 all-pass₂ : all-vec check₂ ≡ true
 all-pass₂ = refl
 
-unit-of₂ : (a : Vec F2.F₂ 2) → is-zero2 a ≡ false → is-unit-q (gcd-of₂ a) ≡ true
+unit-of₂ : (a : Vec F₂ 2) → is-zero2 a ≡ false → is-unit-q (gcd-of₂ a) ≡ true
 unit-of₂ a z =
   ∨-elim-false (subst (λ b → (is-unit-q (gcd-of₂ a) ∨ b) ≡ true) z
                       (all-vec-sound check₂ all-pass₂ a))

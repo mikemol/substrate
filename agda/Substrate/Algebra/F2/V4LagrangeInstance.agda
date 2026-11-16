@@ -32,16 +32,42 @@ module Substrate.Algebra.F2.V4LagrangeInstance where
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Literals using (₁; ₂; ₃; ₄)
 open import Substrate.Foundation.Vec using ([]; _∷_)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; trans; cong)
 
-open import Substrate.Algebra.F2
+open import Substrate.Algebra.F2.AbsorbL
+open import Substrate.Algebra.F2.AbsorbR
+open import Substrate.Algebra.F2.Assoc
+open import Substrate.Algebra.F2.Comm
+open import Substrate.Algebra.F2.Dec
+open import Substrate.Algebra.F2.DistribLPlus
+open import Substrate.Algebra.F2.DistribRPlus
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.F2Cases
+open import Substrate.Algebra.F2.Idempotent
+open import Substrate.Algebra.F2.IdentityL
+open import Substrate.Algebra.F2.IdentityR
+open import Substrate.Algebra.F2.InvOfOne
+open import Substrate.Algebra.F2.OneNeqZero
+open import Substrate.Algebra.F2.Op
+open import Substrate.Algebra.F2.Op2
+open import Substrate.Algebra.F2.PlusAssoc
+open import Substrate.Algebra.F2.PlusComm
+open import Substrate.Algebra.F2.PlusF
+open import Substrate.Algebra.F2.PlusIdentityL
+open import Substrate.Algebra.F2.PlusIdentityR
+open import Substrate.Algebra.F2.PlusInverseL
+open import Substrate.Algebra.F2.PlusInverseR
+open import Substrate.Algebra.F2.PlusSelfInverse
+open import Substrate.Algebra.F2.ZeroNeqOne
 open import Substrate.Algebra.F2.Vector
 
 open import Substrate.Category.Coalgebra using (Endomap)
 open import Substrate.Category.Coalgebra.FiniteOrder using (HasOrder)
 open import Substrate.Category.Coalgebra.LagrangeOrder
   using (Action; HasLagrangeOrder)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- N-1: V₄ elements — the 4 elements of F₂².
@@ -120,7 +146,7 @@ V4-has-lagrange-order : HasLagrangeOrder 4 V4-action
 V4-has-lagrange-order = V4-each-has-order-4
 
 ------------------------------------------------------------------------
--- N-5½: the translation action is SIMPLY TRANSITIVE — free + transitive.
+-- N-5½: the translation action is SIMPLY TRANSITIVE — free +F transitive.
 -- (The "free (orbit = F₂² itself)" capstone bullet, proved. Stated at the
 -- translation level g = V4-elements i, where V4-action i v = g +ⱽ v; both
 -- are pure +ⱽ-cancellation, the char-2 fact g ⊕ g = 0.)
@@ -152,7 +178,7 @@ V4-action-transitive v w =
 --
 --   * |V₄| = 4 with each element of exponent dividing 2
 --   * Translation action on F₂² is SIMPLY TRANSITIVE — PROVED:
---     `V4-action-free` (free) + `V4-action-transitive` (orbit = F₂²).
+--     `V4-action-free` (free) +F `V4-action-transitive` (orbit = F₂²).
 --   * (prose: Aut(V₄) = GL(2, F₂) of order 6 — not φ(4)=2, V₄ ≠ Z/4 — is
 --     classical; the automorphism group is NOT computed/formalized here.)
 --
@@ -167,7 +193,7 @@ V4-action-transitive v w =
 -- of the non-cyclic torsion structure.
 --
 -- Connection to [[project-3plus1-parity-universal]]: V₄'s 3 non-
--- identity elements + identity = "3+1 in V₄"; each pair of non-identity
+-- identity elements +F identity = "3+1 in V₄"; each pair of non-identity
 -- elements (v₁, v₂) has v₃ = v₁ ⊕ v₂ as their "Hodge-dual-like"
 -- partner. The 3+1 parity at the V₄ level is the simplest non-cyclic
 -- torsion instance of this pattern.

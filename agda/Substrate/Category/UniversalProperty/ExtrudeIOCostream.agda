@@ -15,14 +15,16 @@
 
 module Substrate.Category.UniversalProperty.ExtrudeIOCostream where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; cong)
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.List using (List; []; _∷_)
 open import Substrate.Foundation.Product using (_×_; _,_)
-open import Substrate.Algebra.R.Trace.SKIShedDuality using () renaming (Tm to Tm⟦533ef80d⟧)
+
 open import Substrate.Category.UniversalProperty.ExtrudeMinimalRun using (step)
 open import Substrate.Category.UniversalProperty.ExtrudeStepDecidable using (HeadShape; head-shape)
 open import Substrate.Category.UniversalProperty.ExtrudeBisimRun using (run-trace; take-obs)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Algebra.R.Trace.SKIShedDuality.Tm
 
 private variable O : Set
 
@@ -41,7 +43,7 @@ open CoIO public
 -- ② THE RUN EMITS FOREVER: unfold a term into its unbounded observation costream (emit head-shape, step,
 --    repeat) — guarded corecursion.
 ------------------------------------------------------------------------
-run-coio : Tm⟦533ef80d⟧ → CoIO HeadShape
+run-coio : Tm → CoIO HeadShape
 emit-head (run-coio t) = head-shape t
 emit-rest (run-coio t) = run-coio (step t)
 
@@ -53,7 +55,7 @@ take-coio : ℕ → CoIO O → List O
 take-coio zero    c = []
 take-coio (suc n) c = emit-head c ∷ take-coio n (emit-rest c)
 
-take-coio-run : (n : ℕ) (t : Tm⟦533ef80d⟧) → take-coio n (run-coio t) ≡ take-obs n (run-trace t)
+take-coio-run : (n : ℕ) (t : Tm) → take-coio n (run-coio t) ≡ take-obs n (run-trace t)
 take-coio-run zero    t = refl
 take-coio-run (suc n) t = cong (head-shape t ∷_) (take-coio-run n (step t))
 

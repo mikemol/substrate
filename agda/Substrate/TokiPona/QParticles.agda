@@ -16,7 +16,7 @@
 
 module Substrate.TokiPona.QParticles where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 
 -- Re-export the F₂ Particles infrastructure (which is F₂-graded
 -- but is about structural markers, not semantic vectors).

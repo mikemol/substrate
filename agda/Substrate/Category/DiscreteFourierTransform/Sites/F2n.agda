@@ -25,12 +25,12 @@
 
 module Substrate.Category.DiscreteFourierTransform.Sites.F2n where
 
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Nat.Nat
 
 open import Substrate.Algebra.F2.Vector using (Vector)
 open import Substrate.Algebra.PontryaginDual using (F2nSelfDual)
 open import Substrate.Category.DiscreteFourierTransform
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- The F₂ⁿ self-dual iso witness.

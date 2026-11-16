@@ -40,7 +40,7 @@ open import Substrate.Groups.Z3.Gen
 open import Substrate.Axes.Axis using (Axis; C; S)
 open import Substrate.Axes.VOfAxis using (v-of-axis)
 open import Substrate.Axes.AxisOfV using (axis-of-v)
-open import Substrate.Groups.V4.Bijection using (V₄; α; β)
+open import Substrate.Groups.V4.Bijection.V4
 open import Substrate.Foundation.Fin.Fin
 import Substrate.Groups.S3 as S₃
 
@@ -56,12 +56,17 @@ open import Substrate.Groups.Z3.NormalizeCanonical
 open import Substrate.Groups.Coxeter.Word using (Word)
 open import Substrate.Groups.Symmetric.Permutation Axis
 open import Substrate.Groups.Symmetric.Eq Axis using (_≈_)
-open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym; cong; subst)
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
 
 open import Substrate.Groups.Actions.S3-on-V4.Dispatch.ActOnCanonical using (act-on-canonical)
-open import Substrate.Groups.S4-Iso.Embedding using (embed-S₃)
+open import Substrate.Groups.S4-Iso.Embedding.EmbedS3
 open import Substrate.Groups.S4-Iso.Extract using (extract-s; extract-s-from)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Subst
+open import Substrate.Foundation.Eq.Cong2
 
 ------------------------------------------------------------------------
 -- The extracted words of a canonical (nn, hh), as read through the action.

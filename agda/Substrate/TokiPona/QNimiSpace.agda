@@ -16,7 +16,7 @@
 
 module Substrate.TokiPona.QNimiSpace where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 
 open import Substrate.TokiPona.Nimi using (Nimi; nimi-count; nimi-index)
 open import Substrate.Algebra.Q.Vector using (basis-ℚ)

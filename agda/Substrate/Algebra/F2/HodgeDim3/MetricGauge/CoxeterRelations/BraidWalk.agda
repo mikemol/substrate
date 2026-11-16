@@ -27,9 +27,14 @@
 
 module Substrate.Algebra.F2.HodgeDim3.MetricGauge.CoxeterRelations.BraidWalk where
 
-open import Substrate.Foundation.Eq using (_≡_; sym; trans; cong)
 open import Substrate.Algebra.F2.Vector using (Vector)
-open import Substrate.Algebra.F2.Linear using (Linear; apply; _∘L_)
+open import Substrate.Algebra.F2.Linear.CompL
+open import Substrate.Algebra.F2.Linear.Linear
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.WitnessTower.Wedge.OrientationRigCatPermCoxeter4.Elements
 
 ------------------------------------------------------------------------
 -- The 6-step trans/cong/sym chain underlying s₁s₂s₁ ≡ s₂s₁s₂ on any

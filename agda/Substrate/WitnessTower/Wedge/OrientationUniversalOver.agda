@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------
 -- Substrate.WitnessTower.Wedge.OrientationUniversalOver
 --
--- ⟡lift-generic + ⟡rig-UP-mul — the ADDITIVE and MULTIPLICATIVE universal maps of the
+-- ⟡lift-generic ℕ+ ⟡rig-UP-mul — the ADDITIVE and MULTIPLICATIVE universal maps of the
 -- graded Lehmer rig, exhibited as the TWO INSTANCES of the ONE generic graded
 -- homomorphism (OrientationBimonoidal.GradedHomOver). This is the recursion bottoming
 -- out in an invariant rather than picking a side:
@@ -28,17 +28,18 @@
 
 module Substrate.WitnessTower.Wedge.OrientationUniversalOver where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Times
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Inject using (inject+)
 open import Substrate.Foundation.Fin.Combine using (combine)
 open import Substrate.Foundation.Fin.RemQuot using (remQuot)
 open import Substrate.Foundation.Vec using (Vec; lookup; tabulate)
-open import Substrate.Foundation.Vec.Properties using (lookup∘tabulate)
+open import Substrate.Foundation.Vec.Properties.LookupComptabulate
 open import Substrate.Foundation.Product using (proj₁; proj₂)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans)
 open import Substrate.WitnessTower.Enumerate using (Perm)
-open import Substrate.WitnessTower.LehmerPath using (LehmerPath; start; _◂_)
+open import Substrate.WitnessTower.LehmerPath.LehmerPath
 open import Substrate.WitnessTower.Wedge.OrientationUniversal
   using (LehmerAlgebra; base; step; fold; fold-⊕; fold-unique-over)
 open import Substrate.WitnessTower.Wedge.OrientationProduct using (_⊗_; 1#)
@@ -46,6 +47,9 @@ open import Substrate.WitnessTower.Wedge.OrientationBimonoidal
   using (GradedProductOver; GradedHomOver; Endo; u; _∧_; map₀; map-u; map-∧)
 open import Substrate.WitnessTower.Wedge.OrientationBimonoidal.Properties
   using (⊕-over; ⊗-over)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
 
 ------------------------------------------------------------------------
 -- 1. THE ADDITIVE INSTANCE — fold is a graded homomorphism into any target ⊕ᶜ-algebra Q
@@ -56,7 +60,7 @@ open import Substrate.WitnessTower.Wedge.OrientationBimonoidal.Properties
 ------------------------------------------------------------------------
 
 fold-hom :
-  {C : ℕ → Set} (alg : LehmerAlgebra C) (Q : GradedProductOver _+_ 0 C) →
+  {C : ℕ → Set} (alg : LehmerAlgebra C) (Q : GradedProductOver _ℕ+_ 0 C) →
   (u Q ≡ base alg) →
   (⊕ᶜ-base : ∀ {n} (y : C n) → (_∧_ Q (base alg) y) ≡ y) →
   (⊕ᶜ-step : ∀ {m n} (x : C m) (p : Fin (suc m)) (y : C n) →

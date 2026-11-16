@@ -31,19 +31,23 @@
 
 module Substrate.WitnessTower.Wedge.PyAstRigCospan where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Op
-open import Substrate.Foundation.Eq using (_≡_; refl; cong; cong₂; trans)
-open import Substrate.Foundation.Empty using (⊥-elim)
-open import Substrate.Foundation.Bool using (Bool; true; false)
-open import Substrate.Foundation.Negation using (Dec; yes; no)
+open import Substrate.Foundation.Empty.BotElim
+open import Substrate.Foundation.Bool.Bool
+open import Substrate.Foundation.Negation.Dec
 open import Substrate.Foundation.List using (List; []; _∷_)
 open import Substrate.WitnessTower.Enumerate using (Perm)
 open import Substrate.WitnessTower.SnGroup using (apply)
 open import Substrate.WitnessTower.IsPermutation using (IsPerm)
 open import Substrate.WitnessTower.Wedge.PyAstRig using (Objpy; act)
 open import Substrate.WitnessTower.Wedge.PyAstRigNormalize using (positions; mapL; positions-map)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Algebra.Polynomial.Graded.Mod
 
 ------------------------------------------------------------------------
 -- membership + membership-filter (the cross-term's coherent overlap).
@@ -51,7 +55,7 @@ open import Substrate.WitnessTower.Wedge.PyAstRigNormalize using (positions; map
 
 _∈?_ : {n : ℕ} → Fin n → List (Fin n) → Bool
 x ∈? []       = false
-x ∈? (y ∷ ys) with x ≟ y
+x ∈? (y ∷ ys) with x ≟ᶠ y
 ... | yes _ = true
 ... | no  _ = x ∈? ys
 
@@ -78,7 +82,7 @@ orthogonal a b = shared a b ≡ []
          (y : Fin n) (ys : List (Fin n)) →
          (f y ∈? mapL f ys) ≡ (y ∈? ys)
 ∈?-inj f inj y []       = refl
-∈?-inj f inj y (x ∷ xs) with f y ≟ f x | y ≟ x
+∈?-inj f inj y (x ∷ xs) with f y ≟ᶠ f x | y ≟ᶠ x
 ... | yes _ | yes _ = refl
 ... | yes p | no ¬q = ⊥-elim (¬q (inj y x p))
 ... | no ¬p | yes q = ⊥-elim (¬p (cong f q))

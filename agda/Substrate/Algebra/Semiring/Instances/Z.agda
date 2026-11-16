@@ -44,18 +44,23 @@
 
 module Substrate.Algebra.Semiring.Instances.Z where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Algebra.Monoid using (Monoid)
 open import Substrate.Algebra.Semiring using (Semiring)
 open import Substrate.Algebra.Semiring.Instances using (mk-monoid)
 
-open import Substrate.Algebra.Z using (ℤ; +_; -suc_; 0ℤ; 1ℤ; -ℤ_)
+open import Substrate.Algebra.Z.Int
+open import Substrate.Algebra.Z.Int2
+open import Substrate.Algebra.Z.OneInt
+open import Substrate.Algebra.Z.ZeroInt
 open import Substrate.Algebra.Z.Arithmetic using (_+ℤ_; _*ℤ_)
 open import Substrate.Algebra.Z.Properties.Add
   using (+ℤ-assoc; +ℤ-identityˡ; +ℤ-identityʳ; +ℤ-inverseʳ)
 open import Substrate.Algebra.Z.Properties.MulFull
   using (*ℤ-assoc; *ℤ-identityˡ; *ℤ-identityʳ;
          *ℤ-zeroˡ; *ℤ-zeroʳ; *ℤ-distribˡ-+; *ℤ-distribʳ-+)
+open import Substrate.Foundation.Eq
+open import Substrate.Algebra.Z.Mul
+open import Substrate.Algebra.Z.Add
 
 ------------------------------------------------------------------------
 -- 1. The additive monoid — (ℤ, +ℤ, 0ℤ).

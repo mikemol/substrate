@@ -16,8 +16,7 @@
 
 module Substrate.TokiPona.QLinearAlgebra where
 
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Nat.Nat
 
 open import Substrate.TokiPona.Nimi using (Nimi; nimi-count; nimi-index)
 open import Substrate.Algebra.Q.Vector using (basis-ℚ)
@@ -25,8 +24,7 @@ open import Substrate.TokiPona.QSemanticSpace using (QSemVec)
 open import Substrate.TokiPona.QNimiSpace using (nimi-as-Q-vector)
 
 open import Substrate.Algebra.Q.Linear using (Linearℚ; apply; id-LQ)
-open import Substrate.Category.LinearAlgebra using (LinearAlgebra)
-open import Substrate.Algebra.Q.AsLinearAlgebra using (ℚ-LinearAlgebra)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. The QNimiFreeLinearization record.

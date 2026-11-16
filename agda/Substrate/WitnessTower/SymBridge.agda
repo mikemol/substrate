@@ -17,11 +17,10 @@
 
 module Substrate.WitnessTower.SymBridge where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using (lookup; tabulate)
-open import Substrate.Foundation.Vec.Properties using (lookup∘tabulate)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
+open import Substrate.Foundation.Vec.Properties.LookupComptabulate
 open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂)
 
 open import Substrate.WitnessTower.Enumerate using (Perm)
@@ -35,6 +34,10 @@ import Substrate.Groups.Symmetric.Permutation as SymP
 import Substrate.Groups.Symmetric.Eq          as SymEq
 import Substrate.Groups.Symmetric.Permutation.Compose     as SymComp
 import Substrate.Groups.Symmetric.Identity    as SymId
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 
 module _ (n : ℕ) where

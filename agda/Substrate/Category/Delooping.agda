@@ -35,7 +35,7 @@ open import Substrate.Foundation.Unit using (⊤)
 open import Substrate.Algebra.Magma     using (Magma)
 open import Substrate.Algebra.Semigroup using (Semigroup; magma; ·-assoc)
 open import Substrate.Algebra.Monoid    using (Monoid; ε; ε-left; ε-right; semigroup)
-open import Substrate.Category.CategoryOf using (CategoryOf)
+open import Substrate.Category.CategoryOf.CategoryOf
 
 ------------------------------------------------------------------------
 -- deloop M = BM : the one-object category of a monoid.

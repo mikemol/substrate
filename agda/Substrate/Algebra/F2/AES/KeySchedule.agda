@@ -17,11 +17,15 @@
 
 module Substrate.Algebra.F2.AES.KeySchedule where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; map; zipWith; replicate)
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
-import Substrate.Algebra.F2 as F2
-open import Substrate.Algebra.F2 using (_+_)
+-- ⚑ WAS `import Substrate.Algebra.F2 as F2` — retired barrel + banned alias.
+-- ⚑ NOTE this file ALREADY imported `PlusF` beside the alias, so the class is
+-- NOT uniformly "three names from one leaf": the qualified references can span
+-- several leaves, and the compiler is the oracle for which.
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.PlusF
 -- B-deep: canonical S-box = the proven table lookup (cheap to force), so the
 -- key-schedule KAT is a table lookup not a GF inversion. (= sbox-gf, proven.)
 open import Substrate.Algebra.F2.Polynomial.Wedge.SBoxTable using (sbox)
@@ -30,10 +34,10 @@ open import Substrate.Algebra.F2.AES.Cipher using (encrypt)
 
 -- the key-schedule unit is a column of 4 bytes (= the State column `Col`).
 𝟘b : Byte
-𝟘b = replicate 8 F2.𝟘
+𝟘b = replicate 8 𝟘
 
 _⊕w_ : Col → Col → Col
-_⊕w_ = zipWith (zipWith _+_)
+_⊕w_ = zipWith (zipWith _+F_)
 
 RotWord : Col → Col
 RotWord (b0 ∷ b1 ∷ b2 ∷ b3 ∷ []) = b1 ∷ b2 ∷ b3 ∷ b0 ∷ []
@@ -43,16 +47,16 @@ SubWord = map sbox
 
 -- round constants Rcon[1..10] = xtime^(j-1)(1): 01 02 04 08 10 20 40 80 1b 36.
 rc1  rc2  rc3  rc4  rc5  rc6  rc7  rc8  rc9  rc10 : Byte
-rc1  = F2.𝟙 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ []   -- 0x01
-rc2  = F2.𝟘 ∷ F2.𝟙 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ []   -- 0x02
-rc3  = F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟙 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ []   -- 0x04
-rc4  = F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟙 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ []   -- 0x08
-rc5  = F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟙 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ []   -- 0x10
-rc6  = F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟙 ∷ F2.𝟘 ∷ F2.𝟘 ∷ []   -- 0x20
-rc7  = F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟙 ∷ F2.𝟘 ∷ []   -- 0x40
-rc8  = F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟙 ∷ []   -- 0x80
-rc9  = F2.𝟙 ∷ F2.𝟙 ∷ F2.𝟘 ∷ F2.𝟙 ∷ F2.𝟙 ∷ F2.𝟘 ∷ F2.𝟘 ∷ F2.𝟘 ∷ []   -- 0x1b
-rc10 = F2.𝟘 ∷ F2.𝟙 ∷ F2.𝟙 ∷ F2.𝟘 ∷ F2.𝟙 ∷ F2.𝟙 ∷ F2.𝟘 ∷ F2.𝟘 ∷ []   -- 0x36
+rc1  = 𝟙 ∷ 𝟘 ∷ 𝟘 ∷ 𝟘 ∷ 𝟘 ∷ 𝟘 ∷ 𝟘 ∷ 𝟘 ∷ []   -- 0x01
+rc2  = 𝟘 ∷ 𝟙 ∷ 𝟘 ∷ 𝟘 ∷ 𝟘 ∷ 𝟘 ∷ 𝟘 ∷ 𝟘 ∷ []   -- 0x02
+rc3  = 𝟘 ∷ 𝟘 ∷ 𝟙 ∷ 𝟘 ∷ 𝟘 ∷ 𝟘 ∷ 𝟘 ∷ 𝟘 ∷ []   -- 0x04
+rc4  = 𝟘 ∷ 𝟘 ∷ 𝟘 ∷ 𝟙 ∷ 𝟘 ∷ 𝟘 ∷ 𝟘 ∷ 𝟘 ∷ []   -- 0x08
+rc5  = 𝟘 ∷ 𝟘 ∷ 𝟘 ∷ 𝟘 ∷ 𝟙 ∷ 𝟘 ∷ 𝟘 ∷ 𝟘 ∷ []   -- 0x10
+rc6  = 𝟘 ∷ 𝟘 ∷ 𝟘 ∷ 𝟘 ∷ 𝟘 ∷ 𝟙 ∷ 𝟘 ∷ 𝟘 ∷ []   -- 0x20
+rc7  = 𝟘 ∷ 𝟘 ∷ 𝟘 ∷ 𝟘 ∷ 𝟘 ∷ 𝟘 ∷ 𝟙 ∷ 𝟘 ∷ []   -- 0x40
+rc8  = 𝟘 ∷ 𝟘 ∷ 𝟘 ∷ 𝟘 ∷ 𝟘 ∷ 𝟘 ∷ 𝟘 ∷ 𝟙 ∷ []   -- 0x80
+rc9  = 𝟙 ∷ 𝟙 ∷ 𝟘 ∷ 𝟙 ∷ 𝟙 ∷ 𝟘 ∷ 𝟘 ∷ 𝟘 ∷ []   -- 0x1b
+rc10 = 𝟘 ∷ 𝟙 ∷ 𝟙 ∷ 𝟘 ∷ 𝟙 ∷ 𝟙 ∷ 𝟘 ∷ 𝟘 ∷ []   -- 0x36
 
 -- one round-key step (FIPS-197 §5.2): the 4 new words from the previous 4.
 opaque

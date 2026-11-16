@@ -23,8 +23,9 @@
 
 module Substrate.Category.Poly.Term where
 
-open import Substrate.Foundation.Nat using (ℕ; _+_)
-open import Substrate.WitnessTower.LehmerPath using (LehmerPath; start)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.WitnessTower.LehmerPath.LehmerPath
 open import Substrate.WitnessTower.Wedge.OrientationSum using (_⊕_)
 open import Substrate.WitnessTower.Wedge.OrientationBimonoidal using (GradedProductOver)
 open import Substrate.WitnessTower.Wedge.OrientationBimonoidal.Properties using (⊕-over)
@@ -37,11 +38,11 @@ PolyTerm = LehmerPath
 []ₚ : PolyTerm 0
 []ₚ = start
 
-_++ₚ_ : {m n : ℕ} → PolyTerm m → PolyTerm n → PolyTerm (m + n)
+_++ₚ_ : {m n : ℕ} → PolyTerm m → PolyTerm n → PolyTerm (m ℕ+ n)
 _++ₚ_ = _⊕_
 
 infixr 4 _++ₚ_
 
 -- The graded product on terms IS the tower's ⊕-over : GradedProductOver.
-poly-product : GradedProductOver _+_ 0 PolyTerm
+poly-product : GradedProductOver _ℕ+_ 0 PolyTerm
 poly-product = ⊕-over

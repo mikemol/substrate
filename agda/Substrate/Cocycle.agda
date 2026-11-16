@@ -15,13 +15,13 @@
 
 module Substrate.Cocycle where
 
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; cong)
 open import Substrate.Foundation.Product
   using (Σ; Σ-syntax; _×_; _,_; proj₁; proj₂)
 open import Substrate.Algebra.SetoidGroup using (SetoidGroup)
 open import Substrate.Algebra.SetoidGroup.Action
   using (Action; act; act-id; act-∙)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- IsTorsor — SetoidGroup-parametric.

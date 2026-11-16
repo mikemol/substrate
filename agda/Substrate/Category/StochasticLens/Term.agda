@@ -23,8 +23,9 @@
 
 module Substrate.Category.StochasticLens.Term where
 
-open import Substrate.Foundation.Nat using (ℕ; _+_)
-open import Substrate.WitnessTower.LehmerPath using (LehmerPath; start)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.WitnessTower.LehmerPath.LehmerPath
 open import Substrate.WitnessTower.Wedge.OrientationSum using (_⊕_)
 open import Substrate.WitnessTower.Wedge.OrientationBimonoidal using (GradedProductOver)
 open import Substrate.WitnessTower.Wedge.OrientationBimonoidal.Properties using (⊕-over)
@@ -37,11 +38,11 @@ LensTerm = LehmerPath
 []ₗ : LensTerm 0
 []ₗ = start
 
-_++ₗ_ : {m n : ℕ} → LensTerm m → LensTerm n → LensTerm (m + n)
+_++ₗ_ : {m n : ℕ} → LensTerm m → LensTerm n → LensTerm (m ℕ+ n)
 _++ₗ_ = _⊕_
 
 infixr 4 _++ₗ_
 
 -- The graded product on terms IS the tower's ⊕-over : GradedProductOver.
-lens-product : GradedProductOver _+_ 0 LensTerm
+lens-product : GradedProductOver _ℕ+_ 0 LensTerm
 lens-product = ⊕-over

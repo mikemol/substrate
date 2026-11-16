@@ -30,7 +30,13 @@
 
 module Substrate.Groups.S4-Iso where
 
-open import Substrate.Groups.S4-Iso.Embedding
+open import Substrate.Groups.S4-Iso.Embedding.CompositionalToPerm
+open import Substrate.Groups.S4-Iso.Embedding.CongV
+open import Substrate.Groups.S4-Iso.Embedding.EmbedS3
+open import Substrate.Groups.S4-Iso.Embedding.S3Apply
+open import Substrate.Groups.S4-Iso.Embedding.S3ApplyInvR
+open import Substrate.Groups.S4-Iso.Embedding.S3InvApply
+open import Substrate.Groups.S4-Iso.Embedding.S3InvApplyL
 open import Substrate.Groups.S4-Iso.Extract
 open import Substrate.Groups.S4-Iso.Foundation
 open import Substrate.Groups.S4-Iso.ForwardHom

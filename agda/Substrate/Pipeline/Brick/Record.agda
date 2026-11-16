@@ -13,6 +13,7 @@ module Substrate.Pipeline.Brick.Record where
 open import Substrate.Foundation.Product using (_×_)
 open import Substrate.Pipeline.Brick.Witnessing using (Witnessing)
 open import Substrate.Pipeline.Brick.Type using (BrickType)
+open import Substrate.FUSep.FUSepQReduce
 
 -- ⟡set1-paydown: BrickType is now indexed by its four edges; Brick takes them as implicit params
 -- (inferred from T) and reads them directly (the `open BrickType T public` re-export is gone —

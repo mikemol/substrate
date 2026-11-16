@@ -11,7 +11,7 @@
 module Substrate.Algebra.F2.SymBilinForm.PairEqFamily where
 
 open import Substrate.Foundation.Function using (const)
-open import Substrate.Algebra.F2 using (𝟘)
+open import Substrate.Algebra.F2.F2
 open import Substrate.Algebra.F2.Vector using (Vector)
 open import Substrate.Algebra.F2.SymBilinForm.BilinForm using (BilinForm)
 open import Substrate.Algebra.F2.SymBilinForm.BilinearFormOf using (bilinear-form-of)

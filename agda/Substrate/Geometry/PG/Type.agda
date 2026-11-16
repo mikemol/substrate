@@ -12,12 +12,12 @@
 
 module Substrate.Geometry.PG.Type where
 
-open import Substrate.Foundation.Nat using (ℕ; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Product using (Σ)
-open import Substrate.Foundation.Eq using (_≡_)
-open import Substrate.Foundation.Negation using (¬_)
+open import Substrate.Foundation.Negation.Not
 
 open import Substrate.Algebra.F2.Vector
+open import Substrate.Foundation.Eq
 
 PG : ℕ → Set
 PG n = Σ (Vector (suc n)) (λ v → ¬ (v ≡ 𝟎ⱽ))

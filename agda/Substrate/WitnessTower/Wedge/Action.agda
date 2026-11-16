@@ -38,12 +38,13 @@
 
 module Substrate.WitnessTower.Wedge.Action where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; map)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym)
 
 open import Substrate.WitnessTower.Enumerate using (Perm; insert-at)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
 
 ------------------------------------------------------------------------
 -- 1. The per-rung reconstruction = the inductive action.  At rung n→(n+1)

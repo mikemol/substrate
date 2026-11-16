@@ -32,9 +32,9 @@ module Substrate.WitnessTower.SignEmbedVEven where
 
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using (Vec; tabulate; lookup)
-open import Substrate.Foundation.Vec.Properties using (lookup∘tabulate)
-open import Substrate.Foundation.Bool using (Bool; false; _xor_)
-open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym; cong)
+open import Substrate.Foundation.Vec.Properties.LookupComptabulate
+open import Substrate.Foundation.Bool.Bool
+open import Substrate.Foundation.Bool.Xor
 open import Substrate.WitnessTower.Enumerate using (Perm)
 open import Substrate.WitnessTower.FirstAppearance using (compose)
 open import Substrate.WitnessTower.IsPermutation using (IsPerm)
@@ -45,11 +45,15 @@ open import Substrate.Axes.Punctured using (a→f; f→a; f→a→f; a→f→a)
 open import Substrate.Groups.Symmetric.Permutation Axis
 open import Substrate.Groups.Symmetric.Permutation.Compose Axis using (_·_)
 open import Substrate.Groups.V4-Embedding using (embed)
-open import Substrate.Groups.V4.Bijection using (V₄; e; α; β; γ)
+open import Substrate.Groups.V4.Bijection.V4
 
 -- transport S4.Permutation → Perm 4.
 open import Substrate.Axes.Punctured using (a→f-inj; f→a→f)
-open import Substrate.Foundation.Bool using (true)
+open import Substrate.Foundation.Bool.Bool
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Cong
 perm4 : Permutation → Perm 4
 perm4 π = tabulate (λ i → a→f (apply π (f→a i)))
 

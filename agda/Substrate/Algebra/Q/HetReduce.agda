@@ -25,20 +25,22 @@
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.Algebra.Q.HetReduce where
+open import Substrate.Algebra.Z.Mul
 
-open import Substrate.Foundation.Nat using (ℕ; suc)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym)
-open import Substrate.Algebra.Z using (ℤ; +_)
-open import Substrate.Algebra.Z.Arithmetic using (_*ℤ_)
-open import Substrate.Algebra.Q using (ℚ; mkℚ; num; den-1; denominator)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Algebra.Z.Int
+
+open import Substrate.Algebra.Q.Denominator
+open import Substrate.Algebra.Q.Rat
 open import Substrate.Algebra.Q.Equiv using (_≈ℚ_)
 open import Substrate.Algebra.Q.Reduce using (reduce)
-open import Substrate.Algebra.Q.Reduction using (is-reduced; gcd-of-ℚ)
-open import Substrate.Algebra.Q.Properties.Reduce using (≈-reduce)
+open import Substrate.Algebra.Q.Properties.Reduce.ApproxReduce
 -- HetBasis is imported UNRESTRICTED: it re-exports `HetQ` publicly and the
 -- top-level `_⊗ℚ_` / `_≈Hℚ_` / `≈ℚ-is-cross` come from an `open CrossEq …`
 -- (a parametrized submodule that cannot appear in a `using` list).
 open import Substrate.Algebra.Q.HetBasis
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
 -- `_≈Hℚ_` is a NON-public renamed-open inside HetBasis (not re-exported), so
 -- re-create it here from the exported CrossEq + _⊗ℚ_.
 open CrossEq _⊗ℚ_ _≡_ refl sym renaming (_≈H_ to _≈Hℚ_)

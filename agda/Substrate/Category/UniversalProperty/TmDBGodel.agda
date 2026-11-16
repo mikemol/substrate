@@ -2,13 +2,13 @@
 -- Substrate.Category.UniversalProperty.TmDBGodel
 --
 -- ⟡odecode-B-godel (Phase B of ⟡ta-upterm-O-decode): the OBJECT-SYNTAX
--- Gödel codec — the DEFINITIONS (proof-free; the round-trip proofs + the
+-- Gödel codec — the DEFINITIONS (proof-free; the round-trip proofs ℕ+ the
 -- split-Canonical apex live in the .Properties sibling, per the def/proof
 -- separation policy so this datatype-exporting module's closure stays lean).
 --
 -- The object universe O (ObjectUniverse.agda) is the witness tower; its rungs
 -- carry OBJECT CODES. This module builds the code carrier: `TmDB` — de-Bruijn
--- combinator terms (SKI + `var : ℕ → TmDB`, where var IS the de-Bruijn
+-- combinator terms (SKI ℕ+ `var : ℕ → TmDB`, where var IS the de-Bruijn
 -- rung-to-rung reference) — plus the codec:
 --   * godel : TmDB → List ℕ    — constructor-tagged preorder serialize (the section)
 --   * ungodel : List ℕ → TmDB  — the fuel-bounded well-founded parser (the retraction)
@@ -22,13 +22,16 @@
 
 module Substrate.Category.UniversalProperty.TmDBGodel where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
 open import Substrate.Foundation.List using (List; []; _∷_; _++_)
 open import Substrate.Foundation.List.Length using (length)
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
+open import Substrate.Algebra.F2.AES.KAT.Round1
+open import Substrate.Algebra.F2.AES.KAT.Round2
 
 ------------------------------------------------------------------------
--- 1. The de-Bruijn combinator terms: SKI + var (var IS the de-Bruijn ref).
+-- 1. The de-Bruijn combinator terms: SKI ℕ+ var (var IS the de-Bruijn ref).
 ------------------------------------------------------------------------
 
 data TmDB : Set where
@@ -41,7 +44,7 @@ size (var _)   = suc zero
 size S         = suc zero
 size K         = suc zero
 size I         = suc zero
-size (app f x) = suc (size f + size x)
+size (app f x) = suc (size f ℕ+ size x)
 
 ------------------------------------------------------------------------
 -- 2. godel: constructor-tagged preorder serialization to List ℕ (the section).

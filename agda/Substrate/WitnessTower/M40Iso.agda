@@ -20,23 +20,26 @@
 module Substrate.WitnessTower.M40Iso where
 
 import Substrate.Groups.V4.Operations as V4
-open import Substrate.Groups.V4.Bijection using (V₄; e; α; β; γ)
-open import Substrate.Groups.V4.Operations using (_·_)
+open import Substrate.Groups.V4.Bijection.V4
+open import Substrate.Groups.V4.Operations using (_·₄_)
 open import Substrate.Groups.V4.Axioms.Assoc using (·-assoc)
 open import Substrate.Groups.V4.Axioms.EpsilonLeft using (ε-left)
 open import Substrate.Groups.V4.Axioms.EpsilonIdentity using (ε-identity)
 open import Substrate.Groups.V4.Axioms.InvLeft using (inv-left)
 open import Substrate.Groups.Actions.S3-on-V4.Generators.Rotate using (rotate)
 open import Substrate.Groups.Actions.S3-on-V4.Generators.RotateCubeId using (rotate³-id)
-open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym; cong)
 open import Substrate.Foundation.Product using (proj₂)
 open import Substrate.WitnessTower.M40Closure
   using (Chir; even; odd; _*c_; Z3; z0; z1; z2; _+₃_; σ; A4Z2; mk; compose; a4z2-≡)
 open A4Z2
 import Substrate.WitnessTower.M40Action as MA
 open MA using (cinv; cinv-hom)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Cong
 
-ε-right : (x : V₄) → (x · e) ≡ x
+ε-right : (x : V₄) → (x ·₄ e) ≡ x
 ε-right = proj₂ ε-identity
 
 ------------------------------------------------------------------------
@@ -71,7 +74,7 @@ outer : (s : Chir) (m : V₄) (j : Z3) → compose (sgn-gen s) (mk even m j) ≡
 outer even m j = a4z2-≡ refl (ε-left m) refl
 outer odd  m j = a4z2-≡ refl (ε-left m) refl
 
--- every (s,m,j) reconstructed as chirality · translation · cycle-power.
+-- every (s,m,j) reconstructed as chirality ·₄ translation ·₄ cycle-power.
 reconstruct : (s : Chir) (m : V₄) (j : Z3) →
               compose (sgn-gen s) (compose (gT m) (gZpow j)) ≡ mk s m j
 reconstruct s m j = trans (cong (compose (sgn-gen s)) (inner m j)) (outer s m j)
@@ -113,21 +116,21 @@ vcc-act : (s : Chir) (m : V₄) (j : Z3) (k : V₄) → vcc (act (mk s m j) F₀
 vcc-act even m j k = refl
 vcc-act odd  m j k = refl
 
-vcv-act : (s : Chir) (m : V₄) (j : Z3) (k : V₄) → vcv (act (mk s m j) F₀ k) ≡ cinv j (k · m)
+vcv-act : (s : Chir) (m : V₄) (j : Z3) (k : V₄) → vcv (act (mk s m j) F₀ k) ≡ cinv j (k ·₄ m)
 vcv-act even m j k = refl
 vcv-act odd  m j k = refl
 
 -- V₄ right cancellation (group; every element self-inverse: c·c ≡ e).
-cancelʳ : (a b c : V₄) → a · c ≡ b · c → a ≡ b
+cancelʳ : (a b c : V₄) → a ·₄ c ≡ b ·₄ c → a ≡ b
 cancelʳ a b c eq =
   trans (sym (ε-right a))
-  (trans (cong (a ·_) (sym csq))
+  (trans (cong (a ·₄_) (sym csq))
   (trans (sym (·-assoc a c c))
-  (trans (cong (_· c) eq)
+  (trans (cong (_·₄ c) eq)
   (trans (·-assoc b c c)
-  (trans (cong (b ·_) csq)
+  (trans (cong (b ·₄_) csq)
          (ε-right b))))))
-  where csq : c · c ≡ e
+  where csq : c ·₄ c ≡ e
         csq = inv-left c
 
 -- σ and c⁻ are mutual inverses the OTHER way too (σ j (c⁻ʲ a) ≡ a).
@@ -180,13 +183,13 @@ act-faithful g h H = a4z2-≡ s-eq m-eq j-eq
     eqα : cinv jg α ≡ cinv jh α
     eqα = cancelʳ (cinv jg α) (cinv jh α) (cinv jg mg) step
       where
-        step : cinv jg α · cinv jg mg ≡ cinv jh α · cinv jg mg
+        step : cinv jg α ·₄ cinv jg mg ≡ cinv jh α ·₄ cinv jg mg
         step = trans (sym (cinv-hom jg α mg))
                (trans (sym (vcv-act sg mg jg α))
                (trans (cong vcv (H α))
                (trans (vcv-act sh mh jh α)
                (trans (cinv-hom jh α mh)
-                      (cong (cinv jh α ·_) (sym P))))))
+                      (cong (cinv jh α ·₄_) (sym P))))))
 
     j-eq : jg ≡ jh
     j-eq = trans (sym (readJ-cinv jg)) (trans (cong readJ eqα) (readJ-cinv jh))

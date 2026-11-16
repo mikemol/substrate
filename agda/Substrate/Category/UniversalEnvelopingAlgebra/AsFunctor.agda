@@ -33,7 +33,7 @@
 
 open import Substrate.Foundation.Level using (Level)
 
-open import Substrate.Category.CategoryOf using (CategoryOf)
+open import Substrate.Category.CategoryOf.CategoryOf
 open import Substrate.Category.Functor using (Functor)
 
 module Substrate.Category.UniversalEnvelopingAlgebra.AsFunctor
@@ -51,7 +51,6 @@ module Substrate.Category.UniversalEnvelopingAlgebra.AsFunctor
 
 open import Substrate.Category.Functor.AsNamed
   Lie Assoc U public
-  renaming (named-Functor to U-Functor)
 ------------------------------------------------------------------------
 -- 2. Capstone — U : Lie → Assoc as a substrate Functor.
 --

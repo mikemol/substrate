@@ -9,14 +9,14 @@
 --
 -- Parameters (the dossier's §4 numbers, here as the actual build):
 --   length 16   (Vector 16 — the 16 evaluation points / incident bits)
---   dimension 5 (5 generators: the constant + 4 coordinate projections)
+--   dimension 5 (5 generators: the constant +F 4 coordinate projections)
 --   ⟹ 2⁵ = 32 codewords ("32" is the COUNT, not a bit-length — the
 --      dossier's explicit warning against re-reading it as RM(1,5)).
 --
 -- Message split (dossier §4): the 5 message bits = (2-bit V₄) ⊕ (3-bit
 -- S₃ frame). The V₄ factor is a true GF(2)² SUBSPACE (XOR-closed); the
 -- S₃ factor is 3 bits, 6 of 8 valid; 4 × 6 = 24 = |S₄| valid actions,
--- 8-codeword complement. What this file BUILDS is the code itself + the
+-- 8-codeword complement. What this file BUILDS is the code itself +F the
 -- generator structure; the count/length are definitional in the types.
 -- (Distance-8 over all 32×32 pairs is a larger computation; not done
 -- here — see the status note at the end.)
@@ -29,11 +29,11 @@
 
 module Substrate.WitnessTower.Codeword where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using ([]; _∷_)
 
-open import Substrate.Algebra.F2
+open import Substrate.Algebra.F2.F2
 open import Substrate.Algebra.F2.Vector
 open import Substrate.Algebra.F2.Linear.FromImages
 open import Substrate.Algebra.F2.Code

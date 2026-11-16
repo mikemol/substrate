@@ -35,12 +35,15 @@
 
 module Substrate.WitnessTower.Wedge.Factoradic where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym)
-open import Substrate.Foundation.Nat.Properties.Add using (+-identityʳ)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Times
+open import Substrate.Foundation.Nat.Properties.Add.PlusIdentityR
 
-open import Substrate.Algebra.Wedge using (DivStr; ℕ-div; recon) renaming (Wedge to Wedge⟦478f66a6⟧)
+open import Substrate.Algebra.Wedge using (DivStr; ℕ-div; recon) renaming (Wedge to Wedge)
 open import Substrate.WitnessTower.Enumerate using (factorial)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Algebra.Wedge
 
 ------------------------------------------------------------------------
 -- 1. The rung-step wedge.  (suc n)! wedges against n! with quotient
@@ -51,11 +54,11 @@ open import Substrate.WitnessTower.Enumerate using (factorial)
 -- so the goal (suc n)! ≡ (suc n) * (n!) + 0 holds because
 -- factorial (suc n) is DEFINITIONALLY (suc n) * factorial n, and +0 is
 -- killed by +-identityʳ.
-tower-wedge : (n : ℕ) → Wedge⟦478f66a6⟧ ℕ-div (factorial (suc n)) (factorial n)
+tower-wedge : (n : ℕ) → Wedge ℕ-div (factorial (suc n)) (factorial n)
 tower-wedge n = record
   { quot     = suc n
   ; rem      = 0
-  ; wedge-eq = sym (+-identityʳ (suc n * factorial n))
+  ; wedge-eq = sym (+ℕ-identityʳ (suc n * factorial n))
   }
 
 ------------------------------------------------------------------------
@@ -64,7 +67,7 @@ tower-wedge n = record
 
 -- the wedge's quotient at rung n→(n+1).
 tower-quotient : (n : ℕ) → ℕ
-tower-quotient n = Wedge⟦478f66a6⟧.quot (tower-wedge n)
+tower-quotient n = Wedge.quot (tower-wedge n)
 
 -- it is the coset count [S_{n+1} : S_n] = (suc n) — the arity of the
 -- inductive insertion action (Enumerate.insert-at ranges over Fin (suc n)).
@@ -73,7 +76,7 @@ tower-quotient-is-suc n = refl
 
 -- the wedge is EXACT: remainder 0, the prior rung tiles the next with no
 -- slop (the witnessing move is a clean cover, no orphan permutations).
-tower-rem-zero : (n : ℕ) → Wedge⟦478f66a6⟧.rem (tower-wedge n) ≡ 0
+tower-rem-zero : (n : ℕ) → Wedge.rem (tower-wedge n) ≡ 0
 tower-rem-zero n = refl
 
 ------------------------------------------------------------------------
@@ -118,7 +121,7 @@ radix-3 = refl
 -- recon evaluated on the wedge data recovers (suc n)!.
 tower-recon-correct :
   (n : ℕ) → recon ℕ-div (tower-quotient n) (factorial n) 0 ≡ factorial (suc n)
-tower-recon-correct n = +-identityʳ (suc n * factorial n)
+tower-recon-correct n = +ℕ-identityʳ (suc n * factorial n)
 
 -- spot-checks at the worked rungs (S₁..S₄ counts).
 recon-3 : recon ℕ-div (tower-quotient 2) (factorial 2) 0 ≡ 6

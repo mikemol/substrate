@@ -11,8 +11,9 @@
 
 module Substrate.Category.PhaseLockedLoop.AcquisitionStrategies where
 
-open import Substrate.Foundation.Nat using (ℕ; _*_)
-open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Times
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- Strategy A: 3-cycle capture.

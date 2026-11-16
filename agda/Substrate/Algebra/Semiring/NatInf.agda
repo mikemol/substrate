@@ -9,7 +9,7 @@
 -- the tropical semiring computes shortest-path / minimum-cost
 -- placement, with
 --   *  ADD = min          (ε = ∞   : the most-expensive / unreachable)
---   *  MUL = +            (ε = fin 0: free composition)
+--   *  MUL = ℕ+            (ε = fin 0: free composition)
 --
 -- The carrier needs the ∞ point because min has no identity inside ℕ
 -- alone — ∞ supplies it.
@@ -25,8 +25,10 @@
 
 module Substrate.Algebra.Semiring.NatInf where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; cong)
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- 1. The ∞-extended carrier.
@@ -51,8 +53,8 @@ minℕ-assoc (suc _) zero    _       = refl
 minℕ-assoc (suc _) (suc _) zero    = refl
 minℕ-assoc (suc a) (suc b) (suc c) = cong suc (minℕ-assoc a b c)
 
--- Addition distributes over min on ℕ:  a + min b c ≡ min (a+b) (a+c).
-+-distribˡ-minℕ : (a b c : ℕ) → a + minℕ b c ≡ minℕ (a + b) (a + c)
+-- Addition distributes over min on ℕ:  a ℕ+ min b c ≡ min (a+b) (a+c).
++-distribˡ-minℕ : (a b c : ℕ) → a ℕ+ minℕ b c ≡ minℕ (a ℕ+ b) (a ℕ+ c)
 +-distribˡ-minℕ zero    _ _ = refl
 +-distribˡ-minℕ (suc a) b c = cong suc (+-distribˡ-minℕ a b c)
 
@@ -86,10 +88,10 @@ fin a ⊓ fin b = fin (minℕ a b)
 _⊕_ : ℕ∞ → ℕ∞ → ℕ∞
 ∞     ⊕ _     = ∞
 fin _ ⊕ ∞     = ∞
-fin a ⊕ fin b = fin (a + b)
+fin a ⊕ fin b = fin (a ℕ+ b)
 
 ⊕-identityˡ : (x : ℕ∞) → fin zero ⊕ x ≡ x
-⊕-identityˡ (fin _) = refl   -- fin (0 + b) = fin b  (0 + b is definitional)
+⊕-identityˡ (fin _) = refl   -- fin (0 ℕ+ b) = fin b  (0 ℕ+ b is definitional)
 ⊕-identityˡ ∞       = refl
 
 ------------------------------------------------------------------------

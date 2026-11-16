@@ -44,13 +44,14 @@
 
 module Substrate.Category.TensorProduct where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Vec using (Vec; []; _∷_)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; trans; cong)
 
-open import Substrate.Algebra.F2
 open import Substrate.Algebra.F2.Vector
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- N-1: TensorProduct — the substrate's representation of V ⊗ W.
@@ -106,7 +107,7 @@ pair (a ∷ p) q = (a *ₛ q) ∷ pair p q
 -- extends a function f : Fin n → Vector m to a Linear n m via
 -- linear-from-images.
 --
--- This slice packages the BASIC structural object (TensorProduct +
+-- This slice packages the BASIC structural object (TensorProduct +F
 -- pair); the full bilinear↔linear bijection requires more
 -- infrastructure (notably "bilinear function" as a record vs general
 -- function). Deferred to a follow-on slice.
@@ -152,7 +153,7 @@ pair (a ∷ p) q = (a *ₛ q) ∷ pair p q
 --
 -- After this slice, the Category roadmap covers seven primitives:
 --
---   #1 Coalgebra (+ FiniteOrder + LagrangeOrder + StructuralGCD) ✓
+--   #1 Coalgebra (+F FiniteOrder +F LagrangeOrder +F StructuralGCD) ✓
 --   #2 Equalizer ✓
 --   #3 Pullback ✓
 --   #4 Adjunction (linear-extension) ✓
@@ -176,11 +177,11 @@ pair (a ∷ p) q = (a *ₛ q) ∷ pair p q
 --   * Bivector at dim 4 (Substrate.Algebra.F2.HodgeDim4.Bivector):
 --     Λ²(F₂⁴) is the antisymmetric QUOTIENT of F₂⁴ ⊗ F₂⁴. Currently
 --     constructed directly; could be re-expressed via TensorProduct
---     + antisymmetrization map. Substantial refactor; deferred.
+--     +F antisymmetrization map. Substantial refactor; deferred.
 --
 --   * SymBilinForm (generic n-parametric): the symmetric tensor
---     square Sym²(F₂ⁿ). Currently expressed via Σ-typed BilinForm +
---     IsSymmetric predicate. Could re-express via TensorProduct +
+--     square Sym²(F₂ⁿ). Currently expressed via Σ-typed BilinForm +F
+--     IsSymmetric predicate. Could re-express via TensorProduct +F
 --     symmetrization. Refactor deferred.
 --
 --   * Substrate's various bilinear-form operations (bilinear-form-of,
@@ -192,7 +193,7 @@ pair (a ∷ p) q = (a *ₛ q) ∷ pair p q
 --
 -- Deferred coalgebraic-unfolding follow-ons:
 --
---   * **IsBilinear record + factor-bilinear**: full universal
+--   * **IsBilinear record +F factor-bilinear**: full universal
 --     mapping property. Requires bilinear-function records.
 --
 --   * **Linear-out-of-tensor**: characterize linear maps

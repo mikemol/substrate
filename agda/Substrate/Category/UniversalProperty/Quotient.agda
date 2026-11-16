@@ -39,15 +39,21 @@
 
 module Substrate.Category.UniversalProperty.Quotient where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Foundation.Unit using (⊤; tt)
 open import Substrate.Foundation.Product using (_,_)
 
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Algebra.Nat.Mod using (_mod-suc_)
-open import Substrate.Algebra.Quotient using (Quotient; ≈-refl; ≈-sym; ≈-trans)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Nat.ModSuc
+open import Substrate.Algebra.Nat.Mod.ModSucBound
+open import Substrate.Algebra.Nat.Mod.ModSucId
+open import Substrate.Algebra.Nat.Mod.ModSucPeriodic
+open import Substrate.Algebra.Nat.Mod.ModSucSuc
+open import Substrate.Algebra.Nat.Mod.SucModSucLt
+open import Substrate.Algebra.Nat.Mod.SucModSucSelf
+open import Substrate.Algebra.Quotient.Quotient
 open import Substrate.Category.UniversalProperty using (UPArrowP; mkUP)
 open import Substrate.Category.UniversalProperty.Vacuity using (Contentful)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. Respecting maps.

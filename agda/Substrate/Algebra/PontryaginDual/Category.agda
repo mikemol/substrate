@@ -7,10 +7,11 @@
 
 module Substrate.Algebra.PontryaginDual.Category where
 
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Eq using (_≡_; refl; cong)
+open import Substrate.Foundation.Nat.Nat
 
 open import Substrate.Algebra.PontryaginDual.Term
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
 
 ++ᵪ-identityˡ : {n : ℕ} (t : CharTerm n) → ([] ++ᵪ t) ≡ t
 ++ᵪ-identityˡ _ = refl

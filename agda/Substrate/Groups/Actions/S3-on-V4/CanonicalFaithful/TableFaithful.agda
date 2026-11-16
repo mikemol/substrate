@@ -8,10 +8,10 @@ module Substrate.Groups.Actions.S3-on-V4.CanonicalFaithful.TableFaithful where
 import Substrate.Groups.Coxeter.Cyclic.Base 1 as Z₂-Base
 import Substrate.Groups.Coxeter.Cyclic.Base 2 as Z₃-Base
 open import Substrate.Groups.Coxeter.Word using (Word)
-open import Substrate.Foundation.Eq using (_≡_)
 open import Substrate.Foundation.Product using (_×_)
-open import Substrate.Groups.V4.Bijection using (V₄)
+open import Substrate.Groups.V4.Bijection.V4
 open import Substrate.Groups.Actions.S3-on-V4.Dispatch.ActOnCanonical using (act-on-canonical)
+open import Substrate.Foundation.Eq
 
 
 ------------------------------------------------------------------------

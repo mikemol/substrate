@@ -9,7 +9,11 @@
 -- normalization), instantiated cheaply below. The 8 GF products are now `xtime`+XOR of
 -- constants (Mul02/Mul03 via Scale) — NO const×const normalization remains anywhere.
 module Substrate.Algebra.F2.MixColumns.Proof where
-open import Substrate.Algebra.F2.GF256.MulLaws
+open import Substrate.Algebra.F2.GF256.MulLaws.GmulAssoc
+open import Substrate.Algebra.F2.GF256.MulLaws.GmulIdentityL
+open import Substrate.Algebra.F2.GF256.MulLaws.GmulIdentityR
+open import Substrate.Algebra.F2.GF256.MulLaws.GmulZeroL
+open import Substrate.Algebra.F2.GF256.MulLaws.GmulZeroR
 open import Substrate.Algebra.F2.MixColumns.Base
 open import Substrate.Algebra.F2.MixColumns.Mul02  -- pe2 pb2 pd2 p92 (= xtime of inv-coeffs)
 open import Substrate.Algebra.F2.MixColumns.Mul03  -- pe3 pb3 pd3 p93 (= xtime ⊕ id)

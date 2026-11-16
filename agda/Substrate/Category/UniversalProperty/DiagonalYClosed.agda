@@ -28,22 +28,23 @@
 
 module Substrate.Category.UniversalProperty.DiagonalYClosed where
 
-open import Substrate.Algebra.R.Trace.SKIShedDuality using (S; K; I; _∙_) renaming (Tm to Tm⟦533ef80d⟧)
+open import Substrate.Algebra.R.Trace.SKIShedDuality.Tm
 open import Substrate.Algebra.R.Trace.SKIReductionToList using (β-I; β-K; β-S; cong-l; cong-r)
 open import Substrate.Foundation.RewriteConfluence
   (Substrate.Algebra.R.Trace.SKIReductionToList._⇒_) using (_⇒*_; done; _◅_; _++*_)
 open import Substrate.Category.UniversalProperty.DiagonalLawvereSKI
   using (ω-term; ω-step; ω-left; ω-right)
+open import Substrate.Algebra.R.Trace.SKIShedDuality.Tm
 
 ------------------------------------------------------------------------
 -- ⓪ Congruence lifts of the multistep closure (the standard helpers): reduce a
 --    subterm on the LEFT / RIGHT of an application by lifting each step.
 ------------------------------------------------------------------------
-under-l : {a a' : Tm⟦533ef80d⟧} (g : Tm⟦533ef80d⟧) → (a ⇒* a') → ((a ∙ g) ⇒* (a' ∙ g))
+under-l : {a a' : Tm} (g : Tm) → (a ⇒* a') → ((a ∙ g) ⇒* (a' ∙ g))
 under-l g done      = done
 under-l g (r ◅ rs) = cong-l g r ◅ under-l g rs
 
-under-r : (f : Tm⟦533ef80d⟧) {a a' : Tm⟦533ef80d⟧} → (a ⇒* a') → ((f ∙ a) ⇒* (f ∙ a'))
+under-r : (f : Tm) {a a' : Tm} → (a ⇒* a') → ((f ∙ a) ⇒* (f ∙ a'))
 under-r f done      = done
 under-r f (r ◅ rs) = cong-r f r ◅ under-r f rs
 
@@ -53,19 +54,19 @@ under-r f (r ◅ rs) = cong-r f r ◅ under-r f rs
 --    Its spec (proved below): A ∙ x ∙ f ⇒* f ∙ ((ω ∙ x) ∙ f), and ω ∙ x ⇒* x ∙ x,
 --    so A ∙ x ∙ f ⇒* f ∙ (x ∙ x ∙ f) — the Turing recursor.
 ------------------------------------------------------------------------
-A : Tm⟦533ef80d⟧
+A : Tm
 A = (S ∙ (K ∙ (S ∙ I)))
   ∙ ((S ∙ ((S ∙ (K ∙ S)) ∙ ((S ∙ (K ∙ K)) ∙ ((S ∙ (K ∙ ω-term)) ∙ I)))) ∙ (K ∙ I))
 
 -- the intermediate normal form of A ∙ x (before applying f):  λf. f (ω x f).
-inner : Tm⟦533ef80d⟧ → Tm⟦533ef80d⟧
+inner : Tm → Tm
 inner x = (S ∙ I) ∙ ((S ∙ (K ∙ (ω-term ∙ x))) ∙ I)
 
 ------------------------------------------------------------------------
 -- ② A ∙ x ⇒* inner x — the 11-step outer bracket-abstraction unfold (all
 --    reductions at the head of A ∙ x; each K/S contracts one constant).
 ------------------------------------------------------------------------
-Ax-reduces : (x : Tm⟦533ef80d⟧) → (A ∙ x) ⇒* (inner x)
+Ax-reduces : (x : Tm) → (A ∙ x) ⇒* (inner x)
 Ax-reduces x =
   -- A x = S P Q x ⇒ (P x)(Q x)
   β-S (K ∙ (S ∙ I))
@@ -106,7 +107,7 @@ Ax-reduces x =
 ------------------------------------------------------------------------
 -- ③ inner x ∙ f ⇒* f ∙ ((ω x) f) — the 5-step inner unfold.
 ------------------------------------------------------------------------
-inner-applies : (x f : Tm⟦533ef80d⟧) → ((inner x) ∙ f) ⇒* (f ∙ ((ω-term ∙ x) ∙ f))
+inner-applies : (x f : Tm) → ((inner x) ∙ f) ⇒* (f ∙ ((ω-term ∙ x) ∙ f))
 inner-applies x f =
   -- (S I M) f ⇒ (I f)(M f)
   β-S I ((S ∙ (K ∙ (ω-term ∙ x))) ∙ I) f
@@ -123,13 +124,13 @@ inner-applies x f =
 ------------------------------------------------------------------------
 -- ④ THE RECURSOR SPEC: A ∙ x ∙ f ⇒* f ∙ ((ω ∙ x) ∙ f).
 ------------------------------------------------------------------------
-A-spec : (x f : Tm⟦533ef80d⟧) → ((A ∙ x) ∙ f) ⇒* (f ∙ ((ω-term ∙ x) ∙ f))
+A-spec : (x f : Tm) → ((A ∙ x) ∙ f) ⇒* (f ∙ ((ω-term ∙ x) ∙ f))
 A-spec x f = under-l f (Ax-reduces x) ++* inner-applies x f
 
 ------------------------------------------------------------------------
 -- ⑤ THE CLOSED COMBINATOR Θ = A ∙ A, and its fixed-point law.
 ------------------------------------------------------------------------
-Θ : Tm⟦533ef80d⟧
+Θ : Tm
 Θ = A ∙ A
 
 -- ω ∙ A ⇒* A ∙ A = Θ, via the 3 reused ω-steps at x = A.
@@ -139,7 +140,7 @@ A-spec x f = under-l f (Ax-reduces x) ++* inner-applies x f
 -- THE FIXED-POINT THEOREM: Θ ∙ f ⇒* f ∙ (Θ ∙ f), for every f, one-directional.
 --   Θ ∙ f = A ∙ A ∙ f ⇒* f ∙ ((ω ∙ A) ∙ f)     [A-spec A f]
 --                    ⇒* f ∙ ((A ∙ A) ∙ f) = f ∙ (Θ ∙ f)  [ω-A, lifted]
-Θ-fix : (f : Tm⟦533ef80d⟧) → (Θ ∙ f) ⇒* (f ∙ (Θ ∙ f))
+Θ-fix : (f : Tm) → (Θ ∙ f) ⇒* (f ∙ (Θ ∙ f))
 Θ-fix f = A-spec A f ++* under-r f (under-l f ω-A)
 
 ------------------------------------------------------------------------

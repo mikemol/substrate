@@ -12,16 +12,14 @@
 
 module Substrate.Category.FreeLinearizationR.SmokeTests where
 
-open import Substrate.Foundation.Nat using (ℕ)
 open import Substrate.Foundation.Product using (_×_; _,_)
-open import Substrate.Foundation.Eq using (_≡_; refl)
 
 open import Substrate.Category.LinearAlgebra using (LinearAlgebra)
-open import Substrate.Category.FreeLinearizationR using (FreeLinearizationR)
 open import Substrate.Algebra.F2.AsLinearAlgebra
   using (F₂-LinearAlgebra; F₂-FreeLinearBuilder)
 open import Substrate.Algebra.Q.AsLinearAlgebra
   using (ℚ-LinearAlgebra)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. F₂ side.

@@ -15,14 +15,22 @@
 
 module Substrate.Algebra.Wedge.Contextuality.Cochain where
 
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂)
-open import Substrate.Algebra.F2
-  using (F₂; 𝟘; _+_; +-identityˡ; +-identityʳ; +-comm; +-assoc; +-self-inverse)
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.PlusAssoc
+open import Substrate.Algebra.F2.PlusComm
+open import Substrate.Algebra.F2.PlusF
+open import Substrate.Algebra.F2.PlusIdentityL
+open import Substrate.Algebra.F2.PlusIdentityR
+open import Substrate.Algebra.F2.PlusSelfInverse
 open import Substrate.Algebra.F2.Vector
   using (Vector; 𝟎ⱽ; _+ⱽ_; +ⱽ-identityˡ; +ⱽ-identityʳ; +ⱽ-comm; +ⱽ-assoc; +ⱽ-self-inverse)
 open import Substrate.Algebra.Wedge.Contextuality
   using (Constraint; con; lhs; rhs; _⊕ᶜ_; satisfies; inner-zero)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
 
 ------------------------------------------------------------------------
 -- 1. The zero cochain.

@@ -34,11 +34,9 @@
 module Substrate.ShadowArchitecture.Symmetry where
 open import Substrate.Algebra.F2.FanoPlane using (Point; FanoLine)
 
-open import Substrate.Foundation.Nat using (ℕ; _*_)
-open import Substrate.WitnessTower.FirstAppearance using (_≡ᵇ_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Times
 open import Substrate.Foundation.Unit using (⊤; tt)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl)
 
 open import Substrate.ShadowArchitecture.Charter
   using (Cell; cell; op-cell; Realizability; realizable)
@@ -47,12 +45,13 @@ open import Substrate.ShadowArchitecture.Charter
 -- 1. Group orders.
 ------------------------------------------------------------------------
 
-open import Substrate.Foundation.Empty using (⊥)
+open import Substrate.Foundation.Empty.Bot
 open import Substrate.ShadowArchitecture.FanoLabeling
 open import Substrate.ShadowArchitecture.Weight
   using (point-orbit; line-orbit; wt-3)
 open import Substrate.ShadowArchitecture.SelfReference
   using (p₁₁₁-only-wt-3; L₇-only-wt-3)
+open import Substrate.Foundation.Eq
 |Aut-Fano| : ℕ
 |Aut-Fano| = 168
 

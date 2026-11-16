@@ -14,14 +14,23 @@
 
 module Substrate.Algebra.Wedge.NilpotentDegreeKGeneral where
 
-open import Substrate.Foundation.Eq  using (_≡_; refl; cong; sym; trans)
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _≤_; _<_; z≤n; s≤s; s≤s-injective; _<?_)
+open import Substrate.Foundation.Nat.Le
+open import Substrate.Foundation.Nat.Lt
+open import Substrate.Foundation.Nat.Lt2
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
 open import Substrate.Foundation.Product using (Σ; _,_)
-open import Substrate.Foundation.Negation using (Dec; yes; no; ¬_)
-open import Substrate.Foundation.Empty using (⊥; ⊥-elim)
+open import Substrate.Foundation.Negation.Dec
+open import Substrate.Foundation.Negation.Not
+open import Substrate.Foundation.Empty.Bot
+open import Substrate.Foundation.Empty.BotElim
 open import Substrate.Algebra.Wedge using (ℕ-div)
 open import Substrate.Algebra.Wedge.Mul using (MulDivStr; pow; Nilpotent)
 open import Substrate.Algebra.Wedge.NilpotentDegreeK using (addCap; Rk; gen)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
 
 ------------------------------------------------------------------------
 -- Small order lemmas (not in Foundation.Nat) — derived inline.
@@ -45,13 +54,13 @@ open import Substrate.Algebra.Wedge.NilpotentDegreeK using (addCap; Rk; gen)
 -- The two addCap branch lemmas: below the cap it KEEPS the sum; at/over it
 -- COLLAPSES to 0. Proved by matching the same `with (x+y) <? suc k` as addCap.
 ------------------------------------------------------------------------
-addCap-keep : ∀ k x y → (x + y) < suc k → addCap k x y ≡ x + y
-addCap-keep k x y lt with (x + y) <? suc k
+addCap-keep : ∀ k x y → (x ℕ+ y) < suc k → addCap k x y ≡ x ℕ+ y
+addCap-keep k x y lt with (x ℕ+ y) <? suc k
 ... | yes _  = refl
 ... | no ¬p  = ⊥-elim (¬p lt)
 
-addCap-collapse : ∀ k x y → ¬ ((x + y) < suc k) → addCap k x y ≡ 0
-addCap-collapse k x y ¬lt with (x + y) <? suc k
+addCap-collapse : ∀ k x y → ¬ ((x ℕ+ y) < suc k) → addCap k x y ≡ 0
+addCap-collapse k x y ¬lt with (x ℕ+ y) <? suc k
 ... | yes p  = ⊥-elim (¬lt p)
 ... | no  _  = refl
 
@@ -59,7 +68,7 @@ addCap-collapse k x y ¬lt with (x + y) <? suc k
 -- CLAIM A (below the cap): pow (Rk (suc k)) gen n ≡ suc n, for n ≤ k.
 -- Induction on n. Base: pow gen 0 = gen = 1 = suc 0. Step: pow gen (suc m) =
 -- addCap (suc k) 1 (pow gen m) = addCap (suc k) 1 (suc m) [IH] = suc (suc m),
--- since 1 + suc m = suc (suc m) < suc (suc k) (from suc m ≤ k, i.e. the step's
+-- since 1 ℕ+ suc m = suc (suc m) < suc (suc k) (from suc m ≤ k, i.e. the step's
 -- hypothesis). The bound suc n ≤ suc k threads the cap-keep condition.
 ------------------------------------------------------------------------
 pow-val : ∀ k n → n ≤ k → pow (Rk (suc k)) gen n ≡ suc n
@@ -69,23 +78,23 @@ pow-val k (suc m) sm≤k =
   trans (cong (addCap (suc k) gen) (pow-val k m (≤-from-suc sm≤k)))
         (addCap-keep (suc k) gen (suc m) lt)
   where
-    -- gen + suc m = suc (suc m); need suc(suc m) < suc(suc k) = suc(suc(suc m)) ≤
+    -- gen ℕ+ suc m = suc (suc m); need suc(suc m) < suc(suc k) = suc(suc(suc m)) ≤
     -- suc(suc k) = s≤s (suc(suc m) ≤ suc k) = s≤s (s≤s (suc m ≤ k)) = s≤s (s≤s sm≤k).
-    lt : (gen + suc m) < suc (suc k)
+    lt : (gen ℕ+ suc m) < suc (suc k)
     lt = s≤s (s≤s sm≤k)
 
 ------------------------------------------------------------------------
 -- CLAIM B (at the cap): pow (Rk (suc k)) gen (suc k) ≡ 0. The (suc k)-th power
 -- overflows: pow gen (suc k) = addCap (suc k) 1 (pow gen k) = addCap (suc k) 1
--- (suc k) [Claim A at k] = 0, since 1 + suc k = suc (suc k) is NOT < suc (suc k).
+-- (suc k) [Claim A at k] = 0, since 1 ℕ+ suc k = suc (suc k) is NOT < suc (suc k).
 ------------------------------------------------------------------------
 pow-cap : ∀ k → pow (Rk (suc k)) gen (suc k) ≡ 0
 pow-cap k =
   trans (cong (addCap (suc k) gen) (pow-val k k ≤-refl))
         (addCap-collapse (suc k) gen (suc k) ¬lt)
   where
-    ¬lt : ¬ ((gen + suc k) < suc (suc k))
-    ¬lt lt = <-irrefl lt      -- gen + suc k = suc (suc k); suc(suc k) < suc(suc k) is absurd
+    ¬lt : ¬ ((gen ℕ+ suc k) < suc (suc k))
+    ¬lt lt = <-irrefl lt      -- gen ℕ+ suc k = suc (suc k); suc(suc k) < suc(suc k) is absurd
 
 ------------------------------------------------------------------------
 -- THE THEOREM: gen is nilpotent of degree EXACTLY (suc k) in Rₖ(suc k).

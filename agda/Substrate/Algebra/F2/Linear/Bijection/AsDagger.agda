@@ -15,6 +15,7 @@
 open import Substrate.Foundation.Level using (Level)
 
 open import Substrate.Category.DaggerCategory using (DaggerCategory)
+open import Substrate.Probability.MarkovCategory
 
 module Substrate.Algebra.F2.Linear.Bijection.AsDagger
   {ℓO ℓM : Level}
@@ -23,5 +24,4 @@ module Substrate.Algebra.F2.Linear.Bijection.AsDagger
   where
 
 open import Substrate.Category.DaggerCategory.AsNamed Bij-Dag
-  renaming (named-DaggerCategory to Bijection-AsDagger)
 

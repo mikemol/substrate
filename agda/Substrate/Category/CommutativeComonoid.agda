@@ -13,12 +13,13 @@
 
 module Substrate.Category.CommutativeComonoid where
 
-open import Substrate.Foundation.Level using (Level) renaming (suc to lsuc)
-open import Substrate.Foundation.Eq using (_≡_)
+open import Substrate.Foundation.Level using (Level)
 
 open import Substrate.Category.Comonoid
 
 open import Substrate.Category.CommutativeComonoid.Term
+open import Substrate.Foundation.Eq
+open import Substrate.Algebra.R.Trace.DetValSign
 private
   variable
     ℓ : Level

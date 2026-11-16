@@ -9,7 +9,7 @@
 module Substrate.Foundation.List.Length where
 
 open import Substrate.Foundation.Level using (Level)
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.List using (List; []; _∷_)
 
 private

@@ -9,17 +9,20 @@
 
 module Substrate.Groups.F2Cubed where
 
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; trans; cong; cong₂)
-open import Substrate.Foundation.Bool using (Bool; true; false; _xor_)
-open import Substrate.Foundation.Bool.Properties
-  using (xor-assoc; xor-identityˡ; xor-identityʳ; xor-same)
+open import Substrate.Foundation.Bool.Bool
+open import Substrate.Foundation.Bool.Xor
+open import Substrate.Foundation.Bool.Properties.XorAssoc
+open import Substrate.Foundation.Bool.Properties.XorIdentityL
+open import Substrate.Foundation.Bool.Properties.XorIdentityR
+open import Substrate.Foundation.Bool.Properties.XorSame
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
 
 import Substrate.Algebra.Magma     as SM
 import Substrate.Algebra.Semigroup as SS
 import Substrate.Algebra.Monoid    as SMo
 import Substrate.Algebra.Group     as SG
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong2
 
 ------------------------------------------------------------------------
 -- Carrier.

@@ -6,15 +6,16 @@
 --   sumNum Cᶠ (expanded) side: bridgeR : ⟦ e-R ⟧ ≡ CD.sumNum … Cᶠ   (one +ℤ-identityʳ)
 --   the identity: same : norm e-N ≡ norm e-R = refl              (make-or-break)
 module Substrate.Algebra.Q.JacCubeNorm where
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _∸_)
+open import Substrate.Foundation.Nat.Monus
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using (Vec; []; _∷_)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂)
-open import Substrate.Algebra.Z using (ℤ; +_; 1ℤ)
+open import Substrate.Algebra.Z.Int
+open import Substrate.Algebra.Z.OneInt
 open import Substrate.Algebra.Z.Mul using (_*ℤ_)
 open import Substrate.Algebra.Z.Add using (_+ℤ_)
 open import Substrate.Algebra.Z.Properties.Add using (+ℤ-identityʳ)
-open import Substrate.Algebra.Q using (ℚ; num; den-1; mkℚ)
+open import Substrate.Algebra.Q.Rat
 open import Substrate.Algebra.Q.Equiv using (_≈ℚ_; ≈ℚ-trans; ≈ℚ-sym)
 open import Substrate.Algebra.Q.JacobianEvalNormalize using (evalℚ; normalize-eval; ≡→≈ℚ)
 import Substrate.Algebra.Q.JacobianEvalCDCurried as Cur
@@ -23,6 +24,11 @@ import Substrate.Algebra.Q.JacCube as JC
 open import Substrate.Algebra.Z.MPolyNormalize using (normalize)
 import Substrate.Algebra.Z.JacobianResidue as R
 import Substrate.Algebra.Q.JacobianCollision as C
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
 
 module _ (x y z : ℚ) where
   -- ⟡public-policy: explicit signatures so `suc` disambiguates to ℕ's

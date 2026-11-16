@@ -12,10 +12,11 @@
 
 {-# OPTIONS --safe --without-K #-}
 
-open import Substrate.Foundation.Eq using (_≡_)
 
 open import Substrate.Groups.Coxeter.Word using (_++_; ++-assoc; Word)
 open import Substrate.Groups.FreeCyclic-Coxeter using (Gen; canonical-is-fixed-Free; Canonical-Free; normalize; normalize-canonical; normalize-distrib; ε)
+open import Substrate.Foundation.Eq
+open import Substrate.Groups.Capabilities.xFreeCyclic
 module Substrate.Groups.Zn-x-FreeCyclic
   (Zn-Word        : Set)
   (_Zn-++_        : Zn-Word → Zn-Word → Zn-Word)

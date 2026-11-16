@@ -13,14 +13,16 @@ module Substrate.Algebra.F2.HodgeDim3.MetricGauge.CoxeterRelations.S1SquaredOnV 
 
 open import Substrate.Foundation.Product using (_,_)
 open import Substrate.Foundation.Fin.Cover using (fin-cover)
-open import Substrate.Foundation.Eq  using (_≡_)
 open import Substrate.Algebra.F2.Vector using (Vector)
-open import Substrate.Algebra.F2.Linear using (apply; id-L; _∘L_)
+open import Substrate.Algebra.F2.Linear.CompL
+open import Substrate.Algebra.F2.Linear.IdL
+open import Substrate.Algebra.F2.Linear.Linear
 open import Substrate.Algebra.F2.Linear.Universal using (linear-extensionality)
 open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.Stabiliser using (s₁)
 open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.CoxeterRelations.S1SquaredOnE0 using (s₁²-on-e₀)
 open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.CoxeterRelations.S1SquaredOnE1 using (s₁²-on-e₁)
 open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.CoxeterRelations.S1SquaredOnE2 using (s₁²-on-e₂)
+open import Substrate.Foundation.Eq
 
 s₁²-on-v : (v : Vector 3) → apply (s₁ ∘L s₁) v ≡ apply id-L v
 s₁²-on-v = linear-extensionality (s₁ ∘L s₁) id-L

@@ -4,7 +4,7 @@ module Substrate.Groups.Actions.S3-on-V4.CanonicalFaithful.ActRow where
 
 -- A row's action on V₄ — relational (both words), one definition.
 
-open import Substrate.Groups.V4.Bijection using (V₄)
+open import Substrate.Groups.V4.Bijection.V4
 open import Substrate.Groups.Actions.S3-on-V4.Dispatch.ActOnCanonical using (act-on-canonical)
 open import Substrate.Groups.Actions.S3-on-V4.CanonicalFaithful.Row
 open import Substrate.Groups.Actions.S3-on-V4.CanonicalFaithful.NOf using (n-of)

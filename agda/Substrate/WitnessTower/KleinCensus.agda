@@ -24,14 +24,17 @@
 
 module Substrate.WitnessTower.KleinCensus where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
-open import Substrate.Foundation.Bool using (Bool; _∧_; not)
-open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Bool.And
+open import Substrate.Foundation.Bool.Bool
+open import Substrate.Foundation.Bool.Not
 
 open import Substrate.WitnessTower.Enumerate
   using (Perm; perms; mapL; concatMapL; lengthL)
 open import Substrate.WitnessTower.FirstAppearance
   using (is-involution; compose; _≡ᵇ_; filterL; ⌊_⌋)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. The commuting-distinct-involution-pair predicate on a pair (a,b).
@@ -62,7 +65,7 @@ klein-pairs n =
 -- count above iterates all of Sₙ × Sₙ; since a Klein generator must be an
 -- involution, restrict the pair iteration to the involution sublist (75 of
 -- 720 elements at n=6, the telephone numbers — far sparser than n!). Same
--- count, fewer pairs. Distinctness + commuting only (involution already
+-- count, fewer pairs. Distinctness ℕ+ commuting only (involution already
 -- guaranteed by the sublist).
 klein-pairs-fast : (n : ℕ) → ℕ
 klein-pairs-fast n =
@@ -90,7 +93,7 @@ klein-pairs-4 : klein-pairs 4 ≡ 24
 klein-pairs-4 = refl
 
 -- Hence #Klein-four subgroups in S₄ = 24 / 6 = 4 (dossier B3: 1 normal
--- gauge V₄ + 3 interface V₄s). The division is recorded as the witnessed
+-- gauge V₄ ℕ+ 3 interface V₄s). The division is recorded as the witnessed
 -- identity 4 × 6 ≡ klein-pairs 4.
-klein-fours-count-4 : 4 + (4 + (4 + (4 + (4 + 4)))) ≡ klein-pairs 4
+klein-fours-count-4 : 4 ℕ+ (4 ℕ+ (4 ℕ+ (4 ℕ+ (4 ℕ+ 4)))) ≡ klein-pairs 4
 klein-fours-count-4 = refl

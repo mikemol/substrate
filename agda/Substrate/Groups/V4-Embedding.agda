@@ -35,13 +35,11 @@ module Substrate.Groups.V4-Embedding where
 open import Substrate.Groups.V4.Axioms.EpsilonLeft using (ε-left)
 open import Substrate.Groups.V4.Axioms.Assoc using (·-assoc)
 open import Substrate.Groups.V4.Axioms.InvLeft using (inv-left)
-open import Substrate.Groups.V4.Bijection using (V₄; e)
+open import Substrate.Groups.V4.Bijection.V4
 
 open import Substrate.Foundation.Level using (0ℓ)
 open import Substrate.Foundation.Product using (∃; _,_; -,_)
-open import Substrate.Foundation.Sum using (_⊎_; inj₁; inj₂)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; trans; cong; sym-trans; cong-trans)
+open import Substrate.Foundation.Sum.Sum
 
 -- Axis + bijection (v-of-axis / axis-of-v) + round-trips + act-axis
 -- now live in Substrate.Axes. Re-exported here so downstream code
@@ -53,13 +51,19 @@ open import Substrate.Axes.AxisRoundtrip using (axis-of-v-v-of-axis)
 open import Substrate.Axes.V4Roundtrip using (v-of-axis-axis-of-v)
 open import Substrate.Axes.ActAxis using (act-axis)
 import Substrate.Groups.V4.Operations as V4
-open import Substrate.Groups.V4.Bijection using (α; β; γ)
+open import Substrate.Groups.V4.Bijection.V4
 open import Substrate.Groups.V4.Bundle using (V₄-Group)
 open import Substrate.Groups.Symmetric.Permutation Axis
 open import Substrate.Groups.Symmetric.Eq Axis using (_≈_)
 open import Substrate.Groups.Symmetric.Permutation.Compose Axis using (_·_)
 open import Substrate.Groups.Symmetric.Identity Axis using (ε)
 open import Substrate.Groups.S4
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.SymTrans
+open import Substrate.Foundation.Eq.CongTrans
 
 ------------------------------------------------------------------------
 -- act-axis IS V₄ multiplication on Axis — DEFINITIONAL identity.

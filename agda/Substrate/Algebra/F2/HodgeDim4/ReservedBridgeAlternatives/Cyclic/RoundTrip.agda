@@ -12,7 +12,6 @@ module Substrate.Algebra.F2.HodgeDim4.ReservedBridgeAlternatives.Cyclic.RoundTri
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Literals using (₀; ₁; ₂)
 open import Substrate.Foundation.Vec using ([]; _∷_; lookup)
-open import Substrate.Foundation.Eq  using (_≡_; trans; cong)
 open import Substrate.Algebra.F2.Vector using (Vector)
 open import Substrate.Algebra.F2.HodgeDim4.ReservedBridgeAlternatives.Cyclic.Forward
   using (vector3-to-selfdual-cyclic)
@@ -24,6 +23,9 @@ open import Substrate.Algebra.F2.HodgeDim4.ReservedBridgeAlternatives.Cyclic.Loo
   using (lookup-2-cyclic)
 open import Substrate.Algebra.F2.HodgeDim4.ReservedBridgeAlternatives.Cyclic.Lookup0
   using (lookup-0-cyclic)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 selfdual-coefficients-cyclic-roundtrip :
   (v : Vector 3) →

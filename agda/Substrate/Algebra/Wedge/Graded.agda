@@ -29,8 +29,9 @@
 
 module Substrate.Algebra.Wedge.Graded where
 
-open import Substrate.Foundation.Nat using (ℕ; suc)
-open import Substrate.Foundation.Eq using (_≡_; sym)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
 
 ------------------------------------------------------------------------
 -- 1. The graded carrier interface: a ℕ-graded carrier + a grade-raising

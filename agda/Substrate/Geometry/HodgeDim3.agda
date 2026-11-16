@@ -49,10 +49,32 @@ module Substrate.Geometry.HodgeDim3 where
 
 open import Substrate.Foundation.Product using (Σ; _×_; _,_; proj₁; proj₂)
 open import Substrate.Foundation.Vec using ([]; _∷_)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; trans; cong)
 
-open import Substrate.Algebra.F2
+open import Substrate.Algebra.F2.AbsorbL
+open import Substrate.Algebra.F2.AbsorbR
+open import Substrate.Algebra.F2.Assoc
+open import Substrate.Algebra.F2.Comm
+open import Substrate.Algebra.F2.Dec
+open import Substrate.Algebra.F2.DistribLPlus
+open import Substrate.Algebra.F2.DistribRPlus
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.F2Cases
+open import Substrate.Algebra.F2.Idempotent
+open import Substrate.Algebra.F2.IdentityL
+open import Substrate.Algebra.F2.IdentityR
+open import Substrate.Algebra.F2.InvOfOne
+open import Substrate.Algebra.F2.OneNeqZero
+open import Substrate.Algebra.F2.Op
+open import Substrate.Algebra.F2.Op2
+open import Substrate.Algebra.F2.PlusAssoc
+open import Substrate.Algebra.F2.PlusComm
+open import Substrate.Algebra.F2.PlusF
+open import Substrate.Algebra.F2.PlusIdentityL
+open import Substrate.Algebra.F2.PlusIdentityR
+open import Substrate.Algebra.F2.PlusInverseL
+open import Substrate.Algebra.F2.PlusInverseR
+open import Substrate.Algebra.F2.PlusSelfInverse
+open import Substrate.Algebra.F2.ZeroNeqOne
 open import Substrate.Algebra.F2.Vector
 open import Substrate.Algebra.F2.Vector.DotProduct
 open import Substrate.Algebra.F2.Code
@@ -67,6 +89,11 @@ open import Substrate.Geometry.HodgeDim3.Orthogonality
 -- File-per-lemma child re-exported here so consumers see the
 -- HodgeDim3 surface through one import.
 open import Substrate.Geometry.HodgeDim3.Fano
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.ShadowArchitecture.Mode
 -- File-per-lemma child re-exported here so consumers see the
 -- HodgeDim3 surface through one import. Per [[s3-on-v4-file-per-lemma]]
 -- the child stays in its own file.
@@ -115,9 +142,9 @@ hodge-complement-dim3 = record
       chir-pred→kernel (𝟘 ∷ 𝟘 ∷ c ∷ []) (refl , refl) ,
       sum-eq
       where
-        -- Goal: a ∷ b ∷ c ∷ [] ≡ (a + 𝟘) ∷ (b + 𝟘) ∷ (𝟘 + c) ∷ []
-        -- Note: 𝟘 + c reduces to c definitionally; only a, b need lifting.
+        -- Goal: a ∷ b ∷ c ∷ [] ≡ (a +F 𝟘) ∷ (b +F 𝟘) ∷ (𝟘 +F c) ∷ []
+        -- Note: 𝟘 +F c reduces to c definitionally; only a, b need lifting.
         sum-eq : (a ∷ b ∷ c ∷ []) ≡
                  ((a ∷ b ∷ 𝟘 ∷ []) +ⱽ (𝟘 ∷ 𝟘 ∷ c ∷ []))
         sum-eq = trans (cong (λ k → k ∷ b ∷ c ∷ []) (sym (+-identityʳ a)))
-                       (cong (λ k → (a + 𝟘) ∷ k ∷ c ∷ []) (sym (+-identityʳ b)))
+                       (cong (λ k → (a +F 𝟘) ∷ k ∷ c ∷ []) (sym (+-identityʳ b)))

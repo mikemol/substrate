@@ -34,21 +34,22 @@
 
 module Substrate.WitnessTower.FaceCount where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
-open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. The f-vector by coning. `faces n k` = number of k-faces of the
 --    rung-n simplex Δⁿ. Defined by the cone recursion itself:
 --      faces n 0       = n+1                 -- the n+1 vertices
---      faces (suc n) (suc k) = (base's (k+1)-faces) + (base's k-faces)
+--      faces (suc n) (suc k) = (base's (k+1)-faces) ℕ+ (base's k-faces)
 --                              ╰─ old, away from apex   ╰─ coned over apex
 ------------------------------------------------------------------------
 
 faces : ℕ → ℕ → ℕ
 faces n       zero    = suc n
 faces zero    (suc k) = zero
-faces (suc n) (suc k) = faces n (suc k) + faces n k
+faces (suc n) (suc k) = faces n (suc k) ℕ+ faces n k
 
 ------------------------------------------------------------------------
 -- 2. The cone recursion as a named law (the narration, generalised):
@@ -58,12 +59,12 @@ faces (suc n) (suc k) = faces n (suc k) + faces n k
 --    k-face, closing over the apex."
 ------------------------------------------------------------------------
 
-cone-step : (n k : ℕ) → faces (suc n) (suc k) ≡ faces n (suc k) + faces n k
+cone-step : (n k : ℕ) → faces (suc n) (suc k) ≡ faces n (suc k) ℕ+ faces n k
 cone-step n k = refl
 
 -- The apex draws one edge to every existing vertex: the new simplex's
 -- edges are the base edges PLUS one apex-edge per base vertex.
-apex-edges : (n : ℕ) → faces (suc n) 1 ≡ faces n 1 + faces n 0
+apex-edges : (n : ℕ) → faces (suc n) 1 ≡ faces n 1 ℕ+ faces n 0
 apex-edges n = refl
 
 ------------------------------------------------------------------------
@@ -82,14 +83,14 @@ triangle-faces = refl
 
 -- "what was one face constructs N faces per edges that make up a face":
 -- the triangle's 1 face stays, its 3 EDGES each cone over the apex into a
--- new face — 1 + 3 = the tetrahedron's 4 triangular faces.
-tetra-faces-from-base : faces 3 2 ≡ faces 2 2 + faces 2 1
+-- new face — 1 ℕ+ 3 = the tetrahedron's 4 triangular faces.
+tetra-faces-from-base : faces 3 2 ≡ faces 2 2 ℕ+ faces 2 1
 tetra-faces-from-base = refl
 
 -- "an edge between the new point and every existing vertex": the triangle's
 -- 3 edges stay, the apex adds one edge to each of the 3 base vertices —
--- 3 + 3 = the tetrahedron's 6 edges.
-tetra-edges-from-base : faces 3 1 ≡ faces 2 1 + faces 2 0
+-- 3 ℕ+ 3 = the tetrahedron's 6 edges.
+tetra-edges-from-base : faces 3 1 ≡ faces 2 1 ℕ+ faces 2 0
 tetra-edges-from-base = refl
 
 -- the full f-vector of the tetrahedron Δ³ : (vertices, edges, faces, cell).

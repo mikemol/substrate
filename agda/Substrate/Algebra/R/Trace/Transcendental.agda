@@ -19,7 +19,8 @@
 
 module Substrate.Algebra.R.Trace.Transcendental where
 
-open import Substrate.Foundation.Nat     using (ℕ; zero; suc; _+_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
 open import Substrate.Foundation.List    using (List; []; _∷_)
 open import Substrate.Foundation.Product using (_,_)
 
@@ -36,7 +37,7 @@ nth (suc k) (_ ∷ ds) = nth k ds
 
 -- exp / log as RealTrace generators: the k-th digit from a (3+k)-window.
 exp-real : RealTrace → RealTrace
-exp-real x = unfold (λ k → (nth k (exp-cf (3 + k) (3 + k) x) , suc k)) 0
+exp-real x = unfold (λ k → (nth k (exp-cf (3 ℕ+ k) (3 ℕ+ k) x) , suc k)) 0
 
 log-real : RealTrace → RealTrace
-log-real x = unfold (λ k → (nth k (log-cf (3 + k) (3 + k) x) , suc k)) 0
+log-real x = unfold (λ k → (nth k (log-cf (3 ℕ+ k) (3 ℕ+ k) x) , suc k)) 0

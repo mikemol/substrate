@@ -29,16 +29,11 @@
 
 module Substrate.Algebra.Abelian.Z6-AsChainDecomp where
 
-open import Substrate.Foundation.Level using (Level; _⊔_)
 open import Substrate.Foundation.Fin.Literals using (₂; ₃; ₄; ₆)
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Vec using (Vec; []; _∷_)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl)
+open import Substrate.Foundation.Nat.Nat
 
-open import Substrate.Category.ChainDecomposition
-  using (ChainDecomposition; mkChain; reconstruct-chain)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. Z/6 as a concrete data type.

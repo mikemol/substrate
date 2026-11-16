@@ -15,6 +15,7 @@ open import Substrate.Foundation.Level using (Level)
 
 open import Substrate.Category.SymmetricMonoidal using (SymmetricMonoidal)
 open import Substrate.Category.DaggerCategory using (DaggerCategory)
+open import Substrate.Probability.MarkovCategory
 
 module Substrate.Algebra.F2.HodgeDim4.Bivector.AsCompactClosedDual
   {ℓO ℓM : Level}
@@ -24,9 +25,7 @@ module Substrate.Algebra.F2.HodgeDim4.Bivector.AsCompactClosedDual
   where
 
 open import Substrate.Category.DaggerCategory.AsNamed F2L-Dag
-  renaming (named-DaggerCategory to Bivector-AsCompactClosedDual-Dag)
 
 open import Substrate.Category.SymmetricMonoidal.AsNamed F2L-SM
-  renaming (named-SymmetricMonoidal to Bivector-AsCompactClosedDual-SM)
 
 

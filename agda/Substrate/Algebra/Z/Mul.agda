@@ -13,8 +13,10 @@
 
 module Substrate.Algebra.Z.Mul where
 
-open import Substrate.Foundation.Nat using (suc; _*_)
-open import Substrate.Algebra.Z using (ℤ; +_; -suc_; -ℤ_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Times
+open import Substrate.Algebra.Z.Int
+open import Substrate.Algebra.Z.Int2
 
 infixl 7 _*ℤ_
 

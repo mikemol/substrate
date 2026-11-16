@@ -35,10 +35,10 @@
 {-# OPTIONS --safe --without-K #-}
 
 open import Substrate.Foundation.Level using (Level)
-open import Substrate.Foundation.Eq using (_≡_)
 
 open import Substrate.Category.CommutativeNonAssociativeAlgebra
   using (CommutativeNonAssociativeAlgebra; mkCNAA)
+open import Substrate.Foundation.Eq
 
 module Substrate.Algebra.Sporadic.GriessAlgebra
   -- Carrier: abstract 196,884-dim vector space over Scalar.
@@ -69,7 +69,7 @@ GriessAlgebra = mkCNAA
 -- 2. Documented dimension (= 196,884; ATLAS / Griess 1982 / FLM 1988).
 ------------------------------------------------------------------------
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 
 GriessAlgebra-dimension : ℕ
 GriessAlgebra-dimension = 196884

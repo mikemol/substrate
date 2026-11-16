@@ -34,11 +34,10 @@
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.List using (List; []; _∷_)
 open import Substrate.Foundation.Product using (Σ; _,_)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl)
 
 open import Substrate.Category.SylowDecomposition.FromWord
   using (evaluate-word)
+open import Substrate.Foundation.Eq
 
 module Substrate.Algebra.Abelian.Z6JointGenViaProduct
   -- The Z/6 carrier + ops.
@@ -71,7 +70,6 @@ open import Substrate.Category.PrimeFactoredGauge.JointGenWrapper
   2 gen-Z6 gen-Z6-sylow
   represent-Z6 represent-Z6-correct
   public
-  renaming (joint-gen to Z6-joint-gen)
 
 ------------------------------------------------------------------------
 -- Capstone — Z/6 joint-gen dischargeable from CRT representation.

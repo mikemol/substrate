@@ -30,13 +30,31 @@ module Substrate.S5.S5Verdict where
 
 -- the cluster's foundation, re-exported from Foundation.* so S5 dependents that
 -- pull stdlib from S5Verdict (their mini-foundation) keep resolving unchanged.
-open import Substrate.Foundation.Nat  using (ℕ; zero; suc; _+_) public
-open import Substrate.Foundation.Eq   using (_≡_; refl; sym; trans; cong) public
+open import Substrate.Foundation.Nat.Nat public
+open import Substrate.Foundation.Nat.Plus public
 open import Substrate.Foundation.List using (List; []; _∷_) public
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+-- ⚑⚑ THE DECOMPOSITION RENAMED THE OPERATOR AND LEFT SEVEN USE SITES STALE. `Foundation.Nat.
+-- Plus` (imported `public` at :34, already correct) exports `_ℕ+_`/`ℕ+`; no bare `_+_` for ℕ
+-- exists in the tree. The import was never wrong — only the uses were, which is the INVERSE of
+-- what `rename_at_source` handles and why no census reported it: not dangling (the import
+-- resolves), not a clash, just an unbound token.
+-- ⚑⚑⚑ AND THE TWO LOCAL LEMMAS BELOW WERE RE-PROOFS OF LIBRARY ONES. `+zero`/`+assoc` were
+-- proved here as `where`-locals, identical argument-for-argument to `+ℕ-identityʳ`/`+ℕ-assoc`
+-- (measured, not inferred: `n ℕ+ zero ≡ n` and `(m ℕ+ n) ℕ+ k ≡ m ℕ+ (n ℕ+ k)`), same `cong
+-- suc` induction. So the migration DELETES proof rather than restating it.
+-- ⚑ NO CENSUS COULD HAVE TOLD US: `--grep` models only exportable top-levels, so a `where`-local
+-- re-proof of a library lemma is invisible — the blind spot is not "a census misses a name", it
+-- is "a census cannot tell you that you re-proved something the tree already has".
+open import Substrate.Foundation.Nat.Properties.Add.PlusAssoc
+open import Substrate.Foundation.Nat.Properties.Add.PlusIdentityR
 
 sum : List ℕ → ℕ
 sum []       = zero
-sum (n ∷ ns) = n + sum ns
+sum (n ∷ ns) = n ℕ+ sum ns
 
 -- the machine, abstractly ----------------------------------------------
 
@@ -88,9 +106,9 @@ module Machine (S : Set) (next : S → Progress S) where
   ----------------------------------------------------------------------
 
   resume-handle : ∀ (m n : ℕ) (p : Progress S)
-                → resume m (handle n p) ≡ handle (n + m) p
+                → resume m (handle n p) ≡ handle (n ℕ+ m) p
   resume-run    : ∀ (m n : ℕ) (s : S)
-                → resume m (run n s) ≡ run (n + m) s
+                → resume m (run n s) ≡ run (n ℕ+ m) s
 
   resume-run m zero    s = refl                        -- ε at the base
   resume-run m (suc n) s = resume-handle m n (next s)
@@ -116,20 +134,16 @@ module Machine (S : Set) (next : S → Progress S) where
   resumeAll (u ∷ us) v = resumeAll us (resume u v)
 
   resumeAll-run : ∀ (ws : List ℕ) (n : ℕ) (s : S)
-                → resumeAll ws (run n s) ≡ run (n + sum ws) s
-  resumeAll-run [] n s = cong (λ k → run k s) (sym (+zero n))
-    where
-      +zero : ∀ (k : ℕ) → k + zero ≡ k
-      +zero zero    = refl
-      +zero (suc k) = cong suc (+zero k)
+                → resumeAll ws (run n s) ≡ run (n ℕ+ sum ws) s
+  -- ⚑ `where +zero : ∀ (k : ℕ) → k + zero ≡ k` STOOD HERE — deleted, not restated.
+  -- `+ℕ-identityʳ : (n : ℕ) → n ℕ+ zero ≡ n` is the same statement and the same induction.
+  resumeAll-run [] n s = cong (λ k → run k s) (sym (+ℕ-identityʳ n))
+  -- ⚑ `where +assoc : ∀ (a b c : ℕ) → (a + b) + c ≡ a + (b + c)` STOOD HERE — likewise.
+  -- `+ℕ-assoc : (m n k : ℕ) → (m ℕ+ n) ℕ+ k ≡ m ℕ+ (n ℕ+ k)`.
   resumeAll-run (u ∷ us) n s =
     trans (cong (resumeAll us) (resume-run u n s))
-          (trans (resumeAll-run us (n + u) s)
-                 (cong (λ k → run k s) (+assoc n u (sum us))))
-    where
-      +assoc : ∀ (a b c : ℕ) → (a + b) + c ≡ a + (b + c)
-      +assoc zero    b c = refl
-      +assoc (suc a) b c = cong suc (+assoc a b c)
+          (trans (resumeAll-run us (n ℕ+ u) s)
+                 (cong (λ k → run k s) (+ℕ-assoc n u (sum us))))
 
   ----------------------------------------------------------------------
   -- L1 (verdict monotonicity): a COROLLARY, proved equationally.
@@ -139,6 +153,6 @@ module Machine (S : Set) (next : S → Progress S) where
 
   value-monotone : ∀ (m n : ℕ) (s : S) (v : S)
                  → run n s ≡ value v
-                 → run (n + m) s ≡ value v
+                 → run (n ℕ+ m) s ≡ value v
   value-monotone m n s v eq =
     trans (sym (resume-run m n s)) (cong (resume m) eq)

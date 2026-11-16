@@ -24,15 +24,20 @@
 module Substrate.Algebra.Wedge.Contextuality.General where
 
 open import Substrate.Foundation.Vec using (Vec; []; _∷_)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
-open import Substrate.Foundation.Negation using (¬_)
+open import Substrate.Foundation.Negation.Not
 open import Substrate.Foundation.Product using (Σ; _,_; _×_)
 open import Substrate.Foundation.Unit using (⊤; tt)
-open import Substrate.Algebra.F2 using (F₂; 𝟘; 𝟙; 𝟘≢𝟙)
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.ZeroNeqOne
 open import Substrate.Algebra.F2.Vector using (Vector; 𝟎ⱽ)
 open import Substrate.Algebra.Wedge.Contextuality
   using (Constraint; con; lhs; rhs; satisfies; _⊕ᶜ_; ⊕ᶜ-satisfies;
          ⟨_,_⟩; inner-zero)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Algebra.Wedge.BinMul.Sel
 
 ------------------------------------------------------------------------
 -- 1. Scenarios, all-satisfaction, global sections.

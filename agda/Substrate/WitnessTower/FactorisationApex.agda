@@ -41,17 +41,18 @@
 
 module Substrate.WitnessTower.FactorisationApex where
 
-open import Substrate.Foundation.Bool using (Bool)
+open import Substrate.Foundation.Bool.Bool
 open import Substrate.Foundation.Product using (_×_; _,_)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym)
 open import Substrate.Axes.Axis using (Axis)
 open import Substrate.Groups.Symmetric.Permutation Axis
-open import Substrate.Groups.V4.Bijection using (V₄)
-open import Substrate.Groups.SemidirectProduct.V using (v-for)
+open import Substrate.Groups.V4.Bijection.V4
+open import Substrate.Groups.SemidirectProduct.V.VFor
 open import Substrate.Groups.SemidirectProduct.S using (s-for)
 open import Substrate.WitnessTower.ParityCoordIsoApex using (coord)
 open import Substrate.WitnessTower.SignStabTotal
   using (sign-of; sign-factors-through-s-for; sign-of-stable)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
 
 ------------------------------------------------------------------------
 -- THE APEX: read both coordinates of σ's semidirect factorisation. The V₄

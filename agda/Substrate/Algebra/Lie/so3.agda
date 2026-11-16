@@ -42,8 +42,8 @@
 open import Substrate.Foundation.Level using (Level; 0ℓ)
 open import Substrate.Category.CartanType using (CartanType)
 open import Substrate.Category.LieAlgebra using (LieAlgebra)
-open import Substrate.Foundation.Eq using (_≡_)
 open import Substrate.Algebra.Lie.CartanA1 using (A1-CartanType)
+open import Substrate.Foundation.Eq
 
 module Substrate.Algebra.Lie.so3
   -- The substrate-internal LieAlgebra value witnessing so₃.

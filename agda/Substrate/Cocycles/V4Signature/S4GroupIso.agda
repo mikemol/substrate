@@ -34,20 +34,18 @@
 module Substrate.Cocycles.V4Signature.S4GroupIso where
 
 open import Substrate.Foundation.Product using (_,_; proj₁; proj₂; ∃; -,_)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; trans; cong; cong₂)
 import Substrate.Algebra.Magma     as SM
 import Substrate.Algebra.Semigroup as SS
 import Substrate.Algebra.Monoid    as SMo
 import Substrate.Algebra.Group     as SG
 
 open import Substrate.Foundation.Unit using (⊤)
-open import Substrate.Category.CategoryOf using (CategoryOf)
+open import Substrate.Category.CategoryOf.CategoryOf
 open import Substrate.Category.Delooping  using (deloop)
 
 open import Substrate.Axes.Axis using (Axis; D; C; S; W)
 open import Substrate.Axes.ActAxis using (act-axis)
-open import Substrate.Groups.V4.Bijection using (V₄)
+open import Substrate.Groups.V4.Bijection.V4
 import Substrate.Groups.V4.Operations as V4
 open import Substrate.Groups.Symmetric.Permutation Axis
 open import Substrate.Groups.Symmetric.Eq Axis
@@ -67,10 +65,24 @@ open import Substrate.Cocycles.V4Signature.Pairing.Type
 open import Substrate.Cocycles.V4Signature.Chirality.Type
 open import Substrate.Cocycles.V4Signature.OrbitKey.Type
 open import Substrate.Cocycles.V4Signature.S4Iso.Classify
-open import Substrate.Groups.SemidirectProduct.V
+open import Substrate.Groups.SemidirectProduct.V.NonDSends
+open import Substrate.Groups.SemidirectProduct.V.Private
+open import Substrate.Groups.SemidirectProduct.V.SelfToD
+open import Substrate.Groups.SemidirectProduct.V.VFor
+open import Substrate.Groups.SemidirectProduct.V.VForAnchor
+open import Substrate.Groups.SemidirectProduct.V.VForAnchorSends
+open import Substrate.Groups.SemidirectProduct.V.VOfAxisAnchor
+open import Substrate.Groups.SemidirectProduct.V.VOfAxisAnchorSends
+open import Substrate.Groups.SemidirectProduct.V.VOfAxisUnique
+open import Substrate.Groups.SemidirectProduct.V.VSendsD
 open import Substrate.Axes.VOfAxis
 open import Substrate.Groups.SemidirectProduct.S
 open import Substrate.Cocycles.V4Signature.S4Iso.Roundtrips
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
 
 ------------------------------------------------------------------------
 -- Helper: propositional equality implies pointwise equivalence.

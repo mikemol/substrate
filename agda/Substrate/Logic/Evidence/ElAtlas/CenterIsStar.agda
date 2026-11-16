@@ -37,8 +37,8 @@
 
 module Substrate.Logic.Evidence.ElAtlas.CenterIsStar where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.Algebra.Q using (ℚ; 0ℚ)
+open import Substrate.Algebra.Q.Rat
+open import Substrate.Algebra.Q.ZeroRat
 
 open import Substrate.Algebra.Wedge.CrossMul
   using (CrossMix; cross; Coherent; mix-witness; coherent-everywhere)
@@ -46,6 +46,7 @@ open import Substrate.Algebra.Wedge.Mul using (two-div; two-mul; Two)
 
 open import Substrate.Logic.Evidence.ElAtlas.StarIsGNot
   using (★; ★-fixes-balance; ★-fixes-1)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- §5 / §7.1 — ★ = G_NOT fixes the OPEN-CIRCUIT end G = 0 (the witness / centre).
@@ -76,5 +77,11 @@ centre∥periphery-coherent = coherent-everywhere
 -- The cycle-space (Ξ★.1) instance of the SAME coherence — the cross/dot term
 -- vanishes: `witness-⟂-rep` (imported) is `dot rep w ≡ + 0`, the witness
 -- orthogonal to the representable image = the centre condition, electrically
--- the bridge-null. Re-exported so center-is-★ carries both instances.
-open import Substrate.Logic.Evidence.ElAtlas.CenterWitness public using (witness-⟂-rep)
+-- the bridge-null.
+-- ⚑ `public` RETIRED (Ⓑ2c).  The removed clause said *"Re-exported so
+-- center-is-★ carries both instances"* — a stated INTENT with zero external
+-- importers, so nothing ever collected the second instance through this file.
+-- The comment asserted a service the edge census says no module consumed; it
+-- goes with the code rather than surviving as a claim about a file that no
+-- longer makes it.  A consumer wanting both instances imports CenterWitness.
+open import Substrate.Logic.Evidence.ElAtlas.CenterWitness using (witness-⟂-rep)

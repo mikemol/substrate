@@ -34,10 +34,11 @@
 module Substrate.Algebra.Sporadic.Conway where
 
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 
 open import Substrate.Category.ConjugationCoalgebra
   using (ConjugationCoalgebra; mkConjugationCoalgebra)
+open import Substrate.Groups.V4-Cosets
 
 ------------------------------------------------------------------------
 -- 1. Co₁ — the largest Conway group.

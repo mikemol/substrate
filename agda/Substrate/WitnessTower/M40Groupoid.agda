@@ -15,9 +15,13 @@ module Substrate.WitnessTower.M40Groupoid where
 
 open import Substrate.Foundation.Unit using (⊤)
 open import Substrate.Algebra.Group using (monoid)
-open import Substrate.Category.CategoryOf using (CategoryOf)
+open import Substrate.Category.CategoryOf.CategoryOf
 open import Substrate.Category.Delooping using (deloop)
-open import Substrate.Category.DeloopingGroup using (IsGroupoid; deloop-group-isGroupoid)
+-- ⚑ `IsGroupoid` WAS REACHED THROUGH `DeloopingGroup`'s `public` RE-EXPORT
+-- (Ⓑ2c); its real home is `Category.Iso`.  Binding it there is the precondition
+-- for retiring that forward.  `deloop-group-isGroupoid` is DeloopingGroup's own.
+open import Substrate.Category.Iso
+open import Substrate.Category.DeloopingGroup using (deloop-group-isGroupoid)
 open import Substrate.WitnessTower.M40Closure using (A4Z2)
 open import Substrate.WitnessTower.M40Group using (A4Z2-Group)
 

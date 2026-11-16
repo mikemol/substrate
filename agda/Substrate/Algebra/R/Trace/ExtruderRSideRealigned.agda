@@ -18,12 +18,13 @@
 
 module Substrate.Algebra.R.Trace.ExtruderRSideRealigned where
 
-open import Substrate.Foundation.Eq      using (_≡_; refl)
-open import Substrate.Foundation.Nat     using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 
 open import Substrate.Algebra.R.Trace       using (RealTrace; head; tail; twos)
-open import Substrate.Algebra.R.Trace.Bisim using (_~_; head~; tail~; ~-refl)
+open import Substrate.Algebra.R.Trace.Bisim.Op
+open import Substrate.Algebra.R.Trace.Bisim.Refl
 open import Substrate.Algebra.R.Trace.CycleWire using (cycle; cycle2; cycle2~twos)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- ① THE COUNIT (FUSepQCyc.cyc~const / selfSimilar~cyc): a periodic real ~ its

@@ -23,12 +23,14 @@
 
 module Substrate.Algebra.R.Trace.OrbitUniversality where
 
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
 open import Substrate.Algebra.R.Trace using (RealTrace; head; tail)
-open import Substrate.Algebra.R.Trace.Bisim using (_~_; head~; tail~)
-open import Substrate.Algebra.R.Trace.Final using (Coalg; ana; ana-unique)
+open import Substrate.Algebra.R.Trace.Bisim.Op
+open import Substrate.Algebra.R.Trace.Final.Ana
+open import Substrate.Algebra.R.Trace.Final.AnaUnique
+open import Substrate.Algebra.R.Trace.Final.Coalg
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- The orbit coalgebra. A state S with a step `next : S → S` and a shape

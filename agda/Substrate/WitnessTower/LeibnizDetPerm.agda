@@ -11,11 +11,11 @@
 -- μ₂ sign of ⟡leibniz-det-sum, reached by log / divide-by-two / antilog, NOT
 -- fielded as an additive negation.
 --
--- ⚑ THE SUM-COLLAPSE IS THE PROOF (steps 2 + 3).
+-- ⚑ THE SUM-COLLAPSE IS THE PROOF (steps 2 +F 3).
 -- `det (Pmat σ) = Σ_{τ∈Sₙ} signVal(sign τ)(mono τ (Pmat σ))`, and the monomial
 -- of the permutation matrix is a KRONECKER INDICATOR:
 --     mono τ (Pmat σ) = Πⱼ (Pmat σ)[j, τ j] = Πⱼ δ(τ j, σ j) = [τ = σ]
--- (via `LeibnizMonomialDirect.mono≡dprod` + `remQuot-combine`). So every off-
+-- (via `LeibnizMonomialDirect.mono≡dprod` +F `remQuot-combine`). So every off-
 -- diagonal summand VANISHES (`indicator-0`, `prodFin-zero`, zero-absorb) and the
 -- diagonal one survives as `signVal(sign σ)(1A)` — the one-hot `sumF` collapse
 -- (`sumF-onehot`) over the Sₙ enumeration (`enumerate-surjective`/`-injective`).
@@ -27,7 +27,7 @@
 -- honored as an ARCHITECTURAL layer: `det ∘ P ∘ decode` is a PARITY CHARACTER
 -- over the ordering tower. Each `_◂ p` multiplies the determinant by
 -- ε₂^(finParity p) — the sign of the Lehmer digit's position — which is exactly
--- `InsertionParity.insertion-parity-B` (`signF (decode (l ◂ p)) ≡ finParity p +
+-- `InsertionParity.insertion-parity-B` (`signF (decode (l ◂ p)) ≡ finParity p +F
 -- signF (decode l)`, the proven group theory the tower attaches to its inductive
 -- step). So `det-P-◂` exhibits `det∘P∘decode` as the fold of the sign algebra,
 -- composably — the same shape the whole `Orientation*` tower runs.
@@ -45,26 +45,33 @@
 
 module Substrate.WitnessTower.LeibnizDetPerm where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _*_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Times
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Fin.Op
 open import Substrate.Foundation.Fin.RemQuot using (remQuot)
 open import Substrate.Foundation.Fin.Combine.RemQuotInverse using (remQuot-combine)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; lookup)
-open import Substrate.Foundation.Negation using (¬_; Dec; yes; no)
-open import Substrate.Foundation.Empty using (⊥-elim)
+open import Substrate.Foundation.Negation.Dec
+open import Substrate.Foundation.Negation.Not
+open import Substrate.Foundation.Empty.BotElim
 open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂)
-open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym; cong; cong₂)
-open import Substrate.Algebra.F2 using (F₂; 𝟘; 𝟙)
+open import Substrate.Algebra.F2.F2
 open import Substrate.WitnessTower.Enumerate using (Perm; perms; lengthL)
 open import Substrate.WitnessTower.IsPermutation using (IsPerm)
-open import Substrate.WitnessTower.LehmerPath
-  using (LehmerPath; _◂_; encode; decode; decode-encode; decode-is-perm)
+open import Substrate.WitnessTower.LehmerPath.Decode
+open import Substrate.WitnessTower.LehmerPath.DecodeEncode
+open import Substrate.WitnessTower.LehmerPath.DecodeIsPerm
+open import Substrate.WitnessTower.LehmerPath.Encode
+open import Substrate.WitnessTower.LehmerPath.LehmerPath
 open import Substrate.WitnessTower.TowerCocycleGraded using (signF)
-open import Substrate.WitnessTower.LehmerTowerMorphism using (finParity; lehmer-graded; F₂-target)
+open import Substrate.WitnessTower.LehmerTowerMorphism.F2Target
+open import Substrate.WitnessTower.LehmerTowerMorphism.FinParity
+open import Substrate.WitnessTower.LehmerTowerMorphism.LehmerGraded
 open import Substrate.WitnessTower.InsertionParity
   using (insertion-parity-B; sign-lehmer-morphism-unconditional)
-open import Substrate.Algebra.F2 using () renaming (_+_ to _+F_)
+open import Substrate.Algebra.F2.Dec
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.PlusF
 open import Substrate.Algebra.Wedge.Graded using (GradedDivStr)
 open import Substrate.Algebra.Wedge.Graded.Morphism
   using (GradedDivStrMorphism; comp-gdsm; map-C)
@@ -78,6 +85,17 @@ open import Substrate.Algebra.Semigroup using (Semigroup; magma)
 open import Substrate.Algebra.Monoid    using (Monoid; semigroup; ε)
 open import Substrate.Algebra.Semiring
   using (Semiring; +-monoid; *-monoid; zero-absorb-left; zero-absorb-right)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.Foundation.Nat.Properties.Mul
+open import Substrate.Category.DiscreteFourierTransform
+open import Substrate.WitnessTower.LeibnizMonomial
+open import Substrate.Category.Lawvere
+open import Substrate.Algebra.Wedge.ResidueAtom
+open import Substrate.Algebra.Z.MPolySemiring
 
 module DetPerm (A : Set) (S : Semiring A) (ε₂ : A)
                (ε₂-sq : (Magma._·_ (magma (semigroup (*-monoid S)))) ε₂ ε₂ ≡ ε (*-monoid S)) where
@@ -305,7 +323,7 @@ module DetPerm (A : Set) (S : Semiring A) (ε₂ : A)
     }
 
   -- the μ₂ character χ b = signVal b 1A, as a graded morphism F₂-target →
-  -- det-sign-target (respects-recon = signVal-hom): a group hom (F₂,+,𝟘)→(A,*A,1A).
+  -- det-sign-target (respects-recon = signVal-hom): a group hom (F₂,+F,𝟘)→(A,*A,1A).
   χ-morphism : GradedDivStrMorphism F₂-target det-sign-target
   χ-morphism = record
     { map-C          = λ b → signVal b 1A

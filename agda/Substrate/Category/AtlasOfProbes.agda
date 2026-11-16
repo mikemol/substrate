@@ -17,7 +17,7 @@
 --                  Countertrack, SphericalGear
 --
 -- Per [[168-tower-as-fanout]]: |GL(3, F₂)| = 168 = 2³·3·7 is
--- simple; any generating subset (one Sylow-2 + one Sylow-3 +
+-- simple; any generating subset (one Sylow-2 ℕ+ one Sylow-3 ℕ+
 -- one Sylow-7 element) generates the full group. Cross-Sylow
 -- atlas combinations recover full equivariance even when no
 -- single chart does.
@@ -36,11 +36,10 @@
 
 module Substrate.Category.AtlasOfProbes where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_; _≤_; z≤n; s≤s)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
 open import Substrate.Foundation.List using (List; []; _∷_)
-open import Substrate.Foundation.List.Length using (length)
-open import Substrate.Foundation.Product using (_×_; _,_; Σ-syntax)
-open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- A Sylow class for a probe atlas (2, 3, or 7).
@@ -101,13 +100,13 @@ record AtlasCatalog : Set where
     n-sylow-2    : ℕ
     n-sylow-3    : ℕ
     n-sylow-7    : ℕ
-    -- catalog-size = n-sylow-2 + n-sylow-3 + n-sylow-7
+    -- catalog-size = n-sylow-2 ℕ+ n-sylow-3 ℕ+ n-sylow-7
     partition-sums :
-      catalog-size ≡ n-sylow-2 + (n-sylow-3 + n-sylow-7)
+      catalog-size ≡ n-sylow-2 ℕ+ (n-sylow-3 ℕ+ n-sylow-7)
 
 open AtlasCatalog public
 
--- Concrete catalog from eliza.probe_atlas (16 = 5 + 5 + 6).
+-- Concrete catalog from eliza.probe_atlas (16 = 5 ℕ+ 5 ℕ+ 6).
 
 substrate-catalog : AtlasCatalog
 substrate-catalog = record
@@ -210,7 +209,7 @@ open SynergyMeasurement public
 -- atlas resolves.
 --
 -- Per [[3plus1-parity-universal]]: with three Sylow classes
--- + one chart-orientation chirality, the (S2 ⊕ S3 ⊕ S7) ⊕ F₂
+-- ℕ+ one chart-orientation chirality, the (S2 ⊕ S3 ⊕ S7) ⊕ F₂
 -- = 3+1 structure recurs at the atlas's Sylow-membership level.
 --
 -- Per [[expose-generator-not-orbit]]: the atlas IS the

@@ -25,20 +25,21 @@
 
 module Substrate.Algebra.R.Trace.Ops where
 
-open import Substrate.Foundation.Nat  using (ℕ; zero; suc; _+_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
 open import Substrate.Foundation.List using (List; []; _∷_)
-open import Substrate.Foundation.Eq   using (_≡_; refl)
 
 open import Substrate.Algebra.R.Trace using (RealTrace; head; tail; take; sqrt2; twos)
 open import Substrate.Algebra.R.Trace.StreamMap using (onHead)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
--- Translation by a natural: x + k changes only the leading CF digit.
+-- Translation by a natural: x ℕ+ k changes only the leading CF digit.
 -- ⟡dedup.tree: an instance of the lifted `onHead` (modify the head digit only).
 ------------------------------------------------------------------------
 
 addℕ : ℕ → RealTrace → RealTrace
-addℕ k = onHead (k +_)
+addℕ k = onHead (k ℕ+_)
 
 ------------------------------------------------------------------------
 -- Reciprocation 1/x — the CF "shift". `cons0` prepends a 0 digit.

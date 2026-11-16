@@ -11,11 +11,11 @@
 
 module Substrate.Cocycles.V4Signature.Codeword.IsReserved where
 
-open import Substrate.Foundation.Bool using (Bool; true; false)
+open import Substrate.Foundation.Bool.Bool
 open import Substrate.Foundation.Product using (_×_; _,_)
-open import Substrate.Foundation.Negation using (Dec; yes; no)
-open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Negation.Dec
 open import Substrate.Cocycles.V4Signature.Codeword.Type using (Codeword; bit₃; bit₄)
+open import Substrate.Foundation.Eq
 
 IsReserved : Codeword → Set
 IsReserved cw = (bit₃ cw ≡ false) × (bit₄ cw ≡ false)

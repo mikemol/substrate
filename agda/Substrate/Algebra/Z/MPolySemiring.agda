@@ -19,21 +19,28 @@
 
 module Substrate.Algebra.Z.MPolySemiring where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _∸_)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂; subst)
-open import Substrate.Foundation.Negation using (¬_; Dec; yes; no)
-open import Substrate.Foundation.Empty using (⊥; ⊥-elim)
+open import Substrate.Foundation.Nat.Monus
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Negation.Dec
+open import Substrate.Foundation.Negation.Not
+open import Substrate.Foundation.Empty.Bot
+open import Substrate.Foundation.Empty.BotElim
 open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂; Σ-≡,≡→≡)
 open import Substrate.Foundation.List using (List; []; _∷_; _++_)
-open import Substrate.Foundation.Hedberg using (DecidableEquality; Decidable⇒UIP)
-open import Substrate.Algebra.Z using (ℤ; +_; -suc_; 0ℤ; 1ℤ; -ℤ_; _≟ℤ_)
+open import Substrate.Foundation.Hedberg.DecidableEquality
+open import Substrate.Foundation.Hedberg.DecidableUIP
+open import Substrate.Algebra.Z.DecInt
+open import Substrate.Algebra.Z.Int
+open import Substrate.Algebra.Z.Int2
+open import Substrate.Algebra.Z.OneInt
+open import Substrate.Algebra.Z.ZeroInt
 open import Substrate.Algebra.Z.Add using (_+ℤ_)
 open import Substrate.Algebra.Z.Mul using (_*ℤ_)
 open import Substrate.Algebra.Z.Properties.Add
   using (+ℤ-assoc; +ℤ-comm; +ℤ-identityˡ; +ℤ-identityʳ; +ℤ-inverseˡ)
 open import Substrate.Algebra.Z.Properties.MulFull
   using (*ℤ-assoc; *ℤ-identityˡ; *ℤ-identityʳ; *ℤ-zeroˡ; *ℤ-zeroʳ; *ℤ-distribˡ-+; *ℤ-distribʳ-+)
-open import Substrate.Algebra.Monoid using (Monoid)
 open import Substrate.Algebra.Semiring using (Semiring)
 open import Substrate.Algebra.Semiring.Instances using (mk-monoid)
 open import Substrate.Algebra.Semiring.Instances.Z using (mul-sign-computes)
@@ -43,12 +50,29 @@ open import Substrate.Algebra.Z.JacobianResidue
          addM; mulT; scaleT; _*P_; 𝟙P; kP; X; Y)
 open import Substrate.Algebra.Z.MPolyNormalize
   using (isSortedB; ltMᵇ; nzB; minB; normalize; insertT; consNZ; Bcase; triM; ltM; eqM≡; gtM)
-open import Substrate.Algebra.Z.MPolyNormalize.Properties
-  using (normalize-sorted; coeff-normalize; coeff-++; coeff-cons; coeff-cons-tt; coeff-cons-ff;
-         eqM-refl; ltMᵇ→eqMff; <M→ltMᵇ; minB-trans; sorted-nz; sorted-tail; sorted-min; nzB-ff)
+open import Substrate.Algebra.Z.MPolyNormalize.Properties.CoeffAppend
+open import Substrate.Algebra.Z.MPolyNormalize.Properties.CoeffCons
+open import Substrate.Algebra.Z.MPolyNormalize.Properties.CoeffConsFf
+open import Substrate.Algebra.Z.MPolyNormalize.Properties.CoeffConsTt
+open import Substrate.Algebra.Z.MPolyNormalize.Properties.CoeffNormalize
+open import Substrate.Algebra.Z.MPolyNormalize.Properties.EqMRefl
+open import Substrate.Algebra.Z.MPolyNormalize.Properties.LtMBToeqMff
+open import Substrate.Algebra.Z.MPolyNormalize.Properties.LtMToltMB
+open import Substrate.Algebra.Z.MPolyNormalize.Properties.MinBTrans
+open import Substrate.Algebra.Z.MPolyNormalize.Properties.NormalizeSorted
+open import Substrate.Algebra.Z.MPolyNormalize.Properties.NzBFf
+open import Substrate.Algebra.Z.MPolyNormalize.Properties.SortedMin
+open import Substrate.Algebra.Z.MPolyNormalize.Properties.SortedNz
+open import Substrate.Algebra.Z.MPolyNormalize.Properties.SortedTail
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.Foundation.Eq.Subst
 
 ------------------------------------------------------------------------
--- 0. Boolean + ℤ helpers.
+-- 0. Boolean ℕ+ ℤ helpers.
 ------------------------------------------------------------------------
 
 ff≢tt : ff ≡ tt → ⊥
@@ -250,8 +274,8 @@ geqM (mono a b c) (mono d e f) = and (geqℕ a d) (and (geqℕ b e) (geqℕ c f)
 subM : Mono → Mono → Mono
 subM (mono a b c) (mono d e f) = mono (a ∸ d) (b ∸ e) (c ∸ f)
 
--- a = k + u  ⟺  a ≥ k ∧ (a ∸ k) = u
-eqℕ-add-decompose : (a k u : ℕ) → eqℕ a (k + u) ≡ and (geqℕ a k) (eqℕ (a ∸ k) u)
+-- a = k ℕ+ u  ⟺  a ≥ k ∧ (a ∸ k) = u
+eqℕ-add-decompose : (a k u : ℕ) → eqℕ a (k ℕ+ u) ≡ and (geqℕ a k) (eqℕ (a ∸ k) u)
 eqℕ-add-decompose a       zero    u = refl
 eqℕ-add-decompose zero    (suc k) u = refl
 eqℕ-add-decompose (suc a) (suc k) u = eqℕ-add-decompose a k u
@@ -487,7 +511,7 @@ NormPoly-Semiring = record
   }
 
 ------------------------------------------------------------------------
--- 8. ε₂ and ε₂-sq (for RUNG 3c's WithSign), + a non-vacuity pole.
+-- 8. ε₂ and ε₂-sq (for RUNG 3c's WithSign), ℕ+ a non-vacuity pole.
 ------------------------------------------------------------------------
 
 ε₂ : NormPoly
@@ -507,5 +531,5 @@ X∷ Y∷ : NormPoly
 X∷ = (normalize X , normalize-sorted X)
 Y∷ = (normalize Y , normalize-sorted Y)
 
-poly-⊗-reorders : coeff (mono 1 1 0) (proj₁ ((X∷ ⊕ Y∷) ⊗ (X∷ ⊕ Y∷))) ≡ + 2
+poly-⊗-reorders : coeff (mono 1 1 0) (proj₁ ((X∷ ⊕ Y∷) ⊗ (X∷ ⊕ Y∷))) ≡ ℕ+ 2
 poly-⊗-reorders = refl

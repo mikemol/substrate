@@ -12,13 +12,13 @@
 
 module Substrate.Algebra.Field where
 
-open import Substrate.Foundation.Eq using (_≡_)
-open import Substrate.Foundation.Negation using (¬_)
+open import Substrate.Foundation.Negation.Not
 open import Substrate.Algebra.Magma using (Magma)
 open import Substrate.Algebra.Semigroup using (Semigroup; magma)
 open import Substrate.Algebra.Monoid using (Monoid; semigroup; ε)
 open import Substrate.Algebra.Semiring using (Semiring; +-monoid; *-monoid)
 open import Substrate.Algebra.Ring using (Ring; semiring)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. The Field record.

@@ -32,16 +32,24 @@
 
 module Substrate.Algebra.Quotient.CRT where
 
-open import Substrate.Foundation.Nat using (ℕ; suc)
-open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Product using (_×_; _,_; proj₁; proj₂)
 
+-- ⚑ `_mod-suc_` WAS REACHED THROUGH `ModEquiv`'s `public` RE-EXPORT (Ⓑ2c);
+-- its real home is `Nat.Mod`.  `_≡[_]_` is ModEquiv's own.
+open import Substrate.Foundation.Nat.Nat.ModSuc
+open import Substrate.Algebra.Nat.Mod.ModSucBound
+open import Substrate.Algebra.Nat.Mod.ModSucId
+open import Substrate.Algebra.Nat.Mod.ModSucPeriodic
+open import Substrate.Algebra.Nat.Mod.ModSucSuc
+open import Substrate.Algebra.Nat.Mod.SucModSucLt
+open import Substrate.Algebra.Nat.Mod.SucModSucSelf
 open import Substrate.Algebra.Nat.ModEquiv
-  using (_≡[_]_; _mod-suc_)
-open import Substrate.Algebra.Quotient using (Quotient)
+open import Substrate.Algebra.Quotient.Quotient
 open import Substrate.Algebra.Quotient.ModN using (ModN-Quotient)
 open import Substrate.Category.UniversalProperty.QuotientProduct
   using (QuotientProduct; _∩_; ∩-Quotient)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. Coprime as an implicit hypothesis.

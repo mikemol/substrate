@@ -10,12 +10,12 @@
 module Substrate.Cocycles.V4Signature.Codeword.ReservedSignedRoundTrip where
 
 open import Substrate.Foundation.Product using (_×_; _,_)
-open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.Foundation.Bool using (Bool; true; false)
+open import Substrate.Foundation.Bool.Bool
 open import Substrate.Axes.Axis using (Axis; D; C; S; W)
 open import Substrate.Cocycles.V4Signature.Codeword.Subtypes using (Reserved)
 open import Substrate.Cocycles.V4Signature.Codeword.ReservedSignedMaps
   using (reserved-to-signed; signed-to-reserved)
+open import Substrate.Foundation.Eq
 
 signed-reserved-leftinv :
   (xy : Axis × Bool) →

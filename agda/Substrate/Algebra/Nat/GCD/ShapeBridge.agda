@@ -21,14 +21,15 @@
 
 module Substrate.Algebra.Nat.GCD.ShapeBridge where
 
-open import Substrate.Foundation.Nat using (ℕ; suc; _<_)
-open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Nat.Lt
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Algebra.Nat.GCD.EEATrace using (EEATrace)
 open import Substrate.Algebra.Nat.GCD.GcdN using (gcd-ℕ)
 open import Substrate.Algebra.Nat.GCD.GcdTrace using (gcd-trace)
-open import Substrate.Algebra.Nat.GCD.GcdPos using (gcd-suc-pos)
-open import Substrate.Algebra.Nat.GCD.CFInvariance using (shape-value-invariance)
+open import Substrate.Algebra.Nat.GCD.GcdPos.GcdSucPos
+open import Substrate.Algebra.Nat.GCD.CFInvariance.ShapeValueInvariance
 open import Substrate.Algebra.Wedge.Shape using (ℕ-shape)
+open import Substrate.Foundation.Eq
 
 -- Same value (here: literally the same a,b) ⟹ same shape — the keystone at refl.
 trace-shape-det : {a b g : ℕ} (t₁ t₂ : EEATrace a b g) →

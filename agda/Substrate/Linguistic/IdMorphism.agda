@@ -13,7 +13,6 @@
 
 module Substrate.Linguistic.IdMorphism where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
 
 open import Substrate.Category.FreeOverBasis using (LanguageWitness)
 open import Substrate.Linguistic.Morphism using (LanguageMorphism; mkLangMor)
@@ -25,12 +24,13 @@ open import Substrate.Linguistic.Morphism using (LanguageMorphism; mkLangMor)
 -- and carrier-map are λ x → x; η-coherence holds by refl.
 ------------------------------------------------------------------------
 
-open import Substrate.Lojban.AsFreeOverBasis using (lojban-witness)
-open import Substrate.TokiPona.AsFreeOverBasis using (tokipona-witness)
+open import Substrate.Lojban.AsFreeOverBasis.LojbanWitness
+open import Substrate.TokiPona.AsFreeOverBasis.TokiponaWitness
 open import Substrate.Solresol.Fragment.Witness using (solresol-witness)
-open import Substrate.Kelen.Fragment using (kelen-witness)
-open import Substrate.Lambda.Fragment using (lambda-witness)
+open import Substrate.Kelen.Fragment.KelenWitness
+open import Substrate.Lambda.Fragment.LambdaWitness
 open import Substrate.Invented.LieFragment using (lie-witness)
+open import Substrate.Foundation.Eq
 id-morphism : {B F : Set} (L : LanguageWitness B F) → LanguageMorphism L L
 id-morphism L = mkLangMor
   (λ b → b)

@@ -27,15 +27,19 @@
 
 module Substrate.Algebra.F2.Polynomial.Wedge.DLogHom where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
 open import Substrate.Foundation.Vec using (Vec; []; _∷_)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong)
-import Substrate.Algebra.F2 as F2
+import Substrate.Algebra.F2.F2 as F2
 open import Substrate.Algebra.F2.CommRing using (F₂-CommRing)
 import Substrate.Algebra.Polynomial.Graded.FromCommRing as F
 import Substrate.Algebra.Polynomial.Graded.Mod as M
 import Substrate.Algebra.Polynomial.Graded.Quotient as Q
 import Substrate.Algebra.Polynomial.Graded.Div as D
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 module Over (d : ℕ) (m-lo : Vec F2.F₂ (suc d)) where
   open F.Over F₂-CommRing using (Poly)
@@ -54,7 +58,7 @@ module Over (d : ℕ) (m-lo : Vec F2.F₂ (suc d)) where
   gpowg g (suc n) = g *Q gpowg g n
 
   gpowg-hom : (g : Poly (suc d)) (a b : ℕ) →
-              gpowg g (a + b) ≡ (gpowg g a *Q gpowg g b)
+              gpowg g (a ℕ+ b) ≡ (gpowg g a *Q gpowg g b)
   gpowg-hom g zero    b = sym (*Q-identityˡ (gpowg g b))
   gpowg-hom g (suc a) b =
     trans (cong (g *Q_) (gpowg-hom g a b))
@@ -85,18 +89,18 @@ module Over (d : ℕ) (m-lo : Vec F2.F₂ (suc d)) where
            (sym (cong (_*Q r) (xpow-ytime a oneC)))))
 
   -- exponent-additivity of the antilog iterator.
-  xpow-add : (a b : ℕ) (r : Poly (suc d)) → xpow (a + b) r ≡ xpow a (xpow b r)
+  xpow-add : (a b : ℕ) (r : Poly (suc d)) → xpow (a ℕ+ b) r ≡ xpow a (xpow b r)
   xpow-add zero    b r = refl
   xpow-add (suc a) b r =
     trans (xpow-add a b (ytime r)) (cong (xpow a) (xpow-ytime b r))
 
   -- THE HOMOMORPHISM: g^(a+b) ≡ gᵃ · gᵇ — structural, no field-mult reflection.
-  gpow-hom : (a b : ℕ) → gpow (a + b) ≡ (gpow a *Q gpow b)
+  gpow-hom : (a b : ℕ) → gpow (a ℕ+ b) ≡ (gpow a *Q gpow b)
   gpow-hom a b = trans (xpow-add a b oneC) (xpow-*Q a (gpow b))
 
   -- THE GENERAL DISCRETE-LOG INVERSE: gᵏ · gʲ ≡ 1 whenever k+j = order.
   dlog-inv-law : (ord : ℕ) → gpow ord ≡ oneC →
-                 (k j : ℕ) → k + j ≡ ord → (gpow k *Q gpow j) ≡ oneC
+                 (k j : ℕ) → k ℕ+ j ≡ ord → (gpow k *Q gpow j) ≡ oneC
   dlog-inv-law ord g k j kj = trans (sym (gpow-hom k j)) (trans (cong gpow kj) g)
 
 ------------------------------------------------------------------------
@@ -116,5 +120,5 @@ order15 = refl
 
 -- the GENERAL GF(2⁴) dlog inverse law — covers every nonzero element, no
 -- per-element reflections: gᵏ · g^(15−k) ≡ 1 for all k+j=15.
-dlog-inv₄ : (k j : ℕ) → k + j ≡ 15 → (GF16.gpow k *Q GF16.gpow j) ≡ oneC
+dlog-inv₄ : (k j : ℕ) → k ℕ+ j ≡ 15 → (GF16.gpow k *Q GF16.gpow j) ≡ oneC
 dlog-inv₄ = GF16.dlog-inv-law 15 order15

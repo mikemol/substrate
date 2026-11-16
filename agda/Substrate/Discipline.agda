@@ -50,13 +50,15 @@ module Substrate.Discipline where
 open import Substrate.Cocycles.V4Signature.CY5 using (CY5-V4Signature)
 
 open import Substrate.Foundation.Product using (Σ; Σ-syntax; _,_; proj₁; proj₂; ∃; -,_)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; trans; cong)
 
 open import Substrate.Algebra.SetoidGroup using (SetoidGroup)
 open import Substrate.Cocycle as Cocycle
   using (IsomorphicCocycleStructure; WeakCocycleStructure;
          Action; IsTorsor)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- Rule 1 — Gauge-versus-invariant separation.
@@ -244,8 +246,7 @@ module Demo where
 
   open import Substrate.Cocycles.V4Signature
     using (CY5-V4Signature)
-  open import Substrate.Cocycles.F2CubedPuncturing
-    using (F2³-Puncturing-Cocycle)
+  open import Substrate.Cocycles.F2CubedPuncturing.F23PuncturingCocycle
   open import Substrate.Cocycles.KRule
     using (KRule-Cocycle)
 

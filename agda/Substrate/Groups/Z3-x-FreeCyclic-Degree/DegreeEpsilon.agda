@@ -8,10 +8,10 @@
 
 module Substrate.Groups.Z3-x-FreeCyclic-Degree.DegreeEpsilon where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
 
 import Substrate.Groups.Capabilities.xFreeCyclic.Witness as xFreeCyclicW
 open import Substrate.Groups.Z3-x-FreeCyclic-Degree.CycleDegree using (cycle-degree)
+open import Substrate.Foundation.Eq
 cap-Z₃ = xFreeCyclicW.cap 2
 
 

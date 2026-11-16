@@ -23,15 +23,17 @@
 
 module Substrate.Category.UniversalProperty.ExtrudeBisimRunEq where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; cong)
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.List using (List; []; _∷_)
 open import Substrate.Foundation.Product using (_×_; _,_; proj₂)
-open import Substrate.Algebra.R.Trace.SKIShedDuality using () renaming (Tm to Tm⟦533ef80d⟧)
+
 open import Substrate.Algebra.Wedge.Coalgebra using (Unfold; halt; loop; stop)
 open import Substrate.Category.UniversalProperty.ExtrudeStepDecidable using (HeadShape)
 open import Substrate.Category.UniversalProperty.ExtrudeBisimRun using (RedTrace; run-trace; more; take-obs)
 open import Substrate.Category.UniversalProperty.ExtrudeBisimUnfold using (BisimOutcome; to-unfold)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Algebra.R.Trace.SKIShedDuality.Tm
 
 -- a local length on the observation output (Foundation.List has no length):
 len : List HeadShape → ℕ
@@ -42,12 +44,12 @@ len (_ ∷ xs) = suc (len xs)
 -- ① THE FUEL-BOUNDED RUN: produce the observed prefix (take-obs, 278) and the truncation VERDICT `stop`. The
 --    run itself never computes halt/loop — those are witnessed (②). This is the honest run: output + stop.
 ------------------------------------------------------------------------
-brun : ℕ → Tm⟦533ef80d⟧ → List HeadShape × Unfold
+brun : ℕ → Tm → List HeadShape × Unfold
 brun fuel t = take-obs fuel (run-trace t) , stop
 
 -- at zero fuel you are IMMEDIATELY out of output ⟹ the verdict is stop, output empty — EXACTLY the wedge-run:
 --   (Wedge.Coalgebra.run co zero seen a b = [] , stop)
-brun-zero : (t : Tm⟦533ef80d⟧) → brun 0 t ≡ ([] , stop)
+brun-zero : (t : Tm) → brun 0 t ≡ ([] , stop)
 brun-zero t = refl
 
 -- the output has exactly `fuel` observations — what you produce before running out:
@@ -56,11 +58,11 @@ len-obs zero    s = refl
 len-obs (suc n) s = cong suc (len-obs n (more s))
 
 -- the run's output prefix has exactly `fuel` observations (the corollary at run-trace t):
-len-run : (n : ℕ) (t : Tm⟦533ef80d⟧) → len (take-obs n (run-trace t)) ≡ n
+len-run : (n : ℕ) (t : Tm) → len (take-obs n (run-trace t)) ≡ n
 len-run n t = len-obs n (run-trace t)
 
 -- the truncation verdict IS stop (you ran out of output) — the honest default of the run:
-verdict-is-stop : (fuel : ℕ) (t : Tm⟦533ef80d⟧) → proj₂ (brun fuel t) ≡ stop
+verdict-is-stop : (fuel : ℕ) (t : Tm) → proj₂ (brun fuel t) ≡ stop
 verdict-is-stop fuel t = refl
 
 ------------------------------------------------------------------------
@@ -68,7 +70,7 @@ verdict-is-stop fuel t = refl
 --    each POSITIVELY witnessed) gives the halt/loop/stop tag — observed BEFORE truncation, NOT computed by
 --    the run. So the run's default verdict (stop, ①) upgrades to halt/loop ONLY on a witness.
 ------------------------------------------------------------------------
-upgrade : {t : Tm⟦533ef80d⟧} → BisimOutcome t → Unfold
+upgrade : {t : Tm} → BisimOutcome t → Unfold
 upgrade = to-unfold
 
 ------------------------------------------------------------------------

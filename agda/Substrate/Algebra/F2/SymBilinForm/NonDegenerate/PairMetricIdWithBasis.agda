@@ -23,9 +23,8 @@ module Substrate.Algebra.F2.SymBilinForm.NonDegenerate.PairMetricIdWithBasis whe
 
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using (lookup)
-open import Substrate.Foundation.Eq using (_≡_; trans; cong)
 
-open import Substrate.Algebra.F2 using (·-comm)
+open import Substrate.Algebra.F2.Comm
 open import Substrate.Algebra.F2.Vector using (Vector; basis)
 open import Substrate.Algebra.F2.Vector.Universal using (sum-F₂; sum-F₂-cong)
 open import Substrate.Algebra.F2.SymBilinForm.MetricId using (metric-id)
@@ -33,6 +32,9 @@ open import Substrate.Algebra.F2.SymBilinForm.BilinearFormOf using (bilinear-for
 open import Substrate.Algebra.F2.SymBilinForm.HodgeRecast using (metric-id-collapse)
 open import Substrate.Algebra.F2.SymBilinForm.NonDegenerate.BasisRowEqMetricId
   using (basis-row-eq-metric-id)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 pair-metric-id-with-basis-generic :
   ∀ {n} (v : Vector n) (i : Fin n) →
@@ -41,15 +43,15 @@ pair-metric-id-with-basis-generic {n} v i =
   trans
     -- Inner δ-collapse on each k.
     (sum-F₂-cong {n} (λ k →
-      cong (lookup v k ·_) (metric-id-collapse k (basis i))))
+      cong (lookup v k ·ⱽ_) (metric-id-collapse k (basis i))))
   (trans
     -- Replace lookup (basis i) k with metric-id i k.
     (sum-F₂-cong {n} (λ k →
-      cong (lookup v k ·_) (basis-row-eq-metric-id i k)))
+      cong (lookup v k ·ⱽ_) (basis-row-eq-metric-id i k)))
   (trans
     -- Swap factor order so metric-id is on the left.
     (sum-F₂-cong {n} (λ k →
       ·-comm (lookup v k) (metric-id i k)))
     -- Outer δ-collapse.
     (metric-id-collapse i v)))
-  where open import Substrate.Algebra.F2 using (_·_)
+  where open import Substrate.Algebra.F2.Op

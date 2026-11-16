@@ -25,16 +25,16 @@ module Substrate.Groups.Subgroup where
 
 open import Substrate.Foundation.Level using (0ℓ; suc)
 open import Substrate.Foundation.Product using (∃; _,_; proj₁; proj₂)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; trans; cong; sym-trans)
 
 open import Substrate.Axes.Axis using (Axis)
-open import Substrate.Groups.V4.Bijection using (V₄; e; α; β; γ)
-import Substrate.Groups.V4.Operations as V4
+open import Substrate.Groups.V4.Bijection.V4
 
 open import Substrate.Groups.V4-Embedding
   using (embed; embed-hom; V₄-image; act-axis-id)
 open import Substrate.Groups.SemidirectProduct using (Stab)
+-- ⚑ `V₄-normal-compositional` WAS REACHED THROUGH `V4-Normality`'s `public`
+-- RE-EXPORT (Ⓑ2c); its home is `Groups.S4-Iso`.
+open import Substrate.Groups.S4-Iso
 open import Substrate.Groups.V4-Normality using (V₄-normal)
 open import Substrate.Groups.Symmetric.Permutation.Compose Axis
 open import Substrate.Groups.Symmetric.ComposeCong Axis
@@ -46,6 +46,14 @@ open import Substrate.Groups.Symmetric.Permutation.Inverse Axis
 open import Substrate.Groups.Symmetric.InverseCong Axis
 open import Substrate.Groups.Symmetric.Permutation Axis
 open import Substrate.Groups.SemidirectProduct.Stab
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.SymTrans
+open import Substrate.Category.Comonoid.Sites.V4
+import Substrate.Groups.V4.Operations as V4
+open import Substrate.S5.Dedupe
 
 ------------------------------------------------------------------------
 -- Subgroup of S_4 (specialised).

@@ -27,11 +27,13 @@
 
 module Substrate.Category.ReedMullerHierarchy where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_; _∸_; _≤_; z≤n; s≤s)
-open import Substrate.Foundation.List using (List; []; _∷_)
-open import Substrate.Foundation.List.Length using (length)
-open import Substrate.Foundation.Product using (_×_; _,_; Σ-syntax)
-open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Nat.Le
+open import Substrate.Foundation.Nat.Monus
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Times
+open import Substrate.Foundation.Eq
+open import Substrate.Cocycles.V4Signature.Codeword.Type
 
 ------------------------------------------------------------------------
 -- Parameters of an RM code.
@@ -56,19 +58,19 @@ length-of p = pow2 (m p)
 -- Reed-Muller dimension k(r, m) = Σ_{i=0}^{r} C(m, i).
 --
 -- Stated structurally; concrete instances enumerate the formula or
--- use the binomial recursion C(n, k) = C(n−1, k−1) + C(n−1, k).
+-- use the binomial recursion C(n, k) = C(n−1, k−1) ℕ+ C(n−1, k).
 
 choose : ℕ → ℕ → ℕ
 choose _ zero          = 1
 choose zero (suc _)    = 0
-choose (suc n) (suc k) = choose n k + choose n (suc k)
+choose (suc n) (suc k) = choose n k ℕ+ choose n (suc k)
 
 rm-dimension : RMParams → ℕ
 rm-dimension p = go (r p)
   where
     go : ℕ → ℕ
     go zero    = choose (m p) zero
-    go (suc r) = choose (m p) (suc r) + go r
+    go (suc r) = choose (m p) (suc r) ℕ+ go r
 
 -- Minimum distance 2^(m − r).
 

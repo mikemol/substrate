@@ -11,7 +11,7 @@
 -- permutation (insert-at p σ = p ∷ map (punchIn p) σ) flips the sign by the
 -- parity of p:
 --     sign (insert-at p σ) ≡ finParity-bool p  xor  sign σ        (σ a perm)
---   ⟹ signF (decode (l ◂ p)) ≡ finParity p + signF (decode l).
+--   ⟹ signF (decode (l ◂ p)) ≡ finParity p ℕ+ signF (decode l).
 --
 -- Route A (COUNTING): the head p contributes #{tail entries < p} inversions;
 --   for a permutation the tail is exactly Fin(suc n)∖{p}, so that count is p.
@@ -28,17 +28,27 @@
 
 module Substrate.WitnessTower.InsertionParity where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _<_; _≤_; s≤s; z≤n; suc-injective)
+open import Substrate.Foundation.Nat.Le
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.SucInjective
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.To
 open import Substrate.Foundation.Fin.Sucinjective
-open import Substrate.Foundation.Fin.Op2
-open import Substrate.Foundation.Eq using (_≡_; refl; trans; sym; cong; cong₂)
-open import Substrate.Foundation.Bool using (Bool; true; false; _xor_; not)
+open import Substrate.Foundation.Bool.Bool
+open import Substrate.Foundation.Bool.Not
+open import Substrate.Foundation.Bool.Xor
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; map; lookup)
-open import Substrate.Foundation.Vec.Properties using (lookup∘tabulate)
-open import Substrate.Algebra.F2 using (F₂; 𝟘; 𝟙; _≟_) renaming (_+_ to _+F_)
-open import Substrate.Foundation.Hedberg using (Decidable⇒UIP)
+open import Substrate.Foundation.Vec.Properties.LookupComptabulate
+open import Substrate.Algebra.F2.Dec
+open import Substrate.Algebra.F2.F2
+-- ⚑ THE SWEEP DROPPED THE BINDING WITH THE `renaming`.  This read
+-- `open import Substrate.Algebra.F2 using (F₂; 𝟘; 𝟙; _≟_) renaming (_+_ to _+F_)`;
+-- removing the banned `renaming` also removed the only route to `_+F_`, which
+-- the body uses at :92 and throughout.  `_+F_` is spelled that way at its own
+-- home, so the ban's remedy (rename-at-source) is already satisfied there.
+open import Substrate.Algebra.F2.PlusF
+open import Substrate.Foundation.Hedberg.DecidableUIP
 open import Substrate.Algebra.F2.FromBool using (bool→F₂; bool→F₂-xor)
 open import Substrate.Algebra.N-to-F2-Parity using (parity; parity-+)
 
@@ -51,7 +61,9 @@ open import Substrate.WitnessTower.CyclicGrounding using (compose-assoc)
 open import Substrate.WitnessTower.Decompose using (lookup-ext)
 open import Substrate.WitnessTower.Wedge.OrientationRigFree using (ρ; insert-at-rot)
 open import Substrate.WitnessTower.TowerCocycleGraded using (signF)
-open import Substrate.WitnessTower.LehmerPath using (LehmerPath; decode; _◂_; decode-is-perm)
+open import Substrate.WitnessTower.LehmerPath.Decode
+open import Substrate.WitnessTower.LehmerPath.DecodeIsPerm
+open import Substrate.WitnessTower.LehmerPath.LehmerPath
 open import Substrate.Foundation.Fin.Punctured using (punchIn)
 open import Substrate.WitnessTower.Wedge.OrientationRigCatPermSign
   using (sign; parityLess; parityLess-zero; sign-map-suc; sign-id; sign-sadj;
@@ -61,15 +73,36 @@ open import Substrate.WitnessTower.Wedge.OrientationRigCatPermCoxeterGeneral
   using (sadj; inj1; CoxGen; cox-id; cox-s; cox-∘)
 open import Substrate.WitnessTower.Wedge.OrientationRigCatPermCoxeterGeneral.Properties
   using (idInsert-step; toℕ-inj1; coxeter-complete; idInsert-CoxGen)
-open import Substrate.WitnessTower.LehmerTowerMorphism
-  using (finParity; sign-lehmer-morphism; lehmer-graded; F₂-target)
+-- ⚑ `LehmerTowerMorphism` (the parent) NO LONGER EXISTS — it was dissolved into
+-- nine one-name leaves and its consumers were never rewired, so this import was
+-- a [FileNotFound] waiting at every build.  `rewire_to_leaves` mapped the other
+-- eight importers automatically and reported this file UNMAPPED, correctly: the
+-- name it wants (`sign-lehmer-morphism`) is reached here through a BARE import
+-- with no `using` clause, so the mapper had no clause to key on.  Resolved by
+-- asking the name→home authority (`agda_defs sign-lehmer-morphism` → `.Anon`)
+-- rather than by guessing from the leaf list.
+-- ⚑ THE `using` CLAUSE NAMED FOUR NAMES FROM FOUR DIFFERENT LEAVES.  It sat on a
+-- CONTINUATION line, so a first edit repointed the head at `.Anon` alone and
+-- Agda reported the other three as ModuleDoesntExport — a WARNING that binds
+-- nothing and fails far away, which is the exact latent-break shape the ban
+-- exists to remove.  Each name now comes from its own home (via `agda_defs`),
+-- and the clause is gone: `using` is banned on Substrate imports.
+open import Substrate.WitnessTower.LehmerTowerMorphism.Anon
+open import Substrate.WitnessTower.LehmerTowerMorphism.FinParity
+open import Substrate.WitnessTower.LehmerTowerMorphism.LehmerGraded
+open import Substrate.WitnessTower.LehmerTowerMorphism.F2Target
 open import Substrate.Algebra.Wedge.Graded.Morphism using (GradedDivStrMorphism)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
 
 ------------------------------------------------------------------------
 -- SHARED 1. finParity IS parity ∘ toℕ (the Fin-digit parity = ℕ parity).
 ------------------------------------------------------------------------
 
--- two 𝟙-additions cancel (characteristic 2): 𝟙 + (𝟙 + x) ≡ x.
+-- two 𝟙-additions cancel (characteristic 2): 𝟙 ℕ+ (𝟙 ℕ+ x) ≡ x.
 two-cancel : (x : F₂) → 𝟙 +F (𝟙 +F x) ≡ x
 two-cancel 𝟘 = refl
 two-cancel 𝟙 = refl
@@ -93,7 +126,7 @@ bool→F₂-oddB zero    = refl
 bool→F₂-oddB (suc n) = trans (not-lemma (oddB n))
                              (cong (𝟙 +F_) (bool→F₂-oddB n))
   where
-    -- bool→F₂ (not b) ≡ 𝟙 + bool→F₂ b, matching parity (suc n) = 𝟙 + parity n.
+    -- bool→F₂ (not b) ≡ 𝟙 ℕ+ bool→F₂ b, matching parity (suc n) = 𝟙 ℕ+ parity n.
     not-lemma : (b : Bool) → bool→F₂ (not b) ≡ (𝟙 +F bool→F₂ b)
     not-lemma true  = refl
     not-lemma false = refl
@@ -227,7 +260,7 @@ sign-lehmer-morphism-unconditional : GradedDivStrMorphism lehmer-graded F₂-tar
 sign-lehmer-morphism-unconditional = sign-lehmer-morphism insertion-parity-B
 
 ------------------------------------------------------------------------
--- ROUTE A (◆ip-count-below + ◆ip-route-a) — the DISTINCT second derivation
+-- ROUTE A (◆ip-count-below ℕ+ ◆ip-route-a) — the DISTINCT second derivation
 -- via the INVERSION COUNT. F σ = parityLess p (map (punchIn p) σ) is a
 -- comm xor-fold, hence permutation-invariant (F-mult over the Coxeter word,
 -- NEEDS surjectivity via coxeter-complete); so F σ = F (id-perm) = the count
@@ -262,7 +295,7 @@ F-mult p v (cox-∘ {σ = σ'} {τ = τ'} g h) =
 
 ------------------------------------------------------------------------
 -- idcount — the count of {j ∈ 0..m-1 : toℕ j < toℕ p} is oddB (toℕ p).
--- via punchIn-lt (finLt (punchIn p j) p = toℕ j <ᵇ toℕ p) + a ℕ-level fold.
+-- via punchIn-lt (finLt (punchIn p j) p = toℕ j <ᵇ toℕ p) ℕ+ a ℕ-level fold.
 ------------------------------------------------------------------------
 
 -- finLt is punchIn-order: punchIn p j < p ⟺ j < p (below the puncture).
@@ -333,14 +366,14 @@ insertion-parity-A l p =
 ------------------------------------------------------------------------
 -- ◆ip-agree — THE CO-APEX. The two routes are PROPOSITIONALLY (not
 -- definitionally) equal proofs of ONE F₂ equation; `refl` FAILS (they are
--- different terms — Route A goes through the inversion count + surjectivity,
--- Route B through the σ-independent rotation + only the generators). F₂ is
+-- different terms — Route A goes through the inversion count ℕ+ surjectivity,
+-- Route B through the σ-independent rotation ℕ+ only the generators). F₂ is
 -- an h-set (Hedberg, via its decidable equality), so any two proofs agree.
 --
 -- CAVEAT (echoing Algebra/Q/Properties/RouteAgreement): this certifies the
 -- CODOMAIN IS A PROP, NOT that the routes share content. The genuine finding
 -- is the RETAINED DISTINCTION in the bodies — Route A NEEDS surjectivity
--- (coxeter-complete), Route B needs ONLY generators (sign-hom + sadj). That
+-- (coxeter-complete), Route B needs ONLY generators (sign-hom ℕ+ sadj). That
 -- distinction is the coverage; it is not dissolved by the agreement.
 ------------------------------------------------------------------------
 

@@ -16,11 +16,14 @@
 
 module Substrate.Category.UniversalProperty.Category where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; cong)
 open import Substrate.Foundation.Level using (Level; _⊔_)
 
 open import Substrate.Category.UniversalProperty.Term
   using (UPTerm; []; _∷_; _++ᵤ_)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Probability.MarkovCategory
 
 ------------------------------------------------------------------------
 -- 1. Identity and composition (at the term level).

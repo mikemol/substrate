@@ -22,11 +22,13 @@
 
 module Substrate.Algebra.F2.HodgeDim3.MetricGauge.BilinearFormSteps where
 
-open import Substrate.Foundation.Eq using (_≡_; cong; cong-trans)
 open import Substrate.Algebra.F2.Vector using (Vector)
-open import Substrate.Algebra.F2.Linear using (Linear; apply)
+open import Substrate.Algebra.F2.Linear.Linear
 open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.Type using (SymBilinForm-3)
 open import Substrate.Algebra.F2.HodgeDim3.MetricGauge.BilinearFormOf using (bilinear-form-of)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.CongTrans
 
 ------------------------------------------------------------------------
 -- Diagonal step. Rewrites `bilinear-form-of M (apply s e) (apply s e)`

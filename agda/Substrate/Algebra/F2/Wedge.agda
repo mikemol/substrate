@@ -4,7 +4,7 @@
 -- F₂ FOUNDED ON THE WEDGE — F₂ as a `DivStr`, so it becomes a wedge-carrier
 -- (a vertex of the foundational quotient algebra) rather than a primitive
 -- data type the wedge cannot reach. The reconstruction is the ring shape
--- `recon q b r = (q · b) + r`, with `z = 𝟘` the terminal divisor and the
+-- `recon q b r = (q · b) +F r`, with `z = 𝟘` the terminal divisor and the
 -- quotient `q` a CARRIER REPRESENTATIVE (an element of F₂), not a ℕ count.
 --
 -- WHY THIS EXISTS: the shred of the realizable peak showed the foundation is
@@ -28,8 +28,10 @@
 
 module Substrate.Algebra.F2.Wedge where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Algebra.F2 using (F₂; 𝟘; _+_; _·_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.Op
+open import Substrate.Algebra.F2.PlusF
 open import Substrate.Algebra.Wedge using (DivStr)
 
 ------------------------------------------------------------------------
@@ -38,13 +40,13 @@ open import Substrate.Algebra.Wedge using (DivStr)
 
 scale : ℕ → F₂ → F₂
 scale zero    _ = 𝟘
-scale (suc n) b = b + scale n b
+scale (suc n) b = b +F scale n b
 
 ------------------------------------------------------------------------
--- 2. F₂ as a wedge-carrier: recon q b r = (q · b) + r, z = 𝟘.
+-- 2. F₂ as a wedge-carrier: recon q b r = (q · b) +F r, z = 𝟘.
 --    The quotient q is a CARRIER REPRESENTATIVE (an element of F₂), so the
 --    reconstruction is F₂'s ring multiplication, not the ℕ-count `scale`.
 ------------------------------------------------------------------------
 
 F₂-div : DivStr F₂
-F₂-div = record { z = 𝟘 ; recon = λ q b r → q · b + r }
+F₂-div = record { z = 𝟘 ; recon = λ q b r → q · b +F r }

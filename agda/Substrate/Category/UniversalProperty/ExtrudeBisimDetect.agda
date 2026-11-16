@@ -24,10 +24,10 @@
 
 module Substrate.Category.UniversalProperty.ExtrudeBisimDetect where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; subst)
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Bool using (Bool; true; false; _∧_)
-open import Substrate.Algebra.R.Trace.SKIShedDuality using () renaming (Tm to Tm⟦533ef80d⟧)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Bool.And
+open import Substrate.Foundation.Bool.Bool
+
 open import Substrate.Category.UniversalProperty.ExtrudeStepDecidable using (HeadShape; isS; isK; isI; isApp)
 open import Substrate.Category.UniversalProperty.ExtrudeBisimRun
   using (RedTrace; run-trace; obs; more; _≈_; obs≈; more≈)
@@ -35,6 +35,9 @@ open import Substrate.Category.UniversalProperty.ExtrudeBisimLassoK using (more^
 
 open import Substrate.Foundation.Function.Iterate using (iterate)
 open import Substrate.Category.UniversalProperty.ExtrudeMinimalRun using (step)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Subst
+open import Substrate.Algebra.R.Trace.SKIShedDuality.Tm
 
 ------------------------------------------------------------------------
 -- ① THE CHEAP PER-STEP OBSERVATION-EQUALITY: head-eq on HeadShape (a finite 4-tag) — the cheapest bijective
@@ -77,7 +80,7 @@ bisim-upto (suc n) s t = head-eq (obs s) (obs t) ∧ bisim-upto n (more s) (more
 --    bounded observation to any depth — the loop is DETECTABLE observationally (a bounded witness), its truth
 --    the coinductive bisimulation (bled).
 ------------------------------------------------------------------------
-lasso→upto : (t : Tm⟦533ef80d⟧) (k : ℕ) → iterate k step t ≡ t →
+lasso→upto : (t : Tm) (k : ℕ) → iterate k step t ≡ t →
              (n : ℕ) → bisim-upto n (run-trace t) (more^ k (run-trace t)) ≡ true
 lasso→upto t k cyc n = ≈→upto n (run-trace t) (more^ k (run-trace t)) (lasso-k t k cyc)
 
@@ -85,11 +88,11 @@ lasso→upto t k cyc n = ≈→upto n (run-trace t) (more^ k (run-trace t)) (las
 -- ⑤ THE BOUNDED PER-STEP SEARCH for a period-k loop: does the trace agree with its k-shift up to fuel? A
 --    DECIDABLE bounded observation (the per-step search); the real cycle is confirmed by the lasso (④, bled).
 ------------------------------------------------------------------------
-detect-period : (fuel k : ℕ) (t : Tm⟦533ef80d⟧) → Bool
+detect-period : (fuel k : ℕ) (t : Tm) → Bool
 detect-period fuel k t = bisim-upto fuel (run-trace t) (more^ k (run-trace t))
 
 -- a genuine k-cycle IS detected to any fuel (the search never gives a false negative on a real cycle):
-detect-sound : (fuel k : ℕ) (t : Tm⟦533ef80d⟧) → iterate k step t ≡ t → detect-period fuel k t ≡ true
+detect-sound : (fuel k : ℕ) (t : Tm) → iterate k step t ≡ t → detect-period fuel k t ≡ true
 detect-sound fuel k t cyc = lasso→upto t k cyc fuel
 
 ------------------------------------------------------------------------

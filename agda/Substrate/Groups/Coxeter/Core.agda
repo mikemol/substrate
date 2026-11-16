@@ -36,13 +36,20 @@
 
 {-# OPTIONS --safe --without-K #-}
 
-open import Substrate.Foundation.Eq using (_≡_)
+
+-- ⚑ `_≡_` IS USED IN THE TELESCOPE BELOW (`++-assoc`), so its import must
+-- PRECEDE the module header.  It sat at the END of this file, after the
+-- body — far too late for the parameter list, which is scope-checked
+-- before anything inside `where`.  That is why the telescope reported
+-- [NotInScope] ≡ the moment the parse error above it was cleared.
+open import Substrate.Foundation.Eq
+open import Substrate.Algebra.Quotient.Canonical
 
 module Substrate.Groups.Coxeter.Core
   (Word : Set)
   (_++_ : Word → Word → Word)
   (ε-in : Word)
-  (++-assoc : (a b c : Word) → (a ++ b) ++ c ≡ a ++ (b ++ c))
+  (++-assoc : (a b c : Word) → ((a ++ b) ++ c) ≡ (a ++ (b ++ c)))
   (Canonical : Word → Set)
   (normalize : Word → Word)
   (normalize-canonical : (w : Word) → Canonical (normalize w))

@@ -21,7 +21,10 @@
 module Substrate.Category.UniversalProperty.ConfluenceUnique where
 
 open import Substrate.Foundation.Product using (Σ; _,_; _×_)
-open import Substrate.Foundation.Eq using (_≡_; sym; trans)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.RewriteConfluence
 
 module CRUnique
   {Tm : Set}

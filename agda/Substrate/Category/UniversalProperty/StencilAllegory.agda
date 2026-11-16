@@ -19,9 +19,11 @@
 
 module Substrate.Category.UniversalProperty.StencilAllegory where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans)
 open import Substrate.Foundation.Product using (_,_)
 open import Substrate.Category.Allegory using (_†; _≈_; _⊆_; idR; _⨾_)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
 
 ------------------------------------------------------------------------
 -- ① THE STENCIL'S CROSS-RELATION AS AN ALLEGORY Rel. Given the cospan data (two framing-

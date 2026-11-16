@@ -5,26 +5,28 @@
 -- one nesting deeper). Foundations: `convCoeff-comm` (corollary of *P-comm),
 -- `convCoeff-basis-right`, general x-power vanishing (`nth-xpower-off`), and the
 -- all-basis bottom `mono-assoc` (both triple products are the SAME delta at
--- toℕi+toℕj+toℕk, reconciled at length by ℕ +-assoc).
+-- toℕi+toℕj+toℕk, reconciled at length by ℕ +ℕ-assoc).
 ------------------------------------------------------------------------
 
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.Algebra.F2.Polynomial.RingLaws.Assoc where
 
-open import Substrate.Algebra.F2 using (𝟘; 𝟙)
+open import Substrate.Algebra.F2.F2
 open import Substrate.Algebra.F2.Vector using (basis)
 open import Substrate.Algebra.F2.Polynomial using (Polynomial; _*P_)
 open import Substrate.Algebra.F2.Polynomial.Wedge.XPower using (x-power)
-open import Substrate.Algebra.F2.Linear using (Linear; apply)
+open import Substrate.Algebra.F2.Linear.Linear
 open import Substrate.Algebra.F2.Linear.Universal using (linear-extensionality)
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _≟_) renaming (_+_ to _ℕ+_)
-open import Substrate.Foundation.Nat.Properties.Add using (+-comm) renaming (+-assoc to +ℕ-assoc)
+open import Substrate.Foundation.Nat.Dec
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Properties.Add.PlusAssoc
+open import Substrate.Foundation.Nat.Properties.Add.PlusComm
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.To
-open import Substrate.Foundation.Fin.Op2
-open import Substrate.Foundation.Negation using (¬_; yes; no)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; subst)
+open import Substrate.Foundation.Negation.Dec
+open import Substrate.Foundation.Negation.Not
 open import Substrate.Algebra.F2.Polynomial.RingLaws.Nth using (nth; nth-subst)
 open import Substrate.Algebra.F2.Polynomial.RingLaws.Conv using (convCoeff; nth-*P; nth-ext)
 open import Substrate.Algebra.F2.Polynomial.RingLaws.Distrib using (*P-distribʳ; *P-distribˡ)
@@ -35,6 +37,13 @@ open import Substrate.Algebra.F2.Polynomial.RingLaws.Basis using (convCoeff-basi
 open import Substrate.Algebra.F2.Polynomial.RingLaws.BasisComm using (nth-xpower-basis-peak;
   nth-xpower-basis-off)
 open import Substrate.Algebra.F2.Polynomial.RingLaws.Comm using (*P-comm)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Subst
+open import Substrate.Algebra.F2.Linear.Cycle3
+open import Substrate.Algebra.Z.JacobianResidue
 
 -- 7h-cc: coefficient-level commutativity, a clean corollary of *P-comm.
 convCoeff-comm : ∀ {n m} (p : Polynomial n) (q : Polynomial m) (d : ℕ)
@@ -42,7 +51,7 @@ convCoeff-comm : ∀ {n m} (p : Polynomial n) (q : Polynomial m) (d : ℕ)
 convCoeff-comm {n} {m} p q d =
   trans (sym (nth-*P p q d))
   (trans (cong (λ z → nth z d) (*P-comm p q))
-  (trans (nth-subst (+-comm m n) (q *P p) d) (nth-*P q p d)))
+  (trans (nth-subst (+ℕ-comm m n) (q *P p) d) (nth-*P q p d)))
 
 -- right-monomial coefficient law (k goes into the shift via comm).
 convCoeff-basis-right : ∀ {n m} (p : Polynomial n) (k : Fin m) (d : ℕ)
@@ -70,7 +79,7 @@ mono-assoc {n} {m} {l} i j k = nth-ext _ _ (λ d →
     P : ℕ
     P = toℕ i ℕ+ (toℕ j ℕ+ toℕ k)
     rk : toℕ k ℕ+ (toℕ i ℕ+ toℕ j) ≡ P
-    rk = trans (+-comm (toℕ k) (toℕ i ℕ+ toℕ j)) (+ℕ-assoc (toℕ i) (toℕ j) (toℕ k))
+    rk = trans (+ℕ-comm (toℕ k) (toℕ i ℕ+ toℕ j)) (+ℕ-assoc (toℕ i) (toℕ j) (toℕ k))
     lhsV : (d : ℕ) → nth ((basis i *P basis j) *P basis k) d
                    ≡ nth (x-power (toℕ k) (basis i *P basis j)) d
     lhsV d = trans (nth-*P (basis i *P basis j) (basis k) d)

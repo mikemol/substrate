@@ -18,16 +18,16 @@ module Substrate.Algebra.Wedge.Contextuality.Models2 where
 
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; lookup)
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.Foundation.Negation using (¬_)
+open import Substrate.Foundation.Negation.Not
 open import Substrate.Foundation.Product using (Σ; _,_; _×_)
 open import Substrate.Foundation.Unit using (⊤; tt)
-open import Substrate.Algebra.F2 using (𝟘; 𝟙)
+open import Substrate.Algebra.F2.F2
 open import Substrate.Algebra.F2.Vector using (Vector)
 open import Substrate.Algebra.Wedge.Contextuality using (Constraint; con; satisfies)
 open import Substrate.Algebra.Wedge.Contextuality.General
   using (GlobalSection; Obstruction; obstruction-refutes)
 open import Substrate.Algebra.Wedge.Contextuality.Models using (LocallySat; Contextual)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 21–25. The pentagon (5-cycle, odd parity) — contextual.

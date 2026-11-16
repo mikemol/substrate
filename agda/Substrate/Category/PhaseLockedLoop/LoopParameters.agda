@@ -11,7 +11,7 @@
 
 module Substrate.Category.PhaseLockedLoop.LoopParameters where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 
 record LoopParameters : Set where
   field

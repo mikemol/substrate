@@ -30,11 +30,3 @@
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.Algebra.F2.GF256 where
-
-open import Substrate.Algebra.F2.GF256.Xtime
-open import Substrate.Algebra.F2.GF256.Reduce
-open import Substrate.Algebra.F2.GF256.Expand
-open import Substrate.Algebra.F2.GF256.Idempotent
-open import Substrate.Algebra.F2.GF256.Mul
-open import Substrate.Algebra.F2.GF256.MulLaws
-open import Substrate.Algebra.F2.GF256.Ring

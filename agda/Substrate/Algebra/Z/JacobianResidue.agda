@@ -7,7 +7,7 @@
 -- half that carries ALL the risk: is `det Jac F` a nonzero CONSTANT?
 --
 -- ⚑⚑ THIS IS A **WEDGE COMPUTATION, NOT AN EQUALITY TEST.** The repository does
--- not discard residues. We do NOT ask "does det + 2 normalize to 0?" — that
+-- not discard residues. We do NOT ask "does det ℕ+ 2 normalize to 0?" — that
 -- question has a BOOLEAN answer, and a boolean throws away everything that
 -- makes a negative result useful. Instead we compute the wedge
 --
@@ -30,7 +30,7 @@
 -- lies in x ≤ 9, y ≤ 12, z ≤ 3. The box below is exactly that, so the residue
 -- vector is COMPLETE — no monomial of the determinant escapes it.
 --
--- ⚑ PROVENANCE + BOUNDARY. The map is attributed to Levent Alpöge (2026-07-19)
+-- ⚑ PROVENANCE ℕ+ BOUNDARY. The map is attributed to Levent Alpöge (2026-07-19)
 -- via Wikipedia; I have no independent knowledge of it. Together with
 -- `JacobianCollision` (half (i), non-injectivity) this module completes the
 -- verification: a counterexample needs BOTH, and a polynomial map with constant
@@ -59,12 +59,15 @@
 
 module Substrate.Algebra.Z.JacobianResidue where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
-open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
 open import Substrate.Foundation.List using (List; []; _∷_; _++_)
-open import Substrate.Algebra.Z using (ℤ; +_; -suc_; 0ℤ; 1ℤ)
+open import Substrate.Algebra.Z.Int
+open import Substrate.Algebra.Z.OneInt
+open import Substrate.Algebra.Z.ZeroInt
 open import Substrate.Algebra.Z.Add using (_+ℤ_)
 open import Substrate.Algebra.Z.Mul using (_*ℤ_)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 0. Local scaffolding (kept local: these are list/Bool utilities, not
@@ -114,7 +117,7 @@ MPoly : Set
 MPoly = List Term
 
 addM : Mono → Mono → Mono
-addM (mono a b c) (mono d e f) = mono (a + d) (b + e) (c + f)
+addM (mono a b c) (mono d e f) = mono (a ℕ+ d) (b ℕ+ e) (c ℕ+ f)
 
 eqM : Mono → Mono → 𝔹
 eqM (mono a b c) (mono d e f) = and (eqℕ a d) (and (eqℕ b e) (eqℕ c f))
@@ -161,8 +164,8 @@ coeff m (term n k ∷ p) with eqM m n
 
 ------------------------------------------------------------------------
 -- 3. The map F.
---   F(x,y,z) = ( z(1+xy)³ + y²(1+xy)(4+3xy)
---              , y + 3x(1+xy)²z + 3xy²(4+3xy)
+--   F(x,y,z) = ( z(1+xy)³ ℕ+ y²(1+xy)(4+3xy)
+--              , y ℕ+ 3x(1+xy)²z ℕ+ 3xy²(4+3xy)
 --              , 2x − 3x²y − x³z )
 ------------------------------------------------------------------------
 
@@ -191,9 +194,9 @@ f₃ = (kP (+ 2) *P X) +P (kP (-suc 2) *P X *P X *P Y) +P (kP (-suc 0) *P X *P X
 
 detJac : MPoly
 detJac =
-      (∂x f₁ *P ∂y f₂ *P ∂z f₃)                    -- (0,1,2)  +
-   +P (∂y f₁ *P ∂z f₂ *P ∂x f₃)                    -- (1,2,0)  +
-   +P (∂z f₁ *P ∂x f₂ *P ∂y f₃)                    -- (2,0,1)  +
+      (∂x f₁ *P ∂y f₂ *P ∂z f₃)                    -- (0,1,2)  ℕ+
+   +P (∂y f₁ *P ∂z f₂ *P ∂x f₃)                    -- (1,2,0)  ℕ+
+   +P (∂z f₁ *P ∂x f₂ *P ∂y f₃)                    -- (2,0,1)  ℕ+
    +P (kP (-suc 0) *P ∂x f₁ *P ∂z f₂ *P ∂y f₃)     -- (0,2,1)  −
    +P (kP (-suc 0) *P ∂z f₁ *P ∂y f₂ *P ∂x f₃)     -- (2,1,0)  −
    +P (kP (-suc 0) *P ∂y f₁ *P ∂x f₂ *P ∂z f₃)     -- (1,0,2)  −
@@ -205,7 +208,7 @@ detJac =
 ------------------------------------------------------------------------
 
 residue : MPoly
-residue = detJac +P kP (+ 2)          -- det − (−2) = det + 2
+residue = detJac +P kP (+ 2)          -- det − (−2) = det ℕ+ 2
 
 box : List Mono
 box = concatMapL (λ i →
@@ -249,7 +252,7 @@ coeff-detects : coeff (mono 1 0 0) f₃ ≡ + 2
 coeff-detects = refl
 
 -- (c) the determinant is not the zero polynomial (its constant term is −2),
---     so `residue` is a genuine translate rather than 0 + 0.
+--     so `residue` is a genuine translate rather than 0 ℕ+ 0.
 detJac-nonzero : coeff (mono 0 0 0) detJac ≡ -suc 1
 detJac-nonzero = refl
 

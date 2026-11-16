@@ -13,15 +13,15 @@
 
 module Substrate.Algebra.Wedge.AxisWord.PackedReadout where
 
-open import Substrate.Foundation.Eq using (_≡_)
-open import Substrate.Foundation.Negation using (Dec)
-open import Substrate.Foundation.Sum using (_⊎_; inj₁; inj₂)
+open import Substrate.Foundation.Negation.Dec
+open import Substrate.Foundation.Sum.Sum
 open import Substrate.Foundation.Product using (_×_; _,_)
 open import Substrate.Foundation.List using (List; []; _∷_; _++_)
 open import Substrate.Algebra.Wedge.AxisWord.PackedNode using (module PackedNode)
 open import Substrate.Algebra.Wedge.AxisWord.PackedTree using (module PackedTree)
 open import Substrate.Algebra.Wedge.AxisWord.PackedRecall using (module PackedRecall)
 open import Substrate.Algebra.Wedge.AxisWord.PackedBulk using (module PackedBulk)
+open import Substrate.Foundation.Eq
 
 module PackedReadout {A : Set} (_≟A_ : (a b : A) → Dec (a ≡ b)) where
 

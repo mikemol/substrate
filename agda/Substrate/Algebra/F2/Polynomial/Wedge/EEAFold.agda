@@ -11,12 +11,12 @@
 
 module Substrate.Algebra.F2.Polynomial.Wedge.EEAFold where
 
-open import Substrate.Foundation.Nat using (ℕ; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Vec using (Vec)
-open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.Algebra.F2 using (F₂)
+open import Substrate.Algebra.F2.F2
 open import Substrate.Algebra.F2.Polynomial.Wedge.EEATrace
   using (QPoly; zero-q; divisor-q; div-rem; PolyEEATrace; base; step)
+open import Substrate.Foundation.Eq
 
 eea-fold-poly :
   {T : QPoly → QPoly → QPoly → Set}

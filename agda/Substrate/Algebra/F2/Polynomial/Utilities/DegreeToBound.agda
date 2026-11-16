@@ -11,7 +11,7 @@
 
 module Substrate.Algebra.F2.Polynomial.Utilities.DegreeToBound where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Maybe using (Maybe; just; nothing)
 
 degree→bound : Maybe ℕ → ℕ

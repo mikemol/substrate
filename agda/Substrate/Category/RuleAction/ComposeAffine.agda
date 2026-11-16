@@ -9,14 +9,15 @@
 
 module Substrate.Category.RuleAction.ComposeAffine where
 
-open import Substrate.Foundation.Nat using (ℕ; _+_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
 open import Substrate.Foundation.Maybe using (Maybe; just; nothing)
 open import Substrate.Category.RuleAction.AffineProjection
   using (AffineProjection; start-phase; length-mask)
 
 compose-affine : AffineProjection → AffineProjection → AffineProjection
 compose-affine a₁ a₂ = record
-  { start-phase = start-phase a₁ + start-phase a₂
+  { start-phase = start-phase a₁ ℕ+ start-phase a₂
   ; length-mask = pick-length (length-mask a₁) (length-mask a₂)
   }
   where

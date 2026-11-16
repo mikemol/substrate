@@ -27,11 +27,10 @@
 
 module Substrate.Category.OpcodeAlgebra where
 
-open import Substrate.Foundation.Level using (Level; _⊔_) renaming (suc to lsuc)
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
-open import Substrate.Foundation.Product using (Σ; _,_)
+open import Substrate.Foundation.Level using (Level; _⊔_)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Vec using (Vec; []; _∷_)
-open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Algebra.F2.AES.Round
 
 ------------------------------------------------------------------------
 -- 1. OpcodeCategory — the structural classification.

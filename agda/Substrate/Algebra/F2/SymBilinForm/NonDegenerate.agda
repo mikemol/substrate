@@ -20,10 +20,10 @@
 
 module Substrate.Algebra.F2.SymBilinForm.NonDegenerate where
 
-open import Substrate.Foundation.Eq using (_≡_)
 open import Substrate.Algebra.F2.Vector using (Vector; 𝟎ⱽ)
 open import Substrate.Algebra.F2.SymBilinForm.BilinForm using (BilinForm)
 open import Substrate.Algebra.F2.SymBilinForm.Radical using (Radical)
+open import Substrate.Foundation.Eq
 
 NonDegenerate : ∀ {n} → BilinForm n → Set
 NonDegenerate {n} M = (v : Vector n) → Radical M v → v ≡ 𝟎ⱽ

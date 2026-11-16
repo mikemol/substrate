@@ -28,11 +28,10 @@
 
 module Substrate.Category.CoarseResidueEmission where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _≤_; z≤n; s≤s)
-open import Substrate.Foundation.List using (List; []; _∷_)
-open import Substrate.Foundation.List.Length using (length)
-open import Substrate.Foundation.Product using (_×_; _,_; Σ-syntax)
-open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Nat.Le
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Eq
+open import Substrate.Category.StochasticLens.Sites.ChainWalk
 
 -- ⟡set1-paydown: parameterize Chamber, Nibble. `Chamber : Set` and `Nibble : Set` were
 -- FIELDS of CoarseResidueBijection, forcing it (and the records fielding it) to Set₁. Take

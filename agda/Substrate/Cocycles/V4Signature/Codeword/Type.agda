@@ -8,7 +8,7 @@
 
 module Substrate.Cocycles.V4Signature.Codeword.Type where
 
-open import Substrate.Foundation.Bool using (Bool)
+open import Substrate.Foundation.Bool.Bool
 open import Substrate.Foundation.Product using (_×_; _,_)
 
 Codeword : Set

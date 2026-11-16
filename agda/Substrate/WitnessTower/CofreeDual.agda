@@ -28,17 +28,17 @@
 
 module Substrate.WitnessTower.CofreeDual where
 
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Eq using (_≡_)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Product using (_,_)
 open import Substrate.Algebra.Nat.GCD.Fold using (eea-fold-unique)
 open import Substrate.Algebra.Nat.GCD.GcdTrace using (gcd-trace)
-open import Substrate.Algebra.Nat.GCD.CFInjective using (cf-injective)
-open import Substrate.Algebra.R.Trace.Final using (ana-unique)
+open import Substrate.Algebra.Nat.GCD.CFInjective.CfInjective
+open import Substrate.Algebra.R.Trace.Final.AnaUnique
 open import Substrate.Algebra.R.Trace.RationalAdjunction using (reconstruct; eea-unit)
 open import Substrate.WitnessTower.EEATower using (digit-agreement)
 open import Substrate.Algebra.Wedge.NuShapeIso using (shape-is-canonical)
 open import Substrate.Algebra.Wedge.Shape.Double.InternedEffectivity using (corr⇔addr)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- 1. The dual pair, named in one place.

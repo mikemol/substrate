@@ -23,15 +23,16 @@
 
 module Substrate.Category.CascadedCoalgebra.Term where
 
-open import Substrate.Foundation.Nat using (ℕ; suc; _+_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Eq using (_≡_)
-open import Substrate.WitnessTower.LehmerPath using (LehmerPath; start; _◂_)
+open import Substrate.WitnessTower.LehmerPath.LehmerPath
 open import Substrate.WitnessTower.Wedge.OrientationSum using (_⊕_)
 open import Substrate.WitnessTower.Wedge.OrientationUniversal
   using (LehmerAlgebra; fold; fold-unique)
 open import Substrate.WitnessTower.Wedge.OrientationBimonoidal using (GradedProductOver)
 open import Substrate.WitnessTower.Wedge.OrientationBimonoidal.Properties using (⊕-over)
+open import Substrate.Foundation.Eq
 
 -- The cascade term carrier: the free graded tower of combined generators.
 CascadeTerm : ℕ → Set
@@ -41,13 +42,13 @@ CascadeTerm = LehmerPath
 []ᶜᶜ : CascadeTerm 0
 []ᶜᶜ = start
 
-_++ᶜᶜ_ : {m n : ℕ} → CascadeTerm m → CascadeTerm n → CascadeTerm (m + n)
+_++ᶜᶜ_ : {m n : ℕ} → CascadeTerm m → CascadeTerm n → CascadeTerm (m ℕ+ n)
 _++ᶜᶜ_ = _⊕_
 
 infixr 4 _++ᶜᶜ_
 
 -- The graded product on terms IS the tower's ⊕-over : GradedProductOver.
-cascade-product : GradedProductOver _+_ 0 CascadeTerm
+cascade-product : GradedProductOver _ℕ+_ 0 CascadeTerm
 cascade-product = ⊕-over
 
 -- The semantics is the UNIQUE fold into any LehmerAlgebra target: base = the

@@ -1,12 +1,12 @@
 ------------------------------------------------------------------------
 -- Substrate.Category.TensorProduct.Antisymmetric
 --
--- Transpose + antisymmetrize at TensorProduct. The image of
+-- Transpose +F antisymmetrize at TensorProduct. The image of
 -- antisymmetrize is Λ²V — the antisymmetric subspace of V ⊗ V.
 --
 -- At F₂ (characteristic 2): antisymmetrize(T) at position (i, j)
--- equals T(i,j) + T(j,i). Diagonal entries vanish (T(i,i) + T(i,i)
--- = 0); off-diagonal entries (i ≠ j) get T(i,j) + T(j,i).
+-- equals T(i,j) +F T(j,i). Diagonal entries vanish (T(i,i) +F T(i,i)
+-- = 0); off-diagonal entries (i ≠ j) get T(i,j) +F T(j,i).
 --
 -- For T = pair v w: antisymmetrize gives pair v w +ⱽ pair w v.
 -- This is the "antisymmetric pairing" of v and w in V ⊗ V at F₂.
@@ -23,15 +23,20 @@
 module Substrate.Category.TensorProduct.Antisymmetric where
 
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; lookup; tabulate)
-open import Substrate.Foundation.Vec.Properties using (lookup∘tabulate; vec-ext)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; cong; trans; sym)
+open import Substrate.Foundation.Vec.Properties.LookupComptabulate
+open import Substrate.Foundation.Vec.Properties.VecExt
 
-open import Substrate.Algebra.F2
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.PlusComm
+open import Substrate.Algebra.F2.PlusF
+open import Substrate.Algebra.F2.PlusSelfInverse
 open import Substrate.Algebra.F2.Vector
 open import Substrate.Category.TensorProduct using (TensorProduct; pair)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Sym
 
 ------------------------------------------------------------------------
 -- N-1: transpose at TensorProduct.
@@ -59,14 +64,14 @@ _+T_ {n} {m} T₁ T₂ = tabulate λ i → lookup T₁ i +ⱽ lookup T₂ i
 infixl 6 _+T_
 
 ------------------------------------------------------------------------
--- N-3: antisymmetrize — the structural map T ↦ T + Tᵀ at F₂.
+-- N-3: antisymmetrize — the structural map T ↦ T +F Tᵀ at F₂.
 --
 -- At F₂ (char 2), antisymmetrize T = T +T transpose T.
 -- The image is the antisymmetric subspace of V ⊗ V (= Λ²V).
 --
 -- Properties (proved in N-3½ below):
---   * antisymmetrize T has T(i,j) + T(j,i) at every position (entry-antisym).
---   * Diagonal: T(i,i) + T(i,i) = 0 (always).
+--   * antisymmetrize T has T(i,j) +F T(j,i) at every position (entry-antisym).
+--   * Diagonal: T(i,i) +F T(i,i) = 0 (always).
 --   * antisymmetrize T is a SYMMETRIC matrix (antisym-symmetric): it equals
 --     its own transpose, since T(i,j)+T(j,i) = T(j,i)+T(i,j) by +-comm.
 --   * THE SQUARE LAW (antisymmetrize-square): P² = P +T P  (= 2·P), with NO
@@ -109,14 +114,14 @@ entry-transpose T i j =
         (lookup∘tabulate (λ i′ → lookup (lookup T i′) i) j)
 
 entry-+T : ∀ {n m} (A B : TensorProduct n m) (i : Fin n) (j : Fin m) →
-           entry (A +T B) i j ≡ (entry A i j + entry B i j)
+           entry (A +T B) i j ≡ (entry A i j +F entry B i j)
 entry-+T A B i j =
   trans (cong (λ r → lookup r j) (lookup∘tabulate (λ i′ → lookup A i′ +ⱽ lookup B i′) i))
         (lookup-+ⱽ (lookup A i) (lookup B i) j)
 
--- antisymmetrize's entry: T(i,j) + T(j,i).
+-- antisymmetrize's entry: T(i,j) +F T(j,i).
 entry-antisym : ∀ {n} (T : TensorProduct n n) (i j : Fin n) →
-                entry (antisymmetrize T) i j ≡ (entry T i j + entry T j i)
+                entry (antisymmetrize T) i j ≡ (entry T i j +F entry T j i)
 entry-antisym T i j =
   trans (entry-+T T (transpose T) i j) (cong (entry T i j +_) (entry-transpose T i j))
 
@@ -159,7 +164,7 @@ antisymmetrize-square-zero T =
 --
 -- Specific case: antisymmetrize (pair v w) = pair v w +T pair w v.
 --
--- This expresses the "antisymmetric tensor" v ⊗ w + w ⊗ v
+-- This expresses the "antisymmetric tensor" v ⊗ w +F w ⊗ v
 -- (= v ∧ w at F₂ — the wedge product in characteristic 2).
 ------------------------------------------------------------------------
 
@@ -183,7 +188,7 @@ antisymmetrize-square-zero T =
 --                      (the map onto the antisymmetric subspace at F₂)
 --
 -- Per [[feedback-categorical-name-first]]: antisymmetrize is the
--- canonical "antisymmetric subspace" map T ↦ T + Tᵀ. Its square obeys
+-- canonical "antisymmetric subspace" map T ↦ T +F Tᵀ. Its square obeys
 -- antisymmetrize² = antisymmetrize +T antisymmetrize (= 2·antisymmetrize,
 -- antisymmetrize-square, char-agnostic). At F₂ (char 2) that is SQUARE-ZERO
 -- (antisymmetrize-square-zero) — antisymmetrize is nilpotent here, not
@@ -215,10 +220,10 @@ antisymmetrize-square-zero T =
 --     antisymmetric subspace of TensorProduct n n = corresponding
 --     subspace of F₂^(n²).
 --
---   * **Symmetric quotient + Sym²V**: at F₂ symmetric = same as
---     antisymmetric at the SUBSPACE level (T = Tᵀ ⇔ T + Tᵀ = 0).
+--   * **Symmetric quotient +F Sym²V**: at F₂ symmetric = same as
+--     antisymmetric at the SUBSPACE level (T = Tᵀ ⇔ T +F Tᵀ = 0).
 --     But the QUOTIENT structures differ: Sym²V is V ⊗ V / (v⊗w - w⊗v),
---     Λ²V is V ⊗ V / (v⊗w + w⊗v). At F₂: these IDENTIFY differently
+--     Λ²V is V ⊗ V / (v⊗w +F w⊗v). At F₂: these IDENTIFY differently
 --     and Sym²V has dim n(n+1)/2 while Λ²V has dim n(n-1)/2.
 --     The SymBilinForm count n(n+1)/2 (= 6 at n=3, = 10 at n=4)
 --     matches Sym²V.

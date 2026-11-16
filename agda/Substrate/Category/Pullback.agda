@@ -48,11 +48,13 @@ module Substrate.Category.Pullback where
 open import Substrate.Foundation.Product using (Σ; _×_; _,_; proj₁; proj₂)
 open import Substrate.Foundation.Function using (id; _∘_)
 open import Substrate.Foundation.Level using (Level; _⊔_)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; trans; cong)
 
 open import Substrate.Category.Equalizer
   using (IsEqualised; Equalizer-Of; equal)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
 
 private
   variable

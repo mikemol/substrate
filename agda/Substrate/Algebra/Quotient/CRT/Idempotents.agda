@@ -11,9 +11,15 @@
 
 module Substrate.Algebra.Quotient.CRT.Idempotents where
 
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Eq using (_≡_)
-open import Substrate.Algebra.Nat.Mod using (_mod-suc_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Nat.ModSuc
+open import Substrate.Algebra.Nat.Mod.ModSucBound
+open import Substrate.Algebra.Nat.Mod.ModSucId
+open import Substrate.Algebra.Nat.Mod.ModSucPeriodic
+open import Substrate.Algebra.Nat.Mod.ModSucSuc
+open import Substrate.Algebra.Nat.Mod.SucModSucLt
+open import Substrate.Algebra.Nat.Mod.SucModSucSelf
+open import Substrate.Foundation.Eq
 
 record CRTIdempotents (m n : ℕ) : Set where
   field

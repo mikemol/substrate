@@ -20,19 +20,25 @@
 
 module Substrate.Algebra.Wedge.NilpotentFaithfulLogChart where
 
-open import Substrate.Foundation.Eq  using (_≡_; refl; sym; trans; cong)
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _<_; _<?_)
+open import Substrate.Foundation.Nat.Lt
+open import Substrate.Foundation.Nat.Lt2
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
 open import Substrate.Foundation.Maybe using (Maybe; just; nothing)
-open import Substrate.Foundation.Negation using (Dec; yes; no; ¬_)
-open import Substrate.Foundation.Empty using (⊥-elim)
+open import Substrate.Foundation.Negation.Dec
+open import Substrate.Foundation.Negation.Not
+open import Substrate.Foundation.Empty.BotElim
 open import Substrate.Foundation.Vec using (Vec; replicate)
-import Substrate.Algebra.F2 as F2
+open import Substrate.Algebra.F2.F2
 open import Substrate.Algebra.F2.CommRing using (F₂-CommRing)
 open import Substrate.Algebra.F2.Polynomial.Wedge.DLogHom using (module Over)
 import Substrate.Algebra.Polynomial.Graded.FromCommRing as F
 import Substrate.Algebra.Polynomial.Graded.Mod as M
 import Substrate.Algebra.Polynomial.Graded.Quotient as Q
 import Substrate.Algebra.Polynomial.Graded.Div as Div
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
 
 ------------------------------------------------------------------------
 -- The regime: bound (suc d), zero modulus (nilpotent), d = 3 as before.
@@ -40,8 +46,8 @@ import Substrate.Algebra.Polynomial.Graded.Div as Div
 d : ℕ
 d = 3
 
-f-lo₀ : Vec F2.F₂ (suc d)
-f-lo₀ = replicate (suc d) F2.𝟘
+f-lo₀ : Vec F₂ (suc d)
+f-lo₀ = replicate (suc d) 𝟘
 
 open F.Over F₂-CommRing using (Poly)
 open M.Over F₂-CommRing d f-lo₀ using (oneC)
@@ -63,8 +69,8 @@ LogM = Maybe ℕ
 mulM : LogM → LogM → LogM
 mulM nothing  _        = nothing                      -- absorbing: overflow stays
 mulM (just _) nothing  = nothing                      -- absorbing on the right too
-mulM (just i) (just j) with (i + j) <? suc d
-... | yes _ = just (i + j)                            -- below cap: keep the summed log
+mulM (just i) (just j) with (i ℕ+ j) <? suc d
+... | yes _ = just (i ℕ+ j)                            -- below cap: keep the summed log
 ... | no  _ = nothing                                 -- at/over cap: ABSORB (persist)
 
 ------------------------------------------------------------------------
@@ -90,17 +96,17 @@ bridge-absorb-left y = sym (*Q-zeroˡ (gpowM y))       -- 𝟎C *Q gpowM y ≡ �
 
 -- below the cap (both live, i+j < cap): gpowM (just (i+j)) = gpow (i+j) =
 -- gpow i *Q gpow j = gpowM (just i) *Q gpowM (just j).
-bridge-below-total : (i j : ℕ) → (i + j) < suc d
+bridge-below-total : (i j : ℕ) → (i ℕ+ j) < suc d
                    → gpowM (mulM (just i) (just j)) ≡ (gpowM (just i) *Q gpowM (just j))
-bridge-below-total i j lt with (i + j) <? suc d
+bridge-below-total i j lt with (i ℕ+ j) <? suc d
 ... | yes _  = gpow-hom i j
 ... | no ¬lt = ⊥-elim (¬lt lt)
 
 -- AT the cap (both live, i+j ≥ cap): mulM absorbs to nothing (gpowM = 𝟎C), and
 -- the ring gives gpow i *Q gpow j = gpow (i+j) = 𝟎C (nilpotent, overflow). MATCHED.
-bridge-at-cap-total : (i j : ℕ) → ¬ ((i + j) < suc d) → gpow (i + j) ≡ 𝟎C
+bridge-at-cap-total : (i j : ℕ) → ¬ ((i ℕ+ j) < suc d) → gpow (i ℕ+ j) ≡ 𝟎C
                     → gpowM (mulM (just i) (just j)) ≡ (gpowM (just i) *Q gpowM (just j))
-bridge-at-cap-total i j ¬lt gpow-ij≡𝟎 with (i + j) <? suc d
+bridge-at-cap-total i j ¬lt gpow-ij≡𝟎 with (i ℕ+ j) <? suc d
 ... | yes lt = ⊥-elim (¬lt lt)
 ... | no  _  = sym (trans (sym (gpow-hom i j)) gpow-ij≡𝟎)   -- both 𝟎C
 
@@ -117,7 +123,7 @@ gpowM-nothing : gpowM nothing ≡ 𝟎C
 gpowM-nothing = refl
 
 ------------------------------------------------------------------------
--- THE INVARIANT (grounded in Free⊣Forgetful + "don't discard residues"): the
+-- THE INVARIANT (grounded in Free⊣Forgetful ℕ+ "don't discard residues"): the
 -- faithful log chart is the wedge's FREE construction — KEEP the residue. Rₖ
 -- discarded the overflow (reset to the additive identity), breaking faithfulness;
 -- the fix ADJOINS the residue as the absorbing `nothing` (Maybe = adjoin-a-point,

@@ -3,7 +3,7 @@
 --
 -- M-11 full machinery sub-slice 4 (capstone). Integration module that
 -- ties together the chirality-rotation framework: chirality at any
--- Fano point (M-11.fano), Hodge ★ + self-dual subspace at grade 2
+-- Fano point (M-11.fano), Hodge ★ +F self-dual subspace at grade 2
 -- (M-11.dim4), GL(3, F₂) generators (Gl3.agda), generic projective
 -- space (PG), and the cohomological transfer map (Transfer.agda).
 --
@@ -27,9 +27,9 @@
 --      "vector ↦ chirality phase" map at n=2 (via the syndrome of
 --      single-bit errors).
 --
---   5. Cohomological transfer (lift to higher scale + apply automorphism
---      + project back) realizes phase-rotation through the code
---      structure. Generic Section + transfer-map machinery is in
+--   5. Cohomological transfer (lift to higher scale +F apply automorphism
+--      +F project back) realizes phase-rotation through the code
+--      structure. Generic Section +F transfer-map machinery is in
 --      Transfer.agda.
 --
 -- This capstone file is documentation-heavy. It provides one concrete
@@ -44,18 +44,47 @@ module Substrate.Geometry.ChiralityRotation where
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Literals using (₀; ₁; ₂; ₃; ₄; ₅; ₆; ₇)
 open import Substrate.Foundation.Vec using ([]; _∷_)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl)
 
-open import Substrate.Algebra.F2
+open import Substrate.Algebra.F2.AbsorbL
+open import Substrate.Algebra.F2.AbsorbR
+open import Substrate.Algebra.F2.Assoc
+open import Substrate.Algebra.F2.Comm
+open import Substrate.Algebra.F2.Dec
+open import Substrate.Algebra.F2.DistribLPlus
+open import Substrate.Algebra.F2.DistribRPlus
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.F2Cases
+open import Substrate.Algebra.F2.Idempotent
+open import Substrate.Algebra.F2.IdentityL
+open import Substrate.Algebra.F2.IdentityR
+open import Substrate.Algebra.F2.InvOfOne
+open import Substrate.Algebra.F2.OneNeqZero
+open import Substrate.Algebra.F2.Op
+open import Substrate.Algebra.F2.Op2
+open import Substrate.Algebra.F2.PlusAssoc
+open import Substrate.Algebra.F2.PlusComm
+open import Substrate.Algebra.F2.PlusF
+open import Substrate.Algebra.F2.PlusIdentityL
+open import Substrate.Algebra.F2.PlusIdentityR
+open import Substrate.Algebra.F2.PlusInverseL
+open import Substrate.Algebra.F2.PlusInverseR
+open import Substrate.Algebra.F2.PlusSelfInverse
+open import Substrate.Algebra.F2.ZeroNeqOne
 open import Substrate.Algebra.F2.Vector
-open import Substrate.Algebra.F2.Linear
+open import Substrate.Algebra.F2.Linear.CompL
+open import Substrate.Algebra.F2.Linear.CompLAssoc
+open import Substrate.Algebra.F2.Linear.CompLIdentityL
+open import Substrate.Algebra.F2.Linear.CompLIdentityR
+open import Substrate.Algebra.F2.Linear.IdL
+open import Substrate.Algebra.F2.Linear.Linear
+open import Substrate.Algebra.F2.Linear.Preserves
 open import Substrate.Algebra.F2.Linear.FromImages
   using (apply-linear-from-images-basis)
 open import Substrate.Geometry.Fano
   using (point-coords; p₁; p₂; p₃; p₄; p₅; p₆; p₇)
 open import Substrate.Geometry.HodgeDim3.Gl3
   using (σ; σ-images; τ; τ-images)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- Concrete demonstration: σ rotates chirality from Fano point p₁ to p₂.
@@ -97,7 +126,7 @@ open import Substrate.Geometry.HodgeDim3.Gl3
 -- Foundational F₂ tier:
 --   * F₂ (M-1), Vector (M-2), Linear (M-3), Code (M-4), linear-from-images (M-5)
 --   * F₂-Like universal property (M-1.5)
---   * Vector free-module + atomic decomposition (M-2.5)
+--   * Vector free-module +F atomic decomposition (M-2.5)
 --   * Linear extensionality (M-3.5)
 --   * apply-linear-from-images-lookup, apply-linear-from-images-basis
 --     (universal-property discipline foundationals)
@@ -110,25 +139,25 @@ open import Substrate.Geometry.HodgeDim3.Gl3
 --   * HodgeDim3 / V4Plane / ChiralityAxis (M-11.dim3): the n=3 instance
 --   * HodgeDim3 / Fano: parametric chirality at any of 7 Fano points
 --   * HodgeDim3 / Gl3: σ, τ generators of GL(3, F₂) action
---   * HodgeDim4 / Bivector + HodgeStar + SelfDual (M-11.dim4): Λ²(F₂⁴) machinery
+--   * HodgeDim4 / Bivector +F HodgeStar +F SelfDual (M-11.dim4): Λ²(F₂⁴) machinery
 --   * HodgeDim4 / ReservedBridge: SelfDual ↔ Vector 3 ↔ Reserved validation
 --
--- Generic phase-space + transfer machinery:
+-- Generic phase-space +F transfer machinery:
 --   * PG(n, F₂) (this slice, sub-slice 2): parametric projective space
 --   * Transfer (this slice, sub-slice 3): cohomological transfer map
 --   * ChiralityRotation (this file, sub-slice 4): capstone integration
 --
 -- Cocycle-side (substrate's original target — partial):
 --   * M-12: Pairing / Chirality / OrbitKey bridges to F₂-linear forms
---   * M-10A (planned, not yet built): F₂-linear Codeword + IsReserved
+--   * M-10A (planned, not yet built): F₂-linear Codeword +F IsReserved
 --
 -- Status of the chirality-rotation conjecture:
---   * Cardinality + F₂-vector-space structure of the "8 reserved =
+--   * Cardinality +F F₂-vector-space structure of the "8 reserved =
 --     signed singletons = self-dual bivectors" claim: VALIDATED
 --     (M-11.dim4.reserved-bridge).
---   * GL(3, F₂) transitive action on Fano: DEMONSTRATED via σ + τ
+--   * GL(3, F₂) transitive action on Fano: DEMONSTRATED via σ +F τ
 --     generators (formal transitivity proof deferred).
---   * Cohomological transfer machinery: DEFINED (this file +
+--   * Cohomological transfer machinery: DEFINED (this file +F
 --     Transfer.agda); concrete F₂³ ↔ F₂⁵ section instances deferred.
 --   * Connection to Reed-Muller and higher Hamming structure
 --     (Λᵏ tower for k ≥ 3, full exterior algebra): deferred.

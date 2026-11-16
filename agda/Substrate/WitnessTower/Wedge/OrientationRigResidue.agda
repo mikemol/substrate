@@ -20,22 +20,31 @@
 
 module Substrate.WitnessTower.Wedge.OrientationRigResidue where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; _*_)
-open import Substrate.Foundation.Nat.Properties.Add using (+-identityʳ)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Times
+open import Substrate.Foundation.Nat.Properties.Add.PlusIdentityR
 open import Substrate.Foundation.Nat.Properties.Mul using (*-identityˡ)
 open import Substrate.Foundation.Nat.Properties.Cancel using (+-cancelˡ)
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.To
 open import Substrate.Foundation.Fin.Properties using (toℕ-fromℕ<; toℕ-injective)
 open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂; Σ-≡,≡→≡)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂; subst)
-open import Substrate.Algebra.Wedge using (DivStr; recon; z) renaming (Wedge to Wedge⟦9e8d371e⟧)
-open import Substrate.WitnessTower.LehmerPath using (LehmerPath; start; _◂_; decode)
+open import Substrate.Algebra.Wedge using (DivStr; recon; z) renaming (Wedge to Wedge)
+open import Substrate.WitnessTower.LehmerPath.Decode
+open import Substrate.WitnessTower.LehmerPath.LehmerPath
 open import Substrate.WitnessTower.Wedge.OrientationSum using (_⊕_; 0#)
 open import Substrate.WitnessTower.Wedge.OrientationSumLaws using (⊕-unit-right; ◂-subst)
 open import Substrate.WitnessTower.Wedge.OrientationProductStructural
   using (_⊗ˢ_; replay-aux; replayOffset; offsetDigit)
 open import Substrate.WitnessTower.Wedge.OrientationFixedPoint using (decode-injective)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.Foundation.Eq.Subst
+open import Substrate.Algebra.Wedge
 
 ------------------------------------------------------------------------
 -- 0. The multiplicative unit X = start ◂ zero : LehmerPath 1 (oneᶜ).
@@ -77,25 +86,25 @@ toℕ-subst-suc refl x = refl
 --     onto the empty base with digit offset 0·n, then transport the 0-grade away.
 ------------------------------------------------------------------------
 
--- the offset digit at p = zero carries value 0·n + toℕ q = toℕ q.
+-- the offset digit at p = zero carries value 0·n ℕ+ toℕ q = toℕ q.
 toℕ-offsetDigit-zero : ∀ (n : ℕ) {k} (q : Fin (suc k)) →
                        toℕ (offsetDigit {0} zero n q) ≡ toℕ q
 toℕ-offsetDigit-zero n q = toℕ-fromℕ< _
 
 -- and after transporting the +0 grade away, the offset digit IS q.
 offsetDigit-zero-unit : ∀ {n k} (q : Fin (suc k)) →
-  subst (λ z → Fin (suc z)) (+-identityʳ k) (offsetDigit {0} zero n q) ≡ q
+  subst (λ z → Fin (suc z)) (+ℕ-identityʳ k) (offsetDigit {0} zero n q) ≡ q
 offsetDigit-zero-unit {n} {k} q =
   toℕ-injective
-    (trans (toℕ-subst-suc (+-identityʳ k) (offsetDigit {0} zero n q))
+    (trans (toℕ-subst-suc (+ℕ-identityʳ k) (offsetDigit {0} zero n q))
            (toℕ-offsetDigit-zero n q))
 
 -- the core induction: replaying l onto the empty base, then dropping +0, is l.
 replay-aux-zero-unit : ∀ {n k} (l : LehmerPath k) →
-  subst LehmerPath (+-identityʳ k) (replay-aux {m = 0} zero n l start) ≡ l
+  subst LehmerPath (+ℕ-identityʳ k) (replay-aux {m = 0} zero n l start) ≡ l
 replay-aux-zero-unit         start    = refl
 replay-aux-zero-unit {n} {suc k} (l ◂ q) =
-  trans (◂-subst (+-identityʳ k) (replay-aux {m = 0} zero n l start)
+  trans (◂-subst (+ℕ-identityʳ k) (replay-aux {m = 0} zero n l start)
                  (offsetDigit {0} zero n q))
         (cong₂ _◂_ (replay-aux-zero-unit l) (offsetDigit-zero-unit {n} q))
 
@@ -106,19 +115,19 @@ replay-aux-zero-unit {n} {suc k} (l ◂ q) =
 ------------------------------------------------------------------------
 -- S3. corner-eq : recon divᴸ (1 , X) (n , b) (0 , start) ≡ (n , b).
 --     The (1,z) corner reconstructs b; the residue rem = z = (0 , start).
---     Σ-equality: grade 1·n+0 ≡ n, and value (X ⊗ˢ b) ⊕ start ≡ b (via S2 + ⊕-unit-right).
+--     Σ-equality: grade 1·n+0 ≡ n, and value (X ⊗ˢ b) ⊕ start ≡ b (via S2 ℕ+ ⊕-unit-right).
 ------------------------------------------------------------------------
 
 corner-eq : ∀ {n} (b : LehmerPath n) →
             recon divᴸ (suc zero , X) (n , b) (zero , start) ≡ (n , b)
 corner-eq {n} b = Σ-≡,≡→≡ (grade-eq , value-proof)
   where
-    grade-eq : suc zero * n + zero ≡ n
-    grade-eq = trans (+-identityʳ (suc zero * n)) (*-identityˡ n)
+    grade-eq : suc zero * n ℕ+ zero ≡ n
+    grade-eq = trans (+ℕ-identityʳ (suc zero * n)) (*-identityˡ n)
 
     value-proof : subst LehmerPath grade-eq ((X ⊗ˢ b) ⊕ start) ≡ b
     value-proof =
-      trans (subst-trans (+-identityʳ (suc zero * n)) (*-identityˡ n) ((X ⊗ˢ b) ⊕ start))
+      trans (subst-trans (+ℕ-identityʳ (suc zero * n)) (*-identityˡ n) ((X ⊗ˢ b) ⊕ start))
             (trans (cong (subst LehmerPath (*-identityˡ n)) (⊕-unit-right (X ⊗ˢ b)))
                    (⊗ˢ-unit-left b))
 
@@ -127,7 +136,7 @@ corner-eq {n} b = Σ-≡,≡→≡ (grade-eq , value-proof)
 -- with rem = z (no orientation defect). wedge-eq is sym corner-eq.
 ------------------------------------------------------------------------
 
-residue-wedge : ∀ {n} (b : LehmerPath n) → Wedge⟦9e8d371e⟧ divᴸ (n , b) (n , b)
+residue-wedge : ∀ {n} (b : LehmerPath n) → Wedge divᴸ (n , b) (n , b)
 residue-wedge {n} b = record
   { quot     = suc zero , X
   ; rem      = zero , start
@@ -142,10 +151,10 @@ residue-wedge {n} b = record
 --     driver sits at the identity corner over the multiplicand, i.e. rem ≡ z.
 ------------------------------------------------------------------------
 
--- the offset digit's underlying value is p·n + q, for any p (general form of
+-- the offset digit's underlying value is p·n ℕ+ q, for any p (general form of
 -- toℕ-offsetDigit-zero).
 toℕ-offsetDigit : ∀ {m} (p : Fin (suc m)) (n : ℕ) {k} (q : Fin (suc k)) →
-                  toℕ (offsetDigit p n q) ≡ toℕ p * n + toℕ q
+                  toℕ (offsetDigit p n q) ≡ toℕ p * n ℕ+ toℕ q
 toℕ-offsetDigit p n q = toℕ-fromℕ< _
 
 -- offsetDigit is injective in its digit (cancel the shared p·n offset).
@@ -167,7 +176,7 @@ offsetDigit-inj p n q q' eq =
 ◂-inj₂ refl = refl
 
 -- THE INJECTIVITY: the block-insert `replay-aux p n · base` reflects equality of
--- driver paths (peel the appended offset digits, offsetDigit-inj + IH).
+-- driver paths (peel the appended offset digits, offsetDigit-inj ℕ+ IH).
 replay-aux-inj : ∀ {m} (p : Fin (suc m)) (n : ℕ) {k}
                  (l₂ y : LehmerPath k) (base : LehmerPath (m * n)) →
                  replay-aux p n l₂ base ≡ replay-aux p n y base → l₂ ≡ y

@@ -10,11 +10,11 @@
 
 module Substrate.Algebra.Z.Bezout.Examples where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Foundation.Product using (proj₁; proj₂)
 open import Substrate.Algebra.Nat.GCD.ComputeTrace using (compute-trace)
 open import Substrate.Algebra.Nat.GCD.Fold using (gcd-fold)
 open import Substrate.Algebra.Z.Bezout using (BezoutℤWitness; bezout-ℤ)
+open import Substrate.Foundation.Eq
 
 -- gcd(12,8) = 4 (the trace index); the forgetful fold recovers it.
 gcd-12-8       : proj₁ (compute-trace 12 8) ≡ 4

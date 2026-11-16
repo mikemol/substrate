@@ -17,8 +17,10 @@
 {-# OPTIONS --safe --without-K #-}
 
 module Substrate.Category.Coherence where
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
 
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans)
 
 ------------------------------------------------------------------------
 -- 1. The generic CoherenceDiagram record.

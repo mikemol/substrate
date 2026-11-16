@@ -21,20 +21,21 @@
 
 module Substrate.WitnessTower.IsPermutation where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.Sucinjective
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; lookup; map)
 open import Substrate.Foundation.List using (List; []; _∷_; _++_)
-open import Substrate.Foundation.Eq using (_≡_; refl; cong; sym)
-open import Substrate.Foundation.Negation using (¬_)
-open import Substrate.Foundation.Empty using (⊥-elim)
+open import Substrate.Foundation.Empty.BotElim
 open import Substrate.Foundation.Unit using (⊤; tt)
 open import Substrate.Foundation.Product using (_×_; _,_)
 open import Substrate.Foundation.Fin.Punctured using (punchIn; punchIn-≢)
 
 open import Substrate.WitnessTower.Enumerate
   using (Perm; insert-at; perms; mapL; concatMapL; all-positions)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Sym
 
 ------------------------------------------------------------------------
 -- 0. Supporting lemmas: punchIn injective, lookup∘map.
@@ -83,7 +84,7 @@ insert-at-preserves p σ σ-perm = go
     go zero    (suc j) eq =
       ⊥-elim (punchIn-≢ p (lookup σ j) (sym (trans-eq eq (tail-val j))))
       where
-        open import Substrate.Foundation.Eq using (trans)
+        open import Substrate.Foundation.Eq.Trans
         trans-eq : lookup (insert-at p σ) zero ≡ lookup (insert-at p σ) (suc j) →
                    lookup (insert-at p σ) (suc j) ≡ punchIn p (lookup σ j) →
                    p ≡ punchIn p (lookup σ j)
@@ -92,7 +93,7 @@ insert-at-preserves p σ σ-perm = go
       ⊥-elim (punchIn-≢ p (lookup σ i)
                (sym (trans-eq (sym eq) (tail-val i))))
       where
-        open import Substrate.Foundation.Eq using (trans)
+        open import Substrate.Foundation.Eq.Trans
         trans-eq : lookup (insert-at p σ) zero ≡ lookup (insert-at p σ) (suc i) →
                    lookup (insert-at p σ) (suc i) ≡ punchIn p (lookup σ i) →
                    p ≡ punchIn p (lookup σ i)
@@ -103,7 +104,7 @@ insert-at-preserves p σ σ-perm = go
         (punchIn-injective p
           (trans₃ (sym (tail-val i)) eq (tail-val j))))
       where
-        open import Substrate.Foundation.Eq using (trans)
+        open import Substrate.Foundation.Eq.Trans
         trans₃ : punchIn p (lookup σ i) ≡ lookup (insert-at p σ) (suc i) →
                  lookup (insert-at p σ) (suc i) ≡ lookup (insert-at p σ) (suc j) →
                  lookup (insert-at p σ) (suc j) ≡ punchIn p (lookup σ j) →

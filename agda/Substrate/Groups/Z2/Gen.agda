@@ -11,6 +11,7 @@
 module Substrate.Groups.Z2.Gen where
 
 open import Substrate.Groups.Coxeter.Cyclic.Base 1
+open import Substrate.Groups.Coxeter.Cyclic.Base.Gen
 
 Gen₂ : Set
 Gen₂ = Gen

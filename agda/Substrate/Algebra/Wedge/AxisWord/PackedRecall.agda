@@ -24,12 +24,14 @@
 
 module Substrate.Algebra.Wedge.AxisWord.PackedRecall where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; sym)
-open import Substrate.Foundation.Negation using (¬_; Dec; yes; no)
+open import Substrate.Foundation.Negation.Dec
+open import Substrate.Foundation.Negation.Not
 open import Substrate.Foundation.Product using (Σ; _,_; _×_)
 open import Substrate.Foundation.List using ([]; _∷_)
 open import Substrate.Algebra.Wedge.AxisWord.PackedNode using (module PackedNode)
 open import Substrate.Algebra.Wedge.AxisWord.PackedTree using (module PackedTree)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
 
 module PackedRecall {A : Set} (_≟A_ : (a b : A) → Dec (a ≡ b)) where
 

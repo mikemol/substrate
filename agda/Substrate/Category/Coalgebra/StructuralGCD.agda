@@ -30,9 +30,10 @@
 module Substrate.Category.Coalgebra.StructuralGCD where
 
 open import Substrate.Foundation.Level using (Level)
-open import Substrate.Foundation.Eq using (_≡_; sym)
 
 open import Substrate.Category.Coalgebra using (Endomap)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
 
 private
   variable

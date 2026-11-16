@@ -19,7 +19,7 @@
 
 module Substrate.Probability.ConjugateMonad.Category where
 
-open import Substrate.Foundation.Nat.Properties.Add using (+-assoc)
+open import Substrate.Foundation.Nat.Properties.Add.PlusAssoc
 open import Substrate.WitnessTower.Wedge.OrientationBimonoidal using (GradedAssocOver)
 open import Substrate.WitnessTower.Wedge.OrientationBimonoidal.Properties using (⊕-assoc-over)
 
@@ -28,5 +28,5 @@ open import Substrate.Probability.ConjugateMonad.Term using (conj-product)
 -- Associativity of composition = the tower's GradedAssocOver on the graded
 -- product (the additive associator of the orientation rig). The unit laws are
 -- OrientationSum.⊕-unit-left / OrientationSumLaws.⊕-unit-right (see header).
-conj-assoc : GradedAssocOver +-assoc conj-product
+conj-assoc : GradedAssocOver +ℕ-assoc conj-product
 conj-assoc = ⊕-assoc-over

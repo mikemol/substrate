@@ -10,13 +10,18 @@
 
 {-# OPTIONS --safe --without-K #-}
 
-open import Substrate.Foundation.Nat using (ℕ; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.To
 open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂)
-open import Substrate.Foundation.Eq using (_≡_; refl)
 
 open import Substrate.Groups.Coxeter.Word using (Word)
+open import Substrate.Foundation.Eq
+open import Substrate.Groups.Coxeter.Cyclic.Base.Gen
+open import Substrate.Groups.Coxeter.Cyclic.Base.CanonicalAt
+open import Substrate.Groups.Coxeter.Cyclic.Base.Insert
+open import Substrate.Groups.Coxeter.Cyclic.Base.Power
+open import Substrate.Groups.Coxeter.Cyclic.Base.HasOrderPerm
 
 module Substrate.Groups.Coxeter.Fin-from-Cyclic (n : ℕ) where
 
@@ -41,11 +46,6 @@ action-of-a-is-σ-ex : ∀ {w} (c : Canonical-ex w) →
 action-of-a-is-σ-ex (k , _) = refl
 
 
-open import Substrate.Groups.Coxeter-Fin-Generic
-  (suc n) Gen a Canonical-ex insert insert-canonical-ex
-  canonical-to-Fin-ex Fin-to-canonical-ex σ
-  action-of-a-is-σ-ex σ-HasOrderPerm
-  public
 ------------------------------------------------------------------------
 -- Apply Coxeter-Fin-Generic at order (suc n).
 ------------------------------------------------------------------------

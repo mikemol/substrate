@@ -26,9 +26,8 @@
 module Substrate.WitnessTower.SignStabTotal where
 
 open import Substrate.Foundation.Vec using (tabulate)
-open import Substrate.Foundation.Bool using (Bool)
-open import Substrate.Foundation.Vec.Properties using (lookup∘tabulate)
-open import Substrate.Foundation.Eq using (_≡_; refl; cong; sym; trans)
+open import Substrate.Foundation.Bool.Bool
+open import Substrate.Foundation.Vec.Properties.LookupComptabulate
 open import Substrate.WitnessTower.Enumerate using (Perm)
 open import Substrate.WitnessTower.SnGroup using (apply-injective)
 open import Substrate.WitnessTower.Wedge.OrientationRigCatPermSign using (sign)
@@ -38,10 +37,14 @@ open import Substrate.Groups.Symmetric.Permutation Axis
 open import Substrate.Groups.Symmetric.Eq Axis using (_≈_)
 open import Substrate.Groups.Symmetric.Permutation.Compose Axis using (_·_)
 open import Substrate.Groups.V4-Embedding using (embed)
-open import Substrate.Groups.SemidirectProduct.V using (v-for)
+open import Substrate.Groups.SemidirectProduct.V.VFor
 open import Substrate.Groups.SemidirectProduct.S using (s-for)
 open import Substrate.Groups.SemidirectProduct.Factorisation using (factorisation)
 open import Substrate.WitnessTower.SignEmbedVEven using (perm4; sign-embed-v-even)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
 
 ------------------------------------------------------------------------
 -- perm4 respects the setoid ≈ (it reads apply pointwise). So ≈-equal

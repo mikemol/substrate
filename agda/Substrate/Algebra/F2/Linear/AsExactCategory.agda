@@ -14,7 +14,8 @@ open import Substrate.Foundation.Level using (Level)
 
 open import Substrate.Algebra.F2.Linear.CategoryStructures
   using (F2LinearCategoryStructures)
-open import Substrate.Category.CategoryOf using (CategoryOf)
+open import Substrate.Category.CategoryOf.CategoryOf
+open import Substrate.Probability.MarkovCategory
 
 module Substrate.Algebra.F2.Linear.AsExactCategory
   {ℓO ℓM : Level}

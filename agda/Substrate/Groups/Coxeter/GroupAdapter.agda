@@ -13,9 +13,21 @@
 
 {-# OPTIONS --safe --without-K #-}
 
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; trans; sym; cong; cong-trans; sym-trans)
 open import Substrate.Algebra.SetoidGroup using (SetoidGroup)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.CongTrans
+open import Substrate.Foundation.Eq.SymTrans
+open import Substrate.Foundation.List
+open import Substrate.Algebra.Quotient.Canonical
+open import Substrate.Groups.Coxeter.Core.Operations
+open import Substrate.Algebra.F2.Linear.Cycle3
+open import Substrate.Groups.Capabilities.CoxeterGroup
+open import Substrate.Groups.Coxeter.Core.NormalizeAppend.Left
+open import Substrate.Groups.Coxeter.Core.NormalizeAppend.Right
+open import Substrate.Groups.Coxeter.Core.NormalizeIdem
 
 module Substrate.Groups.Coxeter.GroupAdapter
   -- Coxeter Core inputs.

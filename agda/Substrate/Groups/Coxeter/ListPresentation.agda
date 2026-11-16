@@ -24,7 +24,10 @@
 
 open import Substrate.Groups.Coxeter.Word
 open import Substrate.Foundation.Eq
-  using (_≡_; refl; trans; sym; cong)
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Algebra.Quotient.Canonical
 
 module Substrate.Groups.Coxeter.ListPresentation
   (Gen : Set)

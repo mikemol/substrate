@@ -24,10 +24,12 @@
 module Substrate.Logic.Evidence.ElAtlas.OrbitCloudRung2 where
 
 open import Substrate.Foundation.Vec using (Vec; _∷_; [])
-open import Substrate.Foundation.Eq using (_≡_; refl; cong)
-open import Substrate.Foundation.Empty using (⊥)
+open import Substrate.Foundation.Empty.Bot
 open import Substrate.Foundation.Product using (_×_; _,_)
-open import Substrate.Algebra.Z using (ℤ; +_; -ℤ_)
+open import Substrate.Algebra.Z.Int
+open import Substrate.Algebra.Z.Int2
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
 
 ------------------------------------------------------------------------
 -- Edge space of K₃ and the cycle generator c (+ its reversal −c).

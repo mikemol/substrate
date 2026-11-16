@@ -46,21 +46,25 @@
 
 module Substrate.WitnessTower.Wedge.OrientationRigCatPermSign where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_; suc-injective)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.SucInjective
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.To
-open import Substrate.Foundation.Fin.Sucinjective
-open import Substrate.Foundation.Fin.Op2
 open import Substrate.Foundation.Fin.Properties using (toℕ-injective)
 open import Substrate.Foundation.Fin.Raise using (raise)
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; lookup; map; tabulate)
-open import Substrate.Foundation.Vec.Properties using (lookup∘tabulate; vec-ext)
-open import Substrate.Foundation.Eq using (_≡_; _≢_; refl; sym; trans; cong; cong₂)
-open import Substrate.Foundation.Negation using (¬_)
-open import Substrate.Foundation.Empty using (⊥-elim)
-open import Substrate.Foundation.Bool using (Bool; true; false; not; _xor_)
-open import Substrate.Foundation.Bool.Properties
-  using (xor-comm; xor-assoc; xor-identityˡ; xor-identityʳ)
+open import Substrate.Foundation.Vec.Properties.LookupComptabulate
+open import Substrate.Foundation.Vec.Properties.VecExt
+open import Substrate.Foundation.Negation.Not
+open import Substrate.Foundation.Empty.BotElim
+open import Substrate.Foundation.Bool.Bool
+open import Substrate.Foundation.Bool.Not
+open import Substrate.Foundation.Bool.Xor
+open import Substrate.Foundation.Bool.Properties.XorAssoc
+open import Substrate.Foundation.Bool.Properties.XorComm
+open import Substrate.Foundation.Bool.Properties.XorIdentityL
+open import Substrate.Foundation.Bool.Properties.XorIdentityR
 
 open import Substrate.WitnessTower.Enumerate using (Perm)
 open import Substrate.WitnessTower.FirstAppearance using (id-perm; compose)
@@ -75,6 +79,12 @@ open import Substrate.WitnessTower.Wedge.OrientationRigCatPermCoxeterGeneral
   using (s₁; sadj; inj1; CoxGen; cox-id; cox-s; cox-∘)
 open import Substrate.WitnessTower.Wedge.OrientationRigCatPermCoxeterGeneral.Properties
   using (coxeter-complete; toℕ-inj1)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Neq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
 
 ------------------------------------------------------------------------
 -- 0. Small Bool / ℕ helpers (pure, case-analytical).

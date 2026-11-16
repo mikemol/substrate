@@ -13,8 +13,8 @@
 module Substrate.Foundation.List.Any where
 
 open import Substrate.Foundation.Level using (Level; _⊔_)
-open import Substrate.Foundation.Eq using (_≡_)
 open import Substrate.Foundation.List using (List; []; _∷_)
+open import Substrate.Foundation.Eq
 
 private
   variable

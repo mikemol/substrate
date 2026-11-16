@@ -18,10 +18,10 @@
 
 module Substrate.Category.RGradedMonoid where
 
-open import Substrate.Foundation.Level using (Level; _⊔_) renaming (suc to lsuc)
-open import Substrate.Foundation.Eq using (_≡_)
+open import Substrate.Foundation.Level using (Level; _⊔_)
 
 open import Substrate.Category.CommutativeMonoid
+open import Substrate.Foundation.Eq
 
 private
   variable

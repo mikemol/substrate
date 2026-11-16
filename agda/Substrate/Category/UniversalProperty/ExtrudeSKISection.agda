@@ -9,7 +9,7 @@
 --
 -- The NF-family is the K-SPINE: Kⁿ 0 = K, Kⁿ (suc m) = K ∙ (Kⁿ m). K ∙ t is a normal form when t is (β-K
 -- needs TWO args; K∙t has one), and the spine depth is recoverable, so Kⁿ is injective. The total-space
--- point (n , i) is encoded by nesting: label (n , i) = Kⁿ (n + toℕ i) wrapped so that n and i are separately
+-- point (n , i) is encoded by nesting: label (n , i) = Kⁿ (n ℕ+ toℕ i) wrapped so that n and i are separately
 -- recoverable — done via a diagonal-free two-layer spine (outer depth n, inner marks toℕ i).
 --
 -- COMMENT HYGIENE (agda_comment_hygiene): the MACHINE-CHECKED content is EXACTLY: Kⁿ (the K-spine),
@@ -19,32 +19,37 @@
 
 module Substrate.Category.UniversalProperty.ExtrudeSKISection where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; cong; sym; trans)
-open import Substrate.Foundation.Empty using (⊥; ⊥-elim)
+open import Substrate.Foundation.Empty.Bot
+open import Substrate.Foundation.Empty.BotElim
 open import Substrate.Foundation.Product using (Σ; _,_; proj₁; proj₂)
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.To
-open import Substrate.Algebra.R.Trace.SKIShedDuality using (S; K; I; _∙_) renaming (Tm to Tm⟦533ef80d⟧)
-import Substrate.Algebra.R.Trace.SKIReductionToList as R
+open import Substrate.Algebra.R.Trace.SKIShedDuality.Tm
 open R using (_⇒_; β-K; cong-l; cong-r)
 open import Substrate.Category.UniversalProperty.ExtrudeSKIFibration using (Total; TowerLabeling; at-rung)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Algebra.R.Trace.SKIShedDuality.Tm
 
 ------------------------------------------------------------------------
 -- ① THE K-SPINE NF-FAMILY: Kⁿ n is a normal form for every n, and Kⁿ is injective (depth recoverable).
 ------------------------------------------------------------------------
-Kⁿ : ℕ → Tm⟦533ef80d⟧
+Kⁿ : ℕ → Tm
 Kⁿ zero    = K
 Kⁿ (suc n) = K ∙ (Kⁿ n)
 
 -- K ∙ t is a normal form when t is (β-K needs (K∙x)∙y = two args; K∙t has one; head K is irreducible):
-Kⁿ-normal : (n : ℕ) {c : Tm⟦533ef80d⟧} → Kⁿ n ⇒ c → ⊥
+Kⁿ-normal : (n : ℕ) {c : Tm} → Kⁿ n ⇒ c → ⊥
 Kⁿ-normal zero    ()
 Kⁿ-normal (suc n) (cong-l _ ())          -- K ⇒ f' is impossible (K is an atom)
 Kⁿ-normal (suc n) (cong-r _ r) = Kⁿ-normal n r   -- reduce inside the tail: absurd by IH
 
 -- the spine is injective (the K-nesting depth IS n):
-tail-of : Tm⟦533ef80d⟧ → Tm⟦533ef80d⟧
+tail-of : Tm → Tm
 tail-of (K ∙ t) = t
 tail-of _       = K
 Kⁿ-inj : {n m : ℕ} → Kⁿ n ≡ Kⁿ m → n ≡ m
@@ -60,10 +65,10 @@ Kⁿ-inj {suc n} {zero}  ()   -- K ∙ _ ≡ K : distinct constructors
 ------------------------------------------------------------------------
 T : ℕ → ℕ
 T zero    = zero
-T (suc n) = suc n + T n
+T (suc n) = suc n ℕ+ T n
 
 encode : Total → ℕ
-encode (n , i) = T (n + toℕ i) + toℕ i     -- diagonal (Cantor) pairing on (n , toℕ i)
+encode (n , i) = T (n ℕ+ toℕ i) ℕ+ toℕ i     -- diagonal (Cantor) pairing on (n , toℕ i)
 
 ------------------------------------------------------------------------
 -- ③ THE CONCRETE SECTION: label (n , i) = Kⁿ (encode (n , i)). Each is a normal form (Kⁿ-normal); and the
@@ -73,10 +78,10 @@ encode (n , i) = T (n + toℕ i) + toℕ i     -- diagonal (Cantor) pairing on (
 --    parameterised by encode's injectivity, plus the two grounded halves (label-normal, and label-inj
 --    reduced to encode-inj).
 ------------------------------------------------------------------------
-label : Total → Tm⟦533ef80d⟧
+label : Total → Tm
 label t = Kⁿ (encode t)
 
-label-normal : (t : Total) {c : Tm⟦533ef80d⟧} → label t ⇒ c → ⊥
+label-normal : (t : Total) {c : Tm} → label t ⇒ c → ⊥
 label-normal t r = Kⁿ-normal (encode t) r
 
 -- label-inj REDUCES to encode-inj (via Kⁿ-inj): distinct total-space points ⟹ distinct labels, GIVEN
@@ -95,14 +100,14 @@ section-from-encode-inj enc-inj = record
 -- point (n,i) ↦ a distinct K-spine normal form Kⁿ(encode(n,i)); one element of the coset, exhibited now the
 -- structure is modeled): 257 modeled the coset (the fibration is the invariant, a section is one element);
 -- this SUPPLIES a section — label = Kⁿ ∘ encode, each label a normal form (Kⁿ-normal, ①), the labeling
--- injective via Kⁿ-inj (①) + encode-inj (② — the Cantor pairing on (n, toℕ i)). So the fibration total space
+-- injective via Kⁿ-inj (①) ℕ+ encode-inj (② — the Cantor pairing on (n, toℕ i)). So the fibration total space
 -- (257) is not just schematic: it has an actual injective NF-labeling, hence (with encode-inj) a genuine
 -- TowerLabeling whose verts-dont-converge (257) is non-vacuous — the ω-vertex atom is realized. Picking THIS
 -- section is legitimate (D-model-the-coset): the coset is already the invariant (257), so one concrete
 -- element grounds it. No spook — the K-spine is a positive, manifestly-normal family.
 --
--- HONEST BOUNDARY (⟡H-overclaim): GROUNDED = the K-spine NF-family (Kⁿ, Kⁿ-normal, Kⁿ-inj) + label +
--- label-normal + the reduction of label-inj to encode-inj (section-from-encode-inj). SCOPED: the injectivity
+-- HONEST BOUNDARY (⟡H-overclaim): GROUNDED = the K-spine NF-family (Kⁿ, Kⁿ-normal, Kⁿ-inj) ℕ+ label ℕ+
+-- label-normal ℕ+ the reduction of label-inj to encode-inj (section-from-encode-inj). SCOPED: the injectivity
 -- of the Cantor pairing `encode` is a pure ℕ-arithmetic lemma (T strictly monotone etc.) — reused-in-spirit
 -- and taken as the explicit hypothesis of section-from-encode-inj rather than re-proving arithmetic here
 -- (⟡extrude-ski-encode-inj: discharge encode-inj from the repo's Nat lemmas). What's grounded: the combinator

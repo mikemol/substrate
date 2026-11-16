@@ -19,9 +19,10 @@
 -- MODULE PARAMETER: the emit output O (a concrete Set):
 module Substrate.Category.UniversalProperty.ExtrudeIOMonadRecord (O : Set) where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Category.UniversalProperty.ExtrudeIO O using (IO; ret; map; join)
 import Substrate.Category.UniversalProperty.ExtrudeIOMonadNT O as NT
+open import Substrate.Foundation.Eq
+open import Substrate.Probability.MarkovCategory
 
 ------------------------------------------------------------------------
 -- ① THE GENERIC SMALL MONAD RECORD: Obj/Mor/_≈_ + the endofunctor action (T-obj/T-mor) as module params

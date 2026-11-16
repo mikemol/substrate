@@ -6,12 +6,12 @@
 
 module Substrate.Groups.Z-x-FreeCyclic-Recovery.Z4.PhaseRecovery where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Groups.Coxeter.Word using (Word)
 
 import Substrate.Groups.Capabilities.PhaseProjection.Witness as PhaseProjW
 import Substrate.Groups.Coxeter.Cyclic.Base 3 as Z₄B
 open import Substrate.Groups.Z-x-FreeCyclic-Recovery.Z4.Embed using (embed-Z₄)
+open import Substrate.Foundation.Eq
 projcap-Z₄ = PhaseProjW.cap 3
 
 

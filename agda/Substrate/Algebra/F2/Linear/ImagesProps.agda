@@ -18,41 +18,75 @@
 
 module Substrate.Algebra.F2.Linear.ImagesProps where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; lookup)
-open import Substrate.Foundation.Eq
-  using (_≡_; refl; sym; trans; cong; cong₂; cong-trans)
 
-open import Substrate.Algebra.F2
+open import Substrate.Algebra.F2.AbsorbL
+open import Substrate.Algebra.F2.AbsorbR
+open import Substrate.Algebra.F2.Assoc
+open import Substrate.Algebra.F2.Comm
+open import Substrate.Algebra.F2.Dec
+open import Substrate.Algebra.F2.DistribLPlus
+open import Substrate.Algebra.F2.DistribRPlus
+open import Substrate.Algebra.F2.F2
+open import Substrate.Algebra.F2.F2Cases
+open import Substrate.Algebra.F2.Idempotent
+open import Substrate.Algebra.F2.IdentityL
+open import Substrate.Algebra.F2.IdentityR
+open import Substrate.Algebra.F2.InvOfOne
+open import Substrate.Algebra.F2.OneNeqZero
+open import Substrate.Algebra.F2.Op
+open import Substrate.Algebra.F2.Op2
+open import Substrate.Algebra.F2.PlusAssoc
+open import Substrate.Algebra.F2.PlusComm
+open import Substrate.Algebra.F2.PlusF
+open import Substrate.Algebra.F2.PlusIdentityL
+open import Substrate.Algebra.F2.PlusIdentityR
+open import Substrate.Algebra.F2.PlusInverseL
+open import Substrate.Algebra.F2.PlusInverseR
+open import Substrate.Algebra.F2.PlusSelfInverse
+open import Substrate.Algebra.F2.ZeroNeqOne
 open import Substrate.Algebra.F2.Vector
 open import Substrate.Algebra.F2.Vector.Universal
-open import Substrate.Algebra.F2.Linear
+open import Substrate.Algebra.F2.Linear.CompL
+open import Substrate.Algebra.F2.Linear.CompLAssoc
+open import Substrate.Algebra.F2.Linear.CompLIdentityL
+open import Substrate.Algebra.F2.Linear.CompLIdentityR
+open import Substrate.Algebra.F2.Linear.IdL
+open import Substrate.Algebra.F2.Linear.Linear
+open import Substrate.Algebra.F2.Linear.Preserves
 open import Substrate.Algebra.F2.Linear.FromImages
   using (linear-from-images; apply-linear-from-images-lookup)
 open import Substrate.Algebra.Medial using (medial)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.Foundation.Eq.CongTrans
 
 ------------------------------------------------------------------------
 -- sum-F₂ additivity / scaling.
 --
--- Neither already exists (Vector.Universal has only sum-F₂ + sum-F₂-cong
+-- Neither already exists (Vector.Universal has only sum-F₂ +F sum-F₂-cong
 -- and the vector-valued sum-+ⱽ-distrib / *ₛ-sum-distrib). They are the
 -- scalar analogues, proved here by induction on the index count.
 ------------------------------------------------------------------------
 
--- sum-F₂ (λ i → a i + b i) ≡ sum-F₂ a + sum-F₂ b.
+-- sum-F₂ (λ i → a i +F b i) ≡ sum-F₂ a +F sum-F₂ b.
 sum-F₂-+-distrib :
   ∀ {n} (a b : Fin n → F₂) →
-  sum-F₂ (λ i → a i + b i) ≡ (sum-F₂ a + sum-F₂ b)
+  sum-F₂ (λ i → a i +F b i) ≡ (sum-F₂ a +F sum-F₂ b)
 sum-F₂-+-distrib {zero}  a b = refl
 sum-F₂-+-distrib {suc _} a b =
-  -- (a₀ + b₀) + Σ(aᵢ + bᵢ) ≡ (a₀ + Σaᵢ) + (b₀ + Σbᵢ)
-  cong-trans ((a fzero + b fzero) +_) (sum-F₂-+-distrib (λ ix → a (fsuc ix)) (λ ix → b (fsuc ix)))
+  -- (a₀ +F b₀) +F Σ(aᵢ +F bᵢ) ≡ (a₀ +F Σaᵢ) +F (b₀ +F Σbᵢ)
+  cong-trans ((a fzero +F b fzero) +F_) (sum-F₂-+-distrib (λ ix → a (fsuc ix)) (λ ix → b (fsuc ix)))
   (swap-+ (a fzero) (b fzero) (sum-F₂ (λ ix → a (fsuc ix))) (sum-F₂ (λ ix → b (fsuc ix))))
   where
     -- Ⓜ: the 4-term rearrange = the medial law (Algebra.Medial) at F₂'s `+`.
-    swap-+ : (w x y z : F₂) → ((w + x) + (y + z)) ≡ ((w + y) + (x + z))
-    swap-+ = medial _+_ +-assoc +-comm
+    swap-+ : (w x y z : F₂) → ((w +F x) +F (y +F z)) ≡ ((w +F y) +F (x +F z))
+    swap-+ = medial _+F_ +-assoc +-comm
 
 -- sum-F₂ (λ i → c · a i) ≡ c · sum-F₂ a.
 sum-F₂-·-distrib :
@@ -60,7 +94,7 @@ sum-F₂-·-distrib :
   sum-F₂ (λ i → c · a i) ≡ (c · sum-F₂ a)
 sum-F₂-·-distrib {zero}  c a = sym (·-absorbʳ c)
 sum-F₂-·-distrib {suc _} c a =
-  trans (cong (c · a fzero +_) (sum-F₂-·-distrib c (λ ix → a (fsuc ix))))
+  trans (cong (c · a fzero +F_) (sum-F₂-·-distrib c (λ ix → a (fsuc ix))))
         (sym (·-distribˡ-+ c (a fzero) (sum-F₂ (λ ix → a (fsuc ix)))))
 
 ------------------------------------------------------------------------
@@ -68,7 +102,7 @@ sum-F₂-·-distrib {suc _} c a =
 --
 -- If two image families agree pointwise, the arity-1 maps they generate
 -- agree on every input. Proved through the equational interface
--- (apply-linear-from-images-lookup + sum-F₂-cong), NOT by unfolding the
+-- (apply-linear-from-images-lookup +F sum-F₂-cong), NOT by unfolding the
 -- sealed `apply`.
 ------------------------------------------------------------------------
 
@@ -102,7 +136,7 @@ images-add g h u = ≡-from-lookup _ _ (λ j →
                            (λ i → lookup u i · lookup (h i) j))
          (sym (trans (lookup-+ⱽ (apply (linear-from-images g) u)
                                 (apply (linear-from-images h) u) j)
-                     (cong₂ _+_ (apply-linear-from-images-lookup g u j)
+                     (cong₂ _+F_ (apply-linear-from-images-lookup g u j)
                                 (apply-linear-from-images-lookup h u j)))))))
 
 -- apply (lfi (λ i → c *ₛ g i)) u ≡ c *ₛ apply (lfi g) u.

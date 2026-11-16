@@ -23,6 +23,7 @@ open import Substrate.Algebra.F2.Linear.CategoryStructures
   using (F2LinearCategoryStructures)
 open import Substrate.Category.DaggerCategory using (DaggerCategory)
 open import Substrate.Category.SymmetricMonoidal using (SymmetricMonoidal)
+open import Substrate.Probability.MarkovCategory
 
 module Substrate.Algebra.F2.Linear.AsCompactClosed
   {ℓO ℓM : Level}

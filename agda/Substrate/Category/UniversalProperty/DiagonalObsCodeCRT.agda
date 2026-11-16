@@ -23,12 +23,21 @@
 
 module Substrate.Category.UniversalProperty.DiagonalObsCodeCRT where
 
-open import Substrate.Foundation.Nat using (ℕ; suc; _<_)
-open import Substrate.Foundation.Eq using (_≡_; trans; cong₂)
+open import Substrate.Foundation.Nat.Lt
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Product using (_×_; _,_)
-open import Substrate.Algebra.Nat.Mod using (_mod-suc_; mod-suc-id)
+open import Substrate.Foundation.Nat.Nat.ModSuc
+open import Substrate.Algebra.Nat.Mod.ModSucBound
+open import Substrate.Algebra.Nat.Mod.ModSucId
+open import Substrate.Algebra.Nat.Mod.ModSucPeriodic
+open import Substrate.Algebra.Nat.Mod.ModSucSuc
+open import Substrate.Algebra.Nat.Mod.SucModSucLt
+open import Substrate.Algebra.Nat.Mod.SucModSucSelf
 open import Substrate.Algebra.Quotient.CRT
   using (CRT-Witness; combine; combine-mod-m; combine-mod-n)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong2
 
 ------------------------------------------------------------------------
 -- 1. The decode: recover a pair from a CRT code by componentwise mod-suc.

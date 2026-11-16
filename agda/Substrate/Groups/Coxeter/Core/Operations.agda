@@ -11,7 +11,16 @@
 
 {-# OPTIONS --safe --without-K #-}
 
-open import Substrate.Foundation.Eq using (_≡_; _≢_)
+
+-- ⚑ THE SPLIT EMITTED THIS LEAF WITH NO IMPORTS AT ALL, yet its body uses
+-- `_≡_` (:33) and `_≢_` (:36).  Both resolve unambiguously via def_index —
+-- `Foundation.Eq` and `Foundation.Eq.Neq` — so this is a missing edge, not
+-- an ambiguity.  Placed ABOVE the header for the same reason as the sibling
+-- leaves: cheap, and correct whether the name is used in the telescope or
+-- the body.
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Neq
+open import Substrate.Foundation.List
 
 module Substrate.Groups.Coxeter.Core.Operations
   (Word : Set)

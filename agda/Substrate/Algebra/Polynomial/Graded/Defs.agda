@@ -3,16 +3,53 @@
 -- so each module's elaboration peak stays under the 128MB cap. Re-exported by
 -- `Substrate.Algebra.Polynomial.Graded` — the public API is unchanged.
 module Substrate.Algebra.Polynomial.Graded.Defs where
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _≟_) renaming (_+_ to _ℕ+_)
-open import Substrate.Foundation.Nat.Properties.Add using () renaming (+-comm to +ℕ-comm; +-assoc to +ℕ-assoc)
+-- ⚑ REPOINTED OFF THE DISSOLVED `Foundation.Nat` BARREL (⟡ban-decompose).  That
+-- module provides NOTHING — `agda_defs --provides Substrate.Foundation.Nat` reports
+-- 0 names over its 63 leaves — so the `using`/`renaming` above bound nothing and
+-- `ℕ+` failed [NotInScope] at :51, blocking 85 modules.  The names live in
+-- `Nat.Nat` (ℕ, zero, suc), `Nat.Plus` (_ℕ+_) and `Nat.Dec` (_≟_).
+--
+-- ⚑ AND THE RENAME IS NOT EARNED — a claim this comment used to make and which was
+-- FALSE.  It argued the clash with `Over`'s carrier `_+_` made a `renaming` clause
+-- unavoidable "because no split can separate a module parameter".  True about splits,
+-- false about renames: naming ℕ's addition `_ℕ+_` AT SOURCE (`Nat.Plus`) stops the
+-- import binding `_+_` at all, so the parameter binds it unambiguously and no filter
+-- is needed.  The clause it defended is what let a tree-wide rename walk into this
+-- telescope; the ban was right and the exemption was mine.
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Dec
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Properties.Add.PlusComm
+open import Substrate.Foundation.Nat.Properties.Add.PlusAssoc
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; replicate)
-open import Substrate.Foundation.Eq using (_≡_; refl; sym; trans; cong; cong₂; subst)
+-- ⚑ THREE MORE DISSOLVED BARRELS, SAME CLASS AS `Foundation.Nat` ABOVE.
+-- `Foundation.Eq` survives but no longer exports sym/trans/cong/cong₂/subst (agda
+-- warned -W[no]ModuleDoesntExport, which BINDS NOTHING and fails far away);
+-- `Foundation.Negation` and `Foundation.Empty` have no source file at all.  Each
+-- name is bound at the leaf that defines it, bare — no filter is earned here,
+-- because these leaves export one or two names and nothing in scope clashes.
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
+open import Substrate.Foundation.Eq.Trans
+open import Substrate.Foundation.Eq.Cong
+open import Substrate.Foundation.Eq.Cong2
+open import Substrate.Foundation.Eq.Subst
 open import Substrate.Foundation.Fin.Fin
-open import Substrate.Foundation.Negation using (¬_; yes; no)
-open import Substrate.Foundation.Empty using (⊥-elim)
+open import Substrate.Foundation.Negation.Not
+open import Substrate.Foundation.Negation.Dec
+open import Substrate.Foundation.Empty.BotElim
 open import Substrate.Algebra.Module.Free.Basis using (basis-vec)
 open import Substrate.Algebra.Medial using (medial)
 import Substrate.Algebra.Polynomial.Graded.Base as Base
+-- ⚑ THE CARRIER'S OPERATIONS AND LAWS, NOT ℕ's.  `rename_at_source` rewrote these
+-- to `_ℕ+_`/`+ℕ-*` when it renamed `Nat.Plus._+_`, because THIS FILE carried a
+-- `renaming (_+_ to _ℕ+_)` clause (added by hand earlier in the arc) that made
+-- `_ℕ+_` look like the module's own spelling for the imported name.  A telescope
+-- parameter is a BINDING, not a use site — the ℕ-domain suffix on it is a
+-- category error: `A` is any carrier, and its addition is not ℕ's.
+-- ⚑ ABOVE THE HEADER, NOT INSIDE THE TELESCOPE: a comment between `module Over
+-- {A : Set}` and its first `(…)` group breaks the header span (`module_scopes`
+-- masks comments to blanks) and `--telescope` reports the provider ABSENT.
 module Over {A : Set}
   (_+_ : A → A → A) (_*_ : A → A → A) (𝟘 𝟙 : A)
   (+-assoc     : (a b c : A) → (a + b) + c ≡ a + (b + c))
@@ -27,42 +64,16 @@ module Over {A : Set}
   (*-absorbʳ   : (a : A) → a * 𝟘 ≡ 𝟘)
   where
 
-  private variable n m k : ℕ
+  open import Substrate.Algebra.Polynomial.Graded.Defs.PlusP _+_ 𝟘 𝟙
+  open import Substrate.Algebra.Polynomial.Graded.Defs.C _+_ _*_ 𝟘 𝟙
+  open import Substrate.Algebra.Polynomial.Graded.Defs.XShift _+_ 𝟘 𝟙
+  open import Substrate.Algebra.Polynomial.Graded.Defs.PadEnd _+_ 𝟘 𝟙
+  open import Substrate.Algebra.Polynomial.Graded.Defs.ShiftToSucOnLeft _+_ 𝟘 𝟙
+  open import Substrate.Algebra.Polynomial.Graded.Defs.Outer _+_ _*_ 𝟘 𝟙
+  open import Substrate.Algebra.Polynomial.Graded.Defs.AntiDiagSum _+_ 𝟘 𝟙
+  open import Substrate.Algebra.Polynomial.Graded.Defs.TimesP _+_ _*_ 𝟘 𝟙
 
   -- 1. The graded polynomial type and its operations (no laws needed).
   -- Poly / nth are single-sourced from the thin `Graded.Base` (a byte-table
   -- consumer deserialises just Base, not this whole ring tower).
   open Base.Over 𝟘 public using (Poly; nth)
-
-  infixl 6 _+P_
-  _+P_ : Poly n → Poly n → Poly n
-  []      +P []      = []
-  (x ∷ u) +P (y ∷ v) = (x + y) ∷ (u +P v)
-
-  infixl 7 _·c_
-  _·c_ : A → Poly n → Poly n
-  a ·c []      = []
-  a ·c (x ∷ p) = (a * x) ∷ (a ·c p)
-
-  x-shift : Poly n → Poly (suc n)
-  x-shift p = 𝟘 ∷ p
-
-  pad-end : (k : ℕ) → Poly n → Poly (n ℕ+ k)
-  pad-end k []      = replicate k 𝟘
-  pad-end k (x ∷ p) = x ∷ pad-end k p
-
-  shift-to-suc-on-left : ∀ {n'} → Poly (m ℕ+ suc n') → Poly (suc n' ℕ+ m)
-  shift-to-suc-on-left {m} {n'} p = subst Poly (+ℕ-comm m (suc n')) p
-
-  outer : Poly n → Poly m → Vec (Poly m) n
-  outer []      q = []
-  outer (a ∷ p) q = (a ·c q) ∷ outer p q
-
-  anti-diag-sum : Vec (Poly m) n → Poly (n ℕ+ m)
-  anti-diag-sum {m} {zero}   []           = replicate m 𝟘
-  anti-diag-sum {m} {suc n'} (row ∷ rows) =
-    shift-to-suc-on-left (pad-end (suc n') row) +P x-shift (anti-diag-sum rows)
-
-  infixl 7 _*P_
-  _*P_ : Poly n → Poly m → Poly (n ℕ+ m)
-  p *P q = anti-diag-sum (outer p q)

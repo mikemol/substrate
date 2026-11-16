@@ -40,8 +40,8 @@
 
 module Substrate.Category.Allegory where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Foundation.Product using (Σ; _,_; _×_)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- Step 0 — relations as fiber families, with the inclusion order.

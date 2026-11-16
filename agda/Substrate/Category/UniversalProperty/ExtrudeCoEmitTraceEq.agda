@@ -7,14 +7,13 @@
 ------------------------------------------------------------------------
 module Substrate.Category.UniversalProperty.ExtrudeCoEmitTraceEq where
 
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Eq using (refl)
-open import Substrate.Algebra.R.Trace using (RealTrace)
-open import Substrate.Algebra.R.Trace.Bisim using (_~_; head~; tail~; ~-refl)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Algebra.R.Trace.Bisim.Op
+open import Substrate.Algebra.R.Trace.Bisim.Refl
 open import Substrate.Category.UniversalProperty.ExtrudeCoEmitMonad ℕ
   using (CoEmit; ret; emitᶜ; step; bind; returnᶜ)
-open import Substrate.Category.UniversalProperty.ExtrudeCoEmitViaTrace
-  using (coemit-trace; coalg; next; code)
+open import Substrate.Category.UniversalProperty.ExtrudeCoEmitViaTrace.CoemitTrace
+open import Substrate.Foundation.Eq
 
 -- _≈ᵗ_ : the PRIMARY bisimilarity is the pulled-back universal one (no bespoke record). Its whole equivalence
 -- IS the universal ~-refl/~-sym/~-trans (through coemit-trace) — nothing re-derived.
@@ -52,7 +51,7 @@ tail~ (bind-ret-right-~ c) with step c
 ------------------------------------------------------------------------
 open import Substrate.Category.UniversalProperty.ExtrudeCoEmitMonad ℕ
   using (bind-ret-left; bind-ret-right; bind-assoc)
-open import Substrate.Category.UniversalProperty.ExtrudeCoEmitViaTrace using (≈ᵉ→~)
+open import Substrate.Category.UniversalProperty.ExtrudeCoEmitViaTrace.ApproxTo
 
 -- transport route (structural proof → universal presentation):
 bind-ret-left-trans  : (a : ℕ) (h : ℕ → CoEmit ℕ) → bind (returnᶜ a) h ≈ᵗ h a

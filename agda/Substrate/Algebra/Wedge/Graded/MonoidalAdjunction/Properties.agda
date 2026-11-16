@@ -17,17 +17,16 @@
 
 module Substrate.Algebra.Wedge.Graded.MonoidalAdjunction.Properties where
 
-open import Substrate.Foundation.Level using (0ℓ)
 open import Substrate.Foundation.Product using (Σ)
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Vec using (Vec)
-open import Substrate.Foundation.Eq using (_≡_; refl)
 open import Substrate.Algebra.Wedge.Product using (vec-product)
 open import Substrate.Algebra.Wedge.Product.Laws
   using (flatten-monoid; vec-assoc; vec-unitˡ; vec-unitʳ; vec-flat-monoid)
 open import Substrate.Algebra.Wedge.Graded.MonoidalAdjunction
   using (GradedMonoidalAdjunction; prod; assoc; unitˡ; unitʳ)
 open import Substrate.Category.GradedMonoid using (GradedMonoid)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- The degree as a flat GradedMonoid (the Grothendieck flatten).

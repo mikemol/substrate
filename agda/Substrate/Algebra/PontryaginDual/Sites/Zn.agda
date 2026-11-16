@@ -21,11 +21,19 @@ module Substrate.Algebra.PontryaginDual.Sites.Zn where
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.To
 open import Substrate.Foundation.Fin.From2
-open import Substrate.Foundation.Nat using (ℕ; suc; _+_; _∸_)
-open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Nat.Monus
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
 
 open import Substrate.Algebra.PontryaginDual
-open import Substrate.Algebra.Nat.Mod using (_mod-suc_; mod-suc-bound)
+open import Substrate.Foundation.Nat.Nat.ModSuc
+open import Substrate.Algebra.Nat.Mod.ModSucBound
+open import Substrate.Algebra.Nat.Mod.ModSucId
+open import Substrate.Algebra.Nat.Mod.ModSucPeriodic
+open import Substrate.Algebra.Nat.Mod.ModSucSuc
+open import Substrate.Algebra.Nat.Mod.SucModSucLt
+open import Substrate.Algebra.Nat.Mod.SucModSucSelf
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- Z/(suc n) as the carrier of its own Pontryagin dual.
@@ -43,14 +51,21 @@ open import Substrate.Algebra.Nat.Mod using (_mod-suc_; mod-suc-bound)
 -- Fin (suc n).
 --
 -- Note (gauge): there is no group-law field on PontryaginDual, so
--- these definitions are not yet *proved* to satisfy the abelian-group
--- axioms here; they are the correct operations as DATA. A follow-on
--- slice can add the law witnesses (assoc / id / inv via the Mod
--- arithmetic lemmas).
+-- these definitions are not *proved* to satisfy the abelian-group
+-- axioms HERE; they are the correct operations as DATA.
+--
+-- ⚑ THE FOLLOW-ON SLICE LANDED: `Sites.ZnLaws` proves all six axioms
+-- (assoc / ε-left / ε-right / inv-left / inv-right / comm) over exactly
+-- these operations and assembles `Zn-AbelianGroup : (n : ℕ) →
+-- AbelianGroup (Fin (suc n))` up the M1–M5 ladder.  The operations below
+-- are unchanged and are NOT redefined there — the record still carries no
+-- law field, so the witnesses live beside it rather than inside it.  What
+-- was deferred was the PROOF, not the definition, and that is now
+-- discharged; a reader who needs the laws imports ZnLaws.
 
--- cyclic addition on Fin (suc n): (toℕ a + toℕ b) reduced mod (suc n).
+-- cyclic addition on Fin (suc n): (toℕ a ℕ+ toℕ b) reduced mod (suc n).
 add-mod : (n : ℕ) → Fin (suc n) → Fin (suc n) → Fin (suc n)
-add-mod n a b = fromℕ< (mod-suc-bound (toℕ a + toℕ b) n)
+add-mod n a b = fromℕ< (mod-suc-bound (toℕ a ℕ+ toℕ b) n)
 
 -- additive inverse on Fin (suc n): (suc n ∸ toℕ a) reduced mod (suc n).
 neg-mod : (n : ℕ) → Fin (suc n) → Fin (suc n)

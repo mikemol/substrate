@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------
 -- Substrate.Groups.V4.Operations
 --
--- The V₄ group operations: _·_, ε, inv. All routed through V4-Coxeter
+-- The V₄ group operations: _·₄_, ε, inv. All routed through V4-Coxeter
 -- via the bijection in Substrate.Groups.V4.Bijection.
 ------------------------------------------------------------------------
 
@@ -10,13 +10,21 @@
 module Substrate.Groups.V4.Operations where
 
 import Substrate.Groups.V4-Coxeter as C
-open import Substrate.Groups.V4.Bijection
+open import Substrate.Groups.V4.Bijection.FromC
+open import Substrate.Groups.V4.Bijection.FromCCanonical
+open import Substrate.Groups.V4.Bijection.FromTo
+open import Substrate.Groups.V4.Bijection.Private
+open import Substrate.Groups.V4.Bijection.ToC
+open import Substrate.Groups.V4.Bijection.ToCCanonical
+open import Substrate.Groups.V4.Bijection.ToFromCanonical
+open import Substrate.Groups.V4.Bijection.V4
 open import Substrate.Foundation.Product using (_×_; _,_)
+open import Substrate.Algebra.Q.JacCubeNorm
 
-infixl 7 _·_
+infixl 7 _·₄_
 
-_·_ : V₄ → V₄ → V₄
-x · y = from-c (to-c x C.· to-c y)
+_·₄_ : V₄ → V₄ → V₄
+x ·₄ y = from-c (to-c x C.· to-c y)
 
 ε : V₄
 ε = e

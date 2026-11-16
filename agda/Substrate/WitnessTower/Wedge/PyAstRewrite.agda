@@ -24,14 +24,16 @@
 
 module Substrate.WitnessTower.Wedge.PyAstRewrite where
 
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Eq using (_≡_)
-open import Substrate.WitnessTower.LehmerPath using (LehmerPath; decode; decode-is-perm)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.WitnessTower.LehmerPath.Decode
+open import Substrate.WitnessTower.LehmerPath.DecodeIsPerm
+open import Substrate.WitnessTower.LehmerPath.LehmerPath
 open import Substrate.WitnessTower.Wedge.OrientationRigInitial using (RigAlgebra; foldR)
 open import Substrate.WitnessTower.Wedge.OrientationRigInstance using (LehmerRig; fold-idAlg)
 open import Substrate.WitnessTower.Wedge.OrientationRigCatPermCoxeterGeneral using (CoxGen)
 open import Substrate.WitnessTower.Wedge.OrientationRigCatPermCoxeterGeneral.Properties
   using (coxeter-complete)
+open import Substrate.Foundation.Eq
 
 -- THE REWRITE RIG: a pyast rewrite = a permutation in Lehmer normal form = a Coxeter word.
 -- Reused verbatim from the tower — NOT a new SPPF.

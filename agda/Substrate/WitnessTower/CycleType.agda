@@ -28,17 +28,31 @@
 
 module Substrate.WitnessTower.CycleType where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_) renaming (_≟_ to _≟ℕ_; _<?_ to _<?ℕ_)
+-- ⚑ WAS `open import ...Foundation.Nat using (…) renaming (_≟_ to _≟ℕ_)` — a
+-- retired barrel AND a banned renaming, in one statement.  The `_≟ℕ_` alias
+-- names nothing tree-wide; the ℕ decidable equality is `Nat.Dec._≟_` and the Fin
+-- one is now `Fin.Op._≟ᶠ_`, so the two are separable without an alias.
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Foundation.Nat.Dec
+-- ⚑ `<?ℕ` IS THE SECOND ALIAS FROM THE SAME DISSOLVED STATEMENT.  One
+-- `renaming (…)` clause can carry several, so clearing one leaves the rest —
+-- `fix_notinscope` REFUSED this (`no definer in index`) rather than guessing,
+-- which is correct: the alias names nothing, and only history says what it meant.
+open import Substrate.Foundation.Nat.Lt2
 open import Substrate.Foundation.Fin.Fin
 open import Substrate.Foundation.Fin.To
 open import Substrate.Foundation.Fin.Op
 open import Substrate.Foundation.Vec using (Vec; []; _∷_; lookup; tabulate)
-open import Substrate.Foundation.Bool using (Bool; true; false; _∧_; if_then_else_)
-open import Substrate.Foundation.Eq using (_≡_; refl)
-open import Substrate.Foundation.Vec.Properties using (≡-dec)
+open import Substrate.Foundation.Bool.And
+open import Substrate.Foundation.Bool.Bool
+open import Substrate.Foundation.Bool.IfThenElse
+open import Substrate.Foundation.Vec.Properties.EqDec
 
 open import Substrate.WitnessTower.Enumerate using (Perm; perms; all-positions; lengthL)
 open import Substrate.WitnessTower.FirstAppearance using (⌊_⌋; filterL)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.WellFounded
 
 ------------------------------------------------------------------------
 -- 1. Orbit length: the cycle length of the point i under σ (fuel n).
@@ -47,7 +61,7 @@ open import Substrate.WitnessTower.FirstAppearance using (⌊_⌋; filterL)
 orbit-len-aux : {n : ℕ} → ℕ → Perm n → Fin n → Fin n → ℕ → ℕ
 orbit-len-aux zero    σ s c acc = acc
 orbit-len-aux (suc f) σ s c acc =
-  if ⌊ lookup σ c ≟ s ⌋ then suc acc
+  if ⌊ lookup σ c ≟ᶠ s ⌋ then suc acc
   else orbit-len-aux f σ s (lookup σ c) (suc acc)
 
 orbit-len : {n : ℕ} → Perm n → Fin n → ℕ
@@ -62,8 +76,8 @@ orbit-len {n} σ i = orbit-len-aux n σ i i zero
 orbit-min?-aux : {n : ℕ} → ℕ → Perm n → Fin n → Fin n → Bool
 orbit-min?-aux zero    σ s c = true
 orbit-min?-aux (suc f) σ s c =
-  if ⌊ lookup σ c ≟ s ⌋ then true
-  else if ⌊ toℕ (lookup σ c) <?ℕ toℕ s ⌋ then false
+  if ⌊ lookup σ c ≟ᶠ s ⌋ then true
+  else if ⌊ toℕ (lookup σ c) <? toℕ s ⌋ then false
   else orbit-min?-aux f σ s (lookup σ c)
 
 orbit-min? : {n : ℕ} → Perm n → Fin n → Bool
@@ -76,7 +90,7 @@ orbit-min? {n} σ i = orbit-min?-aux n σ i i
 -- number of cycles of length ℓ: representatives with orbit-length ℓ.
 cycles-of-len : {n : ℕ} → Perm n → ℕ → ℕ
 cycles-of-len {n} σ ℓ =
-  lengthL (filterL (λ i → orbit-min? σ i ∧ ⌊ orbit-len σ i ≟ℕ ℓ ⌋)
+  lengthL (filterL (λ i → orbit-min? σ i ∧ ⌊ orbit-len σ i ≟ ℓ ⌋)
                    (all-positions n))
 
 -- cycle-type σ : Vec ℕ n, position j = #cycles of length (j+1).
@@ -89,7 +103,12 @@ cycle-type {n} σ = tabulate (λ j → cycles-of-len σ (suc (toℕ j)))
 ------------------------------------------------------------------------
 
 _≟ᵛ_ : {n : ℕ} (xs ys : Vec ℕ n) → _
-_≟ᵛ_ = ≡-dec _≟ℕ_
+-- ⚑ THE ALIAS IN ITS *DECLARED* SPELLING, passed as an argument — a third
+-- surface for one dissolved `renaming`.  It fails as `[NoParseForApplication]`
+-- rather than `[NotInScope]`, so `fix_noparse` saw it and correctly REFUSED: no
+-- operator is displaced here, the name simply never existed.  `Vec ℕ n` needs
+-- the ℕ element decider.
+_≟ᵛ_ = ≡-dec _≟_
 
 count-class : {n : ℕ} → Vec ℕ n → ℕ
 count-class {n} t = lengthL (filterL (λ σ → ⌊ cycle-type σ ≟ᵛ t ⌋) (perms n))
@@ -120,5 +139,5 @@ census-4cyc   = refl
 
 -- the boundary moved-count could not cross: support 4 = (2,2) ⊎ (4),
 -- two DISTINCT classes (3 + 6), here separated by cycle type.
-census-support4-split : count-class ty-double + count-class ty-4cyc ≡ 9
+census-support4-split : count-class ty-double ℕ+ count-class ty-4cyc ≡ 9
 census-support4-split = refl

@@ -14,10 +14,10 @@
 
 module Substrate.Category.BeckChevalley.ComposeInstance where
 
-open import Substrate.Foundation.Eq using (_≡_; refl)
 
 open import Substrate.Category.BeckChevalley using (BCSquare; bc-trivial)
 open import Substrate.Category.BeckChevalley.Compose using (vertical-paste)
+open import Substrate.Foundation.Eq
 
 ------------------------------------------------------------------------
 -- N-1: A trivial identity BC square (all morphisms = identity).

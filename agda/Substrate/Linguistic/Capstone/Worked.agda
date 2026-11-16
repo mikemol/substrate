@@ -10,9 +10,9 @@
 
 module Substrate.Linguistic.Capstone.Worked where
 
-open import Substrate.Linguistic.Roster
-  using (lojban; tokipona; solresol; kelen; lambda-lang; lie-lang)
-open import Substrate.Linguistic.RosettaTable using (RosettaEntry; pair-entry)
+open import Substrate.Linguistic.Roster.Lang
+open import Substrate.Linguistic.RosettaTable.PairEntry
+open import Substrate.Linguistic.RosettaTable.RosettaEntry
 
 -- The original anchor pair: Free-monoid vs Free-F2-module.
 worked-lojban-tokipona : RosettaEntry

@@ -16,9 +16,9 @@
 
 module Substrate.Category.RuleAction.Laws where
 
-open import Substrate.Foundation.Eq using (_≡_)
 open import Substrate.Category.RuleAction.Record using (RuleAction; identity)
 open import Substrate.Category.RuleAction.Compose using (compose)
+open import Substrate.Foundation.Eq
 
 LeftIdentity  : Set
 LeftIdentity  = ∀ (a : RuleAction) → compose identity a ≡ a

@@ -11,7 +11,7 @@
 
 module Substrate.Groups.Actions.S3-on-V4.Generators.RotPow where
 
-open import Substrate.Groups.V4.Bijection using (V₄)
+open import Substrate.Groups.V4.Bijection.V4
 import Substrate.Groups.Coxeter.Cyclic.Base 2 as Z₃-Base
 open import Substrate.Groups.Coxeter.Word using (Word)
 

@@ -26,11 +26,14 @@
 
 module Substrate.Category.UniversalProperty.ExtrudeNerveIdentities where
 
-open import Substrate.Foundation.Eq using (_≡_; refl; cong)
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _≤_; z≤n; s≤s)
+open import Substrate.Foundation.Nat.Le
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.List using (List; []; _∷_)
-open import Substrate.WitnessTower.SimplicialBoundary using (delAt; simplicial)
+open import Substrate.WitnessTower.SimplicialBoundary.DelAt
+open import Substrate.WitnessTower.SimplicialBoundary.Simplicial
 open import Substrate.Category.UniversalProperty.ExtrudeNerveDegeneracy using (dupAt; delAt-dupAt-id)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Cong
 
 private variable A : Set
 

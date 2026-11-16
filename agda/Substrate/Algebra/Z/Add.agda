@@ -14,8 +14,9 @@
 
 module Substrate.Algebra.Z.Add where
 
-open import Substrate.Foundation.Nat using (ℕ; zero; suc; _+_)
-open import Substrate.Algebra.Z using (ℤ; +_; -suc_)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Nat.Plus
+open import Substrate.Algebra.Z.Int
 
 infixl 6 _+ℤ_ _⊖_
 
@@ -27,7 +28,7 @@ suc m ⊖ suc n = m ⊖ n
 
 -- integer addition.
 _+ℤ_ : ℤ → ℤ → ℤ
-(+ m)    +ℤ (+ n)    = + (m + n)
+(+ m)    +ℤ (+ n)    = + (m ℕ+ n)
 (+ m)    +ℤ (-suc n) = m ⊖ suc n
 (-suc m) +ℤ (+ n)    = n ⊖ suc m
-(-suc m) +ℤ (-suc n) = -suc suc (m + n)
+(-suc m) +ℤ (-suc n) = -suc suc (m ℕ+ n)

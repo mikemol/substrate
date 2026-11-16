@@ -8,10 +8,11 @@
 
 module Substrate.Algebra.Nat.Divides.Refl where
 
-open import Substrate.Foundation.Nat using (ℕ)
+open import Substrate.Foundation.Nat.Nat
 open import Substrate.Foundation.Nat.Properties.Mul using (*-identityˡ)
-open import Substrate.Foundation.Eq using (_≡_; sym)
 open import Substrate.Algebra.Nat.Divides.Type using (_∣_; divides)
+open import Substrate.Foundation.Eq
+open import Substrate.Foundation.Eq.Sym
 
 ∣-refl : ∀ {m} → m ∣ m
 ∣-refl {m} = divides 1 (sym (*-identityˡ m))

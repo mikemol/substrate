@@ -10,8 +10,8 @@
 
 module Substrate.Category.PhaseLockedLoop.AcquisitionTimeline where
 
-open import Substrate.Foundation.Nat using (ℕ)
-open import Substrate.Foundation.Eq using (_≡_; refl)
+open import Substrate.Foundation.Nat.Nat
+open import Substrate.Foundation.Eq
 
 record AcquisitionTimeline : Set where
   field

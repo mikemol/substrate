@@ -21,8 +21,10 @@
 
 module Substrate.Category.UniversalProperty.DiagonalLawvereSKI where
 
-open import Substrate.Algebra.R.Trace.SKIShedDuality using (S; K; I; _∙_) renaming (Tm to Tm⟦533ef80d⟧)
-open import Substrate.Algebra.R.Trace.SKIReductionToList using (β-I; β-K; β-S; cong-l; cong-r) renaming (_⇒_ to _⇒⟦66d2c034⟧_)
+open import Substrate.Algebra.R.Trace.SKIShedDuality.Tm
+open import Substrate.Algebra.R.Trace.SKIReductionToList using (β-I; β-K; β-S; cong-l; cong-r)
+open import Substrate.Algebra.R.Trace.SKIReductionToList
+open import Substrate.Algebra.R.Trace.SKIShedDuality.Tm
 
 ------------------------------------------------------------------------
 -- ① SELF-APPLICATION IS DEFINABLE (the reflexive-object precondition). Unlike a typed function space,
@@ -30,20 +32,20 @@ open import Substrate.Algebra.R.Trace.SKIReductionToList using (β-I; β-K; β-S
 --    candidate LAWVERE-reflexive object (246's Reflexive precondition) that a SET carrier cannot be
 --    (Cantor, 246): self-application needs an untyped/reflexive carrier, and Tm⟦533ef80d⟧ is one.
 ------------------------------------------------------------------------
-self-app : Tm⟦533ef80d⟧ → Tm⟦533ef80d⟧
+self-app : Tm → Tm
 self-app t = t ∙ t
 
 -- ω = (S I I) is the self-applicator: S I I x ⇒* x x. We give the FIRST reduction step honestly (the
 -- full ⇒* to x ∙ x uses β-S then β-I twice); the point is that self-application is REALIZED by a term.
-ω-term : Tm⟦533ef80d⟧
+ω-term : Tm
 ω-term = (S ∙ I) ∙ I
 
-ω-step : (x : Tm⟦533ef80d⟧) → (((S ∙ I) ∙ I) ∙ x) ⇒⟦66d2c034⟧ ((I ∙ x) ∙ (I ∙ x))
+ω-step : (x : Tm) → (((S ∙ I) ∙ I) ∙ x) ⇒ ((I ∙ x) ∙ (I ∙ x))
 ω-step x = β-S I I x
 -- and each I-redex reduces to x, so (S I I) x ⇒* x ∙ x = self-app x (the reduction realizing self-app):
-ω-left : (x : Tm⟦533ef80d⟧) → ((I ∙ x) ∙ (I ∙ x)) ⇒⟦66d2c034⟧ (x ∙ (I ∙ x))
+ω-left : (x : Tm) → ((I ∙ x) ∙ (I ∙ x)) ⇒ (x ∙ (I ∙ x))
 ω-left x = cong-l (I ∙ x) (β-I x)
-ω-right : (x : Tm⟦533ef80d⟧) → (x ∙ (I ∙ x)) ⇒⟦66d2c034⟧ (x ∙ x)
+ω-right : (x : Tm) → (x ∙ (I ∙ x)) ⇒ (x ∙ x)
 ω-right x = cong-r x (β-I x)
 
 ------------------------------------------------------------------------
