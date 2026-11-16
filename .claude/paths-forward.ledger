@@ -815,3 +815,7 @@
 2026-11-16T17:24:15Z  tick  --   interrupt spender   "spender: gate-oracle (W359 gate row) start; session idles until return"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
 2026-11-16T17:26:10Z  tick  --   interrupt spender   "spender: gate-oracle (W359 gate row) return"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
 2026-11-16T17:26:15Z  tick  W359 advanced  oracle    "tick 12: W359 gate row recorded, MEASURED red from a render-mode mismatch: the hook checks --parameterized, the committed makefiles and the bazel row use the default render; one canonical render to be chosen [blocked by W360]"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
+2026-11-16T17:45:47Z  tick  --   interrupt spender   "spender: sql-oracle (W359 tenant render) start; session idles until return"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
+2026-11-16T17:48:03Z  tick  --   interrupt spender   "spender: sql-oracle (W359 tenant render) return"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
+2026-11-16T17:48:04Z  status W359 working>blocked writer    "working -> blocked"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
+2026-11-16T17:48:15Z  tick  W359 advanced  oracle    "tick 13: sql-oracle read W359's render origin (operator t102, parameterize instead of a second sandbox path) and tenancy (the parameterized default is live via store_launch); decision ask sent to github-cb recommending the parameterized render [blocked by W360]"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
