@@ -136,8 +136,8 @@ hardware-specific; gating them would fail on every machine and after every build
 
 ```
 ── THE FLAT IMPORT DAG (⟡make-import-dag)
-   3598 modules · 33919 source-parsed import edges · DAG depth 61
-   57 roots (no in-tree import) · 943 leaves (nothing imports them)
+   3597 modules · 34272 source-parsed import edges · DAG depth 61
+   57 roots (no in-tree import) · 942 leaves (nothing imports them)
    ONE flat makefile. Targets are REAL FILES (_build/2.8.0/agda/<Mod>.agdai), each
    depending on its own .agda AND every direct import's .agdai. There are NO
    per-directory makefiles — 280 of them were deleted because directory order
@@ -148,11 +148,11 @@ hardware-specific; gating them would fail on every machine and after every build
      actually achieves. No schedule can beat the critical path: 61.
 
    most-imported:
-     Substrate.Foundation.Eq                                    2442 importers
-     Substrate.Foundation.Nat.Nat                               1735 importers
-     Substrate.Foundation.Eq.Cong                               1124 importers
-     Substrate.Foundation.Eq.Trans                              1036 importers
-     Substrate.Foundation.Eq.Sym                                 944 importers
+     Substrate.Foundation.Eq                                    2441 importers
+     Substrate.Foundation.Nat.Nat                               1734 importers
+     Substrate.Foundation.Eq.Cong                               1123 importers
+     Substrate.Foundation.Eq.Trans                              1035 importers
+     Substrate.Foundation.Eq.Sym                                 943 importers
 
 ── THE MEMORY DISCIPLINE — ⚑ TWO CAPS, TWO KINDS, INVERTED ASYMMETRY
    MEM_CAP  = 128m    a GHC HEAP GATE, per module (+RTS -M). Exceeding it is a
@@ -291,7 +291,7 @@ they are NOT drift-gated: on your machine they will differ, and that is correct.
    ⚑ `--oracle` ranks over ALL profiled modules including the ones
      `--reprofilable` warns are not clean; the filter is not composable onto it.
 
-── GATE OUTCOMES (ledger last written 2026-08-25 09:03)
+── GATE OUTCOMES (ledger last written 2026-10-10 12:30)
    scripts/gate_ledger.py --order / --report
    ⚑ OBSERVED, NOT DECLARED. It ranks only gates it has recorded rows for, and
      prints no recency — so a stale ledger reads as a current ranking. The DECLARED
