@@ -790,3 +790,8 @@
 2026-11-16T15:36:17Z  status W375 ready>working writer    "ready -> working"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
 2026-11-16T15:36:44Z  status W375 working>blocked writer    "working -> blocked"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
 2026-11-16T15:36:49Z  tick  W375 advanced  read      "tick 7: the gate ledger --report is aggregate (fail%/n/med), not per-run; per-run row mode asked of mtools [blocked by W355]"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
+2026-11-16T15:55:22Z  status W355 ready>working writer    "ready -> working"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
+2026-11-16T15:55:31Z  tick  --   interrupt spender   "spender: gate-oracle (W355 gate row) start; session idles until return"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
+2026-11-16T15:56:43Z  tick  --   interrupt spender   "spender: gate-oracle (W355 gate row) return"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
+2026-11-16T15:56:53Z  tick  W376 minted    -         "census and commit (or discard, by reading) untracked work: substrate/suite_walk.py, suite_flag.py and any other untracked tree files"  session=ba7f487c-25c3-489f-8632-92b4da805cb9  evidence=W355
+2026-11-16T15:56:54Z  tick  W355 advanced  oracle    "tick 8: W355 gate row recorded (aim, goal, incident=comment-only/UNKNOWN commit, why red: Selftest.mk misses agdai_shim_path_selftest, repair: regenerate against the index; not yet a bazel target) [blocked by W356]"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
