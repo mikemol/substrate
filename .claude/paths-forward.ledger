@@ -832,3 +832,10 @@
 2026-11-16T18:53:31Z  tick  W381 minted    -         "make SHIM_DIR and MEMBUDGET make-relative in both makefile renders (W354 part b; the edit-refusing origin's emission)"  session=ba7f487c-25c3-489f-8632-92b4da805cb9  evidence=W359
 2026-11-16T18:53:57Z  status W359 working>blocked writer    "working -> blocked"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
 2026-11-16T18:54:04Z  tick  W359 advanced  probe     "tick 15: cause MEASURED by a byte diff (scratch worktree as another ROOT): only the 4 SHIM_DIR/MEMBUDGET absolute-path lines differ; W381 carved from W354 part (b); W359 blocked on W381; no cycle (check OK) [blocked by W381]"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
+2026-11-16T19:37:20Z  interrupt W382 minted    -         "retire the post-commit amend: move post-commit-only information (advisories, gate verdict on the merged tree) into the merge commit that promotes to the target tip"  session=ba7f487c-25c3-489f-8632-92b4da805cb9  evidence=operator
+2026-11-16T19:37:34Z  status W382 ready>blocked writer    "ready -> blocked"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
+2026-11-16T20:23:50Z  status W381 ready>working writer    "ready -> working"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
+2026-11-16T20:24:04Z  tick  --   interrupt spender   "spender: build-oracle (W381 drain state) start; session idles until return"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
+2026-11-16T20:29:59Z  tick  --   interrupt spender   "spender: build-oracle (W381 drain state) return; its leftover background findings.py --list was stopped by the session (standing 15 breach by the subagent)"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
+2026-11-16T20:30:02Z  status W381 working>ready writer    "working -> ready"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
+2026-11-16T20:30:40Z  tick  W381 advanced  oracle    "tick 16: build-oracle: origin already drained (no retirement needed); selftest L74 must change with the emitter; MEMBUDGET is read as a path at runtime, so add emission-only make-form constants; one bounded commit [blocked by W355]"  session=ba7f487c-25c3-489f-8632-92b4da805cb9

@@ -3,7 +3,7 @@
 
 state file: `.claude/paths-forward.json`
 
-counter 381 · heartbeat 2026-10-10T17:20:38Z · job `c2013646` · hash `v2:1c1fc14faf1b2ef3`
+counter 382 · heartbeat 2026-10-10T17:20:38Z · job `c2013646` · hash `v2:86dc539f65c23e08`
 
 | # | symbol | status |
 |---|---|---|
@@ -319,78 +319,83 @@ counter 381 · heartbeat 2026-10-10T17:20:38Z · job `c2013646` · hash `v2:1c1f
 | 310 | W345 | blocked |
 | 311 | W354 | blocked |
 | 312 | W375 | blocked |
-| 313 | W77 | done |
-| 314 | W309 | done |
-| 315 | W302 | done |
-| 316 | W303 | done |
-| 317 | W330 | done |
-| 318 | W42 | done |
-| 319 | W53 | done |
-| 320 | W304 | done |
-| 321 | W305 | done |
-| 322 | W306 | done |
-| 323 | W307 | done |
-| 324 | W310 | done |
-| 325 | W311 | done |
-| 326 | W312 | done |
-| 327 | W313 | done |
-| 328 | W319 | done |
-| 329 | W320 | done |
-| 330 | W325 | done |
-| 331 | W326 | done |
-| 332 | W328 | done |
-| 333 | W329 | done |
-| 334 | W334 | done |
-| 335 | W48 | done |
-| 336 | W4 | done |
-| 337 | W40 | done |
-| 338 | W24 | done |
-| 339 | W1 | done |
-| 340 | W5 | done |
-| 341 | W12 | done |
-| 342 | W16 | done |
-| 343 | W19 | done |
-| 344 | W27 | done |
-| 345 | W30 | done |
-| 346 | W35 | done |
-| 347 | W47 | done |
-| 348 | W49 | done |
-| 349 | W301 | done |
-| 350 | W314 | done |
-| 351 | W2 | done |
-| 352 | W3 | done |
-| 353 | W6 | done |
-| 354 | W7 | done |
-| 355 | W8 | done |
-| 356 | W11 | done |
-| 357 | W14 | done |
-| 358 | W15 | done |
-| 359 | W17 | done |
-| 360 | W18 | done |
-| 361 | W20 | done |
-| 362 | W21 | done |
-| 363 | W13 | done |
-| 364 | W28 | done |
-| 365 | W31 | done |
-| 366 | W32 | done |
-| 367 | W34 | done |
-| 368 | W44 | done |
-| 369 | W55 | done |
-| 370 | W315 | done |
-| 371 | W316 | done |
-| 372 | W317 | done |
-| 373 | W318 | done |
-| 374 | W323 | done |
-| 375 | W324 | done |
-| 376 | W327 | done |
-| 377 | W332 | done |
-| 378 | W335 | done |
-| 379 | W336 | done |
+| 313 | W382 | blocked |
+| 314 | W77 | done |
+| 315 | W309 | done |
+| 316 | W302 | done |
+| 317 | W303 | done |
+| 318 | W330 | done |
+| 319 | W42 | done |
+| 320 | W53 | done |
+| 321 | W304 | done |
+| 322 | W305 | done |
+| 323 | W306 | done |
+| 324 | W307 | done |
+| 325 | W310 | done |
+| 326 | W311 | done |
+| 327 | W312 | done |
+| 328 | W313 | done |
+| 329 | W319 | done |
+| 330 | W320 | done |
+| 331 | W325 | done |
+| 332 | W326 | done |
+| 333 | W328 | done |
+| 334 | W329 | done |
+| 335 | W334 | done |
+| 336 | W48 | done |
+| 337 | W4 | done |
+| 338 | W40 | done |
+| 339 | W24 | done |
+| 340 | W1 | done |
+| 341 | W5 | done |
+| 342 | W12 | done |
+| 343 | W16 | done |
+| 344 | W19 | done |
+| 345 | W27 | done |
+| 346 | W30 | done |
+| 347 | W35 | done |
+| 348 | W47 | done |
+| 349 | W49 | done |
+| 350 | W301 | done |
+| 351 | W314 | done |
+| 352 | W2 | done |
+| 353 | W3 | done |
+| 354 | W6 | done |
+| 355 | W7 | done |
+| 356 | W8 | done |
+| 357 | W11 | done |
+| 358 | W14 | done |
+| 359 | W15 | done |
+| 360 | W17 | done |
+| 361 | W18 | done |
+| 362 | W20 | done |
+| 363 | W21 | done |
+| 364 | W13 | done |
+| 365 | W28 | done |
+| 366 | W31 | done |
+| 367 | W32 | done |
+| 368 | W34 | done |
+| 369 | W44 | done |
+| 370 | W55 | done |
+| 371 | W315 | done |
+| 372 | W316 | done |
+| 373 | W317 | done |
+| 374 | W318 | done |
+| 375 | W323 | done |
+| 376 | W324 | done |
+| 377 | W327 | done |
+| 378 | W332 | done |
+| 379 | W335 | done |
+| 380 | W336 | done |
 
 ## waypoints
 
 1. **W381** (ready) make SHIM_DIR and MEMBUDGET make-relative in both makefile renders (W354 part b; the edit-refusing
    origin's emission)
+   - next: one commit: add emission-only make-form constants (SHIM_DIR_MAKE, MEMBUDGET_MAKE) in build_settings, use them
+     in shim_block and flat_emit._faithful_preamble, update the build_settings_selftest L74 case (and any
+     flat_emit/root_emit byte expectations), regenerate both makefiles with --parameterized; verify in a scratch
+     worktree (another ROOT) that --check --parameterized is OK; land on gate-rebuild
 2. **W355** (ready) gate row: selftest roster current (aim, goal, incident)
    - next: regenerate Selftest.mk (substrate/selftest_mk.py, no flag) against the index, after W376 resolves the
      untracked substrate/suite_*.py files; commit to gate-rebuild; that closes W355
@@ -1585,39 +1590,42 @@ counter 381 · heartbeat 2026-10-10T17:20:38Z · job `c2013646` · hash `v2:1c1f
    - blocked on: mtools:W2605
    - next: when mtools adds a per-run row mode to mikemol-gate-ledger (or names the ledger that holds per-run rows),
      re-derive W355-W374's set through it and record match or difference on W352
-313. **W77** (done) scripts/membudget: honour WAIT-line FIFO admission (mtools W48 / amr-skills W51) -- bash client
+313. **W382** (blocked) retire the post-commit amend: move post-commit-only information (advisories, gate verdict on the
+   merged tree) into the merge commit that promotes to the target tip
+   - blocked on: mtools:W2582, mtools:W2593
+314. **W77** (done) scripts/membudget: honour WAIT-line FIFO admission (mtools W48 / amr-skills W51) -- bash client
    currently jumps the Python queue
-314. **W309** (done) Par for substrate needs YOUR session first
-315. **W302** (done) Reconcile substrate's CLAUDE.md commit policy with the fleet's mikemol-commit
-316. **W303** (done) Answer luthen: revoking PUBLIC CONNECT on your databases (question before acting)
-317. **W330** (done) Extract gate_status.measure_peaks into a clean module that takes the membudget client from
+315. **W309** (done) Par for substrate needs YOUR session first
+316. **W302** (done) Reconcile substrate's CLAUDE.md commit policy with the fleet's mikemol-commit
+317. **W303** (done) Answer luthen: revoking PUBLIC CONNECT on your databases (question before acting)
+318. **W330** (done) Extract gate_status.measure_peaks into a clean module that takes the membudget client from
    build_settings
-318. **W42** (done) membudget bash parity — nest only under an own-ledger parent; refuse a non-MB ledger UNIT; status
+319. **W42** (done) membudget bash parity — nest only under an own-ledger parent; refuse a non-MB ledger UNIT; status
    prints the unit
-319. **W53** (done) carrier-locality ratchet: home 2 NEW off-carrier operators under their carrier dir
-320. **W304** (done) mtools:W51 landed — leverage/rank_reason, for substrate-c6
-321. **W305** (done) Answer amr-skills: a second party waiting on the bash membudget WAIT-line fix
-322. **W306** (done) Answer luthen-observability: waypoints withheld from the public nemik view (luthen W270)
-323. **W307** (done) Answer luthen-observability: answer on `endpoints_query` as an installed console script
-324. **W310** (done) Answer mtools: still waiting on your repoint of Selftest.mk and the tmi_* tools to
+320. **W53** (done) carrier-locality ratchet: home 2 NEW off-carrier operators under their carrier dir
+321. **W304** (done) mtools:W51 landed — leverage/rank_reason, for substrate-c6
+322. **W305** (done) Answer amr-skills: a second party waiting on the bash membudget WAIT-line fix
+323. **W306** (done) Answer luthen-observability: waypoints withheld from the public nemik view (luthen W270)
+324. **W307** (done) Answer luthen-observability: answer on `endpoints_query` as an installed console script
+325. **W310** (done) Answer mtools: still waiting on your repoint of Selftest.mk and the tmi_* tools to
    mikemol-transcriptstruct (substrate:W33, mtools:W592)
-325. **W311** (done) summit to substrate: summit no longer certifies your `scratch/bibstruct.py`
-326. **W312** (done) SB — substrate's leg, CENSUS-paperkit-use
-327. **W313** (done) Census leg — substrate-5c — registry-discovery
-328. **W319** (done) Merge store_endpoint.resolve and vmagent_address.resolve into one luthen resolver caller with a
+326. **W311** (done) summit to substrate: summit no longer certifies your `scratch/bibstruct.py`
+327. **W312** (done) SB — substrate's leg, CENSUS-paperkit-use
+328. **W313** (done) Census leg — substrate-5c — registry-discovery
+329. **W319** (done) Merge store_endpoint.resolve and vmagent_address.resolve into one luthen resolver caller with a
    runner seam
-329. **W320** (done) Pin the luthen resolver reply contract as shared fixture cases and hand them to luthen as the
+330. **W320** (done) Pin the luthen resolver reply contract as shared fixture cases and hand them to luthen as the
    client's acceptance suite
-330. **W325** (done) Route every membudget path spelling through one authority and swap the two generators first
-331. **W326** (done) Differential test of bash and python membudget on one ledger and one OOM: retry trigger, peak
+331. **W325** (done) Route every membudget path spelling through one authority and swap the two generators first
+332. **W326** (done) Differential test of bash and python membudget on one ledger and one OOM: retry trigger, peak
    column, load gate
-332. **W328** (done) Make the agda shim take the membudget client from the exported MEMBUDGET instead of spelling a
+333. **W328** (done) Make the agda shim take the membudget client from the exported MEMBUDGET instead of spelling a
    relative path twice
-333. **W329** (done) Extract build_census.membudget_census into a clean module that reads the client from build_settings
-334. **W334** (done) Give gate_status_exec an S603 per-file entry in pyproject and use subprocess.run instead of asyncio
-335. **W48** (done) retire substrate's bibstruct onto paperkit's (operator 2026-09-26: paperkit owns bibstruct) - census
+334. **W329** (done) Extract build_census.membudget_census into a clean module that reads the client from build_settings
+335. **W334** (done) Give gate_status_exec an S603 per-file entry in pyproject and use subprocess.run instead of asyncio
+336. **W48** (done) retire substrate's bibstruct onto paperkit's (operator 2026-09-26: paperkit owns bibstruct) - census
    what in substrate depends on behaviour only our copy has (paperkit:W21, summit:W10)
-336. **W4** (done) the-drain-arc: five blocked repairs, drained smallest first (operator ruling, tick 4)
+337. **W4** (done) the-drain-arc: five blocked repairs, drained smallest first (operator ruling, tick 4)
    - next: DONE tick 65. ALL FIVE FILES DRAINED: check_scratch_independence (G397), query_defs drainable surface (G410;
      the swap waits on the store-bound rest), sql_lift (G420), split_pipeline + split_census (G432/G439), figures
      (G448). RESIDUE (carried, not resolved): (1) DEFAULT_MB=384 restated in the split_pipeline shim — authority
@@ -2184,22 +2192,22 @@ counter 381 · heartbeat 2026-10-10T17:20:38Z · job `c2013646` · hash `v2:1c1f
      pre-commit over promoted.ROOTS now (fails 306 until triaged) vs keep the origin's two entries in the CLI until
      substrate/ is triaged. After the ruling: apply (a) if granted, swap the shim, re-run the three differentials (they
      pass the origin's roster explicitly so they survive), then query_defs → sql_lift → split_pipeline → figures.py.
-337. **W40** (done) roster cleanroom — every ledger bib check converged onto witness_check.emit; notes moved into the
+338. **W40** (done) roster cleanroom — every ledger bib check converged onto witness_check.emit; notes moved into the
    bibs; findings.py a stdlib shim
-338. **W24** (done) membudget's peak probe is blind on this host — /usr/bin/time is absent (gate-G450)
+339. **W24** (done) membudget's peak probe is blind on this host — /usr/bin/time is absent (gate-G450)
    - next: DONE 2026-09-20T23:55 (operator: 'sys-process/time has been emerged'; GNU Time 1.10 at /usr/bin/time). The
      durable fix landed: `time` was NOT on install_freshness's REQUIRED roster — added as the eighth tool with the
      reason (an absence that measures zero instead of refusing), census all 8 present, 14/14, staged; gate-G452. The
      fold is re-running under membudget in the background so `unimported-fold` carries a real peak; the next tick reads
      `scripts/membudget peaks unimported-fold` and records max_mb.
-339. **W1** (done) declare-every-gate-checker: a refusing probe for absent system binaries
-340. **W5** (done) the-stale-conservation-arm (gate-G368)
+340. **W1** (done) declare-every-gate-checker: a refusing probe for absent system binaries
+341. **W5** (done) the-stale-conservation-arm (gate-G368)
    - next: DONE tick 67 — the reading was MEASURABLE, not the operator's: `conserved()` exempts imports in BOTH
      directions (its own recorded measurement on type_scope: ruff narrows an import, which vanishes and appears as one
      edit) and keeps body lines guarded both ways (`not _is_import(line)` on the gained side). So the answer is YES, the
      guard still catches an invented body line → the ARM was behind. Rewritten to pin the real property in four
      directions. gate-G449.
-341. **W12** (done) agda is absent on this host — the build and every Phase C gate are dead here
+342. **W12** (done) agda is absent on this host — the build and every Phase C gate are dead here
    - next: RESOLVING (tick 13, peer msg): operator ruled ::haskell, enabled it (ACCEPT_KEYWORDS=~amd64 globally);
      sci-mathematics/agda-2.8.0 is EMERGING on luthen now (109 jobs, GHC first, pid 859151). No stdlib, no
      ~/.agda/libraries entry. Peer polls `agda --version` every 15 min and will message when it reads 2.8.0. THEN: run
@@ -2214,7 +2222,7 @@ counter 381 · heartbeat 2026-10-10T17:20:38Z · job `c2013646` · hash `v2:1c1f
      ~/.agda/libraries entry, target version 2.8.0. Next: surface the (a)/(b) ruling to the operator ONCE when present;
      when agda lands, `install_freshness --binaries` expect exit 0, then reopen the build. The discriminating unknown is
      whether ::haskell's dev-lang/agda is at 2.8.0.
-342. **W16** (done) mdstruct --headers drops an apostrophe-bearing heading (summit ask-mdstruct-heading-contract, OPEN
+343. **W16** (done) mdstruct --headers drops an apostrophe-bearing heading (summit ask-mdstruct-heading-contract, OPEN
    since 2026-09-06)
    - next: The contract asked: every `^#{1,6}` line in the input appears as a section in the output — self-asserting.
      Summit's CLAUDE.md reads 20 of 21 headings, the apostrophe-bearing one is absorbed into its parent. This is the
@@ -2225,7 +2233,7 @@ counter 381 · heartbeat 2026-10-10T17:20:38Z · job `c2013646` · hash `v2:1c1f
      monolith the per-file gate refuses; W9 purge-mdstruct is the drain), and the contract becomes an arm: count
      `^#{1,6}` lines vs sections returned, refuse on mismatch. Reuse-search first: `mdstruct --coherence` and the header
      census may already carry the line-count side.
-343. **W19** (done) widen stubs/sqlalchemy/ to the statement surface (visitors, DML, Select) — the precondition for
+344. **W19** (done) widen stubs/sqlalchemy/ to the statement surface (visitors, DML, Select) — the precondition for
    query_defs cut 4
    - next: STEP 1 DONE tick 25 (visitors.pyi, dml.pyi incl. the three constructors stubtest demanded, Column.table on
      schema.pyi; sqlalchemy clean under stubtest + re-export probe; gate-G408 for the shim-stub drift found on the way).
@@ -2250,24 +2258,24 @@ counter 381 · heartbeat 2026-10-10T17:20:38Z · job `c2013646` · hash `v2:1c1f
      really defines it; (4) `sql/selectable.pyi`: `Select.selected_columns` (a ColumnCollection — read the exact return
      type). Update the ⟡declines paragraph in __init__.pyi to remove what is now declared and say why. THEN W4 cut 4
      (substrate/sql_statement.py, draft recorded in W4's tick-21 step) can land.
-344. **W27** (done) mtools N-c: cut the sync_verdict -> commit_refusal edge (the one live cycle)
+345. **W27** (done) mtools N-c: cut the sync_verdict -> commit_refusal edge (the one live cycle)
    - next: Read the two function-local imports (commit_refusal.py:423,493; sync_verdict.py:320,386 per mtools' study —
      re-derive, lines move). Pass hook_gates() in as an argument or lift it into a roster module; one edge is the
      minimal cut.
-345. **W30** (done) mtools N-h: re-measure the study's §0 figures (415 modules, 564 edges, cluster counts) on this tree
+346. **W30** (done) mtools N-h: re-measure the study's §0 figures (415 modules, 564 edges, cluster counts) on this tree
    - next: Run the owning import-edge reader over substrate/ and report the diff against the study; a disagreement is
      the finding.
-346. **W35** (done) remove the module-level root constants THIS session added (operator 2026-09-24: 'We should not have
+347. **W35** (done) remove the module-level root constants THIS session added (operator 2026-09-24: 'We should not have
    things [like] corpus.ROOT')
-347. **W47** (done) file the coherence fixture pair letter to mtools (mtools:W22)
-348. **W49** (done) answer luthen on amr_skills per-corpus access - what does luthen-observability:W66 need from
+348. **W47** (done) file the coherence fixture pair letter to mtools (mtools:W22)
+349. **W49** (done) answer luthen on amr_skills per-corpus access - what does luthen-observability:W66 need from
    substrate
-349. **W301** (done) Answer nemik:W296: fold substrate's inbox letters into waypoints (nemik-check --letters --fold
+350. **W301** (done) Answer nemik:W296: fold substrate's inbox letters into waypoints (nemik-check --letters --fold
    --repo substrate)
-350. **W314** (done) Bootstrap HEAD: about 2900 staged adds and 2500 unstaged edits are uncommitted, so no isolated gate
+351. **W314** (done) Bootstrap HEAD: about 2900 staged adds and 2500 unstaged edits are uncommitted, so no isolated gate
    can run
-351. **W2** (done) the-staging-path-collision: two suites share .record-migrate-staging.py under the pool
-352. **W3** (done) the-fold-does-not-belong-on-the-roster
+352. **W2** (done) the-staging-path-collision: two suites share .record-migrate-staging.py under the pool
+353. **W3** (done) the-fold-does-not-belong-on-the-roster
    - next: DONE tick 69 (gate-G451): the sizer is `label_lease` (the same ledger the memory lease reads; its
      wall-seconds column had never been read) — `deadline()` = 2 × slowest run rounded up to a minute (511 s → 1080 s),
      floor 120, ceiling 3600 clamped loudly; `suite_run.timeout_for(label)` applies it, `SELFTEST_TIMEOUT_S` wins
@@ -2291,12 +2299,12 @@ counter 381 · heartbeat 2026-10-10T17:20:38Z · job `c2013646` · hash `v2:1c1f
      ONCE whether a multi-minute corpus fold belongs on the selftest roster at all (gate-G372: two programs behind one
      label) — options: (a) move it to a `--census` mode outside the roster, (b) keep it and size the per-label lease for
      time as well as memory, (c) leave it. Then blocked_kind=human until answered.
-353. **W6** (done) stage module_trim_selftest.py once W5 lands
+354. **W6** (done) stage module_trim_selftest.py once W5 lands
    - next: DONE tick 67 with W5: the vacuous staging arm repointed to record_migrate.staging_path() (it checked the bare
      STAGING stem, a file no process writes since gate-G390), the `corpus` import it stranded dropped in the same
      placement, and the suite STAGED at 78/78 — green, so the NEVER-STAGE-A-RED-SUITE ruling is satisfied rather than
      overridden.
-354. **W7** (done) not-promotable: SOLE 735/800 → 730/795 (re-measured t77)
+355. **W7** (done) not-promotable: SOLE 735/800 → 730/795 (re-measured t77)
    - next: RE-OPENED BY THE OPERATOR tick 70: 'Re-measure now that W4 drained five files.' ONE TICK, no code: `uv run
      python substrate/intake_manifest.py --sole` (the not-promotable / reaches-unpackaged figures) and `uv run python -m
      substrate.type_census_summary` (the three codes at 96.7% of 44,030) — record both beside the tick-4 baseline
@@ -2304,11 +2312,11 @@ counter 381 · heartbeat 2026-10-10T17:20:38Z · job `c2013646` · hash `v2:1c1f
      it (the five drained files' consumers) and propose the next step; if not, say so and park with the measurement.
      PREVIOUS: Do not re-open unilaterally. Operator ruled a code-wise sweep and measurement refuted the premise
      (gate-G350). Same figure on two hosts and two interpreters.
-355. **W8** (done) the-bound-needs-a-different-shape (apex gate timeout)
+356. **W8** (done) the-bound-needs-a-different-shape (apex gate timeout)
    - next: DONE t72. Residue carried: the sync_verdict suite itself costs ~86 s wall (the arms that `ask` real gates) —
      it belongs under a membudget label so the ledger sizes it; not a waypoint until it fires.
-356. **W11** (done) correct the project-tooling skill: substrate is pyproject+uv.lock, not requirements.txt
-357. **W14** (done) reopen the Agda build on this host — the first typecheck since the host move
+357. **W11** (done) correct the project-tooling skill: substrate is pyproject+uv.lock, not requirements.txt
+358. **W14** (done) reopen the Agda build on this host — the first typecheck since the host move
    - next: DONE tick 14. Follow-ups are SEPARATE items, not this one: (a) gen_build_makefiles: emit a `typecheck`
      aggregate and repair check-sync (gate-G400); (b) the 78-failure frontier belongs to the parked ⟡ban-decompose arc —
      NotInScope repair via fix_notinscope in dependency order (agda-oracle); (c) the SPPF store on this host (postgres
@@ -2332,7 +2340,7 @@ counter 381 · heartbeat 2026-10-10T17:20:38Z · job `c2013646` · hash `v2:1c1f
      is where the 2.8.0-vs-tree question gets a real answer (the tree was verified on 2.8.0 per substrate.agda-lib, so a
      green build is expected; a NotInScope/ClashingDefinition wave belongs to the parked ⟡ban-decompose residue, not to
      the host).
-358. **W15** (done) a vendored shared hook imports a package only its owner has (summit
+359. **W15** (done) a vendored shared hook imports a package only its owner has (summit
    ask-shared-hook-imports-a-package-only-its-owner-has)
    - next: REOPENED by summit 2026-09-20 by MEASUREMENT: with site-packages masked (`python -S`, PYTHONPATH=root) 2 of
      14 vendored shared hook bodies fail to import; forced site `scripts/hook_no_chaining.py:684: from
@@ -2349,7 +2357,7 @@ counter 381 · heartbeat 2026-10-10T17:20:38Z · job `c2013646` · hash `v2:1c1f
      `~/github/summit/scripts/summit ask --for substrate` reading the check green. Per-file gate applies: the hooks may
      be dirty files — measure with pycheck_show first; if refused, the guarded import must land as a whole-file rewrite
      or the drain pattern.
-359. **W17** (done) the hook manifest does not see package imports (summit ask-hook-manifest-sees-package-imports — the
+360. **W17** (done) the hook manifest does not see package imports (summit ask-hook-manifest-sees-package-imports — the
    manifest half is substrate's)
    - next: `check_hook_set.py --manifest` names the files a working adoption requires (hook_pycheck's inert notice cites
      it). It did not see that the hooks reached `substrate.ratchet_flags` — a PACKAGE import, not a sibling file — which
@@ -2359,7 +2367,7 @@ counter 381 · heartbeat 2026-10-10T17:20:38Z · job `c2013646` · hash `v2:1c1f
      (lazily-imported ones are the allowed shape, as G403 landed). Reuse-search: `module_importers`/`import_edges`
      already classify bare vs dotted; the manifest should ask them, not re-scan. Verify: `summit ask --for substrate`
      reads that ask CLOSED. Per-file gate: measure check_hook_set with pycheck_show --count first.
-360. **W18** (done) review cassian's decoder-reconciliation mapping onto substrate's algebra (inbox letter 2026-09-20,
+361. **W18** (done) review cassian's decoder-reconciliation mapping onto substrate's algebra (inbox letter 2026-09-20,
    part 3)
    - next: A REVIEW, answered by STRUCTURAL SEARCH, never recall (the absence-words rule: cassian's ANALOGY column is
      three absence claims to verify, not accept). The letter (inbox/2026-09-20-cassian-amr-…md §3) sorts: CONSTRUCTED =
@@ -2385,7 +2393,7 @@ counter 381 · heartbeat 2026-10-10T17:20:38Z · job `c2013646` · hash `v2:1c1f
      ~/github/cassian-observability/inbox/ as a letter (bib-shaped where claims are checkable): for each of their three
      ANALOGY rows, either a term whose type mentions both sides (a construction) or 'no, and why'. Bounded: one tick for
      the search, one for the letter if it runs long.
-361. **W20** (done) a pattern is not a path, and a token inside a quoted argument is not an operator (summit
+362. **W20** (done) a pattern is not a path, and a token inside a quoted argument is not an operator (summit
    ask-structural-hook-distinguishes-a-pattern-from-a-path)
    - next: TWO HOOKS, ONE SHAPE — the operand walk classifies tokens by their SPELLING, not by their ROLE in the
      command. (A) hook_structural_query: `grep -rl --include=Makefile --include=pre-commit "gate.py" ~/github` is DENIED
@@ -2402,7 +2410,7 @@ counter 381 · heartbeat 2026-10-10T17:20:38Z · job `c2013646` · hash `v2:1c1f
      `concept:upstream/structural-hook-distinguishes-a-pattern-from-a-path` (their armed copy) and re-vendor all three
      files. Per-file gate: pycheck_show --count on hook_structural_query first (hook_no_chaining/hook_cmdparse were
      clean at tick 17).
-362. **W21** (done) typehole aligns children by KEY for keyed node kinds (the role-keyed recursion amr-skills needs;
+363. **W21** (done) typehole aligns children by KEY for keyed node kinds (the role-keyed recursion amr-skills needs;
    positional kinds unchanged)
    - next: jea_pysim.Corpus.typehole (jea_pysim.py:~560-605) aligns children POSITIONALLY; same head + different arity
      returns one ':variadic' hole without recursing (:596) — intended for python AST kinds where position is the child's
@@ -2417,7 +2425,7 @@ counter 381 · heartbeat 2026-10-10T17:20:38Z · job `c2013646` · hash `v2:1c1f
      must be reproduced exactly for positional kinds). Reuse-search first: does jea already know which kinds are keyed
      (jea_pyalg IR.role, amr_jea lower_graph sorts children by role)? Then tell amr-skills-b8 the module name so their
      probe can point at it.
-363. **W13** (done) compact MEMORY.md — 183 lines, approaching the 200-line read limit
+364. **W13** (done) compact MEMORY.md — 183 lines, approaching the 200-line read limit
    - next: DONE tick 66 at the measured floor. 186 → 142 lines, 18.7 → 10.0 KB. The mechanism was the index's OWN:
      `synth_scale.py 4 && synth_wire.py` regenerated the apex head (102 concepts) and `synth_wire.py --staging`
      classified the 57 hand-staged pointers — 38 apex-covered (drained), 16 reached by NO apex (kept, per the tool's
@@ -2426,17 +2434,17 @@ counter 381 · heartbeat 2026-10-10T17:20:38Z · job `c2013646` · hash `v2:1c1f
      16; the tool carries 273 findings so the mode cannot land until it is drained; (2) 'under 140' is unreachable by
      the inbox alone: the generated head is 122 lines, so the remaining lever is synth_wire's breadth threshold (a
      separate decision). Every session's read limit is 200; 142 is comfortably under it.
-364. **W28** (done) mtools N-a/N-d: one letter per movable-now batch row, each with a fixture pair; the warrant split
+365. **W28** (done) mtools N-a/N-d: one letter per movable-now batch row, each with a fixture pair; the warrant split
    letter
    - next: Census the scripts/ adopters (find -lname, per feedback_census_symlinks_before_deleting_scripts) for
      corpus-six first, then write the mikemol-corpus letter with a red-on-HEAD fixture pair. The warrant split letter
      lists model half vs paperkit-parser half.
-365. **W31** (done) mtools N-g: C13 vendor-vs-depend decision
+366. **W31** (done) mtools N-g: C13 vendor-vs-depend decision
    - next: Surface to the operator with mtools' framing (census reply §1 C13).
-366. **W32** (done) switch substrate/git_env.py to mikemol.fence.git_env when mtools lands it
+367. **W32** (done) switch substrate/git_env.py to mikemol.fence.git_env when mtools lands it
    - next: On arrival: repoint the two callers (routing row → rosters → import), bump the fence pin, delete
      substrate/git_env.py.
-367. **W34** (done) switch substrate's pre-push to mtools/githooks/pre-push; move the post-commit-marker check into
+368. **W34** (done) switch substrate's pre-push to mtools/githooks/pre-push; move the post-commit-marker check into
    .githooks/pre-push.local
    - blocked on: mtools-91 landing the shared pre-push (will send sha)
    - next: On arrival: write executable .githooks/pre-push.local carrying check 2 (the 'post-commit advisory
@@ -2448,24 +2456,24 @@ counter 381 · heartbeat 2026-10-10T17:20:38Z · job `c2013646` · hash `v2:1c1f
      CONSOLE-SCRIPT sha, not the shell-version commit (that one is spec only). mat230 is RETIRED (operator 2026-09-24) —
      its vendor/ hard links need no switch; ignore them. Tell el-openglo (whose post-commit also writes the marker, so
      it may want check 2 in its own pre-push.local) before swapping. Run a push dry-run check after.
-368. **W44** (done) LEDGER.md projects; every entry sectioned
-369. **W55** (done) claims ratchet: 7 NEW stale claims -- a comment/docstring asserts a count the tree contradicts (e.g.
+369. **W44** (done) LEDGER.md projects; every entry sectioned
+370. **W55** (done) claims ratchet: 7 NEW stale claims -- a comment/docstring asserts a count the tree contradicts (e.g.
    Z/Arithmetic.agda:9 claims 35, tree says 4) -- needs a human read per claim (fix the claim text or fix the tree), not
    mechanical
-370. **W315** (done) Bootstrap arc 1 of 3: commit the gate tooling so isolated mikemol-commit has gates to run
-371. **W316** (done) Bootstrap arc 2 of 3: commit the staged data trees (catalog/memory, cotype notes) that no gate
+371. **W315** (done) Bootstrap arc 1 of 3: commit the gate tooling so isolated mikemol-commit has gates to run
+372. **W316** (done) Bootstrap arc 2 of 3: commit the staged data trees (catalog/memory, cotype notes) that no gate
    reads
-372. **W317** (done) Bootstrap arc 3 of 3: commit the unstaged agda edits in slices the full build can check
-373. **W318** (done) mikemol-paths-forward --bump-blocked prints one row per blocked card, so a quiet tick costs 300
+373. **W317** (done) Bootstrap arc 3 of 3: commit the unstaged agda edits in slices the full build can check
+374. **W318** (done) mikemol-paths-forward --bump-blocked prints one row per blocked card, so a quiet tick costs 300
    lines
-374. **W323** (done) Atomize luthen's 270-module luthen-endpoints wheel into small distributions along its import seams,
+375. **W323** (done) Atomize luthen's 270-module luthen-endpoints wheel into small distributions along its import seams,
    starting with the lookup client
-375. **W324** (done) Model the old makefile build workflow as data before retiring membudget or porting the gate to
+376. **W324** (done) Model the old makefile build workflow as data before retiring membudget or porting the gate to
    bazel
-376. **W327** (done) CLAUDE.md says nested membudget leases suballocate but the code and admit.py make them disjoint
-377. **W332** (done) Authorize how the bootstrap commits pass gates that the tree cannot yet satisfy
-378. **W335** (done) tests/test_agda_census_drain.py imports LEAF_MARKER which substrate.agda_tree_state does not define
-379. **W336** (done) tests/test_import_edge_agreement.py imports agda_lex bare and fails when scratch is not on sys.path
+377. **W327** (done) CLAUDE.md says nested membudget leases suballocate but the code and admit.py make them disjoint
+378. **W332** (done) Authorize how the bootstrap commits pass gates that the tree cannot yet satisfy
+379. **W335** (done) tests/test_agda_census_drain.py imports LEAF_MARKER which substrate.agda_tree_state does not define
+380. **W336** (done) tests/test_import_edge_agreement.py imports agda_lex bare and fails when scratch is not on sys.path
 
 ## residue
 
@@ -2577,3 +2585,11 @@ counter 381 · heartbeat 2026-10-10T17:20:38Z · job `c2013646` · hash `v2:1c1f
   substrate' (R13 handoff Violation, 24 unmanifested, W359 no vector) but G1 labelled it 'prior tick'; 4b5032f not
   pushed yet: root G0's sensor was the isolated gate but every prior measurement of this row ran in the real tree, so
   the repair was verified in a different environment from the one the row runs in; 4 finding(s)
+- **substrate:R16** (instructions) tick 15: per standing 21, one probe tested tick 14's inferred cause:
+  gen_build_makefiles --parameterized in a detached worktree (same tracked bytes, different ROOT) differs from 4b5032f
+  in exactly 4 lines (Flat.mk:12 SHIM_DIR, :16 MEMBUDGET, Makefile:9 SHIM_DIR, :13 MEMBUDGET); cause measured; worktree
+  removed; W381 minted (make-relative shim paths) enabling W359 and W354; W359 blocked on W381; W354 blocked on
+  mtools:W2602 and W381, W352 edge dropped; first evidence write refused for a home path, rewritten; LANDED 4b5032f
+  true; ATOMIZE W359 printed: root no fault in this tick's control law; one structural fact was lost: tick 5 recorded
+  that the shim-path change lands only with the origin gen_build_makefiles' retirement (a W352 row), and dropping W354's
+  W352 edge removed that dependency without W381 carrying it; 2 finding(s)
