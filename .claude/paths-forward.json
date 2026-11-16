@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project_root": "/home/mikemol/github/substrate",
-  "counter": 379,
+  "counter": 380,
   "armed_at": "2026-09-19T00:00:00Z",
   "heartbeat": "2026-10-10T17:20:38Z",
   "job_id": "c2013646",
@@ -58,7 +58,7 @@
       "evidence": "gcalculus-db cross-session message 2026-09-20, blocked on their side since 2026-09-08 (their operator's ruling: no drawing on unexported files). Replied: confirmed, operator-gated, recorded as W23, no re-nudge needed. | 2026-10-02: 2026-10-01: blocked_on rewritten as a stated 'operator: act ...' ask (nemik OperatorAskShape) rather than restating the ruling as the blocker text; the ruling itself stays in next_bounded_step.",
       "issued_at": "2026-09-20T13:10:00Z",
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null
     },
     {
@@ -263,7 +263,7 @@
       "evidence": "t85: paperkit-e2 asked for a COMMIT of the bib_* package as its draft's base — refused (commits are the operator's; W23 open), surfaced to the operator; gave instead content-addressed git objects from the staged index (no commit, no ref): substrate/ tree e9d3c6d39fe93b8a9b420dd6ed9b64f978bd6389, shim blob scratch/bibstruct.py 421d5829406f567a2edbeb3d1382fd78b4457aa8 — immutable, so 'hold bib_* still' is checkable against them. ⚑ OPERATOR RULED 2026-09-22: bibstruct goes to PAPERKIT, AS A PACKAGE (the whole bib_* cluster, 21 modules — not a single tools/ file, and NOT mtools despite the census letter's 'mikemol-bibstruct' proposal; tell mtools the C3 target changed). Answered paperkit-e2 (msg 9d37b391): cluster list, where REMOVE-FIELD/ENTRY belong (bib_edit + bib_write_handlers), inherited deps witness_resolves + climode (dedupe against paperkit's), callers (shim exports entries+roundtrip; probe_kernel dynamic; CLI callers incl. findings flow and summit floor — census OOM-killed, partial). Plan: keep scratch/bibstruct.py as a shim over paperkit's package until callers are repointed, then delete substrate's bib_*. paperkit's tree is frozen under a multi-hour //:hook; their drafting agent reads substrate READ-ONLY. HOLD substrate's bib_* modules still meanwhile. Post-reboot peer names: paperkit-e2, mtools-83, luthen-observability-4c, summit-6b, gcalculus-26. t84+ summit FYI (not one of the six): `ask-bibstruct-can-remove-a-field`, addressed to PAPERKIT as bibstruct's accepted future owner — a REMOVE verb for a field and for an entry, refusing when another entry's rests-on/of names the target, same snapshot + round-trip gate as --set, dry-run by default. scratch/bibstruct.py is a shim over substrate/bib_* (the C3 bib cluster in the census letter), so until the transfer the code lives here. CONSOLIDATION: do not build it in substrate in parallel with paperkit — if paperkit asks for it, the verb belongs in the bib_* modules (bib_edit/bib_write_handlers, beside --set/--addfield) and moves with the cluster. t82 RE-DERIVED: `summit ask --for substrate` → 6 closed / 6 open / 0 UNAVAILABLE of 12 (unchanged). ask-mdstruct-heading-contract is STILL OPEN after the t74 routing swap — so its check measures something the swap did not reach (the retired scratch/mdstruct.py path, or summit's reader of the routing row); next: read that ask's `check` field. Side note: summit's paperkit warns `to` is dropped from asks.bib (not declared in consumer_fields) — summit's to fix. summit-dc message 2026-09-22 (no reply requested). | 2026-10-02: 2026-10-02 tick: re-ran summit ask --for substrate fresh (stale since 2026-09-22 in this waypoint's notes) -- now 8 closed/4 open of 12, DOWN from the 6 open recorded here (ask-mdstruct-heading-contract, ask-write-mode-names-no-target, ask-substrate-presence-checks-are-decided, ask-structural-hook-distinguishes-a-pattern-from-a-path, ask-shared-hook-imports-a-package-only-its-owner-has, ask-hook-manifest-sees-package-imports, ask-force-exclude-reaches-a-staged-edit, ask-optional-import-guards-the-name-it-calls all now CLOSED -- most closed by work already done elsewhere this session/earlier, not freshly today). Remaining 4 OPEN: ask-agda-defs-answers-from-anywhere, ask-a-move-reaches-the-edit-gate, ask-capability-check-probes-behaviour, ask-bibstruct-forks-agree-on-absence. Worked the bibstruct one: substrate's side was ALREADY settled (bib_cli.py:44-58 declares UNREADABLE=3 with full rationale, found earlier this session) but the ask needs the TWO FORKS TO AGREE, which substrate alone cannot do -- sent paperkit a letter (inbox/2026-10-02-substrate-bibstruct-absent-path-exit-code.md) recommending their upcoming merged bibstruct adopt exit 3 (matching their OWN tools/eval.py CANNOT_RUN=3 convention) rather than their current accidental exit-1-via-bare-SystemExit-string default, since summit's own measurement already found paperkit's 1 was never a deliberate choice.",
       "issued_at": "2026-09-22T04:15:00Z",
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "weight": 1,
       "completed": null
     },
@@ -289,7 +289,7 @@
       "evidence": "t75+: mtools W20 `budget` LANDED (a4e79ab); verified here (`mdstruct budget .claude/paths-forward.md` → 6 sections, 10659 bytes). ⚑ LOCK DEFECT: `uv lock --upgrade-package mikemol-mdstruct` FAILS — no solution for the split `python_full_version >= '3.15'` because cupy-cuda12x has no wheels there and requires-python is open-ended; so uv.lock cannot move its git pin. Stopgap: `uv pip install` of the a4e79ab ref directly (venv ahead of the lock; a plain `uv sync` reverts it — use `uv run --no-sync` or re-pin). Real fix = bound `requires-python` (e.g. `>=3.14,<3.15`) in pyproject.toml — a manifest edit on W23's file, so it is the OPERATOR's call; flagged, not applied. t75 OVERLAP CENSUS (module_outline on both trees). HOOKS — no_chaining: SAME (mtools splits payload/armed into payload.py; substrate keeps in-file cases + --explain). structural_query: DIVERGED, substrate ahead — _declared_filenames (filename claim keys), claimed_by, path_operands (operand roles by position, W20), retired_verdict (retired-mode refusals, the arm that refused --importers/--attr today); mtools has _scannable/_is_option/_split_at_terminator. cmdparse: SAME core (_past_wrapper both sides); substrate adds consumer_operators. hook_shellcheck: SUBSTRATE-ONLY (~30 defs). mtools-only: no_verify, grade (mutation-graded tests), checkers, project_root, checker_context. RATCHET — mtools core (read/write_baseline, partition with _plausible_move identity-across-moves, ratchet) ≈ substrate ratchet_core (Census/Permission/Diff/partition/mint/rule/set_ratchet); mtools census.py = run_ruff/parse_concise; substrate-only: ratchet_flags (check_argv/mutating_argv/store_argv), ratchet_family, ratchet_log, ratchet_suites; set_ratchet has 19 gate call sites → swapping is a consumer migration. FENCE vs membudget: DIVERGED — fence = caps/run_once/mem-ratchet/cgroup reader; membudget = budget SEMAPHORE (shared ledger, blocking leases, recursive suballocation, dead-owner GC) + per-label ledger + pow2 autosize + retry-on-OOM; label_lease (sizer) python, 26/26. FIRST PROMOTION OFFER SENT to mtools-df (msg e441f9b0…, notify_when_idle): the structural_query extras, cmdparse.consumer_operators, and hook_shellcheck into mikemol-hooks; fence-sibling offer (semaphore + ledger + label_lease) announced for after. Tool residue: module_outline TRACEBACKS on a missing path instead of refusing (hit twice this tick) — a mode defect to fix. Earlier: mtools tree read 2026-09-21: fence/hooks/mdstruct/ratchet each a full paperkit project (pyproject, paper.toml, warrants.bib, tests, ratchet-preview). mikemol-mdstruct already installed here from the git remote (check_dep_addressing: DIRECT, clean). | 2026-10-02: 2026-10-01: title shortened (nemik BundledTitleShape) -- the two-stage pipeline (swap twins for mtools wheels, promote coherent clusters) is retained as ONE title because it is declared as one standing pipeline in next_bounded_step, not two independent asks; the detailed ledger stays in next_bounded_step/evidence. | 2026-10-02: 2026-10-02 tick: re-ran the symlink census (find ~/github -maxdepth 4 -type l -lname '*substrate*') for scripts/hook_shellcheck.py specifically. Population SHRANK from {paperkit, linux-sources} (t85, 2026-09-26) to just {paperkit} -- linux-sources no longer has a scripts/ directory at all (fully migrated off symlinks, presumably onto console scripts). Sent paperkit a letter (inbox/2026-10-02-substrate-hook-shellcheck-last-adopter.md) noting they're now the last adopter; once they move, substrate's scripts/hook_shellcheck.py has zero remaining symlink consumers and can finally be deleted per the standing census-before-delete rule. | 2026-10-02: 2026-10-02 tick: investigated swapping scripts/membudget's _auto_mb label-ledger sizing onto mtools' port, mikemol.fence.label_lease (already landed in the pinned mtools sha -- confirmed b91641e is an ancestor of ca312cb4, and both label_lease.py and membudget_cli.py are already present in the installed venv). mtools' port fixes a real bug in substrate's own file (its docstring: substrate's three TSV scanners use isdigit(), which reads a fence-written FRACTIONAL peak as no history at all). Differential-verified agreement on 2 real labels from the live ledger before attempting the swap (selftest:worklist_gate.py -> 64 both, sandbox-ingest -> 256 both). ATTEMPTED THE SWAP, CAUGHT IT BROKEN, REVERTED IMMEDIATELY: scripts/membudget's existing call only resolves because bare python3 run with cwd=the repo root finds substrate/ as a real subdirectory -- an accident of cwd-based module resolution, not a real interpreter match. mikemol.fence is installed only in the project venv's site-packages, invisible to bare python3 regardless of cwd (confirmed: bare python3 -m mikemol.fence.label_lease fails with ModuleNotFoundError). The swapped call silently fell through to the suppressed default, leasing 192MB instead of the correct 256MB for sandbox-ingest -- wrong and silent, exactly the failure class this repo's own interpreter rule (uv run python, never bare python3) exists to prevent. Reverted and verified restored (256MB again). | 2026-10-02: 2026-10-02 tick: fixed the real bug the swap attempt surfaced, independent of the swap itself. The failure is PRE-EXISTING and live today: confirmed python3 -m substrate.label_lease also fails with ModuleNotFoundError when cwd is agda/ (exactly where make -C agda -j runs membudget from) -- the same cwd-accident class, silently swallowed by the 2>/dev/null fallback, meaning the autobudget has likely been silently defaulting (never reading history) for every build invocation that runs from inside agda/. Fixed: scripts/membudget now resolves PYVENV=$SELFDIR/../.venv/bin/python3 once near the top (falling back to bare python3 if that path is not executable, for a hypothetical adopter without this layout) and the label_lease call site uses it. Verified: run auto sandbox-ingest from BOTH the repo root and from agda/ now both correctly lease 256MB (previously 192MB wrong-silent-default from agda/). mikemol-hook-shellcheck clean; verify-ceiling PASS 3/3. Staged scripts/membudget. | 2026-10-02: 2026-10-02: swap LANDED. scripts/membudget's _auto_mb now calls mikemol.fence.label_lease (via $PYVENV) instead of substrate.label_lease, picking up mtools' fractional-peak fix for free. Verified from BOTH the repo root and agda/ (256MB for sandbox-ingest, matching pre-swap). Verified the clamp path too (synthetic 999MB-peak label -> correctly clamped to the 384 ceiling). verify-ceiling PASS 3/3 (module-arg path, unaffected by this change, still green). Staged scripts/membudget. substrate/label_lease.py + its selftest are now DEAD on the shell-CLI path but still used by substrate/suite_run.py:72 (a direct Python import with a different call signature than mtools' Guard-based one) -- NOT retired, that is separate follow-up work, not today's unit. | 2026-10-02: 2026-10-02 tick: scoped (did not attempt) the suite_run.py follow-up swap flagged last tick. It is substantially MORE invasive than scripts/membudget's: suite_run.timeout_for reads budget.why (a property substrate's Deadline computes; mtools' Deadline has no label field and moved the warning to a free function deadline_warning(label, got) instead) and suite_run.run calls label_lease.child_cpu() directly around its OWN subprocess.run call -- mtools has no standalone child_cpu equivalent; its docstring says child_cpu is replaced by core.Result.user_s/sys_s from wait4, which assumes the caller launches children through mtools' OWN core.run abstraction, not a bare subprocess.run. Swapping this would mean either reimplementing a .why-equivalent locally or restructuring how suite_run launches its subprocess entirely -- a multi-file redesign, not a drop-in. NOT attempted this tick; left as a clearly-scoped but larger follow-up, distinct from (and not blocking) the landed scripts/membudget swap. | 2026-10-02: 2026-10-02 tick: landed the suite_run.py swap flagged last tick as 'substantially more invasive' -- the assessment was PARTLY WRONG and corrected on closer reading. child_cpu() is NOT part of what needed swapping: it is substrate's own standalone resource.getrusage(RUSAGE_CHILDREN) helper, used in suite_run.run() to measure the actual subprocess's CPU delta independently of label_lease.deadline()'s sizing computation -- conflating the two was the error. The actual swap was narrow: timeout_for() now calls fence_label_lease.read_rows(ledger_path) + fence_label_lease.deadline(rows, label, Guard(default_s=...)) instead of substrate's label_lease.deadline(path, label, default); run()'s budget.why became fence_label_lease.deadline_warning(label, budget) (mtools moved the warning to a free function since Deadline lost its label field); the explicit-timeout branch constructs fence_label_lease.Deadline(timeout_s=cap, cap_s=cap) instead of the 4-field substrate version. child_cpu() untouched. Verified: suite_run_selftest 15/15 (including the hang/timeout arm, which exercises the new deadline_warning path, and the explicit-deadline-wins-over-history arm, which reads .timeout_s/.clamped -- both present on mtools' Deadline unchanged). Staged substrate/suite_run.py. FINDING: substrate/label_lease.py's sizing logic (size/deadline/Sizing/Deadline/bucket/peaks/seconds/cpu_seconds) is now DEAD outside its own selftest and CLI -- scripts/membudget and suite_run.py both now call mikemol.fence.label_lease exclusively. The file is NOT fully retirable though: child_cpu() is still load-bearing (suite_run.py calls it, no mtools equivalent exists for a bare subprocess.run caller, as established 2 ticks ago). Future unit: split child_cpu() out into its own small module, retire the rest of label_lease.py + its selftest.",
       "issued_at": "2026-09-21T02:05:00Z",
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "weight": 1,
       "completed": null
     },
@@ -312,7 +312,7 @@
       "evidence": "t74: struct-tools SKILL table row → `uv run mdstruct` (the hook's authority: a `grep CLAUDE.md` probe now refuses naming the new tool; `tool_population.routed_names` extracts *.py tokens from the cell, so the retired path is out of the routed population and the mode census moved it to `[—]`); `toolmodes --sync` then `--check` fresh (617 documented, 106 tools); CLAUDE.md L315 → `uv run mdstruct rows catalog/reuse-index.md --where <name>` (verified: 69 rows for Wedge); SKILL L621 says coherence has no successor yet (mtools W22). check_mode_contracts still red only on the pre-existing schema --sizes row. Staged CLAUDE.md + SKILL.md. t73 (after the ruling): asks sent to mtools-df directly (msg f9869055…); mtools replied — no existing spelling for any of the three (absence confirmed by the owner), queued as mtools W20 budget (building now, our output shape adopted), W21 items, W22 coherence judgment held for the fixture pair (their read: primitives IN mdstruct, the N-worklist join BESIDE it — agreed). Packaging already the git remote per the operator's note: `mikemol-mdstruct @ git+https://github.com/mikemol/mtools.git@main#subdirectory=mdstruct`, check_dep_addressing reads DIRECT/clean, so `uv sync` picks up W20/W21 when they land. Correction from mtools carried: their operator's AFK ruling governs their session; 'awake' was our operator's statement to us. t73 CENSUS (substrate side): import sites 1 — `scratch/prose_apex.py:260` binds `_md` and reads ONLY `_md.spans` (attr_reads), which `substrate/md_spans.spans` already provides natively. Identity reads 3 (gate-G300, re-confirmed by --literal): `scripts/check_mode_contracts.py:80` gate roster, `substrate/concept_bindings.py:71` mode roster (_WRITE_TOOLS excludes mdstruct), suite fixtures (finding_mode/tool_usage/swap_readiness) — no write-path blocker. Hook routing: `hook_structural_query` derives .md→mdstruct from the struct-tools SKILL.md table row L60 (no hardcoded suffix roster), so ONE row edit re-routes the hook. Prose invocations: CLAUDE.md L315 (`--rows catalog/reuse-index.md --where`) and SKILL L621 (`--coherence`); SKILL census line L177 says 20 documented modes on scratch/mdstruct.py. Partition vs mtools: --rows/--where COVERED (`rows --where`); --spans (prose_apex) COVERED by mtools `spans` AND by substrate's own `md_spans`; --coherence UNCOVERED (the shape letter). ⚑ substrate ALREADY HOLDS a native drain: `substrate/md_ast, md_spans, md_tables, md_labels, md_sections, md_write, md_grep, md_hkey, md_frontmatter, md_docs` — and `md_grep` IS the `--grep` cassian asked for, built here first (G404 arc). Prior findings reused, not re-derived: G298 (mtools spells modes as SUBCOMMANDS → a consumer migration), G300 (three identity sites), G299/G297 (md_hkey smart-typography repair). Readers' bounds stated: module_importers/attr_reads list 11 dynamic-import shapes they cannot resolve; `pycodemod --importers`/`--attr` are RETIRED (false zeros) and refused — successors used. t71: W9 nudge sent (msg eb59705c…, notify_when_idle) after the operator woke mtools; reply received in-tick with the mode-by-mode map; substrate replied (msg ac217259…) naming the --coherence shape and that the letters carry checks. Symbols are unrelated: mtools' W9 was their argparse migration. | 2026-09-26: 2026-09-26 structural census (jea_pysim --clusters + substrate/cluster_cross.py): md_ast md_frontmatter md_grep md_labels md_lint md_spans md_tables are twins of mikemol.mdstruct.* (headers, split, container_of, search, labels_in, spans, find_section, enclosing, tables). md_labels/md_coherence also named in the mtools:W22 fixture letter. | 2026-09-26: mtools-65 RULING on W22/W47: labels_in + spans/verify already cover the single-ledger case (Fixture A); the N-ledger join is NOT added to mdstruct (Fixture B argument - only the CALLER knows the declared ledger population, same shape as the pycodemod DO-NOT-PORT boundary). CORRECTION for retirement scope: md_labels.py IS a confirmed twin of mikemol.mdstruct.labels.labels_in and retires normally onto it. md_coherence.py's compare is NOT a mdstruct twin - it is the N-ledger join and stays substrate's own tool (generalize to N ledgers per gate-F59), never repointed at mdstruct. No mtools waypoint queued for the join; revisit only if a second repo asks. | 2026-09-26: md_labels.py RETIRED onto mikemol.mdstruct.labels (per mtools' W22 ruling: confirmed structural twin, identical regex+NON_LABELS+algorithm). Consumers repointed (import + differential authority, one edit/Write each): md_coherence.py, md_families.py, md_coherence_selftest.py's _grammar_cases differential (was a deferred in-function import with a suppression comment - hoisted). Suites: md_coherence 17/17, md_families 24/24. git rm -f md_labels.py + md_labels_selftest.py (both AM, never committed) - backed up as git blobs FIRST (30cd658c hash-object -w, d1482f75) per feedback_scratchpad_is_not_a_backup, not the scratchpad. selftest_mk regenerated: 504 suites, --check clean. md_coherence.py's compare/Report untouched per mtools' ruling (stays substrate's own tool, not a twin). | 2026-09-26: md_frontmatter.py RETIRED onto mikemol.mdstruct.frontmatter - confirmed twin (identical OPEN_FENCE/CLOSE_FENCE, identical split() algorithm, only prose differs). Repointed 4 consumers: md_damage.py, md_pandoc.py (top-import swaps); md_lint_selftest.py's _differential_cases (deferred in-function import + suppression comment, hoisted via one Write - same shape as md_labels/md_coherence_selftest before it). md_frontmatter_selftest.py was its own suite and retired with the module rather than repointed (per the md_labels pattern). Suites: md_damage 20/20, md_pandoc 5/5, md_lint 21/21. Backed up as git blobs before git rm -f: md_frontmatter.py a1d57c37, md_frontmatter_selftest.py 00c2fc2b. selftest_mk: 503 suites, --check clean. Second of six md_* twins closed (md_labels done, md_frontmatter done; remaining: md_ast, md_grep, md_spans, md_tables). | 2026-09-26: md_grep.py PARTIALLY repointed (NOT a whole-module twin, unlike md_labels/md_frontmatter): mikemol.mdstruct.grep carries the library half (Hit, container_of, search, PREAMBLE - functionally equivalent, NamedTuple vs frozen dataclass) but no CLI (Argv/parse/render/main stay substrate's own, same driver-owned boundary as pycodemod's DO-NOT-PORT letter). Rewrote the whole file via Write: dropped the duplicated Hit/container_of/search/PREAMBLE/_CHAIN + the substrate.md_spans import, added 'from mikemol.mdstruct.grep import Hit, search' (container_of/PREAMBLE unused now that search is opaque to the caller). FINDING, not acted on: mtools' copy has grown regex_tell (fixes a silent literal-vs-regex zero-match false-absence) that substrate's CLI does not call - flagged as a candidate improvement, out of scope for this repoint. Only consumer is its own suite (module_importers + attr cross-check); suite 26/26. No retirement - md_grep.py itself is NOT twinned, only part of it was. | 2026-09-26: md_spans.py RETIRED onto mikemol.mdstruct.spans - whole-module twin BUT NOT byte-identical: mtools' _anchors has a REAL BUG FIX substrate's lacks (filters candidate lines through ast.heading_lines before matching, so a fenced #-line can no longer be bound as a real heading - exactly the false-heading-in-a-fence class this toolkit exists to prevent). find_section also gained a friendlier no-hits message under exact=. Span is NamedTuple vs frozen dataclass (attribute-compatible). Repointed 3 consumers (top-import swaps): md_sections.py, md_spans_show.py (hit a substring-match trap: my first Edit's old_string matched inside the UNRELATED line 'from substrate import md_spans_selftest', widened the match to fix it), md_write.py (TYPE_CHECKING-only import). REGRESSION CAUGHT AND FIXED: md_spans_show.py's --selftest delegated to the now-deleted md_spans_selftest - a live dangling reference, not cosmetic. Fix needed TWO files mutually mypy-consistent (a genuine two-body problem, not just adjacent regions), so folded a real, self-contained selftest (6 cases: render's indent decision, main's 4 branches) directly into md_spans_show.py rather than a separate suite file. Suites: md_sections 9/9, md_spans_show 6/6 (new), md_write 6/6. Backed up as git blobs before git rm -f: md_spans.py d53dc941, md_spans_selftest.py 01786147. selftest_mk: 502 suites, --check clean. 3 of the 4 remaining twins now dispositioned (md_grep partial, md_spans whole+bugfix); md_ast, md_tables left. | 2026-09-26: md_ast.py is NOT a safe retirement - CONTRACT INCOMPATIBILITY, not just growth. mtools' anchor_key REQUIRES pre-rendered text (render_headings/heading_lines do the rendering; the markup-stripping _MARKUP tuple was DELETED upstream as its own bug class - hand-modeling pandoc's rendering drifts, e.g. it also smart-quotes and unwraps links, which _MARKUP never covered). Substrate's anchor_key still strips markup itself from RAW text. Two load-bearing callers depend on the OLD contract: md_heading_contract.py's verdict() calls anchor_key on RAW _ATX-scanned text AND on parsed text and compares them - that is its entire audit; under mtools' contract the raw side keeps markup and the parsed side does not, so they would never match, reintroducing a false-mismatch (the opposite failure mtools' own docstring warns about, one level up). md_ast_selftest.py's anchor_key_strips_inline_markup case directly asserts the stripping behavior mtools removed. NO FILES EDITED this tick - diagnosis only. headers()/ast() (renamed document() upstream) appear contract-compatible on their own but anchor_key blocks a clean whole-module swap. | 2026-09-26: 2026-09-26: md_tables.py RETIRED onto mikemol.mdstruct.tables - confirmed whole-module twin, additive evolution not a breaking change (unlike md_ast): Table/Row attribute-compatible (dataclass vs NamedTuple), _tables_in/_header_of/tables byte-functionally identical (only ast.document() vs ast() internally), table_rows() gained col/starts kwargs with safe None defaults. mtools' 3 new functions (_undecorated, vocabulary, classify) are pure additions substrate doesn't need yet. Repointed 2 consumers: md_tables_show.py (top-import swap, one Edit failed first attempt on a stale multi-match then succeeded), md_tables_show_selftest.py (split combined 'from substrate import md_tables, md_tables_show' into two import lines - only md_tables moved). DANGLING DELEGATION CAUGHT (same class as md_spans_show): md_tables_show.py's --selftest delegated to substrate.md_tables_selftest (about to be deleted); fixed by repointing the delegation to md_tables_show_selftest (which already exists and fully covers this module, 19/19) rather than folding a new suite - simpler than md_spans_show's case since a covering suite already existed. Suites: md_tables_show_selftest 19/19. Backed up as git blobs before git rm -f: md_tables.py baf3a90e, md_tables_selftest.py ff78a361. selftest_mk: 501 suites, --check clean. All 6 of 6 md_* twins now dispositioned: md_labels/md_frontmatter/md_spans/md_tables retired, md_grep partial, md_ast deliberately deferred (contract incompatibility, needs an operator/design decision on md_heading_contract.py's render-first upgrade). | 2026-10-02: 2026-10-02: status corrected working->blocked; this item has been stalled on an operator design decision since 2026-09-26 and was misrepresented as actively 'working' (nemik ActiveCardShape). Switching the working card to W10 (the top cross-repo-weighted ready item per nemik-rank). | 2026-10-02: 2026-10-02: self-correction -- an accidental --update W9 --status ready (typo'd command meant for a different waypoint) cleared this block a moment ago; restored to blocked/human immediately, no real state lost (nothing was worked on W9 in between).",
       "issued_at": "2026-09-19T00:00:00Z",
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null
     },
     {
@@ -339,7 +339,7 @@
       "evidence": "",
       "issued_at": "2026-09-19T00:00:00Z",
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "weight": 5,
       "completed": null
     },
@@ -647,7 +647,7 @@
       "evidence": "mtools census reply §4 N-e/N-f.",
       "issued_at": "2026-09-23T13:00:00Z",
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "weight": 1,
       "completed": null
     },
@@ -731,7 +731,7 @@
       "evidence": "mikemol-transcriptstruct installed at e571b02; --stats on this session's transcript: 159849 records, 53215 speaker=unknown (reported to mtools). | 2026-10-05: 2026-10-05 letter from mtools (now inbox/archive/2026-10-05-mtools-repoint-tmi-status-to-transcriptstruct.md; mtools:W672, held by operator mtools:W592): a measured ready-to-apply load_units rewrite for tmi_status.py (tmi_index.py:81 needs only its unused import deleted). Measured over two real transcript slices: 0 units lost, 0 roles changed, +57 and +15 human units from queued attachments (re-measure any cue count calibrated on the old human set); tool_use text is now untruncated and not ASCII-escaped; peer-message handling NOT exercised. Apply in the substrate session; mtools has not edited this tree.",
       "issued_at": "2026-09-24T02:30:00Z",
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "weight": 1,
       "completed": null
     },
@@ -799,7 +799,7 @@
       "evidence": "mtools-91 2026-09-24: mikemol-corpus complete at 250ca18; package_graph edges 583→576 after import_edges swap. | 2026-09-26: 2026-09-26 (done under W46 by mistake - the queue was never rendered): suite_pragmas RETIRED onto mikemol.corpus.suite_pragmas (tenant_pragma.py binds admitted tenants, 6 consumers repointed, suites green); tree_root RETIRED onto mikemol.corpus.tree_root via the new substrate/import_retarget.py codemod (11 deferred-import sites in 10 consumers, suites green). Both staged-never-committed originals git rm -f.",
       "issued_at": "2026-09-24T09:00:00Z",
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "weight": 1,
       "completed": null
     },
@@ -825,7 +825,7 @@
       "evidence": "luthen-observability-9c 2026-09-24 ~19:02 EDT: PID 212335 INSERT, 7h37m elapsed, 6h51m CPU, pinning the pod CPU during the k3s restart. Client (task bolfuznh2) stopped; make confirmed gone; schema.py --cancel refused: store unreachable (the loopback address (port elided)). | 2026-10-02: blocked_on simplified to the repo name 2026-10-01 (nemik WaypointShape/UnresolvedBlockerShape fix); detail retained in diagnosis/evidence: store.py hardcodes the loopback address (port elided), luthen's k3s resolver now answers postgres.buildbuddy.(cluster service domain) (port elided) | 2026-10-02: 2026-10-01: filed letter to luthen-observability/inbox/2026-10-01-substrate-ask-postgres-resolver-name.md asking them to either claim this with --enables substrate:W37 or confirm the fix (resolve postgres by name in store.py) is substrate's own to make. | 2026-10-02: 2026-10-01: claimed -- added luthen-observability:W279 (--enables substrate:W37) via nemik's mikemol-paths-forward copy, since the sha substrate pins (ca312cb4) predates --update's enables/touches/witness/vector fields entirely (Update dataclass there has only status/blocked_on/blocked_kind/next_step/evidence_append/ticks_blocked/title -- a real version-skew finding, not a user error). nemik-inbound luthen-observability now shows substrate:W37 claimed by luthen-observability:W279. blocked_on retargeted from the bare repo name to the claiming waypoint. NOTE: a live luthen-observability session (substrate-86 naming) flagged that W279's title carried a raw address literal which tripped their commit gate (redacted in place) and asked that future asks route as letters/messages rather than direct queue writes -- the letter (inbox/2026-10-01-substrate-ask-postgres-resolver-name.md) already exists and stands as that; direct-write was done this once to satisfy the operator's immediate instruction to claim it now. | 2026-10-02: 2026-10-01: luthen-observability-6b answered (direct reply): don't hardcode a second literal address -- resolve at connect time via '/home/mikemol/github/luthen-observability/.venv/bin/python checks/endpoints_query.py postgres --side host' (any cwd, returns JSON host/port/address; --side pod if running in-cluster). amr-skills' corpus_store.conninfo() is the pattern to follow. Credentials stay in the tenant Secret (pg_tenant), never in code. They also flagged that I wrote directly into their queue (W279, 02:16Z) rather than via letter/message -- acknowledged, apologized, and will route through letters/messages going forward, asking them to mint any claiming waypoint with --enables. | 2026-10-02: 2026-10-01: luthen-observability-6b confirms W279 done -- claim satisfied, no further luthen action needed. Unblocked; next_bounded_step (fix store.py's sandbox_connect to resolve via checks/endpoints_query.py at connect time, per their answer) is substrate's own work now. | 2026-10-02: 2026-10-01 tick: VERIFIED the resolver-address fix is already LANDED and working -- substrate/store_endpoint.py already calls exactly the command luthen-observability-6b recommended (checks/endpoints_query.py postgres --side host, by absolute path), and substrate/store_launch.py already patches jea/metalanguage/store.PG_HOST/sandbox_connect from it before runpy-ing a frozen script. Confirmed live: 'store_launch jea/metalanguage/schema.py --sample schema_version --sandbox' -> version 2 (SCHEMA_VERSION matches, trap (B)'s stamping concern is resolved -- the tier is no longer unstamped). sandbox_connect.py --probe shows the event tier already populated (obs 918257, edge 917748, event 343465, etc) -- an ingest already ran successfully through this path. REMAINING WORK IS NARROWER THAN THE OLD next_bounded_step: the hardcoded-address class is closed; what's left is the ORIGINAL complaint -- the height-map _ht_map INSERT going quadratic (7.6h) -- which is a SQL/query-plan question (EXPLAIN one ht_step round), not a resolver question. Route via store_launch + the sql-oracle skill next tick; direct python3 (unwrapped) against jea/metalanguage/*.py will still hit the dead the loopback address default and must always go through store_launch.py. | 2026-10-02: 2026-10-02: sql-oracle dispatch RESOLVED the diagnosis (read-only, code + schema + one real EXPLAIN attempt). SQL confirmed: query_decl.q_ht_step (jea/metalanguage/query_decl.py:2882) -- edge JOIN _ht_map on (core_id,clid), two NOT EXISTS anti-joins, scoped by core_id. (a) MISSING INDEX RULED OUT: schema.py --check-indexes --sandbox shows ix_edge_pk(core_id,plid,ord) and ix_edge_child(core_id,clid) both present and column-exact for this join. (c) EXCESSIVE ROUNDS RULED OUT for the largest sandbox core: sppf_db.py --height wtP8S6CK9gQ (130254 obs) converges in 46 rounds, front-loaded (97%+ by ht 7) -- not pathological. (b) CONFIRMED AND SHARPENED: _ht_map is an ephemeral TEMP TABLE (sppf_db.py:805-819, DROP/CREATE/two indexes inside promote_core's transaction) that is NEVER ANALYZEd until AFTER the convergence while-loop exits (line 836, once, at the very end) -- so every one of the N per-round joins against the growing _ht_map plans against near-empty creation-time statistics for the table's entire working life. A live EXPLAIN mid-promote (the confirming read) was NOT obtainable read-only -- _ht_map does not exist outside an in-flight promote transaction, and standing one up would be a write, out of scope for the dispatch. Verdict: (b), specifically the missing mid-loop ANALYZE _ht_map, not edge's stats and not a missing index. | 2026-10-02: 2026-10-02: checked before attempting the ANALYZE fix -- scripts/sppf_db.py is WALLED (gate_wall_census.py: 1388 findings, misc:646/T201:148/E501:103). Cannot be hand-patched under the all-or-nothing per-file gate; the established pattern for this class (used throughout this session for jea/metalanguage/store.py, schema.py, etc) is CLEANROOM -- rebuild whole, difference, swap -- never a targeted patch. That is a much bigger unit of work than fits one tick (the file is 1388 findings' worth of debt, not a narrow extraction like store_launch.py was for the connection logic). | 2026-10-02: 2026-10-02: filed sql-F50-ht-map-never-analyzed-mid-loop to .claude/agents/sql-oracle.bib (findings.py --register is RETIRED; bibstruct --add is the live mechanism -- the sql-oracle dispatch's recommendation to use the old WITNESSES-dict registration was stale, dated before the W40 roster cleanroom). Verified: findings.py sql-F50-ht-map-never-analyzed-mid-loop -> STANDING. Snapshot ee964cd29d7d. | 2026-10-02: 2026-10-02: confirmed no non-walled seam exists for the ANALYZE fix -- promote_core's execute() helper (jea/metalanguage/schema_rows.py:159) is itself walled (358 findings). Minted W78 (cleanroom scripts/sppf_db.py, caused_by W37) as the only route to the fix; the fix itself is now fully diagnosed and trivial (one _schema.execute(con, 'ANALYZE _ht_map') call inside the while-loop) once W78's cleanroom makes the file editable.",
       "issued_at": "2026-09-24T23:10:00Z",
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "weight": 1,
       "completed": null
     },
@@ -853,7 +853,7 @@
       "evidence": "mtools-91 2026-09-24: row 3 complete at 719587d (witness_row 2b108cf, witness_family d947cb1, raw_bib 72830da, warrant_integrity 9239e52, warrant_bib 719587d); also found warrant_integrity._unreadable untested in substrate's suite (arm added in mtools).",
       "issued_at": "2026-09-25T02:30:00Z",
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "weight": 1,
       "completed": null
     },
@@ -880,7 +880,7 @@
       "evidence": "run_selftests --quiet after the pass (task b85uw5jqz, exit 1); sql_cache_selftest diff at query_sql_postgres.py line 7; gen_build_makefiles --selftest → 'unknown argument(s)'. | 2026-09-26: 2026-09-26 gate-census-t93: a dedicated gate-oracle read found NO gate in the census that checks ruff formatting specifically -- this waypoint's claim is NOT confirmed or refuted by the gate roster; ruff regressions need their own tool query (ruff --check or equivalent), not the ratchet census.",
       "issued_at": "2026-09-25T04:30:00Z",
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "weight": 1,
       "completed": null
     },
@@ -929,7 +929,7 @@
       "evidence": "pins 45c8d35 -> ca312cb, uv sync ok; ledger_cli 24/24, witness_run 14/14, ledger_checks 22/22; kind_partition repointed + carries the no-kind refusal (11/11); collapse audit: key_partition == kind_partition. figures.py refuses every edit (22 findings once the operator stripped its suppressions).",
       "issued_at": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null
     },
     {
@@ -984,7 +984,7 @@
       "evidence": "amr-skills-95: AMR gives a proposition split + shared-entity graph, NOT rests-on edges; consume normalize_intake. Backfilled 2026-09-25.",
       "issued_at": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null
     },
     {
@@ -1009,7 +1009,7 @@
       "evidence": "ruff over the tracked tree: 80375 visible, 81228 with suppressions ignored -> 853 hidden. Structural mtools census (jea_pysim --clusters + substrate/cluster_cross.py): 43/450 clusters span substrate/, 33/139 scripts/+catalog/library, 7/251 scratch/. Retired: scripts/project_root checker_context _payload_probe; substrate/suite_pragmas (+suite; tenant_pragma.py binds admitted tenants); substrate/tree_root (+suite; 11 deferred-import suppressions removed by substrate/import_retarget.py). Tools built: cluster_cross, symlink_adopters, settings_adopters, tenant_pragma, import_retarget. Memory feedback_cleanroom_not_air_freshener. | 2026-09-26: 2026-09-26 gate-census-t93: closest gate evidence is snapshot-guard's 2 flagged files (now W54) and clause-audit's 165 non-export names (now W59), but NEITHER is specifically about lint suppressions -- no direct gate hit for this waypoint's claim. Needs its own dedicated suppression-census tool query, not the ratchet census, to confirm current scope.",
       "issued_at": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "weight": 2,
       "completed": null
     },
@@ -1090,7 +1090,7 @@
       "minted_during": "interrupt",
       "caused_by": "summit-W77",
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "weight": 1,
       "completed": null
     },
@@ -1119,7 +1119,7 @@
       "minted_during": "interrupt",
       "caused_by": "gate-census-t93",
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null
     },
     {
@@ -1142,7 +1142,7 @@
       "minted_during": "interrupt",
       "caused_by": "gate-census-t93",
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "weight": 1,
       "completed": null
     },
@@ -1188,7 +1188,7 @@
       "minted_during": "interrupt",
       "caused_by": "gate-census-t93",
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null
     },
     {
@@ -1241,7 +1241,7 @@
       "minted_during": "interrupt",
       "caused_by": "gate-census-t93",
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null
     },
     {
@@ -1265,7 +1265,7 @@
       "minted_during": "interrupt",
       "caused_by": "gate-census-t93",
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null
     },
     {
@@ -1289,7 +1289,7 @@
       "minted_during": "interrupt",
       "caused_by": "gate-census-t93",
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "weight": 1,
       "completed": null
     },
@@ -1314,7 +1314,7 @@
       "minted_during": "interrupt",
       "caused_by": "gate-census-t93",
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "weight": 1,
       "completed": null
     },
@@ -1338,7 +1338,7 @@
       "minted_during": "interrupt",
       "caused_by": "gate-census-t93",
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "weight": 1,
       "completed": null
     },
@@ -1362,7 +1362,7 @@
       "minted_during": "interrupt",
       "caused_by": "gate-census-t93",
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "weight": 1,
       "completed": null
     },
@@ -1386,7 +1386,7 @@
       "minted_during": "interrupt",
       "caused_by": "gate-census-t93",
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "weight": 1,
       "completed": null
     },
@@ -1413,7 +1413,7 @@
       "minted_during": "interrupt",
       "caused_by": "W51",
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "weight": 3,
       "completed": null
     },
@@ -1439,7 +1439,7 @@
       "minted_during": "interrupt",
       "caused_by": "gate-wall-census",
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "weight": 2,
       "completed": null
     },
@@ -1465,7 +1465,7 @@
       "minted_during": "interrupt",
       "caused_by": "gate-wall-census",
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "weight": 2,
       "completed": null
     },
@@ -1491,7 +1491,7 @@
       "minted_during": "interrupt",
       "caused_by": "gate-wall-census",
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "weight": 2,
       "completed": null
     },
@@ -1517,7 +1517,7 @@
       "minted_during": "interrupt",
       "caused_by": "gate-wall-census",
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "weight": 2,
       "completed": null
     },
@@ -1543,7 +1543,7 @@
       "minted_during": "interrupt",
       "caused_by": "gate-wall-census",
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "weight": 2,
       "completed": null
     },
@@ -1569,7 +1569,7 @@
       "minted_during": "interrupt",
       "caused_by": "gate-wall-census",
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "weight": 2,
       "completed": null
     },
@@ -1595,7 +1595,7 @@
       "minted_during": "interrupt",
       "caused_by": "gate-wall-census",
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "weight": 2,
       "completed": null
     },
@@ -1621,7 +1621,7 @@
       "minted_during": "interrupt",
       "caused_by": "gate-wall-census",
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "weight": 2,
       "completed": null
     },
@@ -1647,7 +1647,7 @@
       "minted_during": "interrupt",
       "caused_by": "gate-wall-census",
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "weight": 2,
       "completed": null
     },
@@ -1673,7 +1673,7 @@
       "minted_during": "interrupt",
       "caused_by": "gate-wall-census",
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "weight": 2,
       "completed": null
     },
@@ -1699,7 +1699,7 @@
       "minted_during": "interrupt",
       "caused_by": "gate-wall-census",
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "weight": 2,
       "completed": null
     },
@@ -1725,7 +1725,7 @@
       "minted_during": "interrupt",
       "caused_by": "gate-wall-census",
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "weight": 2,
       "completed": null
     },
@@ -1751,7 +1751,7 @@
       "minted_during": "interrupt",
       "caused_by": "gate-wall-census",
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "weight": 2,
       "completed": null
     },
@@ -1799,7 +1799,7 @@
       "minted_during": "interrupt",
       "caused_by": "W37",
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "weight": 1,
       "completed": null
     },
@@ -1824,7 +1824,7 @@
       "minted_during": "interrupt",
       "caused_by": "mtools:W429",
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "weight": 1,
       "completed": null
     },
@@ -1849,7 +1849,7 @@
       "minted_during": "interrupt",
       "caused_by": "W63",
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "weight": 1,
       "completed": null
     },
@@ -1877,7 +1877,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -1908,7 +1908,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -1939,7 +1939,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -1967,7 +1967,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -1993,7 +1993,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -2033,7 +2033,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -2062,7 +2062,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -2094,7 +2094,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -2122,7 +2122,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -2149,7 +2149,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -2175,7 +2175,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -2202,7 +2202,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -2228,7 +2228,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -2256,7 +2256,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -2284,7 +2284,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -2312,7 +2312,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -2338,7 +2338,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -2365,7 +2365,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -2391,7 +2391,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -2417,7 +2417,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -2443,7 +2443,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -2471,7 +2471,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -2498,7 +2498,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -2522,7 +2522,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -2547,7 +2547,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -2573,7 +2573,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -2597,7 +2597,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -2622,7 +2622,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -2647,7 +2647,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -2672,7 +2672,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -2697,7 +2697,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -2721,7 +2721,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -2746,7 +2746,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -2771,7 +2771,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -2795,7 +2795,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -2819,7 +2819,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -2843,7 +2843,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -2867,7 +2867,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -2893,7 +2893,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -2919,7 +2919,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -2946,7 +2946,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -2971,7 +2971,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -2995,7 +2995,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -3021,7 +3021,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -3045,7 +3045,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -3069,7 +3069,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -3093,7 +3093,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -3117,7 +3117,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -3149,7 +3149,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -3180,7 +3180,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -3208,7 +3208,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -3235,7 +3235,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -3263,7 +3263,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -3290,7 +3290,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -3315,7 +3315,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -3340,7 +3340,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -3365,7 +3365,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -3390,7 +3390,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -3415,7 +3415,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -3440,7 +3440,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -3467,7 +3467,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -3492,7 +3492,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -3517,7 +3517,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -3542,7 +3542,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -3567,7 +3567,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -3592,7 +3592,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -3617,7 +3617,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -3642,7 +3642,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -3667,7 +3667,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -3692,7 +3692,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -3717,7 +3717,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -3742,7 +3742,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -3767,7 +3767,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -3792,7 +3792,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -3817,7 +3817,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -3842,7 +3842,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -3867,7 +3867,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -3894,7 +3894,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -3922,7 +3922,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -3958,7 +3958,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -3986,7 +3986,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -4015,7 +4015,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -4046,7 +4046,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -4076,7 +4076,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -4103,7 +4103,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -4131,7 +4131,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -4159,7 +4159,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -4188,7 +4188,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -4215,7 +4215,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -4242,7 +4242,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -4270,7 +4270,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -4297,7 +4297,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -4322,7 +4322,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -4347,7 +4347,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -4372,7 +4372,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -4397,7 +4397,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -4422,7 +4422,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -4450,7 +4450,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -4476,7 +4476,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -4509,7 +4509,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -4542,7 +4542,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -4568,7 +4568,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -4596,7 +4596,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -4626,7 +4626,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -4652,7 +4652,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -4677,7 +4677,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -4702,7 +4702,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -4727,7 +4727,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -4755,7 +4755,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -4783,7 +4783,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -4811,7 +4811,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -4840,7 +4840,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -4866,7 +4866,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -4896,7 +4896,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -4921,7 +4921,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -4946,7 +4946,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -4976,7 +4976,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -5005,7 +5005,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -5033,7 +5033,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -5068,7 +5068,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -5093,7 +5093,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -5118,7 +5118,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -5143,7 +5143,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -5169,7 +5169,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -5199,7 +5199,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -5230,7 +5230,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -5257,7 +5257,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -5282,7 +5282,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -5310,7 +5310,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -5342,7 +5342,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -5372,7 +5372,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -5400,7 +5400,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -5430,7 +5430,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -5457,7 +5457,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -5492,7 +5492,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -5521,7 +5521,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -5549,7 +5549,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -5579,7 +5579,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -5608,7 +5608,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -5635,7 +5635,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -5666,7 +5666,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -5694,7 +5694,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -5728,7 +5728,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -5758,7 +5758,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -5786,7 +5786,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -5813,7 +5813,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -5838,7 +5838,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -5863,7 +5863,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -5889,7 +5889,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -5914,7 +5914,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -5941,7 +5941,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -5968,7 +5968,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -5997,7 +5997,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -6026,7 +6026,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -6054,7 +6054,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -6082,7 +6082,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -6109,7 +6109,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -6137,7 +6137,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -6174,7 +6174,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -6202,7 +6202,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -6227,7 +6227,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -6254,7 +6254,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -6281,7 +6281,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -6308,7 +6308,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -6335,7 +6335,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -6362,7 +6362,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -6390,7 +6390,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -6417,7 +6417,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -6442,7 +6442,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -6469,7 +6469,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -6494,7 +6494,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -6520,7 +6520,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -6546,7 +6546,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -6583,7 +6583,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -6610,7 +6610,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -6635,7 +6635,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -6660,7 +6660,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -6685,7 +6685,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -6710,7 +6710,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -6737,7 +6737,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -6763,7 +6763,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -6791,7 +6791,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -6819,7 +6819,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -6845,7 +6845,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -6873,7 +6873,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -6900,7 +6900,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -6925,7 +6925,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -6951,7 +6951,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -6979,7 +6979,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -7005,7 +7005,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -7034,7 +7034,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -7070,7 +7070,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -7106,7 +7106,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -7132,7 +7132,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -7157,7 +7157,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -7182,7 +7182,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -7207,7 +7207,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -7232,7 +7232,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -7257,7 +7257,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -7282,7 +7282,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -7307,7 +7307,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -7341,7 +7341,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -7367,7 +7367,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -7396,7 +7396,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -7422,7 +7422,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -7449,7 +7449,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -7477,7 +7477,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -7503,7 +7503,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -7529,7 +7529,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -7555,7 +7555,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -7581,7 +7581,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -7607,7 +7607,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -7633,7 +7633,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -7658,7 +7658,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -7684,7 +7684,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -7711,7 +7711,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -7750,7 +7750,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent"
@@ -7776,7 +7776,7 @@
       "minted_during": "interrupt",
       "caused_by": "mtools:W642",
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent",
       "completed": null
@@ -7803,7 +7803,7 @@
       "minted_during": "interrupt",
       "caused_by": "mtools:W794",
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent",
       "completed": null
@@ -7828,7 +7828,7 @@
       "minted_during": "interrupt",
       "caused_by": null,
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "vector": "WV:1/R:L/E:Y/C:L/I:L/A:L/X:P/S:U/F:U/W:N",
       "vector_source": "agent",
       "completed": null,
@@ -7983,7 +7983,7 @@
       "minted_during": "interrupt",
       "caused_by": "inbox/2026-10-04-luthen-observability-luthen-endpoints-landed.md",
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "weight": 1,
       "completed": null
     },
@@ -8249,7 +8249,7 @@
       "minted_during": "interrupt",
       "caused_by": "W308",
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null
     },
     {
@@ -8274,7 +8274,7 @@
       "minted_during": "interrupt",
       "caused_by": "W308",
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null
     },
     {
@@ -8470,7 +8470,7 @@
       "minted_during": "interrupt",
       "caused_by": "W329",
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null,
       "weight": 1
     },
@@ -8520,7 +8520,7 @@
       "minted_during": "interrupt",
       "caused_by": "W332",
       "last_worked": "2026-11-16T15:19:43Z",
-      "ticks_blocked": 9,
+      "ticks_blocked": 10,
       "completed": null,
       "weight": 1,
       "warrants": [
@@ -8639,7 +8639,7 @@
       "minted_during": "interrupt",
       "caused_by": "W333",
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null
     },
     {
@@ -8665,7 +8665,7 @@
       "minted_during": "interrupt",
       "caused_by": "W337",
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null
     },
     {
@@ -8687,7 +8687,7 @@
       "minted_during": "interrupt",
       "caused_by": "github:W16",
       "last_worked": "2026-11-16T13:44:51Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null
     },
     {
@@ -8707,7 +8707,7 @@
       "minted_during": "interrupt",
       "caused_by": "nemik:W458",
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null
     },
     {
@@ -8727,7 +8727,7 @@
       "minted_during": "interrupt",
       "caused_by": "luthen-observability:W966",
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null
     },
     {
@@ -8747,7 +8747,7 @@
       "minted_during": "interrupt",
       "caused_by": "operator",
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null
     },
     {
@@ -8766,7 +8766,7 @@
       "minted_during": "interrupt",
       "caused_by": "mtools:W1695",
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null
     },
     {
@@ -8789,7 +8789,7 @@
       "minted_during": "interrupt",
       "caused_by": "github:W42",
       "last_worked": "2026-11-16T01:07:36Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null
     },
     {
@@ -8808,7 +8808,7 @@
       "minted_during": "interrupt",
       "caused_by": "operator",
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "warrants": [
         {
           "@context": {
@@ -8858,7 +8858,7 @@
       "minted_during": "interrupt",
       "caused_by": "operator",
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "warrants": [
         {
           "@context": {
@@ -8935,7 +8935,7 @@
       "minted_during": "tick",
       "caused_by": "luthen-observability:W1971",
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null
     },
     {
@@ -8956,7 +8956,7 @@
       "minted_during": "tick",
       "caused_by": "nemik:W881",
       "last_worked": "2026-11-16T00:51:08Z",
-      "ticks_blocked": 11,
+      "ticks_blocked": 12,
       "completed": null
     },
     {
@@ -8978,7 +8978,7 @@
       "minted_during": "tick",
       "caused_by": null,
       "last_worked": "2026-11-16T15:00:11Z",
-      "ticks_blocked": 10,
+      "ticks_blocked": 11,
       "completed": null,
       "prior_status": "working"
     },
@@ -9020,7 +9020,7 @@
       "minted_during": "interrupt",
       "caused_by": "mtools:W2494",
       "last_worked": "2026-11-16T13:48:25Z",
-      "ticks_blocked": 9,
+      "ticks_blocked": 10,
       "manifest": [
         "substrate/file_write.py",
         "scratch/vfs.py",
@@ -9062,12 +9062,12 @@
       ],
       "blocked_kind": "agent",
       "next_bounded_step": "fill each gate row W355-W374 (aim, goal, incident: a value or UNKNOWN) via the gate-oracle, one subagent at a time; W375 re-derives the row set from the gate ledger",
-      "evidence": "2026-11-16T13:09:56Z: mtools:W2581 (branch-aware mikemol-commit) enables this card. Until it lands, never follow mikemol-commit's printed push line on a branch; push the branch by name. | 2026-11-16T15:16:48Z: G0 tick 6 (written before --tick-open, its own call): advances W352. Actuator: --atomize W352 into one child per check that was red on the consistent tree (the 20 FAILED rows of the 7-entry stack's gate run, tip 31d1a3e). Each child records that gate's aim, goal and incident citation, or UNKNOWN. Sensor: --show W352 lists 20 blockers; --check OK. Expected reading: 20 children minted, W352 blocked on them, no other card touched. | 2026-11-16T15:18:50Z: R7 finding 1: the 20 rows come from the 7-entry stack's gate log for tip 31d1a3e, git blob 35feffc808826598977949e8bb6796963fb45e37 (its 'pre-commit: FAILED' lines; the row set was hand-filtered, and W375 re-derives it from a tool). | 2026-11-16T15:58:38Z: R9 finding 3 (plan): once all 20 rows (W355-W374) carry incident tags, run ONE ledger-bracketed transcript-miner dispatch with the full tag list. It writes onto each child either an origin uuid/line or 'UNKNOWN (transcript-miner <date>: no thread)'. Non-blocking. | 2026-11-16T16:24:20Z: R10 finding 3: the 'queue-only commit read as a landing' defect is carded as nemik:W2227 and forwarded to mtools, the writer's owner. Substrate uses --waypoint '-' for queue-only commits (standing 16).",
+      "evidence": "2026-11-16T13:09:56Z: mtools:W2581 (branch-aware mikemol-commit) enables this card. Until it lands, never follow mikemol-commit's printed push line on a branch; push the branch by name. | 2026-11-16T15:16:48Z: G0 tick 6 (written before --tick-open, its own call): advances W352. Actuator: --atomize W352 into one child per check that was red on the consistent tree (the 20 FAILED rows of the 7-entry stack's gate run, tip 31d1a3e). Each child records that gate's aim, goal and incident citation, or UNKNOWN. Sensor: --show W352 lists 20 blockers; --check OK. Expected reading: 20 children minted, W352 blocked on them, no other card touched. | 2026-11-16T15:18:50Z: R7 finding 1: the 20 rows come from the 7-entry stack's gate log for tip 31d1a3e, git blob 35feffc808826598977949e8bb6796963fb45e37 (its 'pre-commit: FAILED' lines; the row set was hand-filtered, and W375 re-derives it from a tool). | 2026-11-16T15:58:38Z: R9 finding 3 (plan): once all 20 rows (W355-W374) carry incident tags, run ONE ledger-bracketed transcript-miner dispatch with the full tag list. It writes onto each child either an origin uuid/line or 'UNKNOWN (transcript-miner <date>: no thread)'. Non-blocking. | 2026-11-16T16:24:20Z: R10 finding 3: the 'queue-only commit read as a landing' defect is carded as nemik:W2227 and forwarded to mtools, the writer's owner. Substrate uses --waypoint '-' for queue-only commits (standing 16). | 2026-11-16T17:50:31Z: R14 finding 2: the planned transcript-miner pass also traces operator rulings t102 (parameterize the build's store chain rather than keep a second sandbox path) and t109 (tenant-aware reconcile), cited only in substrate/flat_emit.py; W359 gets an origin uuid or 'UNKNOWN (transcript-miner <date>)'.",
       "issued_at": "2026-11-16T13:02:31Z",
       "minted_during": "interrupt",
       "caused_by": "operator",
-      "last_worked": "2026-11-16T16:24:20Z",
-      "ticks_blocked": 7,
+      "last_worked": "2026-11-16T17:50:31Z",
+      "ticks_blocked": 8,
       "warrants": [
         {
           "@context": {
@@ -9147,7 +9147,7 @@
       "minted_during": "interrupt",
       "caused_by": "operator",
       "last_worked": "2026-11-16T13:19:20Z",
-      "ticks_blocked": 9,
+      "ticks_blocked": 10,
       "prior_status": "ready",
       "warrants": [
         {
@@ -9226,7 +9226,7 @@
       "minted_during": "interrupt",
       "caused_by": "github-cb",
       "last_worked": "2026-11-16T14:54:08Z",
-      "ticks_blocked": 8,
+      "ticks_blocked": 9,
       "manifest": [
         "MODULE.bazel",
         "scripts/gen_build_makefiles.py",
@@ -9239,7 +9239,7 @@
     {
       "symbol": "W355",
       "title": "gate row: selftest roster current (aim, goal, incident)",
-      "status": "working",
+      "status": "ready",
       "enables": [
         "W352"
       ],
@@ -9251,7 +9251,7 @@
       "issued_at": "2026-11-16T15:16:59Z",
       "minted_during": "tick",
       "caused_by": "W352",
-      "last_worked": "2026-11-16T15:58:25Z",
+      "last_worked": "2026-11-16T17:53:18Z",
       "ticks_blocked": 0,
       "completed": null
     },
@@ -9273,14 +9273,14 @@
       "minted_during": "tick",
       "caused_by": "W352",
       "last_worked": "2026-11-16T16:44:16Z",
-      "ticks_blocked": 3,
+      "ticks_blocked": 4,
       "completed": null,
       "prior_status": "working"
     },
     {
       "symbol": "W357",
       "title": "gate row: feature coverage (aim, goal, incident)",
-      "status": "working",
+      "status": "ready",
       "enables": [
         "W352"
       ],
@@ -9292,14 +9292,14 @@
       "issued_at": "2026-11-16T15:16:59Z",
       "minted_during": "tick",
       "caused_by": "W352",
-      "last_worked": "2026-11-16T16:42:34Z",
+      "last_worked": "2026-11-16T17:53:18Z",
       "ticks_blocked": 0,
       "completed": null
     },
     {
       "symbol": "W358",
       "title": "gate row: def/proof separation (aim, goal, incident)",
-      "status": "working",
+      "status": "ready",
       "enables": [
         "W352"
       ],
@@ -9311,7 +9311,7 @@
       "issued_at": "2026-11-16T15:16:59Z",
       "minted_during": "tick",
       "caused_by": "W352",
-      "last_worked": "2026-11-16T17:07:41Z",
+      "last_worked": "2026-11-16T17:53:18Z",
       "ticks_blocked": 0,
       "completed": null
     },
@@ -9324,15 +9324,15 @@
       ],
       "touches": [],
       "blocked_on": [
-        "github-cb: ask 2026-11-16 — canonical makefile render (recommend parameterized: default TENANT is live, matches t102, greens gate-original L251)"
+        "W354"
       ],
       "blocked_kind": "agent",
-      "next_bounded_step": "dispatch one sql-oracle read (origin of --parameterized, tenant per render, other readers of that tenant), then send github-cb the decision ask with the gate-original constraint",
-      "evidence": "2026-11-16T15:18:51Z: Source: gate log blob 35feffc808826598977949e8bb6796963fb45e37 (tip 31d1a3e), the line 'pre-commit: FAILED — <this card's check name, as titled>'. aim: UNKNOWN. goal: UNKNOWN. incident: UNKNOWN. (To be derived by the gate-oracle, W352.) | 2026-11-16T17:24:07Z: G0 tick 12 (own call, before --tick-open): advances W359 (gate row: build makefiles in sync). Actuator: one read-only gate-oracle, ledger-bracketed, session idle. A light check runs unbounded; an Agda build is not run (it goes through the membudget path in a later repair). No background work is left behind. Expected reading: AIM, GOAL and INCIDENT (value or UNKNOWN), WHY red plus the minimal repair, whether it is a bazel target (BUILD.bazel's check_makefiles may already cover it), and whether the W354 SHIM_DIR emission is part of the red. Written via a file and re-read. | 2026-11-16T17:26:12Z: Tick 12 gate-oracle reading. Gate: build makefiles in sync (.githooks/pre-commit:251) runs gen_build_makefiles.py --check --parameterized. AIM [read, hook L247-250 + CLAUDE.md flat-DAG]: a new or removed .agda changes MODULES and the import DAG, so agda/Flat.mk and agda/Makefile must be regenerated or make's mtime model diverges from real imports. GOAL [read, build_gen_cli.check]: 0 of 2 targets differing byte-for-byte. INCIDENT [read]: CLAUDE.md, where the 280 per-dir makefiles encoded 0.4% of import edges and a cold make -j OOM-stormed; no tag; origin commit UNKNOWN. WHY RED [measured]: a MODE MISMATCH, cause (c). '--check --parameterized' exits 1 (stale: agda/Flat.mk, agda/Makefile), while plain '--check' gives 'OK (2 makefiles current)'. The committed makefiles are the DEFAULT render, and the hook asks for the tenant-aware PARAMETERIZED render, which nobody committed. Not (b) the absolute paths: the default render embeds SHIM_DIR too and passes on this host. REPAIR [inferred], a choice: (i) drop --parameterized from hook L251 (green now, stops checking the tenant render) or (ii) regenerate --parameterized and commit (then the bazel row, which checks the default render, goes red). Neither is hermetic, because both renders embed this host's absolute SHIM_DIR/MEMBUDGET (W354). BAZEL [measured]: PARTLY the same. check_makefiles runs args=['--check'] without --parameterized, so it passes where the hook fails; BUILD.bazel's docstring calling it 'the hook's gen_build_makefiles --check' is now false. Unverified: substrate/build_gen_cli_selftest.py:63 appears to assert '--check --parameterized passes on the committed tree', which would now fail. | 2026-11-16T17:27:43Z: R13 CONSTRAINT: the main guard runs gate-original, the hook frozen at 771283c, and its L251 runs --check --parameterized [reported by the gate-oracle at 771283c; the closure manifest lists the hook]. So only a render that passes --parameterized can green this row for the merge. Option (i), dropping the flag, greens only the rebuilt hook and does NOT advance the merge. Unless the freeze itself is revisited, that points to (ii): commit the parameterized render and align bazel's check_makefiles to --parameterized. Decision owner: NOT substrate alone. It touches the shared store's tenancy (census-kit), and the operator assigned github-cb (46a10381) as reviewer of the gate-rebuild steps. Procedure: one ledger-bracketed sql-oracle read (why --parameterized was added, the tenant each render ingests into, other readers of that tenant), then a decision ask to github-cb; operator: decide only if the freeze or the tenant scheme must change. | 2026-11-16T17:45:37Z: G0 tick 13 (own call, before --tick-open): advances W359. Actuator: one read-only sql-oracle, ledger-bracketed, session idle, no store writes. Sensor: its report. Expected reading: (1) the origin of --parameterized (commit, card or ruling, else UNKNOWN); (2) which store tenant each render (default and parameterized) ingests into; (3) who else reads that tenant. Then the decision ask goes to github-cb with the gate-original constraint, and W359 is blocked on that ask. | 2026-11-16T17:48:04Z: Tick 13 sql-oracle reading. (1) ORIGIN [measured]: substrate/flat_emit.py:5-10 records it. The origin flat_text hard-codes --live and a bare python3 that skips store_launch, and 'The operator chose to parameterize that chain rather than keep a second build path for the sandbox (t102)'. The tenant-aware reconcile is t109, replacing a t107 $(error) guard (flat_emit.py:184-192). The t102 ruling itself is UNKNOWN-from-git (git log -S reaches only 57d2119 and 4d19c48); memory was not searched for 't102'. (2) TENANT PER RENDER [measured]: the DEFAULT render (committed) hard-wires every store link to --live (sppf_db.py --ingest-core/--ingest-source/--promote-core/--drain-core ... --live --apply; reconcile has no tenant flag, [inferred] live). The PARAMETERIZED render emits 'TENANT ?= live', a guard that TENANT is live or sandbox, TSFX (stamp suffix, empty for live), and STORE_RUN via 'python -m substrate.store_launch'. _tenantize rewrites --live to --$(TENANT), and reconcile becomes 'python -m substrate.stamp_reconcile_run $(BUILD) --tenant $(TENANT) --apply'. Its DEFAULT is LIVE; sandbox needs 'make TENANT=sandbox'. (3) OTHER READERS [measured, narrow method: one pycodemod importer query plus code reading]: store_launch has 0 import sites (reached via -m); stamp_reconcile.stamp_suffix and stamp_reconcile_run. No --touching, summit or cross-repo search was done. (4) USED TODAY [measured]: YES, the default render. The hook's full build (pre-commit:575+, weekly or forced) runs make -C agda -j, and all -> reconcile + Flat.mk all -> $(PROMOTED) <- .ingested writes the LIVE store. [inferred] Nothing uses the parameterized render. CONCLUSION [inferred]: committing the parameterized render keeps the default tenant LIVE, so current readers see no tenancy change. It routes store writes through store_launch, which the t102 ruling asked for, and it greens gate-original L251. That supports option (ii); a github-cb decision has been asked for.",
+      "next_bounded_step": "widen the reader search (summit capability, nemik-inbound), then ONE commit: makefiles --parameterized + bazel args + docstring + selftest:63 check",
+      "evidence": "2026-11-16T15:18:51Z: Source: gate log blob 35feffc808826598977949e8bb6796963fb45e37 (tip 31d1a3e), the line 'pre-commit: FAILED — <this card's check name, as titled>'. aim: UNKNOWN. goal: UNKNOWN. incident: UNKNOWN. (To be derived by the gate-oracle, W352.) | 2026-11-16T17:24:07Z: G0 tick 12 (own call, before --tick-open): advances W359 (gate row: build makefiles in sync). Actuator: one read-only gate-oracle, ledger-bracketed, session idle. A light check runs unbounded; an Agda build is not run (it goes through the membudget path in a later repair). No background work is left behind. Expected reading: AIM, GOAL and INCIDENT (value or UNKNOWN), WHY red plus the minimal repair, whether it is a bazel target (BUILD.bazel's check_makefiles may already cover it), and whether the W354 SHIM_DIR emission is part of the red. Written via a file and re-read. | 2026-11-16T17:26:12Z: Tick 12 gate-oracle reading. Gate: build makefiles in sync (.githooks/pre-commit:251) runs gen_build_makefiles.py --check --parameterized. AIM [read, hook L247-250 + CLAUDE.md flat-DAG]: a new or removed .agda changes MODULES and the import DAG, so agda/Flat.mk and agda/Makefile must be regenerated or make's mtime model diverges from real imports. GOAL [read, build_gen_cli.check]: 0 of 2 targets differing byte-for-byte. INCIDENT [read]: CLAUDE.md, where the 280 per-dir makefiles encoded 0.4% of import edges and a cold make -j OOM-stormed; no tag; origin commit UNKNOWN. WHY RED [measured]: a MODE MISMATCH, cause (c). '--check --parameterized' exits 1 (stale: agda/Flat.mk, agda/Makefile), while plain '--check' gives 'OK (2 makefiles current)'. The committed makefiles are the DEFAULT render, and the hook asks for the tenant-aware PARAMETERIZED render, which nobody committed. Not (b) the absolute paths: the default render embeds SHIM_DIR too and passes on this host. REPAIR [inferred], a choice: (i) drop --parameterized from hook L251 (green now, stops checking the tenant render) or (ii) regenerate --parameterized and commit (then the bazel row, which checks the default render, goes red). Neither is hermetic, because both renders embed this host's absolute SHIM_DIR/MEMBUDGET (W354). BAZEL [measured]: PARTLY the same. check_makefiles runs args=['--check'] without --parameterized, so it passes where the hook fails; BUILD.bazel's docstring calling it 'the hook's gen_build_makefiles --check' is now false. Unverified: substrate/build_gen_cli_selftest.py:63 appears to assert '--check --parameterized passes on the committed tree', which would now fail. | 2026-11-16T17:27:43Z: R13 CONSTRAINT: the main guard runs gate-original, the hook frozen at 771283c, and its L251 runs --check --parameterized [reported by the gate-oracle at 771283c; the closure manifest lists the hook]. So only a render that passes --parameterized can green this row for the merge. Option (i), dropping the flag, greens only the rebuilt hook and does NOT advance the merge. Unless the freeze itself is revisited, that points to (ii): commit the parameterized render and align bazel's check_makefiles to --parameterized. Decision owner: NOT substrate alone. It touches the shared store's tenancy (census-kit), and the operator assigned github-cb (46a10381) as reviewer of the gate-rebuild steps. Procedure: one ledger-bracketed sql-oracle read (why --parameterized was added, the tenant each render ingests into, other readers of that tenant), then a decision ask to github-cb; operator: decide only if the freeze or the tenant scheme must change. | 2026-11-16T17:45:37Z: G0 tick 13 (own call, before --tick-open): advances W359. Actuator: one read-only sql-oracle, ledger-bracketed, session idle, no store writes. Sensor: its report. Expected reading: (1) the origin of --parameterized (commit, card or ruling, else UNKNOWN); (2) which store tenant each render (default and parameterized) ingests into; (3) who else reads that tenant. Then the decision ask goes to github-cb with the gate-original constraint, and W359 is blocked on that ask. | 2026-11-16T17:48:04Z: Tick 13 sql-oracle reading. (1) ORIGIN [measured]: substrate/flat_emit.py:5-10 records it. The origin flat_text hard-codes --live and a bare python3 that skips store_launch, and 'The operator chose to parameterize that chain rather than keep a second build path for the sandbox (t102)'. The tenant-aware reconcile is t109, replacing a t107 $(error) guard (flat_emit.py:184-192). The t102 ruling itself is UNKNOWN-from-git (git log -S reaches only 57d2119 and 4d19c48); memory was not searched for 't102'. (2) TENANT PER RENDER [measured]: the DEFAULT render (committed) hard-wires every store link to --live (sppf_db.py --ingest-core/--ingest-source/--promote-core/--drain-core ... --live --apply; reconcile has no tenant flag, [inferred] live). The PARAMETERIZED render emits 'TENANT ?= live', a guard that TENANT is live or sandbox, TSFX (stamp suffix, empty for live), and STORE_RUN via 'python -m substrate.store_launch'. _tenantize rewrites --live to --$(TENANT), and reconcile becomes 'python -m substrate.stamp_reconcile_run $(BUILD) --tenant $(TENANT) --apply'. Its DEFAULT is LIVE; sandbox needs 'make TENANT=sandbox'. (3) OTHER READERS [measured, narrow method: one pycodemod importer query plus code reading]: store_launch has 0 import sites (reached via -m); stamp_reconcile.stamp_suffix and stamp_reconcile_run. No --touching, summit or cross-repo search was done. (4) USED TODAY [measured]: YES, the default render. The hook's full build (pre-commit:575+, weekly or forced) runs make -C agda -j, and all -> reconcile + Flat.mk all -> $(PROMOTED) <- .ingested writes the LIVE store. [inferred] Nothing uses the parameterized render. CONCLUSION [inferred]: committing the parameterized render keeps the default tenant LIVE, so current readers see no tenancy change. It routes store writes through store_launch, which the t102 ruling asked for, and it greens gate-original L251. That supports option (ii); a github-cb decision has been asked for. | 2026-11-16T17:50:30Z: R14 finding 1: sql_lift --check-census, run after the tick-13 reading: 'the census in .claude/skills/sql-relalg/SKILL.md is fresh' (measured now). The tick-13 reading's own map freshness at read time is UNKNOWN, because its brief checks were not run. The reader list is 'readers found by import census' only (store_launch: 0 importers; stamp_reconcile), not 'the readers'. DECISION (github-cb 2026-11-16, host ruling compatible with operator t102 as recorded in flat_emit.py:5-10): APPROVE (ii), the parameterized render as canonical, in ONE branch commit: regenerate both makefiles with --parameterized, align bazel check_makefiles to '--check --parameterized', fix its docstring, and check build_gen_cli_selftest.py:63. Before that, widen the reader search (summit capability for the makefiles' consumers, plus nemik inbound for anything citing the build) and record the result either way. Absolute paths stay with W354. | 2026-11-16T17:53:18Z: R13 handoff self-probe (nemik-check VIOLATES retro/substrate:R13/handoff: 'no self probe recorded executed-and-failed'): substrate's own probe ran before the handoff to github-cb. The tick-13 sql-oracle read measured the origin, tenancy and readers, and it could not settle the shared-store decision alone. That is the 'failed' half: the store's tenancy is multi-party, and the reviewer was named by the operator (46a10381). github-cb has since ruled (approve ii). | 2026-11-16T17:56:01Z: Widened reader search, per github-cb. summit capability 'makefile': no entry for that spelling. 'build': one word match only (mat260 citation-contract, unrelated). nemik-inbound substrate: 6 asks plus 1 letter, none citing the makefiles' render or the build's tenancy (gcalculus:W314 is about the paperkit pin and remotes; W354 territory). Result: no consumer of the render found by summit or inbound (a fact about those two indexes). The one-commit change can proceed. | 2026-11-16T18:12:37Z: G0 tick 14 (own call, before --tick-open): advances W359 to a landing. Actuator, ONE commit on gate-rebuild per github-cb's approval: (a) regenerate agda/Flat.mk and agda/Makefile with gen_build_makefiles --parameterized; (b) set BUILD.bazel check_makefiles args to --check --parameterized and fix its docstring; (c) read build_gen_cli_selftest.py:63 and align it if it asserts the other mode. Sensors: gen_build_makefiles --check --parameterized prints OK; the gate run in the commit no longer lists 'build makefiles in sync' as FAILED. Expected reading: COMMITTED, with that row absent from the FAILED lines, or a named blocker. | 2026-11-16T18:24:23Z: nemik-b5 2026-11-16: R13's handoff Violation (nemik:RetroHandoffShape) is judged on the retro record alone. It needs handoff.self_probe = 'executed-and-failed', and R13 lacks that field. The record is append-only with no supersede or amend path, so the Violation STAYS until nemik's carded gap (a superseding retro or a writer-side amend) lands. It is not hand-edited. Standing 20 sets the field on future handoffs. | 2026-11-16T18:33:18Z: Tick 14: LANDED 4b5032f (Flat.mk and Makefile regenerated with --parameterized; bazel check_makefiles args are now --check --parameterized and its docstring is fixed; build_gen_cli_selftest.py:63 already asserted this render since 2026-09-23). In the REAL tree, '--check --parameterized' prints 'OK (2 makefiles current)' [measured]. But the commit's ISOLATED gate run still reports 'gen_build_makefiles --check: FAILED stale: agda/Flat.mk agda/Makefile' [measured, commit log]. [inferred, not byte-checked] Cause (b) appears only in isolation: mikemol-commit runs the hook in a snapshot tree (/var/tmp/mikemol/gate/substrate/tree), where build_settings.ROOT resolves, so the rendered SHIM_DIR/MEMBUDGET absolute paths differ from the committed real-tree paths. The tick-12 oracle measured only in the real tree, so it excluded (b) wrongly for the gate context. This row goes green in isolation only after W354 makes those paths make-relative. W359 is now blocked on W354.",
       "issued_at": "2026-11-16T15:16:59Z",
       "minted_during": "tick",
       "caused_by": "W352",
-      "last_worked": "2026-11-16T17:48:04Z",
+      "last_worked": "2026-11-16T18:33:18Z",
       "ticks_blocked": 0,
       "completed": null
     },
@@ -9622,7 +9622,7 @@
       "minted_during": "interrupt",
       "caused_by": "W352",
       "last_worked": "2026-11-16T15:38:50Z",
-      "ticks_blocked": 6,
+      "ticks_blocked": 7,
       "completed": null
     },
     {
@@ -9690,6 +9690,24 @@
       "caused_by": "W357",
       "last_worked": null,
       "ticks_blocked": 0
+    },
+    {
+      "symbol": "W380",
+      "title": "Answer nemik: mtools:W2494 is done",
+      "status": "ready",
+      "enables": [
+        "W351"
+      ],
+      "touches": [],
+      "blocked_on": [],
+      "blocked_kind": null,
+      "next_bounded_step": "read the nemik letter in inbox/ (2026-11-16-nemik-edge-mtools-W2494-caused_by-W351.md); check whether mtools:W2487 (the test-mode switch) has landed in the pinned mikemol-atomicwrite; update W351's blockers accordingly and reply to nemik",
+      "evidence": "",
+      "issued_at": "2026-11-16T17:56:00Z",
+      "minted_during": "interrupt",
+      "caused_by": "inbox/2026-11-16-nemik-edge-mtools-W2494-caused_by-W351.md",
+      "last_worked": "2026-11-16T17:56:06Z",
+      "ticks_blocked": 0
     }
   ],
   "residue": [
@@ -9736,6 +9754,8 @@
     "A standing rule or dispatch prompt that prescribes a command must name one the repo's PreToolUse hooks admit. Check a new prescription against the hooks before storing it.",
     "Queue-only commits use --waypoint '-' (or the parent card). They never name the card being worked, because a landing is a commit that touches that card's manifest.",
     "Every repair choice on a W352 row is checked against gate-original (the frozen 771283c gate) first. A choice that greens only the rebuilt hook does not advance the merge, and its card must say so.",
+    "A dispatch prompt may narrow an oracle's question but never removes the instrument checks in its brief (census and freshness checks). A reading taken without them records its map freshness as UNKNOWN.",
+    "A retro handoff whose operator is \"other\" carries handoff.self_probe = \"executed-and-failed\" in the same object, set only when the self probe really ran and failed (nemik:RetroHandoffShape). The reviewer is told this in every G1 that may hand off.",
     "A set of rows taken from a log or a tool's output is produced by a tool mode, never a hand filter. If no mode exists, store the log as a git blob, cite its sha, and card the missing mode (summit capability first) before relying on the rows."
   ],
   "tick_hooks": [],
@@ -10434,7 +10454,46 @@
         }
       ],
       "id": "substrate:R13"
+    },
+    {
+      "card": "W359",
+      "trigger": "tick 13: one sql-oracle spender bracketed 17:45:47Z-17:48:03Z, no store writes; origin of --parameterized read from flat_emit.py:5-10 (operator t102, t109 reconcile), UNKNOWN from git, memory not searched; default render hard-wires --live, parameterized emits TENANT ?= live via store_launch; readers by NARROW method (store_launch 0 importers, via -m; stamp_reconcile); nothing uses the parameterized render today; W359 blocked on the text ask to github-cb; letter recommends (ii); the oracle's brief checks (--check-census, findings.py --list) were not dispatched",
+      "root": "the dispatch prompt narrowed the oracle's QUESTION and also cut its INSTRUMENT CHECK, so the reading carries no freshness verdict on the map it used",
+      "contributing": [
+        "the reader list is an absence-shaped claim from an import census that cannot see -m, make or hook callers",
+        "operator rulings t102/t109 cited only in a code comment, no transcript warrant",
+        "this tick's nemik-check UNOBSERVED (prior tick quoted)"
+      ],
+      "precommit": "G0 tick 13 (own call, before open): advances W359 via one read-only sql-oracle, ledger-bracketed, no store writes. Expected: the origin of --parameterized, the tenant per render, other readers; then a decision ask to github-cb with W359 blocked on it.",
+      "delta": "Met: origin located (comment-level), tenant per render measured, readers listed (narrow), ask sent in standing-10 form, W359 blocked on it. Not met: census freshness unchecked; readers not labelled as method-bounded in the letter (limits disclosed generally); t102/t109 untraced.",
+      "sustain": [
+        "the oracle disclosed what it did not run",
+        "the ask blocker written as text per standing 10, not a placeholder card",
+        "the letter carried a recommendation with its limits",
+        "origin labelled UNKNOWN-from-git rather than guessed"
+      ],
+      "enforcement_layer": "instructions",
+      "handoff": {
+        "instrument": "W359 evidence records census freshness (sql_lift --check-census result) and labels the reader list 'by import census'; t102/t109 added to the planned transcript-miner pass",
+        "channel": "writer --update; follow-up line to github-cb",
+        "operator": "self"
+      },
+      "findings": [
+        {
+          "finding_card": "W359",
+          "finding_owner": "substrate-a5",
+          "due": "2026-11-17",
+          "finding_witness": "W359 evidence quotes python3 jea/metalanguage/sql_lift.py --check-census output and states the tick-13 reading's map freshness (or UNKNOWN), and labels the reader list as found by import census"
+        },
+        {
+          "finding_card": "W352",
+          "finding_owner": "substrate-a5",
+          "due": "2026-11-19",
+          "finding_witness": "the planned transcript-miner pass lists t102 and t109 alongside the gate-row incident tags, and W359 gets an origin uuid or 'UNKNOWN (transcript-miner <date>)'"
+        }
+      ],
+      "id": "substrate:R14"
     }
   ],
-  "retro_counter": 13
+  "retro_counter": 14
 }

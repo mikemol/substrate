@@ -819,3 +819,11 @@
 2026-11-16T17:48:03Z  tick  --   interrupt spender   "spender: sql-oracle (W359 tenant render) return"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
 2026-11-16T17:48:04Z  status W359 working>blocked writer    "working -> blocked"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
 2026-11-16T17:48:15Z  tick  W359 advanced  oracle    "tick 13: sql-oracle read W359's render origin (operator t102, parameterize instead of a second sandbox path) and tenancy (the parameterized default is live via store_launch); decision ask sent to github-cb recommending the parameterized render [blocked by W360]"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
+2026-11-16T17:50:30Z  status W359 blocked>ready writer    "blocked -> ready"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
+2026-11-16T17:53:18Z  status W355 working>ready writer    "working -> ready"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
+2026-11-16T17:53:18Z  status W357 working>ready writer    "working -> ready"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
+2026-11-16T17:53:18Z  status W358 working>ready writer    "working -> ready"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
+2026-11-16T17:56:00Z  interrupt W380 minted    -         "Answer nemik: mtools:W2494 is done"  session=ba7f487c-25c3-489f-8632-92b4da805cb9  evidence=inbox/2026-11-16-nemik-edge-mtools-W2494-caused_by-W351.md
+2026-11-16T18:12:37Z  status W359 ready>working writer    "ready -> working"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
+2026-11-16T18:33:18Z  status W359 working>blocked writer    "working -> blocked"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
+2026-11-16T18:33:21Z  tick  W359 advanced  landed    "tick 14: W359 LANDED 4b5032f (parameterized render canonical; bazel row aligned); the real tree passes, but the isolated gate still reads stale because the absolute SHIM_DIR/MEMBUDGET resolve to the snapshot path, so the row now waits on W354 [blocked by W354]"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
