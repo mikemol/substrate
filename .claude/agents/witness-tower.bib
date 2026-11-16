@@ -1,0 +1,41 @@
+% witness-tower findings — what dispatches to the WitnessTower oracle PAID to learn.
+%
+% ⚑ THE HIGHEST-VALUE ENTRY HERE IS A RESOLVED HYPOTHESIS. The brief carries "named unbuilt
+% work" as explicit hypotheses; when a dispatch finds one BUILT — or finds it unbuildable and
+% why — that is the entry, and the hypothesis is RETIRED with its reason. An unpruned
+% unbuilt-work list becomes a list of things readers believe are missing while they exist,
+% which is the reinvention this oracle exists to prevent.
+%
+% ⚑ Never a module count: that has a gated authority. Record which way a dependency POINTS,
+% what a rung MEANS, and the name-collisions that make a reader think the tower derives
+% something it does not.
+%
+% File with `bibstruct --add ... --bib .claude/agents/witness-tower.bib --apply`.
+
+@misc{tower-F1-dependency-direction-is-inverted,
+  section  = {finding},
+  claim    = {The dependency direction between the tower and its algebras is currently the OPPOSITE of the intended design, so anyone answering from appearance answers backwards.},
+  check    = {standing},
+  note     = {kind=finding by=witness-tower. ⚑ MEASURE IT, never infer it from the subtree's name: agda_defs --between Src Dst, and ORDER IS THE QUESTION — running it BOTH ways is how an inversion is measured rather than asserted. --consumers and --depends aggregate to a package COUNT, which says the tower leans on Algebra.F2 but not WHICH modules through WHICH, and only the second form can plan a re-derivation. STANDING until the direction is corrected, at which point this retires with the commit that corrected it. ⚑ WITNESS NOTE, moved verbatim from findings.py WITNESSES (2026-09-26): currently the OPPOSITE of the intended design, so anyone answering from appearance answers backwards; measure with --between run BOTH ways}
+}
+
+@misc{tower-F2-vocabulary-is-overloaded,
+  section  = {finding},
+  claim    = {The tower's vocabulary is overloaded four and five ways, so a name-match is not a concept-match and a reader can conclude the tower derives something it does not.},
+  check    = {standing},
+  note     = {kind=finding by=witness-tower. WEDGE is three unrelated things: the division/reconstruction algebra a = recon q b r (~60 Agda modules), the set-relational wedge of intersection plus two residues, and the exterior-algebra product. JOIN — most join* names in the index are joint-gen (Sylow subgroups) or JointEntropy (information theory), not Codd material. ⚑ Wedge projection has exactly ONE witness and means projections out of the Wedge RECORD, not relational projection. STANDING. ⚑ WITNESS NOTE, moved verbatim from findings.py WITNESSES (2026-09-26): 'wedge' is three unrelated things and most join* names are joint-gen or JointEntropy; a name-match is not a concept-match}
+}
+
+@misc{wt-no-tarski-lattice,
+  section  = {finding},
+  claim    = {Substrate's fixed-point theory is exclusively LAWVERE/coalgebraic, not order-theoretic - no Knaster-Tarski lfp/gfp, no poset or lattice carrier with representable incomparability, and no monotone-endo-on-a-poset development anywhere in agda/Substrate.},
+  check    = {standing},
+  note     = {kind=finding by=witness-tower. The witness - agda_defs --grep 'arski|lfp|gfp|east-fix|reatest-fix|ixpoint|ixed-point|ixedPoint|onotone' returned 35 names, every one Lawvere (Category.Lawvere), coalgebraic (Category.Coalgebra FixedPoint / FiniteOrder / LagrangeOrder), or a monotone VALUATION (S5.S5Fixpoint value-monotone, ShadowArchitecture.Persistence populate-line-monotone). Zero Tarski, zero lfp, zero gfp. agda_defs --grep 'oset|artialOrder|ncomparab|omparab|_<=_|Lattice|Preorder|antichain' returned 20 names, of which the only order structures are Foundation.Nat.Le._<=_ (a TOTAL order on Nat) and Category.ReedMullerHierarchy.InclusionLattice. No name spells incomparability. agda_defs --prose 'incomparab|partial order|poset|antichain|not comparable|total order|totally ordered' Substrate.WitnessTower returned 0 comment lines in 349 modules. Consequence - the substrate cannot be cited for the lfp/gfp distinction on a non-total carrier. ⚑ WITNESS NOTE, moved verbatim from findings.py WITNESSES (2026-09-26): No Knaster-Tarski / lfp-gfp / poset development exists in agda/Substrate. agda_defs --grep 'arski|lfp|gfp|east-fix|reatest-fix|ixpoint|ixed-point|ixedPoint|onotone' returns 35 names, all Lawvere/coalgebra/S5-valuation, zero Tarski. --grep 'oset|artialOrder|ncomparab|omparab|_<=_|Lattice|Preorder|antichain' returns 20 names whose only order carriers are Foundation.Nat.Le._<=_ (total on Nat) and ReedMullerHierarchy.InclusionLattice. --prose 'incomparab|partial order|poset|antichain|total order' over all 349 WitnessTower modules returns 0 lines.}
+}
+
+@misc{wt-parity-forces-residue-is-hodge,
+  section  = {finding},
+  claim    = {The tower DOES carry a parity-forces-a-residue result, but it is a Hodge self-duality argument on grade LABELS (Hodge.witness-distinct), not a kernel of a bilinear form - the diagonalisation engine and the sign/orientation cocycles are never connected in the tree.},
+  check    = {standing},
+  note     = {kind=finding by=witness-tower. The witness - agda_defs --prose 'odd|cycle space|antisymmetric|nondegenerate|forces a kernel|forces ker' Substrate.WitnessTower returned 47 lines across 17 modules. Only two carry the forcing shape, both in Hodge.agda - ':109 (3 is odd -> no self-dual middle), so every face has a DISTINCT witness grade' and ':117 No grade is its own witness (n=3 odd => star has no fixed point)'. The theorem is witness-distinct at Hodge.agda:120-124, whose type is (i : Fin 4) -> dual-grade3 i == i -> Fin 0, discharged by four absurd patterns. Carrier is Fin 4, the grade LABEL - no form, no kernel, no cycle space. The nearest kernel statement, HodgeGradeInvolution.nullity-factored (:72-73, nullity2 (suc n) c == mult2 (suc n) c * degPhi (suc n)), has NO parity hypothesis and is re-exported from Algebra.F2.Linear.SpectralCrossCoherent, i.e. it is F2's theorem, not the tower's. Separately, Diagonal.agda has 0 importers, so nothing in the orientation rig consumes cantor-diagonal or F2-fpf. --grep 'ernel|Ker|image|Image|coker' returned 106 names of which exactly three are in WitnessTower (apex-kernel, stepWedge-flat-image, and none in Diagonal) - all real linear-algebra kernels live under Algebra.F2.Linear. ⚑ WITNESS NOTE, moved verbatim from findings.py WITNESSES (2026-09-26): The tower's only 'parity of a dimension FORCES a residue' result is Hodge.witness-distinct (Hodge.agda:120-124), which is an odd-n self-duality argument on GRADE LABELS (Fin 4), not a kernel of a form. The kernel-side counterpart, HodgeGradeInvolution.nullity-factored (:72-73), factors nullity2 = mult2 * degPhi but is a COUNT identity with no parity hypothesis, and it is imported from Algebra.F2.Linear.SpectralCrossCoherent rather than proved in the tower.}
+}

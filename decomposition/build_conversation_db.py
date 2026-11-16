@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Build conversation decomposition database from MHTML transcript.
 
 Pipeline (per the design in mhtml_conversation_decomposition_design.md):

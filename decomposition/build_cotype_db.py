@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Build a section-by-section semantic triple database for cotype markdown.
 
 This script parses markdown headings into a section tree and extracts

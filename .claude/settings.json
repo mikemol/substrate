@@ -1,4 +1,77 @@
 {
+  "env": {
+    "STRUCT_HOOK_BLOCK": "1",
+    "NOCHAIN_HOOK_BLOCK": "1",
+    "PYCHECK_HOOK_BLOCK": "1",
+    "SHELLCHECK_HOOK_BLOCK": "1",
+    "NOVERIFY_HOOK_BLOCK": "1"
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "STRUCT_HOOK_BLOCK=1 \"$CLAUDE_PROJECT_DIR/.venv/bin/mikemol-hook-structural-query\""
+          },
+          {
+            "type": "command",
+            "command": "NOCHAIN_HOOK_BLOCK=1 \"$CLAUDE_PROJECT_DIR/.venv/bin/mikemol-hook-no-chaining\""
+          },
+          {
+            "type": "command",
+            "command": "NOVERIFY_HOOK_BLOCK=1 \"$CLAUDE_PROJECT_DIR/.venv/bin/mikemol-hook-no-verify\""
+          },
+          {
+            "type": "command",
+            "command": "SHELLCHECK_HOOK_BLOCK=1 \"$CLAUDE_PROJECT_DIR/.venv/bin/mikemol-hook-shellcheck\""
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write|NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "SHELLCHECK_HOOK_BLOCK=1 \"$CLAUDE_PROJECT_DIR/.venv/bin/mikemol-hook-shellcheck\""
+          },
+          {
+            "type": "command",
+            "command": "PYCHECK_HOOK_BLOCK=1 \"$CLAUDE_PROJECT_DIR/.venv/bin/mikemol-hook-pycheck\""
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR/.venv/bin/mikemol-hook-inbound-asks\""
+          },
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR/.venv/bin/mikemol-hook-nemik-check\""
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR/.venv/bin/mikemol-hook-inbound-asks\""
+          },
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR/.venv/bin/mikemol-hook-nemik-check\""
+          }
+        ]
+      }
+    ]
+  },
   "permissions": {
     "allow": [
       "Bash(git add *)",
@@ -11,18 +84,12 @@
       "Bash(PYTHONPATH=\"scratch:.\" .venv/bin/python verify_applied_grammar.py)",
       "Bash(PYTHONPATH=\"scratch:.\" .venv/bin/python scratch/audit_inhabitation.py)",
       "Bash(PYTHONPATH=\"scratch:.\" .venv/bin/python scratch/verify_cell_inhabitation.py)",
-      "Bash(.venv/bin/python -c \"import bs4; print\\('bs4', bs4.__version__\\)\")",
-      "Bash(.venv/bin/python -c \"from email import policy; print\\('email policy ok'\\)\")",
-      "Bash(.venv/bin/pip install *)",
       "Read(//home/mikemol/.agda/**)",
       "Bash(apt-cache search *)",
       "Read(//usr/share/**)",
       "Skill(shadow-architecture)",
       "Skill(shadow-architecture:*)",
-      "Bash(agda --safe Substrate/Groups/SemidirectProduct.agda)",
-      "Bash(agda --safe Substrate/Cocycles/V4Signature/S4Iso.agda)",
-      "Bash(agda --safe Substrate/Groups/F2Cubed.agda)",
-      "Bash(echo \"EXIT=$?\")"
+      "Bash(python3 scratch/pycodemod.py *)"
     ]
   }
 }

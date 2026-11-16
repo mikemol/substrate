@@ -1,0 +1,118 @@
+[paper]
+adequacy = true
+title = "oracle findings"
+subtitle = "What the oracles paid to learn, so the next dispatch does not pay again."
+
+# ⚑⚑⚑ `consumer_fields` MUST SIT INSIDE `[paper]`, ABOVE ANY OTHER TABLE HEADER — and it did
+# not, which cost a debugging round. It was originally written at the END of this file, after
+# `[checks.item]`, where TOML scopes it as a key of THAT table: `checks.item.consumer_fields`,
+# which nothing reads. The engine was behaving correctly and the field was declared into a
+# namespace nobody consults.
+#
+# ⚑ THE TELL WAS THAT THE MECHANISM WORKED ELSEWHERE. `catalog/worklist/` declares `enables`
+# and reports 0 dropped over 45 entries with the same tool on the same machine — so the
+# hypothesis "the engine ignores consumer_fields" was already refuted before I formed it. When
+# one instance works and another does not, the difference is in the instances, not the engine.
+#
+# The two shadow-engineer labels the cotype README requires, carried verbatim and consumed by
+# no paperkit invariant (they are ours to read):
+#   unification = entailed | asserted
+#     ⚑ REQUIRED ON ANY ENTRY THAT UNIFIES SEVERAL FINDINGS, and UNLABELLED DEFAULTS TO
+#     ASSERTED. `entailed` = two populated points forced the third AND the entry cites them.
+#     `asserted` = declared to tidy — a candidate, never a closure, not to be leaned on until a
+#     real second point populates it. The failure is DELAYED: a later pass discovers a
+#     unification an earlier pass planted for tidiness and consumes it as real, measured
+#     downstream at 16 findings declared one invariant where 9 actually were.
+#   axis = [abc] over (goal, shadows, artefact) — the read/write set of the move, not a priority.
+# ⚑ Declared rather than dropped: paperkit warns loudly PER ENTRY on an undeclared field, and a
+# stream of such warnings trains a reader to ignore paperkit's diagnostics. It carries them as
+# SCALARS (`_LIST` is closed to per-project extension), so a multi-valued one arrives as one
+# string and any consumer must re-split.
+# ⚑ `enables` and `addendum` added 2026-09-26 (W44): gate-oracle.bib carries them (1 and 4 entries)
+# and paperkit DROPPED them — loudly — at every projection, which discards authored text. Carried
+# engine-inert, like `note`, rather than deleted: they are content, not engine inputs.
+consumer_fields = ["unification", "axis", "enables", "addendum"]
+
+warrants = [
+  "agda-oracle.bib",
+  "build-oracle.bib",
+  "gate-oracle.bib",
+  "sql-oracle.bib",
+  "witness-tower.bib",
+  # ⚑ ADDED 2026-09-25 (operator: "Add to warrants"). It sat beside the other five for weeks in
+  # NO project, so its `check` fields were run by nothing — an unwarranted bib is never read.
+  # Joining here adds no collision and no dangling edge (`bibstruct --orphans` over all six:
+  # 0 of 850), and lets its instrument findings take edges to the oracle findings they qualify.
+  "transcript-miner.bib",
+]
+out = "LEDGER.md"
+numbered = false
+references = false
+
+# ⚑⚑⚑ ONE PROJECT, FIVE RECORDS — the shape summit's floor already uses (6 bibs, one
+# `paper.toml`, partitioned by `section`). Each oracle files into its own bib, and they share
+# the machinery that makes a `check` COMPUTABLE.
+#
+# ⚑ THE DECISIVE REASON FOR ONE PROJECT RATHER THAN FIVE: an edge only resolves inside a
+# project. Five projects would make `rests-on` between one oracle's finding and another's
+# UNEXPRESSIBLE — and the findings this exists to hold are exactly the cross-surface ones. The
+# agda oracle's "process fan-out is bounded by nothing" rests on the build oracle's cap-vs-lease
+# distinction; the gate oracle's "green over a narrowed population" is the same shape as the sql
+# oracle's "a zero needs a positive control". Those are edges, and they are the point.
+#
+# ⚑⚑ AND THE FORMAT IS PAPERKIT BECAUSE PAPERKIT HAS SEMANTICS (operator, 2026-08-23). A first
+# cut wrote these as markdown bullets, having derived the format from the reference cotype's own
+# `ledger.md` — which is the surface, not the contract. What that threw away:
+#   · `check`      — the verb that COMPUTES open/closed. Nothing records status; a finding is
+#                    open exactly when its check exits non-zero, recomputed every run.
+#   · `rests-on` / `from` — a finding's warrant as a WALKED EDGE, not prose inside a bullet.
+#   · `claim` vs `note`   — the falsifiable sentence separate from its evidence, which is what
+#                    paperkit's Δ grader MUTATES to prove the witness discriminates.
+#   · `section`    — the partition the projector reads.
+# `cotype/check.py` gates only that keys do not VANISH. It cannot tell anyone a finding is still
+# true. A paperkit witness can. Markdown reads a bullet; paperkit reads a claim.
+
+# item:<KEY> — the per-finding witness.
+# ⚑ Wired as `cmd:`, matching `catalog/worklist/paper.toml`, because a `concept:` passes only the
+# key and cannot carry the citing claim.
+[checks.item]
+cmd = "python3 findings.py {target}"
+
+# ⚑⚑⚑ THE KIND VERBS (W40, operator 2026-09-25: "converge `check`; roster wins"). Every ledger
+# `check` becomes the spelling `substrate.witness_check.emit` gives its roster witness, so each
+# kind needs a verb — and every verb calls ONE runner, `substrate.witness_run`, which owns the
+# kind semantics. Eight strings here, one program there; no verb interprets anything.
+#
+# ⚑ paperkit substitutes `{target}` UNQUOTED into a shell string, so every target is wrapped in
+# SINGLE quotes. `witness_check.emit` REFUSES any spelling whose target holds a single quote, and
+# its suite censuses the rest: one live target carries a shell metacharacter (`$`, in an
+# agda-grep pattern), which single quotes neutralise.
+# ⚑ A BARE kind (`standing`, `unwitnessed`) arrives with an EMPTY target, so its verb spells the
+# kind alone. ⚑ The commands run from this directory; `env -C ../..` makes the TREE the runner's
+# cwd, and `--root .` names it — the tree is a parameter, never a constant.
+[checks.selftest]
+cmd = "env -C ../.. .venv/bin/python -m substrate.witness_run --root . 'selftest:{target}'"
+
+[checks.refuses]
+cmd = "env -C ../.. .venv/bin/python -m substrate.witness_run --root . 'refuses:{target}'"
+
+[checks.mode]
+cmd = "env -C ../.. .venv/bin/python -m substrate.witness_run --root . 'mode:{target}'"
+
+[checks.excludes]
+cmd = "env -C ../.. .venv/bin/python -m substrate.witness_run --root . 'excludes:{target}'"
+
+[checks.agda-field]
+cmd = "env -C ../.. .venv/bin/python -m substrate.witness_run --root . 'agda-field:{target}'"
+
+[checks.agda-grep]
+cmd = "env -C ../.. .venv/bin/python -m substrate.witness_run --root . 'agda-grep:{target}'"
+
+[checks.standing]
+cmd = "env -C ../.. .venv/bin/python -m substrate.witness_run --root . standing"
+
+[checks.unwitnessed]
+cmd = "env -C ../.. .venv/bin/python -m substrate.witness_run --root . unwitnessed"
+
+# ⚑ `consumer_fields` is declared in `[paper]` ABOVE — not here. A key after a table header
+# belongs to that table, and `checks.item.consumer_fields` is a namespace nothing reads.

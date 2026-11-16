@@ -13,6 +13,31 @@ take all of them. Decomposition is the precondition; the ban is the consequence.
 This playbook exists because the sequence below was re-derived from scratch three
 times, each time rediscovering the same failure modes.
 
+## What the ban is FOR (read before rationalising an exception)
+
+**Minimise the information each file imports, and the information each file
+holds.** One lemma per file, so a consumer that needs a lemma imports the file
+where that lemma is the only thing in it. **An import must never pull in a file
+holding more than the import requires.** That pressure pushes every refactor
+UPSTREAM, to whichever module holds too much.
+
+**Filters, qualifiers and barrels are THE ANTIPATTERN.** A `using` list does not
+narrow what is imported — it narrows what is *visible* while the whole module is
+still imported and, if parameterised, still APPLIED AND ELABORATED. That is why
+the ban and the memory cap are the same constraint seen twice: importing forty
+definitions to use one is exactly the elaboration cost an `Error 251` is made
+of.
+
+⚠ **Do not re-derive "split only when the names COLLIDE."** It is a convenient
+fiction that keeps getting written back into these guides, and it inverts the
+criterion. Collision is one *symptom* that forces a filter to exist; it is never
+the reason to split. A module with zero collisions and forty definitions still
+over-imports by forty. Globally-unique names do not make a fat import cheap —
+they only make it quiet. Likewise, **deleting a filter without splitting the
+upstream is metric-gaming**: the ban-key count falls while the same information
+is imported and scope gets WIDER. Whenever a filter appears, the debt is
+upstream (see `scratch/strip_using.py`'s header).
+
 ## The pipeline
 
 Run in this order. Each step has a tool; do not hand-edit.
@@ -54,6 +79,11 @@ safe.** A splitter that "looks fine" and produces plausible output is exactly wh
 the guard exists to disbelieve.
 
 ## Resolving collisions: decompose UP the chain FIRST
+
+*(Decomposition is not a collision remedy — it is the goal, per "What the ban is
+FOR" above. Collisions are one thing it also fixes, and this section is about
+that side effect. Never read the ordering here as "decompose because there was a
+collision.")*
 
 **Before renaming anything, recursively walk *up* the dependency chain and
 decompose along the way.** Most collisions evaporate, because after decomposition

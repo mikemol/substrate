@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Interpret cotype decomposition database retrospectively.
 
 This script reads the section/triple decomposition DB, derives move-level

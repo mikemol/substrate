@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier:Apache-2.0
+# Copyright 2026 Mike Mol
 """Populate the cocycles table in cotype_decomposition.sqlite.
 
 Mirror of catalog/cocycles.md. Each row corresponds to one cocycle
