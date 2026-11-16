@@ -3,185 +3,185 @@
 
 state file: `.claude/paths-forward.json`
 
-counter 380 · heartbeat 2026-10-10T17:20:38Z · job `c2013646` · hash `v2:29299e845e7a1901`
+counter 381 · heartbeat 2026-10-10T17:20:38Z · job `c2013646` · hash `v2:1c1fc14faf1b2ef3`
 
 | # | symbol | status |
 |---|---|---|
-| 1 | W355 | ready |
-| 2 | W357 | ready |
-| 3 | W358 | ready |
-| 4 | W360 | ready |
-| 5 | W361 | ready |
-| 6 | W362 | ready |
-| 7 | W363 | ready |
-| 8 | W364 | ready |
-| 9 | W365 | ready |
-| 10 | W366 | ready |
-| 11 | W367 | ready |
-| 12 | W368 | ready |
-| 13 | W369 | ready |
-| 14 | W370 | ready |
-| 15 | W371 | ready |
-| 16 | W372 | ready |
-| 17 | W373 | ready |
-| 18 | W374 | ready |
-| 19 | W377 | ready |
-| 20 | W379 | ready |
-| 21 | W380 | ready |
-| 22 | W350 | ready |
-| 23 | W376 | ready |
-| 24 | W378 | ready |
-| 25 | W300 | blocked |
-| 26 | W10 | blocked |
-| 27 | W63 | blocked |
-| 28 | W46 | blocked |
-| 29 | W64 | blocked |
-| 30 | W65 | blocked |
-| 31 | W66 | blocked |
-| 32 | W67 | blocked |
-| 33 | W68 | blocked |
-| 34 | W69 | blocked |
-| 35 | W70 | blocked |
-| 36 | W71 | blocked |
-| 37 | W72 | blocked |
-| 38 | W73 | blocked |
-| 39 | W74 | blocked |
-| 40 | W75 | blocked |
-| 41 | W76 | blocked |
-| 42 | W333 | blocked |
-| 43 | W331 | blocked |
-| 44 | W26 | blocked |
-| 45 | W25 | blocked |
-| 46 | W29 | blocked |
-| 47 | W33 | blocked |
-| 48 | W36 | blocked |
-| 49 | W37 | blocked |
-| 50 | W38 | blocked |
-| 51 | W39 | blocked |
-| 52 | W50 | blocked |
-| 53 | W52 | blocked |
-| 54 | W58 | blocked |
-| 55 | W59 | blocked |
-| 56 | W60 | blocked |
-| 57 | W61 | blocked |
-| 58 | W62 | blocked |
-| 59 | W78 | blocked |
-| 60 | W79 | blocked |
-| 61 | W80 | blocked |
-| 62 | W308 | blocked |
-| 63 | W349 | blocked |
-| 64 | W86 | blocked |
-| 65 | W297 | blocked |
-| 66 | W239 | blocked |
-| 67 | W273 | blocked |
-| 68 | W254 | blocked |
-| 69 | W215 | blocked |
-| 70 | W223 | blocked |
-| 71 | W282 | blocked |
-| 72 | W82 | blocked |
-| 73 | W83 | blocked |
-| 74 | W163 | blocked |
-| 75 | W130 | blocked |
-| 76 | W180 | blocked |
-| 77 | W181 | blocked |
-| 78 | W206 | blocked |
-| 79 | W81 | blocked |
-| 80 | W87 | blocked |
-| 81 | W88 | blocked |
-| 82 | W129 | blocked |
-| 83 | W164 | blocked |
-| 84 | W197 | blocked |
-| 85 | W205 | blocked |
-| 86 | W210 | blocked |
-| 87 | W218 | blocked |
-| 88 | W221 | blocked |
-| 89 | W272 | blocked |
-| 90 | W84 | blocked |
-| 91 | W89 | blocked |
-| 92 | W94 | blocked |
-| 93 | W96 | blocked |
-| 94 | W160 | blocked |
-| 95 | W162 | blocked |
-| 96 | W166 | blocked |
-| 97 | W184 | blocked |
-| 98 | W190 | blocked |
-| 99 | W191 | blocked |
-| 100 | W192 | blocked |
-| 101 | W213 | blocked |
-| 102 | W216 | blocked |
-| 103 | W219 | blocked |
-| 104 | W233 | blocked |
-| 105 | W90 | blocked |
-| 106 | W92 | blocked |
-| 107 | W95 | blocked |
-| 108 | W121 | blocked |
-| 109 | W131 | blocked |
-| 110 | W159 | blocked |
-| 111 | W161 | blocked |
-| 112 | W165 | blocked |
-| 113 | W167 | blocked |
-| 114 | W168 | blocked |
-| 115 | W189 | blocked |
-| 116 | W198 | blocked |
-| 117 | W211 | blocked |
-| 118 | W212 | blocked |
-| 119 | W217 | blocked |
-| 120 | W222 | blocked |
-| 121 | W234 | blocked |
-| 122 | W235 | blocked |
-| 123 | W236 | blocked |
-| 124 | W265 | blocked |
-| 125 | W342 | blocked |
-| 126 | W85 | blocked |
-| 127 | W91 | blocked |
-| 128 | W93 | blocked |
-| 129 | W97 | blocked |
-| 130 | W98 | blocked |
-| 131 | W99 | blocked |
-| 132 | W100 | blocked |
-| 133 | W101 | blocked |
-| 134 | W102 | blocked |
-| 135 | W103 | blocked |
-| 136 | W132 | blocked |
-| 137 | W133 | blocked |
-| 138 | W134 | blocked |
-| 139 | W158 | blocked |
-| 140 | W169 | blocked |
-| 141 | W170 | blocked |
-| 142 | W171 | blocked |
-| 143 | W172 | blocked |
-| 144 | W178 | blocked |
-| 145 | W193 | blocked |
-| 146 | W194 | blocked |
-| 147 | W199 | blocked |
-| 148 | W200 | blocked |
-| 149 | W207 | blocked |
-| 150 | W209 | blocked |
-| 151 | W214 | blocked |
-| 152 | W220 | blocked |
-| 153 | W224 | blocked |
-| 154 | W225 | blocked |
-| 155 | W226 | blocked |
-| 156 | W231 | blocked |
-| 157 | W232 | blocked |
-| 158 | W237 | blocked |
-| 159 | W238 | blocked |
-| 160 | W240 | blocked |
-| 161 | W243 | blocked |
-| 162 | W244 | blocked |
-| 163 | W245 | blocked |
-| 164 | W246 | blocked |
-| 165 | W247 | blocked |
-| 166 | W255 | blocked |
-| 167 | W262 | blocked |
-| 168 | W263 | blocked |
-| 169 | W266 | blocked |
-| 170 | W284 | blocked |
-| 171 | W286 | blocked |
-| 172 | W287 | blocked |
-| 173 | W321 | blocked |
-| 174 | W338 | blocked |
-| 175 | W352 | blocked |
+| 1 | W381 | ready |
+| 2 | W355 | ready |
+| 3 | W357 | ready |
+| 4 | W358 | ready |
+| 5 | W360 | ready |
+| 6 | W361 | ready |
+| 7 | W362 | ready |
+| 8 | W363 | ready |
+| 9 | W364 | ready |
+| 10 | W365 | ready |
+| 11 | W366 | ready |
+| 12 | W367 | ready |
+| 13 | W368 | ready |
+| 14 | W369 | ready |
+| 15 | W370 | ready |
+| 16 | W371 | ready |
+| 17 | W372 | ready |
+| 18 | W373 | ready |
+| 19 | W374 | ready |
+| 20 | W377 | ready |
+| 21 | W379 | ready |
+| 22 | W380 | ready |
+| 23 | W350 | ready |
+| 24 | W376 | ready |
+| 25 | W378 | ready |
+| 26 | W300 | blocked |
+| 27 | W10 | blocked |
+| 28 | W63 | blocked |
+| 29 | W46 | blocked |
+| 30 | W64 | blocked |
+| 31 | W65 | blocked |
+| 32 | W66 | blocked |
+| 33 | W67 | blocked |
+| 34 | W68 | blocked |
+| 35 | W69 | blocked |
+| 36 | W70 | blocked |
+| 37 | W71 | blocked |
+| 38 | W72 | blocked |
+| 39 | W73 | blocked |
+| 40 | W74 | blocked |
+| 41 | W75 | blocked |
+| 42 | W76 | blocked |
+| 43 | W333 | blocked |
+| 44 | W331 | blocked |
+| 45 | W26 | blocked |
+| 46 | W25 | blocked |
+| 47 | W29 | blocked |
+| 48 | W33 | blocked |
+| 49 | W36 | blocked |
+| 50 | W37 | blocked |
+| 51 | W38 | blocked |
+| 52 | W39 | blocked |
+| 53 | W50 | blocked |
+| 54 | W52 | blocked |
+| 55 | W58 | blocked |
+| 56 | W59 | blocked |
+| 57 | W60 | blocked |
+| 58 | W61 | blocked |
+| 59 | W62 | blocked |
+| 60 | W78 | blocked |
+| 61 | W79 | blocked |
+| 62 | W80 | blocked |
+| 63 | W308 | blocked |
+| 64 | W349 | blocked |
+| 65 | W86 | blocked |
+| 66 | W297 | blocked |
+| 67 | W239 | blocked |
+| 68 | W273 | blocked |
+| 69 | W254 | blocked |
+| 70 | W215 | blocked |
+| 71 | W223 | blocked |
+| 72 | W282 | blocked |
+| 73 | W82 | blocked |
+| 74 | W83 | blocked |
+| 75 | W163 | blocked |
+| 76 | W130 | blocked |
+| 77 | W180 | blocked |
+| 78 | W181 | blocked |
+| 79 | W206 | blocked |
+| 80 | W81 | blocked |
+| 81 | W87 | blocked |
+| 82 | W88 | blocked |
+| 83 | W129 | blocked |
+| 84 | W164 | blocked |
+| 85 | W197 | blocked |
+| 86 | W205 | blocked |
+| 87 | W210 | blocked |
+| 88 | W218 | blocked |
+| 89 | W221 | blocked |
+| 90 | W272 | blocked |
+| 91 | W84 | blocked |
+| 92 | W89 | blocked |
+| 93 | W94 | blocked |
+| 94 | W96 | blocked |
+| 95 | W160 | blocked |
+| 96 | W162 | blocked |
+| 97 | W166 | blocked |
+| 98 | W184 | blocked |
+| 99 | W190 | blocked |
+| 100 | W191 | blocked |
+| 101 | W192 | blocked |
+| 102 | W213 | blocked |
+| 103 | W216 | blocked |
+| 104 | W219 | blocked |
+| 105 | W233 | blocked |
+| 106 | W90 | blocked |
+| 107 | W92 | blocked |
+| 108 | W95 | blocked |
+| 109 | W121 | blocked |
+| 110 | W131 | blocked |
+| 111 | W159 | blocked |
+| 112 | W161 | blocked |
+| 113 | W165 | blocked |
+| 114 | W167 | blocked |
+| 115 | W168 | blocked |
+| 116 | W189 | blocked |
+| 117 | W198 | blocked |
+| 118 | W211 | blocked |
+| 119 | W212 | blocked |
+| 120 | W217 | blocked |
+| 121 | W222 | blocked |
+| 122 | W234 | blocked |
+| 123 | W235 | blocked |
+| 124 | W236 | blocked |
+| 125 | W265 | blocked |
+| 126 | W342 | blocked |
+| 127 | W85 | blocked |
+| 128 | W91 | blocked |
+| 129 | W93 | blocked |
+| 130 | W97 | blocked |
+| 131 | W98 | blocked |
+| 132 | W99 | blocked |
+| 133 | W100 | blocked |
+| 134 | W101 | blocked |
+| 135 | W102 | blocked |
+| 136 | W103 | blocked |
+| 137 | W132 | blocked |
+| 138 | W133 | blocked |
+| 139 | W134 | blocked |
+| 140 | W158 | blocked |
+| 141 | W169 | blocked |
+| 142 | W170 | blocked |
+| 143 | W171 | blocked |
+| 144 | W172 | blocked |
+| 145 | W178 | blocked |
+| 146 | W193 | blocked |
+| 147 | W194 | blocked |
+| 148 | W199 | blocked |
+| 149 | W200 | blocked |
+| 150 | W207 | blocked |
+| 151 | W209 | blocked |
+| 152 | W214 | blocked |
+| 153 | W220 | blocked |
+| 154 | W224 | blocked |
+| 155 | W225 | blocked |
+| 156 | W226 | blocked |
+| 157 | W231 | blocked |
+| 158 | W232 | blocked |
+| 159 | W237 | blocked |
+| 160 | W238 | blocked |
+| 161 | W240 | blocked |
+| 162 | W243 | blocked |
+| 163 | W244 | blocked |
+| 164 | W245 | blocked |
+| 165 | W246 | blocked |
+| 166 | W247 | blocked |
+| 167 | W255 | blocked |
+| 168 | W262 | blocked |
+| 169 | W263 | blocked |
+| 170 | W266 | blocked |
+| 171 | W284 | blocked |
+| 172 | W286 | blocked |
+| 173 | W287 | blocked |
+| 174 | W321 | blocked |
+| 175 | W338 | blocked |
 | 176 | W353 | blocked |
 | 177 | W356 | blocked |
 | 178 | W359 | blocked |
@@ -192,7 +192,7 @@ counter 380 · heartbeat 2026-10-10T17:20:38Z · job `c2013646` · hash `v2:2929
 | 183 | W347 | blocked |
 | 184 | W348 | blocked |
 | 185 | W351 | blocked |
-| 186 | W354 | blocked |
+| 186 | W352 | blocked |
 | 187 | W23 | blocked |
 | 188 | W9 | blocked |
 | 189 | W41 | blocked |
@@ -317,123 +317,126 @@ counter 380 · heartbeat 2026-10-10T17:20:38Z · job `c2013646` · hash `v2:2929
 | 308 | W341 | blocked |
 | 309 | W343 | blocked |
 | 310 | W345 | blocked |
-| 311 | W375 | blocked |
-| 312 | W77 | done |
-| 313 | W309 | done |
-| 314 | W302 | done |
-| 315 | W303 | done |
-| 316 | W330 | done |
-| 317 | W42 | done |
-| 318 | W53 | done |
-| 319 | W304 | done |
-| 320 | W305 | done |
-| 321 | W306 | done |
-| 322 | W307 | done |
-| 323 | W310 | done |
-| 324 | W311 | done |
-| 325 | W312 | done |
-| 326 | W313 | done |
-| 327 | W319 | done |
-| 328 | W320 | done |
-| 329 | W325 | done |
-| 330 | W326 | done |
-| 331 | W328 | done |
-| 332 | W329 | done |
-| 333 | W334 | done |
-| 334 | W48 | done |
-| 335 | W4 | done |
-| 336 | W40 | done |
-| 337 | W24 | done |
-| 338 | W1 | done |
-| 339 | W5 | done |
-| 340 | W12 | done |
-| 341 | W16 | done |
-| 342 | W19 | done |
-| 343 | W27 | done |
-| 344 | W30 | done |
-| 345 | W35 | done |
-| 346 | W47 | done |
-| 347 | W49 | done |
-| 348 | W301 | done |
-| 349 | W314 | done |
-| 350 | W2 | done |
-| 351 | W3 | done |
-| 352 | W6 | done |
-| 353 | W7 | done |
-| 354 | W8 | done |
-| 355 | W11 | done |
-| 356 | W14 | done |
-| 357 | W15 | done |
-| 358 | W17 | done |
-| 359 | W18 | done |
-| 360 | W20 | done |
-| 361 | W21 | done |
-| 362 | W13 | done |
-| 363 | W28 | done |
-| 364 | W31 | done |
-| 365 | W32 | done |
-| 366 | W34 | done |
-| 367 | W44 | done |
-| 368 | W55 | done |
-| 369 | W315 | done |
-| 370 | W316 | done |
-| 371 | W317 | done |
-| 372 | W318 | done |
-| 373 | W323 | done |
-| 374 | W324 | done |
-| 375 | W327 | done |
-| 376 | W332 | done |
-| 377 | W335 | done |
-| 378 | W336 | done |
+| 311 | W354 | blocked |
+| 312 | W375 | blocked |
+| 313 | W77 | done |
+| 314 | W309 | done |
+| 315 | W302 | done |
+| 316 | W303 | done |
+| 317 | W330 | done |
+| 318 | W42 | done |
+| 319 | W53 | done |
+| 320 | W304 | done |
+| 321 | W305 | done |
+| 322 | W306 | done |
+| 323 | W307 | done |
+| 324 | W310 | done |
+| 325 | W311 | done |
+| 326 | W312 | done |
+| 327 | W313 | done |
+| 328 | W319 | done |
+| 329 | W320 | done |
+| 330 | W325 | done |
+| 331 | W326 | done |
+| 332 | W328 | done |
+| 333 | W329 | done |
+| 334 | W334 | done |
+| 335 | W48 | done |
+| 336 | W4 | done |
+| 337 | W40 | done |
+| 338 | W24 | done |
+| 339 | W1 | done |
+| 340 | W5 | done |
+| 341 | W12 | done |
+| 342 | W16 | done |
+| 343 | W19 | done |
+| 344 | W27 | done |
+| 345 | W30 | done |
+| 346 | W35 | done |
+| 347 | W47 | done |
+| 348 | W49 | done |
+| 349 | W301 | done |
+| 350 | W314 | done |
+| 351 | W2 | done |
+| 352 | W3 | done |
+| 353 | W6 | done |
+| 354 | W7 | done |
+| 355 | W8 | done |
+| 356 | W11 | done |
+| 357 | W14 | done |
+| 358 | W15 | done |
+| 359 | W17 | done |
+| 360 | W18 | done |
+| 361 | W20 | done |
+| 362 | W21 | done |
+| 363 | W13 | done |
+| 364 | W28 | done |
+| 365 | W31 | done |
+| 366 | W32 | done |
+| 367 | W34 | done |
+| 368 | W44 | done |
+| 369 | W55 | done |
+| 370 | W315 | done |
+| 371 | W316 | done |
+| 372 | W317 | done |
+| 373 | W318 | done |
+| 374 | W323 | done |
+| 375 | W324 | done |
+| 376 | W327 | done |
+| 377 | W332 | done |
+| 378 | W335 | done |
+| 379 | W336 | done |
 
 ## waypoints
 
-1. **W355** (ready) gate row: selftest roster current (aim, goal, incident)
+1. **W381** (ready) make SHIM_DIR and MEMBUDGET make-relative in both makefile renders (W354 part b; the edit-refusing
+   origin's emission)
+2. **W355** (ready) gate row: selftest roster current (aim, goal, incident)
    - next: regenerate Selftest.mk (substrate/selftest_mk.py, no flag) against the index, after W376 resolves the
      untracked substrate/suite_*.py files; commit to gate-rebuild; that closes W355
-2. **W357** (ready) gate row: feature coverage (aim, goal, incident)
+3. **W357** (ready) gate row: feature coverage (aim, goal, incident)
    - next: decide restore-vs-delete for the Scenario 'the drained census modules answer for the tree they measure' (read
      features/ history in refs/preserve and the test), then land the tracked edit on gate-rebuild
-3. **W358** (ready) gate row: def/proof separation (aim, goal, incident)
+4. **W358** (ready) gate row: def/proof separation (aim, goal, incident)
    - next: route the *.Properties split of HetBasis, DeriveOrFetch and S5Verdict through the agda-oracle (it names the
      pipeline tool, never a hand edit), regenerate Flat.mk, build through the membudget make path, land on gate-rebuild
-4. **W360** (ready) gate row: build census in sync (aim, goal, incident)
-5. **W361** (ready) gate row: gate census in sync (aim, goal, incident)
-6. **W362** (ready) gate row: query cache in sync (aim, goal, incident)
-7. **W363** (ready) gate row: shape-node index current (aim, goal, incident)
-8. **W364** (ready) gate row: carrier locality (aim, goal, incident)
-9. **W365** (ready) gate row: ban ratchet (aim, goal, incident)
-10. **W366** (ready) gate row: rederive ratchet (aim, goal, incident)
-11. **W367** (ready) gate row: discharge ratchet (aim, goal, incident)
-12. **W368** (ready) gate row: snapshot guard (aim, goal, incident)
-13. **W369** (ready) gate row: sumtype ratchet (aim, goal, incident)
-14. **W370** (ready) gate row: mode contracts (aim, goal, incident)
-15. **W371** (ready) gate row: divergence ratchet (aim, goal, incident)
-16. **W372** (ready) gate row: public ratchet (aim, goal, incident)
-17. **W373** (ready) gate row: type gate mypy (aim, goal, incident)
-18. **W374** (ready) gate row: stub authority (aim, goal, incident)
-19. **W377** (ready) each rebuilt gate row becomes a bazel py_test in //:precommit (the W352-wide form; W355-W374
+5. **W360** (ready) gate row: build census in sync (aim, goal, incident)
+6. **W361** (ready) gate row: gate census in sync (aim, goal, incident)
+7. **W362** (ready) gate row: query cache in sync (aim, goal, incident)
+8. **W363** (ready) gate row: shape-node index current (aim, goal, incident)
+9. **W364** (ready) gate row: carrier locality (aim, goal, incident)
+10. **W365** (ready) gate row: ban ratchet (aim, goal, incident)
+11. **W366** (ready) gate row: rederive ratchet (aim, goal, incident)
+12. **W367** (ready) gate row: discharge ratchet (aim, goal, incident)
+13. **W368** (ready) gate row: snapshot guard (aim, goal, incident)
+14. **W369** (ready) gate row: sumtype ratchet (aim, goal, incident)
+15. **W370** (ready) gate row: mode contracts (aim, goal, incident)
+16. **W371** (ready) gate row: divergence ratchet (aim, goal, incident)
+17. **W372** (ready) gate row: public ratchet (aim, goal, incident)
+18. **W373** (ready) gate row: type gate mypy (aim, goal, incident)
+19. **W374** (ready) gate row: stub authority (aim, goal, incident)
+20. **W377** (ready) each rebuilt gate row becomes a bazel py_test in //:precommit (the W352-wide form; W355-W374
    reference this card)
-20. **W379** (ready) a CPU-time-bounded run wrapper the no-chaining hook admits (standing 14's 'bash -c ulimit -t' is
+21. **W379** (ready) a CPU-time-bounded run wrapper the no-chaining hook admits (standing 14's 'bash -c ulimit -t' is
    refused); check mikemol-membudget/fence first
-21. **W380** (ready) Answer nemik: mtools:W2494 is done
+22. **W380** (ready) Answer nemik: mtools:W2494 is done
    - next: read the nemik letter in inbox/ (2026-11-16-nemik-edge-mtools-W2494-caused_by-W351.md); check whether
      mtools:W2487 (the test-mode switch) has landed in the pinned mikemol-atomicwrite; update W351's blockers
      accordingly and reply to nemik
-22. **W350** (ready) Attach transcript warrants to operator-ruling prose on W9, W10, W23, W26, W322
+23. **W350** (ready) Attach transcript warrants to operator-ruling prose on W9, W10, W23, W26, W322
    - next: For each card, find the ruling with mikemol-transcriptstruct --human over the host session transcripts and
      attach it with --warrant; where no record is found, say so in the card's evidence
-23. **W376** (ready) census and commit (or discard, by reading) untracked work: substrate/suite_walk.py, suite_flag.py
+24. **W376** (ready) census and commit (or discard, by reading) untracked work: substrate/suite_walk.py, suite_flag.py
    and any other untracked tree files
-24. **W378** (ready) re-sync the stale gate census in .claude/skills/precommit-gates/SKILL.md (gate_census --check:
+25. **W378** (ready) re-sync the stale gate census in .claude/skills/precommit-gates/SKILL.md (gate_census --check:
    carrier_locality 5->4, claims 14->13)
-25. **W300** (blocked) substrate precommit is not a bazel build: its hook is a script, not a bazel test
+26. **W300** (blocked) substrate precommit is not a bazel build: its hook is a script, not a bazel test
    - blocked on: W333, W349
    - next: Run bazel in a checkout-index snapshot (the mtools hook's declared staged-tree input, W798) so the gate
      judges the index; mechanize that as a hook mode (mikemol-commit is the fleet's form, see inbox
      2026-10-10-github-onboarding) rather than hand-writing a shell snapshot. Then commit MODULE.bazel .bazelrc
      BUILD.bazel alone.
-26. **W10** (blocked) set1-phantom → store repoint + rebuild into luthen tenants
+27. **W10** (blocked) set1-phantom → store repoint + rebuild into luthen tenants
    - blocked on: W300, W349
    - next: t84 SANDBOX EVENT TIER APPLIED: `store_launch jea/metalanguage/schema.py --establish event --apply --sandbox`
      → CREATED event obs path_seg schema_version terms core_fp path_text unit_member edge unit_obs; server-side probe:
@@ -561,72 +564,72 @@ counter 380 · heartbeat 2026-10-10T17:20:38Z · job `c2013646` · hash `v2:2929
      (state the tenant), write the migration as a DRY-RUN mode of the owning tool (never a python3 -c), and report:
      which relation(s), how many rows, what is lost. The APPLY is the tick after, and only after the dry run's output is
      in the ledger. PREVIOUS: Blocked behind a stale-schema refusal wanting a destructive migration.
-27. **W63** (blocked) cleanroom jea/metalanguage/schema.py: 1452 pre-existing findings under the all-or-nothing per-file
+28. **W63** (blocked) cleanroom jea/metalanguage/schema.py: 1452 pre-existing findings under the all-or-nothing per-file
    gate
    - blocked on: W300, W349
    - next: Extract --cancel (~112 lines, 1 inline import) next, applying the established verify-then-extract discipline.
      --seed remains last (most complex, 4 inline imports).
-28. **W46** (blocked) CLEANROOM every file that carries inline lint suppressions — rebuild whole, difference, swap;
+29. **W46** (blocked) CLEANROOM every file that carries inline lint suppressions — rebuild whole, difference, swap;
    never patch, never re-suppress
    - blocked on: W300, W349
    - next: Scope narrowed 2026-09-26: the twin retirements belong to W36 (mikemol-corpus swap) and W9 (purge-mdstruct),
      not here. W46 is the CLEANROOM of suppression-carrying files; figures.py first (it blocks W41), rebuilt ON mikemol
      packages once W36 lands. Carry-over for W36/W9: teach import_retarget to drop the blank line it leaves after a
      docstring.
-29. **W64** (blocked) cleanroom scratch/_pycodemod_census.py: 740 pre-existing findings under the gate
+30. **W64** (blocked) cleanroom scratch/_pycodemod_census.py: 740 pre-existing findings under the gate
    - blocked on: W300, W349
    - next: Rebuild whole, difference, swap (never patch, never re-suppress). Blocks W54's snapshot-guard fix (the guard
      call belongs at :536, discriminates()).
-30. **W65** (blocked) cleanroom scratch/_pycodemod_fingerprint.py: 1930 pre-existing findings under the gate
+31. **W65** (blocked) cleanroom scratch/_pycodemod_fingerprint.py: 1930 pre-existing findings under the gate
    - blocked on: W300, W349
    - next: Rebuild whole, difference, swap (never patch, never re-suppress). Blocks W54's snapshot-guard fix (the guard
      call belongs at :845, _cases()).
-31. **W66** (blocked) cleanroom scratch/toolmodes.py: 2094 pre-existing findings under the gate
+32. **W66** (blocked) cleanroom scratch/toolmodes.py: 2094 pre-existing findings under the gate
    - blocked on: W300, W349
    - next: Rebuild whole, difference, swap (never patch, never re-suppress).
-32. **W67** (blocked) cleanroom scratch/findings.py: 1401 pre-existing findings under the gate
+33. **W67** (blocked) cleanroom scratch/findings.py: 1401 pre-existing findings under the gate
    - blocked on: W300, W349
    - next: Rebuild whole, difference, swap (never patch, never re-suppress).
-33. **W68** (blocked) cleanroom scratch/tmi_status.py: 834 pre-existing findings under the gate
+34. **W68** (blocked) cleanroom scratch/tmi_status.py: 834 pre-existing findings under the gate
    - blocked on: W300, W349
    - next: Rebuild whole, difference, swap (never patch, never re-suppress).
-34. **W69** (blocked) cleanroom scripts/reuse_tui.py: 599 pre-existing findings under the gate
+35. **W69** (blocked) cleanroom scripts/reuse_tui.py: 599 pre-existing findings under the gate
    - blocked on: W300, W349
    - next: Rebuild whole, difference, swap (never patch, never re-suppress).
-35. **W70** (blocked) cleanroom jea/metalanguage/store.py: 242 pre-existing findings under the gate
+36. **W70** (blocked) cleanroom jea/metalanguage/store.py: 242 pre-existing findings under the gate
    - blocked on: W300, W349
    - next: Rebuild whole, difference, swap (never patch, never re-suppress).
-36. **W71** (blocked) cleanroom scratch/enforce_ban.py: 114 pre-existing findings under the gate
+37. **W71** (blocked) cleanroom scratch/enforce_ban.py: 114 pre-existing findings under the gate
    - blocked on: W300, W349
    - next: Rebuild whole, difference, swap (never patch, never re-suppress).
-37. **W72** (blocked) cleanroom scratch/recover_presplit.py: 102 pre-existing findings under the gate
+38. **W72** (blocked) cleanroom scratch/recover_presplit.py: 102 pre-existing findings under the gate
    - blocked on: W300, W349
    - next: Rebuild whole, difference, swap (never patch, never re-suppress).
-38. **W73** (blocked) cleanroom scratch/seal_defs.py: 49 pre-existing findings under the gate
+39. **W73** (blocked) cleanroom scratch/seal_defs.py: 49 pre-existing findings under the gate
    - blocked on: W300, W349
    - next: Rebuild whole, difference, swap (never patch, never re-suppress).
-39. **W74** (blocked) cleanroom scratch/strip_using.py: 47 pre-existing findings under the gate
+40. **W74** (blocked) cleanroom scratch/strip_using.py: 47 pre-existing findings under the gate
    - blocked on: W300, W349
    - next: Rebuild whole, difference, swap (never patch, never re-suppress).
-40. **W75** (blocked) cleanroom scripts/sppf_node_index.py: 40 pre-existing findings under the gate
+41. **W75** (blocked) cleanroom scripts/sppf_node_index.py: 40 pre-existing findings under the gate
    - blocked on: W300, W349
    - next: Rebuild whole, difference, swap (never patch, never re-suppress).
-41. **W76** (blocked) cleanroom scratch/unseal_defs.py: 14 pre-existing findings under the gate
+42. **W76** (blocked) cleanroom scratch/unseal_defs.py: 14 pre-existing findings under the gate
    - blocked on: W300, W349
    - next: Rebuild whole, difference, swap (never patch, never re-suppress).
-42. **W333** (blocked) Land the one authorized bootstrap commit with the failing gates listed, review the staged set
+43. **W333** (blocked) Land the one authorized bootstrap commit with the failing gates listed, review the staged set
    first
    - blocked on: W352, W353
    - next: (1) Re-measure the staged set (git diff --cached --name-only). (2) Build a mikemol-commit --stack file
      carrying every staged path, with the message rebuilt from the 2026-10-10 design and kept under .claude/. (3) Run it
      gated, in the background, and read the last line. (4) If REFUSED, attach the refusal and turn the blocker into
      'operator: act `<exact` command>' with a push notification.
-43. **W331** (blocked) build census reads the membudget defaults and verb roster from the python client instead of
+44. **W331** (blocked) build census reads the membudget defaults and verb roster from the python client instead of
    regexing the bash script
    - blocked on: luthen-observability:W440, W349
    - next: After the W315 commit finishes: add the describe arm with a runner seam and fixture cases to
      build_census_facts and its suite, run the live check against mtools' binary, keep the bash arm as the default.
-44. **W26** (blocked) summit's six open asks against substrate (each closes BY COMPUTATION when its check passes)
+45. **W26** (blocked) summit's six open asks against substrate (each closes BY COMPUTATION when its check passes)
    - blocked on: W300, W349
    - next: 3 asks remain unworked this tick: ask-agda-defs-answers-from-anywhere (agda_defs.py run outside substrate's
      root reports NO DEFINER), ask-a-move-reaches-the-edit-gate (shell mv into a .py path gets no edit-gate decision),
@@ -634,17 +637,17 @@ counter 380 · heartbeat 2026-10-10T17:20:38Z · job `c2013646` · hash `v2:2929
      behavior probe -- wants it to fail when a vendored copy is behaviorally stale). The third may already be partly
      addressed by W25's mtools hook swap in progress; check scripts/hook_structural_query.py's current wiring before
      assuming it still applies to substrate's own copy.
-45. **W25** (blocked) defer-to-mtools: the standing two-stage pipeline (exempted -> gated -> mtools)
+46. **W25** (blocked) defer-to-mtools: the standing two-stage pipeline (exempted -> gated -> mtools)
    - blocked on: W300, W349
    - next: Check the overlap census's other named threads (RATCHET: mtools core vs substrate ratchet_core, 19
      set_ratchet gate call sites; hook_shellcheck: now down to 1 symlink adopter per the letter sent) for the next
      concrete swap or promotion-offer slice.
-46. **W29** (blocked) mtools N-e/N-f: outline key_spec (vs ratchet_key.SCHEMA) and report transcriptstruct's path, gate
+47. **W29** (blocked) mtools N-e/N-f: outline key_spec (vs ratchet_key.SCHEMA) and report transcriptstruct's path, gate
    state, adopters
    - blocked on: W300, W349
    - next: module_outline substrate/key_spec.py + module_importers key_spec; pycheck the transcriptstruct file for its
      finding count. One letter.
-47. **W33** (blocked) port the scratch tmi_* tools off scratch/transcriptstruct.py onto mikemol.transcriptstruct, then
+48. **W33** (blocked) port the scratch tmi_* tools off scratch/transcriptstruct.py onto mikemol.transcriptstruct, then
    delete the scratch copy
    - blocked on: W300, W349
    - next: Order: routing row in .claude/skills/struct-tools/SKILL.md (hook reads it) → rosters (Selftest.mk regenerates
@@ -665,20 +668,20 @@ counter 380 · heartbeat 2026-10-10T17:20:38Z · job `c2013646` · hash `v2:2929
      authority: 'remove anything from scratch that has been promoted and is no longer load-bearing' (standing).
      REMAINING: tmi_status + tmi_index ports; then delete scratch/transcriptstruct.py. Name anything missing to
      mtools-91.
-48. **W36** (blocked) SWAP substrate onto mikemol-corpus (250ca18): import_edges ✅, then suite_discovery, suite_pragmas,
+49. **W36** (blocked) SWAP substrate onto mikemol-corpus (250ca18): import_edges ✅, then suite_discovery, suite_pragmas,
    tree_root, corpus
    - blocked on: W300, W349
    - next: suite_discovery, then corpus, via python -m substrate.import_retarget (dry run first); census consumers with
      python -m substrate.module_importers `<mod>`; back up uncommitted originals as git objects before git rm -f;
      selftest_mk regen + --check.
-49. **W37** (blocked) the sandbox promote's height-map INSERT went quadratic (7.6h on one statement) — diagnose BEFORE
+50. **W37** (blocked) the sandbox promote's height-map INSERT went quadratic (7.6h on one statement) — diagnose BEFORE
    restarting the promote
    - blocked on: W300, W349
    - next: Remaining: (1) check whether promote_core's SQL execution goes through a shared non-walled helper that could
      add a periodic ANALYZE without touching sppf_db.py's own 1388-finding text; (2) if none exists, scope
      scripts/sppf_db.py's cleanroom as its own waypoint rather than folding it into W37; (3) once a fix exists, confirm
      via a live EXPLAIN mid-promote before restarting the original stalled promote.
-50. **W38** (blocked) SWAP onto mikemol-witness (mtools 719587d): witness_row, witness_family, raw_bib,
+51. **W38** (blocked) SWAP onto mikemol-witness (mtools 719587d): witness_row, witness_family, raw_bib,
    warrant_integrity, warrant_bib — TOP (migration outranks ROOT work)
    - blocked on: W300, W349
    - next: Pin ALL mtools packages to 719587d (+ add mikemol-witness); uv sync. Then in order (API unchanged → easy
@@ -689,7 +692,7 @@ counter 380 · heartbeat 2026-10-10T17:20:38Z · job `c2013646` · hash `v2:2929
      claim_of(key, records)/tag(key, name, records) take PARSED records (records = warrant_records.records(bib) once).
      warrant_records.records gets path REQUIRED. KEEP here until paperkit W38: warrant_records.records, engine_grades,
      engine_edges.
-51. **W39** (blocked) regressions from the 2026-09-25 bulk ruff-format pass (+ one of mine from the gen_build_makefiles
+52. **W39** (blocked) regressions from the 2026-09-25 bulk ruff-format pass (+ one of mine from the gen_build_makefiles
    shim) — fix before the gate can go green
    - blocked on: W300, W349
    - next: (a) FORMAT-CAUSED: jea/metalanguage/query_sql_postgres.py is GENERATED (query_defs.py --compile via
@@ -703,39 +706,39 @@ counter 380 · heartbeat 2026-10-10T17:20:38Z · job `c2013646` · hash `v2:2929
      drained modules' suites. (d) PRE-EXISTING (not the pass): scratch_gate stale sql_lift arm;
      tests/test_agda_census_drain.py LEAF_MARKER import; tests/test_import_edge_agreement.py bare `agda_lex` import;
      411-suite prose-contract debt.
-52. **W50** (blocked) summit's W77 (staged/unstaged split): declare an optional reads= field to narrow the dirty-overlay
+53. **W50** (blocked) summit's W77 (staged/unstaged split): declare an optional reads= field to narrow the dirty-overlay
    - blocked on: W300, W349
    - next: Low priority / optional. If picked up: identify which substrate capability records summit already tracks
      (summit capability `<name>` for bibstruct/pycodemod/typehole/etc.) and whether a reads= declaration is worth adding
      for precision. Not blocking anything; do not let this preempt W35/W37/W9/W46 work.
-53. **W52** (blocked) discharge ratchet: 4 NEW undischarged level-polymorphic carriers need inhabiting or consuming
+54. **W52** (blocked) discharge ratchet: 4 NEW undischarged level-polymorphic carriers need inhabiting or consuming
    (ChainDecomposition, CrossEntropy, GrothendieckConstruction, Modification)
    - blocked on: W300, W349
    - next: Split into 4 sub-items (one per carrier) once each is individually read for its own candidate discharge site,
      OR escalate as a design-decision batch like W57 if the operator wants to rule on discharge strategy generally
      (inhabit vs consume vs revert-as-premature-scaffolding).
-54. **W58** (blocked) cap ratchet: 149 NEW modules over the 128MB elaboration cap
+55. **W58** (blocked) cap ratchet: 149 NEW modules over the 128MB elaboration cap
    - blocked on: W300, W349
    - next: Needs per-module opaque-sealing/sharding design work, not a bulk codemod. Correlates with the uncommitted
      ban-decompose arc (commit 771283c81) -- read that arc's own state before starting, may already be tracked there.
-55. **W59** (blocked) clause-audit: 165 clause names that name a non-export
+56. **W59** (blocked) clause-audit: 165 clause names that name a non-export
    - blocked on: W300, W349
    - next: Mechanical rebinding at the real export site (agda_defs `<name>` resolves it), but voluminous -- a codemod
      candidate, not one-at-a-time hand fixes.
-56. **W60** (blocked) sumtype ratchet: 26 NEW duplicate type-declarations
+57. **W60** (blocked) sumtype ratchet: 26 NEW duplicate type-declarations
    - blocked on: W300, W349
    - next: DivStr, GradedDivStr/GradedWedge, etc -- many pairs look like an in-flight split (old+new home both present),
      likely resolves as a side effect of finishing that split rather than needing independent work. Verify AFTER the
      split lands before treating as standing debt.
-57. **W61** (blocked) ban ratchet: confirm no NEW bans hiding in the truncated census before banking the paydown
+58. **W61** (blocked) ban ratchet: confirm no NEW bans hiding in the truncated census before banking the paydown
    - blocked on: W300, W349
    - next: ~8516-item paydown (baseline 15552 -> 7411) -- the gate-oracle dispatch could not confirm
      pure-paydown-vs-hidden-new from a truncated listing.
-58. **W62** (blocked) check_sorted_order.py --quiet TIMED OUT at 60s with no output during a gate census
+59. **W62** (blocked) check_sorted_order.py --quiet TIMED OUT at 60s with no output during a gate census
    - blocked on: W300, W349
    - next: A THIRD slow/ambiguous gate (distinct from the two already known) -- UNMEASURED; do not treat as passing or
      as silent-clean until its actual runtime and cause are understood.
-59. **W78** (blocked) cleanroom scripts/sppf_db.py: 1388 pre-existing findings under the all-or-nothing per-file gate
+60. **W78** (blocked) cleanroom scripts/sppf_db.py: 1388 pre-existing findings under the all-or-nothing per-file gate
    (misc:646, T201:148, E501:103)
    - blocked on: W300, W349
    - next: Cleanroom scripts/sppf_db.py (1388 findings) -- rebuild whole against a differential harness (same pattern as
@@ -744,7 +747,7 @@ counter 380 · heartbeat 2026-10-10T17:20:38Z · job `c2013646` · hash `v2:2929
      that it is ACTIVELY used by live promotes (unlike some dev-tool cleanroom targets), scope this carefully: identify
      the smallest extractable unit first (likely just promote_core + its direct SQL helpers) rather than the whole file
      at once.
-60. **W79** (blocked) retire scripts/membudget: repoint ~60 callers (suite_run.py, agda/Makefile, wg_engine.py,
+61. **W79** (blocked) retire scripts/membudget: repoint ~60 callers (suite_run.py, agda/Makefile, wg_engine.py,
    wg_profile.py, worklist_gate.py, build_census.py, gate_status.py, substrate/agda_build_cmd.py) onto mikemol-membudget
    (mtools fence), then git rm the bash client
    - blocked on: W331, W349
@@ -752,360 +755,355 @@ counter 380 · heartbeat 2026-10-10T17:20:38Z · job `c2013646` · hash `v2:2929
      mikemol-membudget/mikemol.fence.membudget_cli, verify build_census --check-census and gate_status's selftest still
      pass, THEN work through the run/lease/peaks call sites by file, THEN git rm scripts/membudget
      scripts/membudget-ledger scripts/membudget-shrc.
-61. **W80** (blocked) scripts/checker_context.py is missing from the working tree (only .pyc remains, not a git-tracked
+62. **W80** (blocked) scripts/checker_context.py is missing from the working tree (only .pyc remains, not a git-tracked
    deletion)
    - blocked on: W300, W349
-62. **W308** (blocked) Answer luthen-observability: `luthen-endpoints` is landed (follow-up to this morning's answer)
+63. **W308** (blocked) Answer luthen-observability: `luthen-endpoints` is landed (follow-up to this morning's answer)
    - blocked on: W321, W322, W349
    - next: Wait for luthen's reply (option: thin client distribution, or keep by-path). If a thin client lands, add it
      to pyproject at the shared pin discipline and delete the by-path invocation in both modules.
-63. **W349** (blocked) substrate commit gate is red: pre-commit red on HEAD 771283c, unattributed: makefiles stale,
+64. **W349** (blocked) substrate commit gate is red: pre-commit red on HEAD 771283c, unattributed: makefiles stale,
    sqlalchemy missing, sppf-node-index stale
    - blocked on: W333
    - next: Waits on W23 / the owner of the staged arc landing it. Then re-run the queue-only commit and --gate-green.
-64. **W86** (blocked) substrate typing: scripts/_agdatext.py (111 findings)
+65. **W86** (blocked) substrate typing: scripts/_agdatext.py (111 findings)
    - blocked on: W297, W300, W349
    - next: Waits on 1 ambiguous import(s) to settle first
-65. **W297** (blocked) substrate typing ambiguity: climode (2 files)
+66. **W297** (blocked) substrate typing ambiguity: climode (2 files)
    - blocked on: W300, W349
    - next: Decide which of scripts/climode.py, substrate/climode.py the import `climode` means: change the importer, or
      declare it in the resolutions file, then re-run the mint to recalculate the order
-66. **W239** (blocked) substrate typing: scratch/eliza/eliza/adaptive_opcode_codec.py (113 findings)
+67. **W239** (blocked) substrate typing: scratch/eliza/eliza/adaptive_opcode_codec.py (113 findings)
    - blocked on: W221, W205, W300, W349
    - next: Waits on 10 debt file(s) to clean first
-67. **W273** (blocked) substrate typing: scratch/eliza/tests/test_substrate_atlas.py (16 findings)
+68. **W273** (blocked) substrate typing: scratch/eliza/tests/test_substrate_atlas.py (16 findings)
    - blocked on: W272, W300, W349
    - next: Waits on 32 debt file(s) to clean first
-68. **W254** (blocked) substrate typing: scratch/eliza/eliza/gpu_codec_v2.py (206 findings)
+69. **W254** (blocked) substrate typing: scratch/eliza/eliza/gpu_codec_v2.py (206 findings)
    - blocked on: W231, W206, W190, W300, W349
    - next: Waits on 12 debt file(s) to clean first
-69. **W215** (blocked) substrate typing: scratch/eliza/eliza/matrix_ops.py (137 findings)
+70. **W215** (blocked) substrate typing: scratch/eliza/eliza/matrix_ops.py (137 findings)
    - blocked on: W205, W207, W300, W349
    - next: Waits on 7 debt file(s) to clean first
-70. **W223** (blocked) substrate typing: scratch/eliza/eliza/dim2_codec.py (69 findings)
+71. **W223** (blocked) substrate typing: scratch/eliza/eliza/dim2_codec.py (69 findings)
    - blocked on: W213, W192, W300, W349
    - next: Waits on 10 debt file(s) to clean first
-71. **W282** (blocked) substrate typing: scratch/eliza/tests/test_hh_arc_past_chain_mi.py (60 findings)
+72. **W282** (blocked) substrate typing: scratch/eliza/tests/test_hh_arc_past_chain_mi.py (60 findings)
    - blocked on: W222, W273, W300, W349
    - next: Waits on 34 debt file(s) to clean first
-72. **W82** (blocked) substrate typing: scratch/eliza/eliza/sequitur.py (121 findings)
+73. **W82** (blocked) substrate typing: scratch/eliza/eliza/sequitur.py (121 findings)
    - blocked on: W300, W349
    - next: Whole-file Write clearing 121 finding(s) so the edit gate stops refusing it, then lower the ledger row
-73. **W83** (blocked) substrate typing: scratch/eliza/eliza/brick.py (13 findings)
+74. **W83** (blocked) substrate typing: scratch/eliza/eliza/brick.py (13 findings)
    - blocked on: W300, W349
    - next: Whole-file Write clearing 13 finding(s) so the edit gate stops refusing it, then lower the ledger row
-74. **W163** (blocked) substrate typing: scratch/eliza/eliza/manifold.py (131 findings)
+75. **W163** (blocked) substrate typing: scratch/eliza/eliza/manifold.py (131 findings)
    - blocked on: W300, W349
    - next: Whole-file Write clearing 131 finding(s) so the edit gate stops refusing it, then lower the ledger row
-75. **W130** (blocked) substrate typing: scripts/_shred_graph.py (84 findings)
+76. **W130** (blocked) substrate typing: scripts/_shred_graph.py (84 findings)
    - blocked on: W86, W300, W349
    - next: Waits on 1 debt file(s) to clean and 1 ambiguous import(s) to settle first
-76. **W180** (blocked) substrate typing: scripts/sppf_db.py (1422 findings)
+77. **W180** (blocked) substrate typing: scripts/sppf_db.py (1422 findings)
    - blocked on: W90, W121, W168, W300, W349
    - next: Waits on 7 debt file(s) to clean and 1 ambiguous import(s) to settle first
-77. **W181** (blocked) substrate typing: scripts/sppf_decode.py (730 findings)
+78. **W181** (blocked) substrate typing: scripts/sppf_decode.py (730 findings)
    - blocked on: W90, W121, W168, W300, W349
    - next: Waits on 7 debt file(s) to clean and 1 ambiguous import(s) to settle first
-78. **W206** (blocked) substrate typing: scratch/eliza/eliza/per_nibble_chain.py (43 findings)
+79. **W206** (blocked) substrate typing: scratch/eliza/eliza/per_nibble_chain.py (43 findings)
    - blocked on: W197, W300, W349
    - next: Waits on 3 debt file(s) to clean first
-79. **W81** (blocked) substrate typing: scratch/eliza/eliza/predictor.py (15 findings)
+80. **W81** (blocked) substrate typing: scratch/eliza/eliza/predictor.py (15 findings)
    - blocked on: W300, W349
    - next: Whole-file Write clearing 15 finding(s) so the edit gate stops refusing it, then lower the ledger row
-80. **W87** (blocked) substrate typing: jea/metalanguage/jea_agdai.py (240 findings)
+81. **W87** (blocked) substrate typing: jea/metalanguage/jea_agdai.py (240 findings)
    - blocked on: W300, W349
    - next: Whole-file Write clearing 240 finding(s) so the edit gate stops refusing it, then lower the ledger row
-81. **W88** (blocked) substrate typing: scripts/sppf_vocab.py (436 findings)
+82. **W88** (blocked) substrate typing: scripts/sppf_vocab.py (436 findings)
    - blocked on: W87, W96, W297, W300, W349
    - next: Waits on 2 debt file(s) to clean and 1 ambiguous import(s) to settle first
-82. **W129** (blocked) substrate typing: scripts/sppf_tree.py (856 findings)
+83. **W129** (blocked) substrate typing: scripts/sppf_tree.py (856 findings)
    - blocked on: W87, W96, W297, W300, W349
    - next: Waits on 2 debt file(s) to clean and 1 ambiguous import(s) to settle first
-83. **W164** (blocked) substrate typing: scratch/eliza/eliza/orbit.py (84 findings)
+84. **W164** (blocked) substrate typing: scratch/eliza/eliza/orbit.py (84 findings)
    - blocked on: W163, W300, W349
    - next: Waits on 1 debt file(s) to clean first
-84. **W197** (blocked) substrate typing: scratch/eliza/eliza/chain_symbol.py (36 findings)
+85. **W197** (blocked) substrate typing: scratch/eliza/eliza/chain_symbol.py (36 findings)
    - blocked on: W189, W300, W349
    - next: Waits on 2 debt file(s) to clean first
-85. **W205** (blocked) substrate typing: scratch/eliza/eliza/opcode_set.py (51 findings)
+86. **W205** (blocked) substrate typing: scratch/eliza/eliza/opcode_set.py (51 findings)
    - blocked on: W197, W300, W349
    - next: Waits on 3 debt file(s) to clean first
-86. **W210** (blocked) substrate typing: scratch/eliza/eliza/chain_emitter.py (36 findings)
+87. **W210** (blocked) substrate typing: scratch/eliza/eliza/chain_emitter.py (36 findings)
    - blocked on: W83, W197, W191, W300, W349
    - next: Waits on 5 debt file(s) to clean first
-87. **W218** (blocked) substrate typing: scratch/eliza/eliza/multiscale_rotation.py (73 findings)
+88. **W218** (blocked) substrate typing: scratch/eliza/eliza/multiscale_rotation.py (73 findings)
    - blocked on: W215, W300, W349
    - next: Waits on 8 debt file(s) to clean first
-88. **W221** (blocked) substrate typing: scratch/eliza/eliza/lossless_chain_codec.py (68 findings)
+89. **W221** (blocked) substrate typing: scratch/eliza/eliza/lossless_chain_codec.py (68 findings)
    - blocked on: W212, W206, W300, W349
    - next: Waits on 8 debt file(s) to clean first
-89. **W272** (blocked) substrate typing: scratch/eliza/eliza/gpu_codec_v7.py (449 findings)
+90. **W272** (blocked) substrate typing: scratch/eliza/eliza/gpu_codec_v7.py (449 findings)
    - blocked on: W158, W220, W232, W219, W254, W84, W238, W300, W349
    - next: Waits on 31 debt file(s) to clean first
-90. **W84** (blocked) substrate typing: scratch/eliza/eliza/v7_predictor.py (154 findings)
+91. **W84** (blocked) substrate typing: scratch/eliza/eliza/v7_predictor.py (154 findings)
    - blocked on: W300, W349
    - next: Whole-file Write clearing 154 finding(s) so the edit gate stops refusing it, then lower the ledger row
-91. **W89** (blocked) substrate typing: scratch/eliza/eliza/walsh_hadamard.py (59 findings)
+92. **W89** (blocked) substrate typing: scratch/eliza/eliza/walsh_hadamard.py (59 findings)
    - blocked on: W300, W349
    - next: Whole-file Write clearing 59 finding(s) so the edit gate stops refusing it, then lower the ledger row
-92. **W94** (blocked) substrate typing: scripts/buildtime.py (115 findings)
+93. **W94** (blocked) substrate typing: scripts/buildtime.py (115 findings)
    - blocked on: W300, W349
    - next: Whole-file Write clearing 115 finding(s) so the edit gate stops refusing it, then lower the ledger row
-93. **W96** (blocked) substrate typing: scripts/membudget_otlp.py (123 findings)
+94. **W96** (blocked) substrate typing: scripts/membudget_otlp.py (123 findings)
    - blocked on: W300, W349
    - next: Whole-file Write clearing 123 finding(s) so the edit gate stops refusing it, then lower the ledger row
-94. **W160** (blocked) substrate typing: scratch/eliza/eliza/engine.py (292 findings)
+95. **W160** (blocked) substrate typing: scratch/eliza/eliza/engine.py (292 findings)
    - blocked on: W159, W161, W162, W81, W165, W166, W82, W167, W300, W349
    - next: Waits on 10 debt file(s) to clean first
-95. **W162** (blocked) substrate typing: scratch/eliza/eliza/holonomy.py (67 findings)
+96. **W162** (blocked) substrate typing: scratch/eliza/eliza/holonomy.py (67 findings)
    - blocked on: W163, W300, W349
    - next: Waits on 1 debt file(s) to clean first
-96. **W166** (blocked) substrate typing: scratch/eliza/eliza/router.py (10 findings)
+97. **W166** (blocked) substrate typing: scratch/eliza/eliza/router.py (10 findings)
    - blocked on: W300, W349
    - next: Whole-file Write clearing 10 finding(s) so the edit gate stops refusing it, then lower the ledger row
-97. **W184** (blocked) substrate typing: scripts/reuse_catalog.py (776 findings)
+98. **W184** (blocked) substrate typing: scripts/reuse_catalog.py (776 findings)
    - blocked on: W180, W181, W300, W349
    - next: Waits on 9 debt file(s) to clean and 1 ambiguous import(s) to settle first
-98. **W190** (blocked) substrate typing: scratch/eliza/eliza/tensor_range_coder.py (40 findings)
+99. **W190** (blocked) substrate typing: scratch/eliza/eliza/tensor_range_coder.py (40 findings)
    - blocked on: W300, W349
    - next: Whole-file Write clearing 40 finding(s) so the edit gate stops refusing it, then lower the ledger row
-99. **W191** (blocked) substrate typing: scratch/eliza/eliza/walk_carrier.py (19 findings)
+100. **W191** (blocked) substrate typing: scratch/eliza/eliza/walk_carrier.py (19 findings)
    - blocked on: W300, W349
    - next: Whole-file Write clearing 19 finding(s) so the edit gate stops refusing it, then lower the ledger row
-100. **W192** (blocked) substrate typing: scratch/eliza/eliza/codec.py (42 findings)
+101. **W192** (blocked) substrate typing: scratch/eliza/eliza/codec.py (42 findings)
    - blocked on: W81, W300, W349
    - next: Waits on 1 debt file(s) to clean first
-101. **W213** (blocked) substrate typing: scratch/eliza/eliza/chain_sequitur.py (62 findings)
+102. **W213** (blocked) substrate typing: scratch/eliza/eliza/chain_sequitur.py (62 findings)
    - blocked on: W210, W82, W300, W349
    - next: Waits on 7 debt file(s) to clean first
-102. **W216** (blocked) substrate typing: scratch/eliza/eliza/multilevel_chain_sequitur.py (70 findings)
+103. **W216** (blocked) substrate typing: scratch/eliza/eliza/multilevel_chain_sequitur.py (70 findings)
    - blocked on: W213, W300, W349
    - next: Waits on 8 debt file(s) to clean first
-103. **W219** (blocked) substrate typing: scratch/eliza/eliza/coarse_residue.py (36 findings)
+104. **W219** (blocked) substrate typing: scratch/eliza/eliza/coarse_residue.py (36 findings)
    - blocked on: W215, W300, W349
    - next: Waits on 8 debt file(s) to clean first
-104. **W233** (blocked) substrate typing: scratch/eliza/eliza/sylow_prime_probe.py (45 findings)
+105. **W233** (blocked) substrate typing: scratch/eliza/eliza/sylow_prime_probe.py (45 findings)
    - blocked on: W219, W300, W349
    - next: Waits on 9 debt file(s) to clean first
-105. **W90** (blocked) substrate typing: scripts/decode_cost.py (115 findings)
+106. **W90** (blocked) substrate typing: scripts/decode_cost.py (115 findings)
    - blocked on: W300, W349
    - next: Whole-file Write clearing 115 finding(s) so the edit gate stops refusing it, then lower the ledger row
-106. **W92** (blocked) substrate typing: scripts/wg_engine.py (51 findings)
+107. **W92** (blocked) substrate typing: scripts/wg_engine.py (51 findings)
    - blocked on: W300, W349
    - next: Whole-file Write clearing 51 finding(s) so the edit gate stops refusing it, then lower the ledger row
-107. **W95** (blocked) substrate typing: scripts/gate_status.py (240 findings)
+108. **W95** (blocked) substrate typing: scripts/gate_status.py (240 findings)
    - blocked on: W297, W300, W349
    - next: Waits on 1 ambiguous import(s) to settle first
-108. **W121** (blocked) substrate typing: scripts/rig_coherence.py (223 findings)
+109. **W121** (blocked) substrate typing: scripts/rig_coherence.py (223 findings)
    - blocked on: W300, W349
    - next: Whole-file Write clearing 223 finding(s) so the edit gate stops refusing it, then lower the ledger row
-109. **W131** (blocked) substrate typing: scripts/check_carrier_locality.py (125 findings)
+110. **W131** (blocked) substrate typing: scripts/check_carrier_locality.py (125 findings)
    - blocked on: W86, W300, W349
    - next: Waits on 1 debt file(s) to clean and 1 ambiguous import(s) to settle first
-110. **W159** (blocked) substrate typing: scratch/eliza/eliza/coalgebraic.py (11 findings)
+111. **W159** (blocked) substrate typing: scratch/eliza/eliza/coalgebraic.py (11 findings)
    - blocked on: W164, W300, W349
    - next: Waits on 2 debt file(s) to clean first
-111. **W161** (blocked) substrate typing: scratch/eliza/eliza/geo_sequitur.py (193 findings)
+112. **W161** (blocked) substrate typing: scratch/eliza/eliza/geo_sequitur.py (193 findings)
    - blocked on: W164, W300, W349
    - next: Waits on 2 debt file(s) to clean first
-112. **W165** (blocked) substrate typing: scratch/eliza/eliza/recorder.py (36 findings)
+113. **W165** (blocked) substrate typing: scratch/eliza/eliza/recorder.py (36 findings)
    - blocked on: W300, W349
    - next: Whole-file Write clearing 36 finding(s) so the edit gate stops refusing it, then lower the ledger row
-113. **W167** (blocked) substrate typing: scratch/eliza/eliza/trajectory.py (19 findings)
+114. **W167** (blocked) substrate typing: scratch/eliza/eliza/trajectory.py (19 findings)
    - blocked on: W163, W300, W349
    - next: Waits on 1 debt file(s) to clean first
-114. **W168** (blocked) substrate typing: scripts/sppf_drain.py (636 findings)
+115. **W168** (blocked) substrate typing: scripts/sppf_drain.py (636 findings)
    - blocked on: W129, W88, W300, W349
    - next: Waits on 4 debt file(s) to clean and 1 ambiguous import(s) to settle first
-115. **W189** (blocked) substrate typing: scratch/eliza/eliza/sylow_chain.py (70 findings)
+116. **W189** (blocked) substrate typing: scratch/eliza/eliza/sylow_chain.py (70 findings)
    - blocked on: W163, W300, W349
    - next: Waits on 1 debt file(s) to clean first
-116. **W198** (blocked) substrate typing: scratch/eliza/eliza/spectral.py (107 findings)
+117. **W198** (blocked) substrate typing: scratch/eliza/eliza/spectral.py (107 findings)
    - blocked on: W83, W163, W300, W349
    - next: Waits on 2 debt file(s) to clean first
-117. **W211** (blocked) substrate typing: scratch/eliza/eliza/chain_chooser.py (48 findings)
+118. **W211** (blocked) substrate typing: scratch/eliza/eliza/chain_chooser.py (48 findings)
    - blocked on: W83, W199, W189, W300, W349
    - next: Waits on 5 debt file(s) to clean first
-118. **W212** (blocked) substrate typing: scratch/eliza/eliza/chain_trigram.py (32 findings)
+119. **W212** (blocked) substrate typing: scratch/eliza/eliza/chain_trigram.py (32 findings)
    - blocked on: W210, W300, W349
    - next: Waits on 6 debt file(s) to clean first
-119. **W217** (blocked) substrate typing: scratch/eliza/eliza/gpu_codec_stages.py (165 findings)
+120. **W217** (blocked) substrate typing: scratch/eliza/eliza/gpu_codec_stages.py (165 findings)
    - blocked on: W215, W300, W349
    - next: Waits on 8 debt file(s) to clean first
-120. **W222** (blocked) substrate typing: scratch/eliza/eliza/prime_chain.py (62 findings)
+121. **W222** (blocked) substrate typing: scratch/eliza/eliza/prime_chain.py (62 findings)
    - blocked on: W215, W300, W349
    - next: Waits on 8 debt file(s) to clean first
-121. **W234** (blocked) substrate typing: scratch/eliza/eliza/grammar_event_codec.py (126 findings)
+122. **W234** (blocked) substrate typing: scratch/eliza/eliza/grammar_event_codec.py (126 findings)
    - blocked on: W221, W82, W300, W349
    - next: Waits on 10 debt file(s) to clean first
-122. **W235** (blocked) substrate typing: scratch/eliza/eliza/hamming.py (11 findings)
+123. **W235** (blocked) substrate typing: scratch/eliza/eliza/hamming.py (11 findings)
    - blocked on: W218, W300, W349
    - next: Waits on 9 debt file(s) to clean first
-123. **W236** (blocked) substrate typing: scratch/eliza/eliza/probe_atlas.py (41 findings)
+124. **W236** (blocked) substrate typing: scratch/eliza/eliza/probe_atlas.py (41 findings)
    - blocked on: W219, W300, W349
    - next: Waits on 9 debt file(s) to clean first
-124. **W265** (blocked) substrate typing: scratch/eliza/eliza/gpu_codec_v5.py (178 findings)
+125. **W265** (blocked) substrate typing: scratch/eliza/eliza/gpu_codec_v5.py (178 findings)
    - blocked on: W262, W300, W349
    - next: Waits on 15 debt file(s) to clean first
-125. **W342** (blocked) Freeze: substrate burn-down waits on the operator's unfreeze
+126. **W342** (blocked) Freeze: substrate burn-down waits on the operator's unfreeze
    - blocked on: operator: decide unfreeze substrate for burn-down (options: unfreeze now / keep frozen); frozen
      2026-10-16 as later tier, same ask as gabion:W1065, W349
-126. **W85** (blocked) substrate typing: scratch/eliza/eliza/reed_muller.py (20 findings)
+127. **W85** (blocked) substrate typing: scratch/eliza/eliza/reed_muller.py (20 findings)
    - blocked on: W300, W349
    - next: Whole-file Write clearing 20 finding(s) so the edit gate stops refusing it, then lower the ledger row
-127. **W91** (blocked) substrate typing: scratch/eliza/eliza/lambda_vm_opcodes.py (45 findings)
+128. **W91** (blocked) substrate typing: scratch/eliza/eliza/lambda_vm_opcodes.py (45 findings)
    - blocked on: W300, W349
    - next: Whole-file Write clearing 45 finding(s) so the edit gate stops refusing it, then lower the ledger row
-128. **W93** (blocked) substrate typing: scratch/eliza/eliza/rule_action.py (41 findings)
+129. **W93** (blocked) substrate typing: scratch/eliza/eliza/rule_action.py (41 findings)
    - blocked on: W300, W349
    - next: Whole-file Write clearing 41 finding(s) so the edit gate stops refusing it, then lower the ledger row
-129. **W97** (blocked) substrate typing: scratch/eliza/eliza/tensor_speculation.py (57 findings)
+130. **W97** (blocked) substrate typing: scratch/eliza/eliza/tensor_speculation.py (57 findings)
    - blocked on: W300, W349
    - next: Whole-file Write clearing 57 finding(s) so the edit gate stops refusing it, then lower the ledger row
-130. **W98** (blocked) substrate typing: scripts/check_claims.py (76 findings)
+131. **W98** (blocked) substrate typing: scripts/check_claims.py (76 findings)
    - blocked on: W297, W300, W349
    - next: Waits on 1 ambiguous import(s) to settle first
-131. **W99** (blocked) substrate typing: scripts/climode.py (472 findings)
+132. **W99** (blocked) substrate typing: scripts/climode.py (472 findings)
    - blocked on: W300, W349
    - next: Whole-file Write clearing 472 finding(s) so the edit gate stops refusing it, then lower the ledger row
-132. **W100** (blocked) substrate typing: scripts/gate_keys.py (110 findings)
+133. **W100** (blocked) substrate typing: scripts/gate_keys.py (110 findings)
    - blocked on: W300, W349
    - next: Whole-file Write clearing 110 finding(s) so the edit gate stops refusing it, then lower the ledger row
-133. **W101** (blocked) substrate typing: scripts/pycheck_verdict.py (2 findings)
+134. **W101** (blocked) substrate typing: scripts/pycheck_verdict.py (2 findings)
    - blocked on: W300, W349
    - next: Whole-file Write clearing 2 finding(s) so the edit gate stops refusing it, then lower the ledger row
-134. **W102** (blocked) substrate typing: scripts/reuse_tui.py (709 findings)
+135. **W102** (blocked) substrate typing: scripts/reuse_tui.py (709 findings)
    - blocked on: W129, W88, W300, W349
    - next: Waits on 4 debt file(s) to clean and 1 ambiguous import(s) to settle first
-135. **W103** (blocked) substrate typing: scripts/tier_readset.py (599 findings)
+136. **W103** (blocked) substrate typing: scripts/tier_readset.py (599 findings)
    - blocked on: W297, W300, W349
    - next: Waits on 1 ambiguous import(s) to settle first
-136. **W132** (blocked) substrate typing: scratch/eliza/eliza/spectral_atlas.py (74 findings)
+137. **W132** (blocked) substrate typing: scratch/eliza/eliza/spectral_atlas.py (74 findings)
    - blocked on: W89, W300, W349
    - next: Waits on 1 debt file(s) to clean first
-137. **W133** (blocked) substrate typing: scripts/wg_order.py (238 findings)
+138. **W133** (blocked) substrate typing: scripts/wg_order.py (238 findings)
    - blocked on: W95, W92, W300, W349
    - next: Waits on 2 debt file(s) to clean and 1 ambiguous import(s) to settle first
-138. **W134** (blocked) substrate typing: scripts/proofcost.py (378 findings)
+139. **W134** (blocked) substrate typing: scripts/proofcost.py (378 findings)
    - blocked on: W96, W300, W349
    - next: Waits on 1 debt file(s) to clean first
-139. **W158** (blocked) substrate typing: scratch/eliza/eliza/__init__.py (2 findings)
+140. **W158** (blocked) substrate typing: scratch/eliza/eliza/__init__.py (2 findings)
    - blocked on: W160, W300, W349
    - next: Waits on 11 debt file(s) to clean first
-140. **W169** (blocked) substrate typing: scripts/check_public_ratchet.py (13 findings)
+141. **W169** (blocked) substrate typing: scripts/check_public_ratchet.py (13 findings)
    - blocked on: W131, W300, W349
    - next: Waits on 2 debt file(s) to clean and 1 ambiguous import(s) to settle first
-141. **W170** (blocked) substrate typing: scripts/check_sumtype_ratchet.py (20 findings)
+142. **W170** (blocked) substrate typing: scripts/check_sumtype_ratchet.py (20 findings)
    - blocked on: W131, W300, W349
    - next: Waits on 2 debt file(s) to clean and 1 ambiguous import(s) to settle first
-142. **W171** (blocked) substrate typing: scripts/wg_dispatch.py (140 findings)
+143. **W171** (blocked) substrate typing: scripts/wg_dispatch.py (140 findings)
    - blocked on: W95, W92, W300, W349
    - next: Waits on 2 debt file(s) to clean and 1 ambiguous import(s) to settle first
-143. **W172** (blocked) substrate typing: scripts/wg_profile.py (102 findings)
+144. **W172** (blocked) substrate typing: scripts/wg_profile.py (102 findings)
    - blocked on: W133, W300, W349
    - next: Waits on 3 debt file(s) to clean and 1 ambiguous import(s) to settle first
-144. **W178** (blocked) substrate typing: scratch/eliza/eliza/spectral_predictor.py (27 findings)
+145. **W178** (blocked) substrate typing: scratch/eliza/eliza/spectral_predictor.py (27 findings)
    - blocked on: W132, W84, W300, W349
    - next: Waits on 3 debt file(s) to clean first
-145. **W193** (blocked) substrate typing: scratch/eliza/eliza/gpu_codec.py (68 findings)
+146. **W193** (blocked) substrate typing: scratch/eliza/eliza/gpu_codec.py (68 findings)
    - blocked on: W300, W349
    - next: Whole-file Write clearing 68 finding(s) so the edit gate stops refusing it, then lower the ledger row
-146. **W194** (blocked) substrate typing: scratch/eliza/eliza/synthesis.py (56 findings)
+147. **W194** (blocked) substrate typing: scratch/eliza/eliza/synthesis.py (56 findings)
    - blocked on: W162, W81, W166, W82, W300, W349
    - next: Waits on 5 debt file(s) to clean first
-147. **W199** (blocked) substrate typing: scratch/eliza/eliza/gauge_element.py (24 findings)
+148. **W199** (blocked) substrate typing: scratch/eliza/eliza/gauge_element.py (24 findings)
    - blocked on: W163, W191, W300, W349
    - next: Waits on 2 debt file(s) to clean first
-148. **W200** (blocked) substrate typing: scratch/eliza/eliza/layers.py (421 findings)
+149. **W200** (blocked) substrate typing: scratch/eliza/eliza/layers.py (421 findings)
    - blocked on: W83, W159, W161, W162, W81, W165, W166, W82, W167, W300, W349
    - next: Waits on 11 debt file(s) to clean first
-149. **W207** (blocked) substrate typing: scratch/eliza/eliza/spectral_characters.py (47 findings)
+150. **W207** (blocked) substrate typing: scratch/eliza/eliza/spectral_characters.py (47 findings)
    - blocked on: W198, W300, W349
    - next: Waits on 3 debt file(s) to clean first
-150. **W209** (blocked) substrate typing: scratch/eliza/eliza/chain_bytes_bridge.py (54 findings)
+151. **W209** (blocked) substrate typing: scratch/eliza/eliza/chain_bytes_bridge.py (54 findings)
    - blocked on: W197, W191, W300, W349
    - next: Waits on 4 debt file(s) to clean first
-151. **W214** (blocked) substrate typing: scratch/eliza/eliza/chain_conditioned_byte.py (18 findings)
+152. **W214** (blocked) substrate typing: scratch/eliza/eliza/chain_conditioned_byte.py (18 findings)
    - blocked on: W210, W300, W349
    - next: Waits on 6 debt file(s) to clean first
-152. **W220** (blocked) substrate typing: scratch/eliza/eliza/backref.py (82 findings)
+153. **W220** (blocked) substrate typing: scratch/eliza/eliza/backref.py (82 findings)
    - blocked on: W215, W300, W349
    - next: Waits on 8 debt file(s) to clean first
-153. **W224** (blocked) substrate typing: scratch/eliza/eliza/preseeded_chain_sequitur.py (54 findings)
+154. **W224** (blocked) substrate typing: scratch/eliza/eliza/preseeded_chain_sequitur.py (54 findings)
    - blocked on: W210, W205, W206, W82, W300, W349
    - next: Waits on 9 debt file(s) to clean first
-154. **W225** (blocked) substrate typing: scratch/eliza/eliza/hybrid_codec.py (82 findings)
+155. **W225** (blocked) substrate typing: scratch/eliza/eliza/hybrid_codec.py (82 findings)
    - blocked on: W214, W212, W300, W349
    - next: Waits on 8 debt file(s) to clean first
-155. **W226** (blocked) substrate typing: scratch/eliza/eliza/tensor_grammar.py (85 findings)
+156. **W226** (blocked) substrate typing: scratch/eliza/eliza/tensor_grammar.py (85 findings)
    - blocked on: W215, W300, W349
    - next: Waits on 8 debt file(s) to clean first
-156. **W231** (blocked) substrate typing: scratch/eliza/eliza/gpu_kernels.py (106 findings)
+157. **W231** (blocked) substrate typing: scratch/eliza/eliza/gpu_kernels.py (106 findings)
    - blocked on: W217, W300, W349
    - next: Waits on 9 debt file(s) to clean first
-157. **W232** (blocked) substrate typing: scratch/eliza/eliza/clifford_tracer.py (77 findings)
+158. **W232** (blocked) substrate typing: scratch/eliza/eliza/clifford_tracer.py (77 findings)
    - blocked on: W218, W300, W349
    - next: Waits on 9 debt file(s) to clean first
-158. **W237** (blocked) substrate typing: scratch/eliza/eliza/golay.py (26 findings)
+159. **W237** (blocked) substrate typing: scratch/eliza/eliza/golay.py (26 findings)
    - blocked on: W218, W300, W349
    - next: Waits on 9 debt file(s) to clean first
-159. **W238** (blocked) substrate typing: scratch/eliza/eliza/word_mask.py (92 findings)
+160. **W238** (blocked) substrate typing: scratch/eliza/eliza/word_mask.py (92 findings)
    - blocked on: W218, W85, W300, W349
    - next: Waits on 10 debt file(s) to clean first
-160. **W240** (blocked) substrate typing: scratch/eliza/eliza/opcode_vm_codec.py (94 findings)
+161. **W240** (blocked) substrate typing: scratch/eliza/eliza/opcode_vm_codec.py (94 findings)
    - blocked on: W221, W205, W300, W349
    - next: Waits on 10 debt file(s) to clean first
-161. **W243** (blocked) substrate typing: scratch/eliza/eliza/stack_machine_codec.py (125 findings)
+162. **W243** (blocked) substrate typing: scratch/eliza/eliza/stack_machine_codec.py (125 findings)
    - blocked on: W239, W300, W349
    - next: Waits on 11 debt file(s) to clean first
-162. **W244** (blocked) substrate typing: scratch/eliza/eliza/l1_flip_codec.py (133 findings)
+163. **W244** (blocked) substrate typing: scratch/eliza/eliza/l1_flip_codec.py (133 findings)
    - blocked on: W239, W300, W349
    - next: Waits on 11 debt file(s) to clean first
-163. **W245** (blocked) substrate typing: scratch/eliza/eliza/l1_rewrite_codec.py (115 findings)
+164. **W245** (blocked) substrate typing: scratch/eliza/eliza/l1_rewrite_codec.py (115 findings)
    - blocked on: W239, W300, W349
    - next: Waits on 11 debt file(s) to clean first
-164. **W246** (blocked) substrate typing: scratch/eliza/eliza/l2_flip_codec.py (169 findings)
+165. **W246** (blocked) substrate typing: scratch/eliza/eliza/l2_flip_codec.py (169 findings)
    - blocked on: W239, W300, W349
    - next: Waits on 11 debt file(s) to clean first
-165. **W247** (blocked) substrate typing: scratch/eliza/eliza/preseeded_sppf_codec.py (146 findings)
+166. **W247** (blocked) substrate typing: scratch/eliza/eliza/preseeded_sppf_codec.py (146 findings)
    - blocked on: W221, W224, W300, W349
    - next: Waits on 12 debt file(s) to clean first
-166. **W255** (blocked) substrate typing: scratch/eliza/eliza/full_speculation_codec.py (172 findings)
+167. **W255** (blocked) substrate typing: scratch/eliza/eliza/full_speculation_codec.py (172 findings)
    - blocked on: W243, W300, W349
    - next: Waits on 12 debt file(s) to clean first
-167. **W262** (blocked) substrate typing: scratch/eliza/eliza/gpu_codec_v4.py (163 findings)
+168. **W262** (blocked) substrate typing: scratch/eliza/eliza/gpu_codec_v4.py (163 findings)
    - blocked on: W254, W91, W300, W349
    - next: Waits on 14 debt file(s) to clean first
-168. **W263** (blocked) substrate typing: scratch/eliza/eliza/gpu_codec_v6.py (490 findings)
+169. **W263** (blocked) substrate typing: scratch/eliza/eliza/gpu_codec_v6.py (490 findings)
    - blocked on: W254, W93, W300, W349
    - next: Waits on 14 debt file(s) to clean first
-169. **W266** (blocked) substrate typing: scratch/eliza/tests/test_adversarial_e3.py (10 findings)
+170. **W266** (blocked) substrate typing: scratch/eliza/tests/test_adversarial_e3.py (10 findings)
    - blocked on: W263, W300, W349
    - next: Waits on 15 debt file(s) to clean first
-170. **W284** (blocked) substrate typing: scratch/eliza/tests/test_hh_arc_prime_sweep.py (36 findings)
+171. **W284** (blocked) substrate typing: scratch/eliza/tests/test_hh_arc_prime_sweep.py (36 findings)
    - blocked on: W222, W89, W273, W300, W349
    - next: Waits on 35 debt file(s) to clean first
-171. **W286** (blocked) substrate typing: scratch/eliza/eliza/prime_context_predictor.py (55 findings)
+172. **W286** (blocked) substrate typing: scratch/eliza/eliza/prime_context_predictor.py (55 findings)
    - blocked on: W284, W300, W349
    - next: Waits on 36 debt file(s) to clean first
-172. **W287** (blocked) substrate typing: scratch/eliza/tests/test_jj_arc_compression_sim.py (47 findings)
+173. **W287** (blocked) substrate typing: scratch/eliza/tests/test_jj_arc_compression_sim.py (47 findings)
    - blocked on: W233, W282, W300, W349
    - next: Waits on 36 debt file(s) to clean first
-173. **W321** (blocked) Adopt luthen's thin endpoints client once W777 ships the pin
+174. **W321** (blocked) Adopt luthen's thin endpoints client once W777 ships the pin
    - blocked on: luthen-observability:W777, W349
    - next: When luthen sends the pin: add it to pyproject.toml, uv sync, run the W320 case table against the installed
      script, and switch the argv builder.
-174. **W338** (blocked) Drain jea/metalanguage/jea_agdai.py (hundreds of per-file findings) so the agdai_shim lookup can
+175. **W338** (blocked) Drain jea/metalanguage/jea_agdai.py (hundreds of per-file findings) so the agdai_shim lookup can
    route through MIKEMOL_REAL_ROOT
    - blocked on: W342, W349
    - next: Drain jea_agdai.py: split decode_core_diag, decode_cost and core_intern_agdai into clean modules that call
      shim_path(Path(__file__).parent, os.environ) at their CLI edge, behind a one-Write shim, golden = decode of one
      real core before and after.
-175. **W352** (blocked) rebuild the commit gate on a feature branch, tracking each gate's aim
-   - blocked on: W355, W356, W357, W358, W359, W360, W361, W362, W363, W364, W365, W366, W367, W368, W369, W370, W371,
-     W372, W373, W374
-   - next: fill each gate row W355-W374 (aim, goal, incident: a value or UNKNOWN) via the gate-oracle, one subagent at a
-     time; W375 re-derives the row set from the gate ledger
 176. **W353** (blocked) guard main: merge only when the original gate is green on the merge commit
    - blocked on: mtools:W2582
    - next: after the in-flight probe exits: git switch -c gate-rebuild (index carries); freeze HEAD 771283c's pre-commit
@@ -1116,9 +1114,10 @@ counter 380 · heartbeat 2026-10-10T17:20:38Z · job `c2013646` · hash `v2:2929
    - next: exclude bazel-bin and other build-output trees from suite discovery (check whether untracked suite_walk.py is
      that fix, per W376), then run run_selftests --quiet bounded by cputime (not wall clock) and record its verdict
 178. **W359** (blocked) gate row: build makefiles in sync (aim, goal, incident)
-   - blocked on: W354
-   - next: widen the reader search (summit capability, nemik-inbound), then ONE commit: makefiles --parameterized +
-     bazel args + docstring + selftest:63 check
+   - blocked on: W381
+   - next: probe the isolated cause first (standing 21): render the makefiles under a snapshot-like ROOT (or read the
+     isolated gate's stale diff) and byte-diff against 4b5032f's Flat.mk/Makefile; block on W354 only if the diff is
+     exactly the SHIM_DIR/MEMBUDGET absolute paths
 179. **W51** (blocked) gate collapse: schema.py --sizes is undeclared (one usage-block entry clears two gate line-items)
    - blocked on: W63, W300, W349
    - next: The fix itself is fully diagnosed and trivial once landable: insert a ("--sizes", "the .agdai (disk) and
@@ -1157,11 +1156,11 @@ counter 380 · heartbeat 2026-10-10T17:20:38Z · job `c2013646` · hash `v2:2929
    - next: after the gate is green (W349) and mtools:W2487 lands: pin mikemol-atomicwrite at the shared mtools sha,
      replace both writers with durable.write_atomic (stage/commit where a step sits between), tests rely on
      MIKEMOL_ATOMICWRITE_TEST_NO_FSYNC only
-186. **W354** (blocked) sibling paths become pinned fetches: MODULE.bazel remote and SHIM_DIR
-   - blocked on: W352, mtools:W2602
-   - next: (b) fold into W352: when the origin gen_build_makefiles retires, emit SHIM_DIR := $(abspath
-     ../scripts/agda-shim) and MEMBUDGET := $(abspath ../scripts/membudget) make-relative from build_settings +
-     flat_emit; (a) await github-cb's fleet ruling on the git_override remote form
+186. **W352** (blocked) rebuild the commit gate on a feature branch, tracking each gate's aim
+   - blocked on: W355, W356, W357, W358, W359, W360, W361, W362, W363, W364, W365, W366, W367, W368, W369, W370, W371,
+     W372, W373, W374
+   - next: fill each gate row W355-W374 (aim, goal, incident: a value or UNKNOWN) via the gate-oracle, one subagent at a
+     time; W375 re-derives the row set from the gate ledger
 187. **W23** (blocked) commit pyproject.toml to main so the declared package resolves for consumers (gcalculus W2)
    - blocked on: operator: act commit pyproject.toml to main once commit_refusal exits 0 (tree green) -- ruled
      2026-09-20: a manifest-only commit ahead of green is not authorised, and the loop never commits, W300, W349
@@ -1577,43 +1576,48 @@ counter 380 · heartbeat 2026-10-10T17:20:38Z · job `c2013646` · hash `v2:2929
    - blocked on: W349
    - next: Design an alias column for catalog/reuse-index.md (scripts/gen_reuse_index.py) plus a query mode, seeded from
      the 2026-11-15 jea survey's inferred names (Kron reduction, continuants, Matrix-Tree, torsor, gerbe)
-311. **W375** (blocked) re-derive W352's red-gate rows from the gate's outcome ledger, not a log filter
+311. **W354** (blocked) sibling paths become pinned fetches: MODULE.bazel remote and SHIM_DIR
+   - blocked on: mtools:W2602, W381
+   - next: (b) fold into W352: when the origin gen_build_makefiles retires, emit SHIM_DIR := $(abspath
+     ../scripts/agda-shim) and MEMBUDGET := $(abspath ../scripts/membudget) make-relative from build_settings +
+     flat_emit; (a) await github-cb's fleet ruling on the git_override remote form
+312. **W375** (blocked) re-derive W352's red-gate rows from the gate's outcome ledger, not a log filter
    - blocked on: mtools:W2605
    - next: when mtools adds a per-run row mode to mikemol-gate-ledger (or names the ledger that holds per-run rows),
      re-derive W355-W374's set through it and record match or difference on W352
-312. **W77** (done) scripts/membudget: honour WAIT-line FIFO admission (mtools W48 / amr-skills W51) -- bash client
+313. **W77** (done) scripts/membudget: honour WAIT-line FIFO admission (mtools W48 / amr-skills W51) -- bash client
    currently jumps the Python queue
-313. **W309** (done) Par for substrate needs YOUR session first
-314. **W302** (done) Reconcile substrate's CLAUDE.md commit policy with the fleet's mikemol-commit
-315. **W303** (done) Answer luthen: revoking PUBLIC CONNECT on your databases (question before acting)
-316. **W330** (done) Extract gate_status.measure_peaks into a clean module that takes the membudget client from
+314. **W309** (done) Par for substrate needs YOUR session first
+315. **W302** (done) Reconcile substrate's CLAUDE.md commit policy with the fleet's mikemol-commit
+316. **W303** (done) Answer luthen: revoking PUBLIC CONNECT on your databases (question before acting)
+317. **W330** (done) Extract gate_status.measure_peaks into a clean module that takes the membudget client from
    build_settings
-317. **W42** (done) membudget bash parity — nest only under an own-ledger parent; refuse a non-MB ledger UNIT; status
+318. **W42** (done) membudget bash parity — nest only under an own-ledger parent; refuse a non-MB ledger UNIT; status
    prints the unit
-318. **W53** (done) carrier-locality ratchet: home 2 NEW off-carrier operators under their carrier dir
-319. **W304** (done) mtools:W51 landed — leverage/rank_reason, for substrate-c6
-320. **W305** (done) Answer amr-skills: a second party waiting on the bash membudget WAIT-line fix
-321. **W306** (done) Answer luthen-observability: waypoints withheld from the public nemik view (luthen W270)
-322. **W307** (done) Answer luthen-observability: answer on `endpoints_query` as an installed console script
-323. **W310** (done) Answer mtools: still waiting on your repoint of Selftest.mk and the tmi_* tools to
+319. **W53** (done) carrier-locality ratchet: home 2 NEW off-carrier operators under their carrier dir
+320. **W304** (done) mtools:W51 landed — leverage/rank_reason, for substrate-c6
+321. **W305** (done) Answer amr-skills: a second party waiting on the bash membudget WAIT-line fix
+322. **W306** (done) Answer luthen-observability: waypoints withheld from the public nemik view (luthen W270)
+323. **W307** (done) Answer luthen-observability: answer on `endpoints_query` as an installed console script
+324. **W310** (done) Answer mtools: still waiting on your repoint of Selftest.mk and the tmi_* tools to
    mikemol-transcriptstruct (substrate:W33, mtools:W592)
-324. **W311** (done) summit to substrate: summit no longer certifies your `scratch/bibstruct.py`
-325. **W312** (done) SB — substrate's leg, CENSUS-paperkit-use
-326. **W313** (done) Census leg — substrate-5c — registry-discovery
-327. **W319** (done) Merge store_endpoint.resolve and vmagent_address.resolve into one luthen resolver caller with a
+325. **W311** (done) summit to substrate: summit no longer certifies your `scratch/bibstruct.py`
+326. **W312** (done) SB — substrate's leg, CENSUS-paperkit-use
+327. **W313** (done) Census leg — substrate-5c — registry-discovery
+328. **W319** (done) Merge store_endpoint.resolve and vmagent_address.resolve into one luthen resolver caller with a
    runner seam
-328. **W320** (done) Pin the luthen resolver reply contract as shared fixture cases and hand them to luthen as the
+329. **W320** (done) Pin the luthen resolver reply contract as shared fixture cases and hand them to luthen as the
    client's acceptance suite
-329. **W325** (done) Route every membudget path spelling through one authority and swap the two generators first
-330. **W326** (done) Differential test of bash and python membudget on one ledger and one OOM: retry trigger, peak
+330. **W325** (done) Route every membudget path spelling through one authority and swap the two generators first
+331. **W326** (done) Differential test of bash and python membudget on one ledger and one OOM: retry trigger, peak
    column, load gate
-331. **W328** (done) Make the agda shim take the membudget client from the exported MEMBUDGET instead of spelling a
+332. **W328** (done) Make the agda shim take the membudget client from the exported MEMBUDGET instead of spelling a
    relative path twice
-332. **W329** (done) Extract build_census.membudget_census into a clean module that reads the client from build_settings
-333. **W334** (done) Give gate_status_exec an S603 per-file entry in pyproject and use subprocess.run instead of asyncio
-334. **W48** (done) retire substrate's bibstruct onto paperkit's (operator 2026-09-26: paperkit owns bibstruct) - census
+333. **W329** (done) Extract build_census.membudget_census into a clean module that reads the client from build_settings
+334. **W334** (done) Give gate_status_exec an S603 per-file entry in pyproject and use subprocess.run instead of asyncio
+335. **W48** (done) retire substrate's bibstruct onto paperkit's (operator 2026-09-26: paperkit owns bibstruct) - census
    what in substrate depends on behaviour only our copy has (paperkit:W21, summit:W10)
-335. **W4** (done) the-drain-arc: five blocked repairs, drained smallest first (operator ruling, tick 4)
+336. **W4** (done) the-drain-arc: five blocked repairs, drained smallest first (operator ruling, tick 4)
    - next: DONE tick 65. ALL FIVE FILES DRAINED: check_scratch_independence (G397), query_defs drainable surface (G410;
      the swap waits on the store-bound rest), sql_lift (G420), split_pipeline + split_census (G432/G439), figures
      (G448). RESIDUE (carried, not resolved): (1) DEFAULT_MB=384 restated in the split_pipeline shim — authority
@@ -2180,22 +2184,22 @@ counter 380 · heartbeat 2026-10-10T17:20:38Z · job `c2013646` · hash `v2:2929
      pre-commit over promoted.ROOTS now (fails 306 until triaged) vs keep the origin's two entries in the CLI until
      substrate/ is triaged. After the ruling: apply (a) if granted, swap the shim, re-run the three differentials (they
      pass the origin's roster explicitly so they survive), then query_defs → sql_lift → split_pipeline → figures.py.
-336. **W40** (done) roster cleanroom — every ledger bib check converged onto witness_check.emit; notes moved into the
+337. **W40** (done) roster cleanroom — every ledger bib check converged onto witness_check.emit; notes moved into the
    bibs; findings.py a stdlib shim
-337. **W24** (done) membudget's peak probe is blind on this host — /usr/bin/time is absent (gate-G450)
+338. **W24** (done) membudget's peak probe is blind on this host — /usr/bin/time is absent (gate-G450)
    - next: DONE 2026-09-20T23:55 (operator: 'sys-process/time has been emerged'; GNU Time 1.10 at /usr/bin/time). The
      durable fix landed: `time` was NOT on install_freshness's REQUIRED roster — added as the eighth tool with the
      reason (an absence that measures zero instead of refusing), census all 8 present, 14/14, staged; gate-G452. The
      fold is re-running under membudget in the background so `unimported-fold` carries a real peak; the next tick reads
      `scripts/membudget peaks unimported-fold` and records max_mb.
-338. **W1** (done) declare-every-gate-checker: a refusing probe for absent system binaries
-339. **W5** (done) the-stale-conservation-arm (gate-G368)
+339. **W1** (done) declare-every-gate-checker: a refusing probe for absent system binaries
+340. **W5** (done) the-stale-conservation-arm (gate-G368)
    - next: DONE tick 67 — the reading was MEASURABLE, not the operator's: `conserved()` exempts imports in BOTH
      directions (its own recorded measurement on type_scope: ruff narrows an import, which vanishes and appears as one
      edit) and keeps body lines guarded both ways (`not _is_import(line)` on the gained side). So the answer is YES, the
      guard still catches an invented body line → the ARM was behind. Rewritten to pin the real property in four
      directions. gate-G449.
-340. **W12** (done) agda is absent on this host — the build and every Phase C gate are dead here
+341. **W12** (done) agda is absent on this host — the build and every Phase C gate are dead here
    - next: RESOLVING (tick 13, peer msg): operator ruled ::haskell, enabled it (ACCEPT_KEYWORDS=~amd64 globally);
      sci-mathematics/agda-2.8.0 is EMERGING on luthen now (109 jobs, GHC first, pid 859151). No stdlib, no
      ~/.agda/libraries entry. Peer polls `agda --version` every 15 min and will message when it reads 2.8.0. THEN: run
@@ -2210,7 +2214,7 @@ counter 380 · heartbeat 2026-10-10T17:20:38Z · job `c2013646` · hash `v2:2929
      ~/.agda/libraries entry, target version 2.8.0. Next: surface the (a)/(b) ruling to the operator ONCE when present;
      when agda lands, `install_freshness --binaries` expect exit 0, then reopen the build. The discriminating unknown is
      whether ::haskell's dev-lang/agda is at 2.8.0.
-341. **W16** (done) mdstruct --headers drops an apostrophe-bearing heading (summit ask-mdstruct-heading-contract, OPEN
+342. **W16** (done) mdstruct --headers drops an apostrophe-bearing heading (summit ask-mdstruct-heading-contract, OPEN
    since 2026-09-06)
    - next: The contract asked: every `^#{1,6}` line in the input appears as a section in the output — self-asserting.
      Summit's CLAUDE.md reads 20 of 21 headings, the apostrophe-bearing one is absorbed into its parent. This is the
@@ -2221,7 +2225,7 @@ counter 380 · heartbeat 2026-10-10T17:20:38Z · job `c2013646` · hash `v2:2929
      monolith the per-file gate refuses; W9 purge-mdstruct is the drain), and the contract becomes an arm: count
      `^#{1,6}` lines vs sections returned, refuse on mismatch. Reuse-search first: `mdstruct --coherence` and the header
      census may already carry the line-count side.
-342. **W19** (done) widen stubs/sqlalchemy/ to the statement surface (visitors, DML, Select) — the precondition for
+343. **W19** (done) widen stubs/sqlalchemy/ to the statement surface (visitors, DML, Select) — the precondition for
    query_defs cut 4
    - next: STEP 1 DONE tick 25 (visitors.pyi, dml.pyi incl. the three constructors stubtest demanded, Column.table on
      schema.pyi; sqlalchemy clean under stubtest + re-export probe; gate-G408 for the shim-stub drift found on the way).
@@ -2246,24 +2250,24 @@ counter 380 · heartbeat 2026-10-10T17:20:38Z · job `c2013646` · hash `v2:2929
      really defines it; (4) `sql/selectable.pyi`: `Select.selected_columns` (a ColumnCollection — read the exact return
      type). Update the ⟡declines paragraph in __init__.pyi to remove what is now declared and say why. THEN W4 cut 4
      (substrate/sql_statement.py, draft recorded in W4's tick-21 step) can land.
-343. **W27** (done) mtools N-c: cut the sync_verdict -> commit_refusal edge (the one live cycle)
+344. **W27** (done) mtools N-c: cut the sync_verdict -> commit_refusal edge (the one live cycle)
    - next: Read the two function-local imports (commit_refusal.py:423,493; sync_verdict.py:320,386 per mtools' study —
      re-derive, lines move). Pass hook_gates() in as an argument or lift it into a roster module; one edge is the
      minimal cut.
-344. **W30** (done) mtools N-h: re-measure the study's §0 figures (415 modules, 564 edges, cluster counts) on this tree
+345. **W30** (done) mtools N-h: re-measure the study's §0 figures (415 modules, 564 edges, cluster counts) on this tree
    - next: Run the owning import-edge reader over substrate/ and report the diff against the study; a disagreement is
      the finding.
-345. **W35** (done) remove the module-level root constants THIS session added (operator 2026-09-24: 'We should not have
+346. **W35** (done) remove the module-level root constants THIS session added (operator 2026-09-24: 'We should not have
    things [like] corpus.ROOT')
-346. **W47** (done) file the coherence fixture pair letter to mtools (mtools:W22)
-347. **W49** (done) answer luthen on amr_skills per-corpus access - what does luthen-observability:W66 need from
+347. **W47** (done) file the coherence fixture pair letter to mtools (mtools:W22)
+348. **W49** (done) answer luthen on amr_skills per-corpus access - what does luthen-observability:W66 need from
    substrate
-348. **W301** (done) Answer nemik:W296: fold substrate's inbox letters into waypoints (nemik-check --letters --fold
+349. **W301** (done) Answer nemik:W296: fold substrate's inbox letters into waypoints (nemik-check --letters --fold
    --repo substrate)
-349. **W314** (done) Bootstrap HEAD: about 2900 staged adds and 2500 unstaged edits are uncommitted, so no isolated gate
+350. **W314** (done) Bootstrap HEAD: about 2900 staged adds and 2500 unstaged edits are uncommitted, so no isolated gate
    can run
-350. **W2** (done) the-staging-path-collision: two suites share .record-migrate-staging.py under the pool
-351. **W3** (done) the-fold-does-not-belong-on-the-roster
+351. **W2** (done) the-staging-path-collision: two suites share .record-migrate-staging.py under the pool
+352. **W3** (done) the-fold-does-not-belong-on-the-roster
    - next: DONE tick 69 (gate-G451): the sizer is `label_lease` (the same ledger the memory lease reads; its
      wall-seconds column had never been read) — `deadline()` = 2 × slowest run rounded up to a minute (511 s → 1080 s),
      floor 120, ceiling 3600 clamped loudly; `suite_run.timeout_for(label)` applies it, `SELFTEST_TIMEOUT_S` wins
@@ -2287,12 +2291,12 @@ counter 380 · heartbeat 2026-10-10T17:20:38Z · job `c2013646` · hash `v2:2929
      ONCE whether a multi-minute corpus fold belongs on the selftest roster at all (gate-G372: two programs behind one
      label) — options: (a) move it to a `--census` mode outside the roster, (b) keep it and size the per-label lease for
      time as well as memory, (c) leave it. Then blocked_kind=human until answered.
-352. **W6** (done) stage module_trim_selftest.py once W5 lands
+353. **W6** (done) stage module_trim_selftest.py once W5 lands
    - next: DONE tick 67 with W5: the vacuous staging arm repointed to record_migrate.staging_path() (it checked the bare
      STAGING stem, a file no process writes since gate-G390), the `corpus` import it stranded dropped in the same
      placement, and the suite STAGED at 78/78 — green, so the NEVER-STAGE-A-RED-SUITE ruling is satisfied rather than
      overridden.
-353. **W7** (done) not-promotable: SOLE 735/800 → 730/795 (re-measured t77)
+354. **W7** (done) not-promotable: SOLE 735/800 → 730/795 (re-measured t77)
    - next: RE-OPENED BY THE OPERATOR tick 70: 'Re-measure now that W4 drained five files.' ONE TICK, no code: `uv run
      python substrate/intake_manifest.py --sole` (the not-promotable / reaches-unpackaged figures) and `uv run python -m
      substrate.type_census_summary` (the three codes at 96.7% of 44,030) — record both beside the tick-4 baseline
@@ -2300,11 +2304,11 @@ counter 380 · heartbeat 2026-10-10T17:20:38Z · job `c2013646` · hash `v2:2929
      it (the five drained files' consumers) and propose the next step; if not, say so and park with the measurement.
      PREVIOUS: Do not re-open unilaterally. Operator ruled a code-wise sweep and measurement refuted the premise
      (gate-G350). Same figure on two hosts and two interpreters.
-354. **W8** (done) the-bound-needs-a-different-shape (apex gate timeout)
+355. **W8** (done) the-bound-needs-a-different-shape (apex gate timeout)
    - next: DONE t72. Residue carried: the sync_verdict suite itself costs ~86 s wall (the arms that `ask` real gates) —
      it belongs under a membudget label so the ledger sizes it; not a waypoint until it fires.
-355. **W11** (done) correct the project-tooling skill: substrate is pyproject+uv.lock, not requirements.txt
-356. **W14** (done) reopen the Agda build on this host — the first typecheck since the host move
+356. **W11** (done) correct the project-tooling skill: substrate is pyproject+uv.lock, not requirements.txt
+357. **W14** (done) reopen the Agda build on this host — the first typecheck since the host move
    - next: DONE tick 14. Follow-ups are SEPARATE items, not this one: (a) gen_build_makefiles: emit a `typecheck`
      aggregate and repair check-sync (gate-G400); (b) the 78-failure frontier belongs to the parked ⟡ban-decompose arc —
      NotInScope repair via fix_notinscope in dependency order (agda-oracle); (c) the SPPF store on this host (postgres
@@ -2328,7 +2332,7 @@ counter 380 · heartbeat 2026-10-10T17:20:38Z · job `c2013646` · hash `v2:2929
      is where the 2.8.0-vs-tree question gets a real answer (the tree was verified on 2.8.0 per substrate.agda-lib, so a
      green build is expected; a NotInScope/ClashingDefinition wave belongs to the parked ⟡ban-decompose residue, not to
      the host).
-357. **W15** (done) a vendored shared hook imports a package only its owner has (summit
+358. **W15** (done) a vendored shared hook imports a package only its owner has (summit
    ask-shared-hook-imports-a-package-only-its-owner-has)
    - next: REOPENED by summit 2026-09-20 by MEASUREMENT: with site-packages masked (`python -S`, PYTHONPATH=root) 2 of
      14 vendored shared hook bodies fail to import; forced site `scripts/hook_no_chaining.py:684: from
@@ -2345,7 +2349,7 @@ counter 380 · heartbeat 2026-10-10T17:20:38Z · job `c2013646` · hash `v2:2929
      `~/github/summit/scripts/summit ask --for substrate` reading the check green. Per-file gate applies: the hooks may
      be dirty files — measure with pycheck_show first; if refused, the guarded import must land as a whole-file rewrite
      or the drain pattern.
-358. **W17** (done) the hook manifest does not see package imports (summit ask-hook-manifest-sees-package-imports — the
+359. **W17** (done) the hook manifest does not see package imports (summit ask-hook-manifest-sees-package-imports — the
    manifest half is substrate's)
    - next: `check_hook_set.py --manifest` names the files a working adoption requires (hook_pycheck's inert notice cites
      it). It did not see that the hooks reached `substrate.ratchet_flags` — a PACKAGE import, not a sibling file — which
@@ -2355,7 +2359,7 @@ counter 380 · heartbeat 2026-10-10T17:20:38Z · job `c2013646` · hash `v2:2929
      (lazily-imported ones are the allowed shape, as G403 landed). Reuse-search: `module_importers`/`import_edges`
      already classify bare vs dotted; the manifest should ask them, not re-scan. Verify: `summit ask --for substrate`
      reads that ask CLOSED. Per-file gate: measure check_hook_set with pycheck_show --count first.
-359. **W18** (done) review cassian's decoder-reconciliation mapping onto substrate's algebra (inbox letter 2026-09-20,
+360. **W18** (done) review cassian's decoder-reconciliation mapping onto substrate's algebra (inbox letter 2026-09-20,
    part 3)
    - next: A REVIEW, answered by STRUCTURAL SEARCH, never recall (the absence-words rule: cassian's ANALOGY column is
      three absence claims to verify, not accept). The letter (inbox/2026-09-20-cassian-amr-…md §3) sorts: CONSTRUCTED =
@@ -2381,7 +2385,7 @@ counter 380 · heartbeat 2026-10-10T17:20:38Z · job `c2013646` · hash `v2:2929
      ~/github/cassian-observability/inbox/ as a letter (bib-shaped where claims are checkable): for each of their three
      ANALOGY rows, either a term whose type mentions both sides (a construction) or 'no, and why'. Bounded: one tick for
      the search, one for the letter if it runs long.
-360. **W20** (done) a pattern is not a path, and a token inside a quoted argument is not an operator (summit
+361. **W20** (done) a pattern is not a path, and a token inside a quoted argument is not an operator (summit
    ask-structural-hook-distinguishes-a-pattern-from-a-path)
    - next: TWO HOOKS, ONE SHAPE — the operand walk classifies tokens by their SPELLING, not by their ROLE in the
      command. (A) hook_structural_query: `grep -rl --include=Makefile --include=pre-commit "gate.py" ~/github` is DENIED
@@ -2398,7 +2402,7 @@ counter 380 · heartbeat 2026-10-10T17:20:38Z · job `c2013646` · hash `v2:2929
      `concept:upstream/structural-hook-distinguishes-a-pattern-from-a-path` (their armed copy) and re-vendor all three
      files. Per-file gate: pycheck_show --count on hook_structural_query first (hook_no_chaining/hook_cmdparse were
      clean at tick 17).
-361. **W21** (done) typehole aligns children by KEY for keyed node kinds (the role-keyed recursion amr-skills needs;
+362. **W21** (done) typehole aligns children by KEY for keyed node kinds (the role-keyed recursion amr-skills needs;
    positional kinds unchanged)
    - next: jea_pysim.Corpus.typehole (jea_pysim.py:~560-605) aligns children POSITIONALLY; same head + different arity
      returns one ':variadic' hole without recursing (:596) — intended for python AST kinds where position is the child's
@@ -2413,7 +2417,7 @@ counter 380 · heartbeat 2026-10-10T17:20:38Z · job `c2013646` · hash `v2:2929
      must be reproduced exactly for positional kinds). Reuse-search first: does jea already know which kinds are keyed
      (jea_pyalg IR.role, amr_jea lower_graph sorts children by role)? Then tell amr-skills-b8 the module name so their
      probe can point at it.
-362. **W13** (done) compact MEMORY.md — 183 lines, approaching the 200-line read limit
+363. **W13** (done) compact MEMORY.md — 183 lines, approaching the 200-line read limit
    - next: DONE tick 66 at the measured floor. 186 → 142 lines, 18.7 → 10.0 KB. The mechanism was the index's OWN:
      `synth_scale.py 4 && synth_wire.py` regenerated the apex head (102 concepts) and `synth_wire.py --staging`
      classified the 57 hand-staged pointers — 38 apex-covered (drained), 16 reached by NO apex (kept, per the tool's
@@ -2422,17 +2426,17 @@ counter 380 · heartbeat 2026-10-10T17:20:38Z · job `c2013646` · hash `v2:2929
      16; the tool carries 273 findings so the mode cannot land until it is drained; (2) 'under 140' is unreachable by
      the inbox alone: the generated head is 122 lines, so the remaining lever is synth_wire's breadth threshold (a
      separate decision). Every session's read limit is 200; 142 is comfortably under it.
-363. **W28** (done) mtools N-a/N-d: one letter per movable-now batch row, each with a fixture pair; the warrant split
+364. **W28** (done) mtools N-a/N-d: one letter per movable-now batch row, each with a fixture pair; the warrant split
    letter
    - next: Census the scripts/ adopters (find -lname, per feedback_census_symlinks_before_deleting_scripts) for
      corpus-six first, then write the mikemol-corpus letter with a red-on-HEAD fixture pair. The warrant split letter
      lists model half vs paperkit-parser half.
-364. **W31** (done) mtools N-g: C13 vendor-vs-depend decision
+365. **W31** (done) mtools N-g: C13 vendor-vs-depend decision
    - next: Surface to the operator with mtools' framing (census reply §1 C13).
-365. **W32** (done) switch substrate/git_env.py to mikemol.fence.git_env when mtools lands it
+366. **W32** (done) switch substrate/git_env.py to mikemol.fence.git_env when mtools lands it
    - next: On arrival: repoint the two callers (routing row → rosters → import), bump the fence pin, delete
      substrate/git_env.py.
-366. **W34** (done) switch substrate's pre-push to mtools/githooks/pre-push; move the post-commit-marker check into
+367. **W34** (done) switch substrate's pre-push to mtools/githooks/pre-push; move the post-commit-marker check into
    .githooks/pre-push.local
    - blocked on: mtools-91 landing the shared pre-push (will send sha)
    - next: On arrival: write executable .githooks/pre-push.local carrying check 2 (the 'post-commit advisory
@@ -2444,24 +2448,24 @@ counter 380 · heartbeat 2026-10-10T17:20:38Z · job `c2013646` · hash `v2:2929
      CONSOLE-SCRIPT sha, not the shell-version commit (that one is spec only). mat230 is RETIRED (operator 2026-09-24) —
      its vendor/ hard links need no switch; ignore them. Tell el-openglo (whose post-commit also writes the marker, so
      it may want check 2 in its own pre-push.local) before swapping. Run a push dry-run check after.
-367. **W44** (done) LEDGER.md projects; every entry sectioned
-368. **W55** (done) claims ratchet: 7 NEW stale claims -- a comment/docstring asserts a count the tree contradicts (e.g.
+368. **W44** (done) LEDGER.md projects; every entry sectioned
+369. **W55** (done) claims ratchet: 7 NEW stale claims -- a comment/docstring asserts a count the tree contradicts (e.g.
    Z/Arithmetic.agda:9 claims 35, tree says 4) -- needs a human read per claim (fix the claim text or fix the tree), not
    mechanical
-369. **W315** (done) Bootstrap arc 1 of 3: commit the gate tooling so isolated mikemol-commit has gates to run
-370. **W316** (done) Bootstrap arc 2 of 3: commit the staged data trees (catalog/memory, cotype notes) that no gate
+370. **W315** (done) Bootstrap arc 1 of 3: commit the gate tooling so isolated mikemol-commit has gates to run
+371. **W316** (done) Bootstrap arc 2 of 3: commit the staged data trees (catalog/memory, cotype notes) that no gate
    reads
-371. **W317** (done) Bootstrap arc 3 of 3: commit the unstaged agda edits in slices the full build can check
-372. **W318** (done) mikemol-paths-forward --bump-blocked prints one row per blocked card, so a quiet tick costs 300
+372. **W317** (done) Bootstrap arc 3 of 3: commit the unstaged agda edits in slices the full build can check
+373. **W318** (done) mikemol-paths-forward --bump-blocked prints one row per blocked card, so a quiet tick costs 300
    lines
-373. **W323** (done) Atomize luthen's 270-module luthen-endpoints wheel into small distributions along its import seams,
+374. **W323** (done) Atomize luthen's 270-module luthen-endpoints wheel into small distributions along its import seams,
    starting with the lookup client
-374. **W324** (done) Model the old makefile build workflow as data before retiring membudget or porting the gate to
+375. **W324** (done) Model the old makefile build workflow as data before retiring membudget or porting the gate to
    bazel
-375. **W327** (done) CLAUDE.md says nested membudget leases suballocate but the code and admit.py make them disjoint
-376. **W332** (done) Authorize how the bootstrap commits pass gates that the tree cannot yet satisfy
-377. **W335** (done) tests/test_agda_census_drain.py imports LEAF_MARKER which substrate.agda_tree_state does not define
-378. **W336** (done) tests/test_import_edge_agreement.py imports agda_lex bare and fails when scratch is not on sys.path
+376. **W327** (done) CLAUDE.md says nested membudget leases suballocate but the code and admit.py make them disjoint
+377. **W332** (done) Authorize how the bootstrap commits pass gates that the tree cannot yet satisfy
+378. **W335** (done) tests/test_agda_census_drain.py imports LEAF_MARKER which substrate.agda_tree_state does not define
+379. **W336** (done) tests/test_import_edge_agreement.py imports agda_lex bare and fails when scratch is not on sys.path
 
 ## residue
 
@@ -2566,3 +2570,10 @@ counter 380 · heartbeat 2026-10-10T17:20:38Z · job `c2013646` · hash `v2:2929
   on the text ask to github-cb; letter recommends (ii); the oracle's brief checks (--check-census, findings.py --list)
   were not dispatched: root the dispatch prompt narrowed the oracle's QUESTION and also cut its INSTRUMENT CHECK, so the
   reading carries no freshness verdict on the map it used; 2 finding(s)
+- **substrate:R15** (instructions) tick 14: one commit 4b5032f aligned hook, bazel row (args --check --parameterized,
+  docstring), both makefiles (parameterized render, Flat.mk +3629/-3614) and selftest:63 (already asserted); real-tree
+  --check OK; the isolated gate still FAILED the row; cause inferred (ROOT/SHIM_DIR resolve under the snapshot path),
+  not byte-checked; W359 blocked on W354; ATOMIZE nudge printed; this tick's post-open nemik-check read exit 1 'VIOLATES
+  substrate' (R13 handoff Violation, 24 unmanifested, W359 no vector) but G1 labelled it 'prior tick'; 4b5032f not
+  pushed yet: root G0's sensor was the isolated gate but every prior measurement of this row ran in the real tree, so
+  the repair was verified in a different environment from the one the row runs in; 4 finding(s)
