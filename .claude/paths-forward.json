@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project_root": "/home/mikemol/github/substrate",
-  "counter": 386,
+  "counter": 387,
   "armed_at": "2026-09-19T00:00:00Z",
   "heartbeat": "2026-10-10T17:20:38Z",
   "job_id": "c2013646",
@@ -9283,11 +9283,11 @@
       "blocked_on": [],
       "blocked_kind": null,
       "next_bounded_step": null,
-      "evidence": "2026-11-16T15:18:51Z: Source: gate log blob 35feffc808826598977949e8bb6796963fb45e37 (tip 31d1a3e), the line 'pre-commit: FAILED — <this card's check name, as titled>'. aim: UNKNOWN. goal: UNKNOWN. incident: UNKNOWN. (To be derived by the gate-oracle, W352.) | 2026-11-16T16:41:05Z: G0 tick 10 (own call, before --tick-open): advances W357 (gate row: feature coverage). Actuator: one read-only gate-oracle, ledger-bracketed, session idle, any heavy run CPU-budgeted (ulimit -t), no wall-clock bound, background work finished or killed before hand-back (standing 15). Expected reading: AIM, GOAL and INCIDENT (value or UNKNOWN), WHY red with the minimal repair or 'UNMEASURED: cpu budget N s exhausted', bazel yes/no. Written via a file and re-read. | 2026-11-16T16:42:34Z: Tick 10 gate-oracle reading. Gate: run \"feature coverage\" python3 \"$ROOT/scripts/check_feature_coverage.py\" --quiet (.githooks/pre-commit:234), blocking. AIM [measured, check_feature_coverage.py docstring L6-8]: prose specs drift from code silently. A Scenario: with no test naming it is an orphan, and the check runs in both directions, so a test naming a vanished Scenario also fails. Scope is features/ only; el-atlas/features/ is deliberately not covered. GOAL [measured]: orphans in both directions = 0, with no allow-list. INCIDENT: UNKNOWN (no tag; origin commit UNKNOWN past re-root 57d2119). WHY RED [measured]: exit 1, 'feature-coverage: BROKEN — 1 test(s) name a Scenario the spec no longer has: ? the drained census modules answer for the tree they measure', from tests/test_agda_census_drain.py:5; no features/ file declares that Scenario. REPAIR [inferred]: restore the Scenario in the right features/*.feature, or fix or delete the test. Tracked edits only, so hermetic. Not dependent on the untracked suite_*.py files (imports scripts.gherkin_scan, scripts.ratchet). BAZEL TARGET: no. RUN BOUND: the light scan ran unbounded, because the no-chaining hook refused bash -c 'ulimit -t ...'. Standing 14's ulimit form is not runnable here (carded). | 2026-11-17T00:36:41Z: LANDED 1e25c3c: the row is converted to //:feature_coverage (W377) and repaired (the Scenario declared in features/derived_view_invariant_0_agreement.feature). Bite test: the repair reverted makes the target FAIL. In the isolated gate the bazel row passed and 'feature coverage' is absent from FAILED.",
+      "evidence": "2026-11-16T15:18:51Z: Source: gate log blob 35feffc808826598977949e8bb6796963fb45e37 (tip 31d1a3e), the line 'pre-commit: FAILED — <this card's check name, as titled>'. aim: UNKNOWN. goal: UNKNOWN. incident: UNKNOWN. (To be derived by the gate-oracle, W352.) | 2026-11-16T16:41:05Z: G0 tick 10 (own call, before --tick-open): advances W357 (gate row: feature coverage). Actuator: one read-only gate-oracle, ledger-bracketed, session idle, any heavy run CPU-budgeted (ulimit -t), no wall-clock bound, background work finished or killed before hand-back (standing 15). Expected reading: AIM, GOAL and INCIDENT (value or UNKNOWN), WHY red with the minimal repair or 'UNMEASURED: cpu budget N s exhausted', bazel yes/no. Written via a file and re-read. | 2026-11-16T16:42:34Z: Tick 10 gate-oracle reading. Gate: run \"feature coverage\" python3 \"$ROOT/scripts/check_feature_coverage.py\" --quiet (.githooks/pre-commit:234), blocking. AIM [measured, check_feature_coverage.py docstring L6-8]: prose specs drift from code silently. A Scenario: with no test naming it is an orphan, and the check runs in both directions, so a test naming a vanished Scenario also fails. Scope is features/ only; el-atlas/features/ is deliberately not covered. GOAL [measured]: orphans in both directions = 0, with no allow-list. INCIDENT: UNKNOWN (no tag; origin commit UNKNOWN past re-root 57d2119). WHY RED [measured]: exit 1, 'feature-coverage: BROKEN — 1 test(s) name a Scenario the spec no longer has: ? the drained census modules answer for the tree they measure', from tests/test_agda_census_drain.py:5; no features/ file declares that Scenario. REPAIR [inferred]: restore the Scenario in the right features/*.feature, or fix or delete the test. Tracked edits only, so hermetic. Not dependent on the untracked suite_*.py files (imports scripts.gherkin_scan, scripts.ratchet). BAZEL TARGET: no. RUN BOUND: the light scan ran unbounded, because the no-chaining hook refused bash -c 'ulimit -t ...'. Standing 14's ulimit form is not runnable here (carded). | 2026-11-17T00:36:41Z: LANDED 1e25c3c: the row is converted to //:feature_coverage (W377) and repaired (the Scenario declared in features/derived_view_invariant_0_agreement.feature). Bite test: the repair reverted makes the target FAIL. In the isolated gate the bazel row passed and 'feature coverage' is absent from FAILED. | 2026-11-17T00:39:14Z: R20 finding 1, the declared Scenario against the test it names [measured: Read tests/test_agda_census_drain.py L35-69]. The test imports the drained census modules (agda_import_dag, agda_tree_state, agda_error_class, agda_log_fresh, agda_census_run) and checks each derived fact against the LIVE tree (e.g. 'test_dag_is_populated_and_inverted': src_to_mod inverts disk and rdeps reverses deps, run on import_dag() of the real tree), with NEGATIVE discriminators (_NOT_IN_DAG = 'Nope/NotAModule.agda', _UNKNOWN_ERROR, a 'stranger'). The declared Scenario says exactly that: 'each derived fact is checked against the live tree it describes' and 'every case carries a negative discriminator, so a predicate that always says yes fails'. Same behaviour, so the spec is not bent to the test. W357 stays done.",
       "issued_at": "2026-11-16T15:16:59Z",
       "minted_during": "tick",
       "caused_by": "W352",
-      "last_worked": "2026-11-17T00:36:41Z",
+      "last_worked": "2026-11-17T00:39:14Z",
       "ticks_blocked": 0,
       "completed": "20261117T003641Z"
     },
@@ -9649,11 +9649,11 @@
       "blocked_on": [],
       "blocked_kind": null,
       "next_bounded_step": "",
-      "evidence": "2026-11-16T23:39:30Z: G0 tick 19 (own call, before --tick-open): advances W377 to its first landing, ONE commit (github-cb PASS-SUBMIT) of MODULE.bazel b2cc3a59, BUILD.bazel 2ae90e83, .githooks/pre-commit 42f508dc and features/derived_view_invariant_0_agreement.feature 8c4f4857. Expected witnesses: (1) git ls-tree <commit> .githooks/pre-commit shows 100755; (2) bazel test //:precommit 3/3 (measured before commit); (3) the commit's isolated gate RUNS the 'bazel //:precommit' row inside the snapshot, and its result is the snapshot probe; a failure there is reported, not routed around; (4) 'feature coverage' and 'build makefiles in sync' absent from FAILED. | 2026-11-17T00:10:05Z: LANDED 1e25c3c67 (shown as 408fa9fbb at commit time; post-commit amend). github-cb VERIFIED all four blobs at that commit. Witnesses met: hook mode 100755; //:precommit 3/3; the snapshot bazel row RAN under isolation with no FAILED (gcalculus's W254 pattern works for substrate's @tracked); 'feature coverage' and 'build makefiles in sync' absent from FAILED. Side effect: the census regression (38 -> 37 declared gates) re-synced in W361's commit. The structural fix is W386 (census-neutral roster), ahead of the next conversion. STOPGAP until W386: every conversion's G0 includes re-syncing both censuses.",
+      "evidence": "2026-11-16T23:39:30Z: G0 tick 19 (own call, before --tick-open): advances W377 to its first landing, ONE commit (github-cb PASS-SUBMIT) of MODULE.bazel b2cc3a59, BUILD.bazel 2ae90e83, .githooks/pre-commit 42f508dc and features/derived_view_invariant_0_agreement.feature 8c4f4857. Expected witnesses: (1) git ls-tree <commit> .githooks/pre-commit shows 100755; (2) bazel test //:precommit 3/3 (measured before commit); (3) the commit's isolated gate RUNS the 'bazel //:precommit' row inside the snapshot, and its result is the snapshot probe; a failure there is reported, not routed around; (4) 'feature coverage' and 'build makefiles in sync' absent from FAILED. | 2026-11-17T00:10:05Z: LANDED 1e25c3c67 (shown as 408fa9fbb at commit time; post-commit amend). github-cb VERIFIED all four blobs at that commit. Witnesses met: hook mode 100755; //:precommit 3/3; the snapshot bazel row RAN under isolation with no FAILED (gcalculus's W254 pattern works for substrate's @tracked); 'feature coverage' and 'build makefiles in sync' absent from FAILED. Side effect: the census regression (38 -> 37 declared gates) re-synced in W361's commit. The structural fix is W386 (census-neutral roster), ahead of the next conversion. STOPGAP until W386: every conversion's G0 includes re-syncing both censuses. | 2026-11-17T00:38:53Z: R20: ATOMIZE declined. W377 is the UMBRELLA for the shared conversion pattern (hook bazel row, snapshot handling, pinned mtools sources, measured per-target closures, slow-first order). Per-row conversions ride W355-W374 (each red row converts as part of its repair); green rows with no card are minted lazily when the slow-first order reaches them, never ~20 empty cards up front (standing 12). Landing-detection check [measured: --scan-literal]: the pre-amend sha 408fa9fbb appears ONLY in this card's own evidence text, NOT in the ledger; the landed 1e25c3c is in the ledger (line 862) and the mirror. So the reviewer's hypothesis (the amend breaks landing detection) is NOT supported. [inferred] tick-close counts landings since the tick's own open, and 1e25c3c landed inside the tick. No nemik ask filed.",
       "issued_at": "2026-11-16T15:58:28Z",
       "minted_during": "interrupt",
       "caused_by": "W352",
-      "last_worked": "2026-11-17T00:10:05Z",
+      "last_worked": "2026-11-17T00:38:53Z",
       "ticks_blocked": 0,
       "warrants": [
         {
@@ -9878,13 +9878,33 @@
       "blocked_on": [],
       "blocked_kind": null,
       "next_bounded_step": "teach gen_build_makefiles' build census and scripts/gate_census.py to read the roster as (hook run rows, minus the 'bazel //:precommit' container row) plus the members of //:precommit's test_suite (bazel query 'tests(//:precommit)' or BUILD.bazel parsed, never a grep); each entry is tagged bash or bazel; witness: re-render after 1e25c3c gives 38 declared gates (37 rows + 1 extra member), and a test conversion leaves the count unchanged",
-      "evidence": "2026-11-17T00:09:57Z: github-cb ruling 2026-11-16: neither option (re-sync per conversion / exclude bazel rows). The gate roster is bash rows PLUS //:precommit's targets, and the bazel row is a CONTAINER, not a gate. Ahead of the next conversion (velocity first, W56). Until it lands, every conversion's G0 includes re-syncing both censuses (stopgap).",
+      "evidence": "2026-11-17T00:09:57Z: github-cb ruling 2026-11-16: neither option (re-sync per conversion / exclude bazel rows). The gate roster is bash rows PLUS //:precommit's targets, and the bazel row is a CONTAINER, not a gate. Ahead of the next conversion (velocity first, W56). Until it lands, every conversion's G0 includes re-syncing both censuses (stopgap). | 2026-11-17T00:38:56Z: R20 finding 3: in scope, the tool mode that answers 'which censuses read path X', so G0 can list predicted census changes by tool, not memory (standing 26). Until it exists, a hook-editing G0 lists both the gate census and the build census and re-syncs them in the same commit.",
       "issued_at": "2026-11-17T00:09:48Z",
       "minted_during": "interrupt",
       "caused_by": "W377",
-      "last_worked": "2026-11-17T00:09:57Z",
+      "last_worked": "2026-11-17T00:38:56Z",
       "ticks_blocked": 0,
       "weight": 90
+    },
+    {
+      "symbol": "W387",
+      "title": "gate outcome ledger records into the discarded isolated snapshot, so no commit's gate timings accumulate",
+      "status": "blocked",
+      "enables": [],
+      "touches": [],
+      "blocked_on": [
+        "mtools:W2613"
+      ],
+      "blocked_kind": "agent",
+      "next_bounded_step": "record each gate row's outcome with its CPU and wall seconds to the SERVICES (a VictoriaLogs structured event plus a metric series), not a file and not the real tree's ledger (github-cb ruling); gate_ledger --report then reads from the services. mikemol-gate-ledger has only '--ledger PATH' (a file), so its service sink is asked of mtools; then wire the hook's run() to it",
+      "evidence": "2026-11-17T01:51:26Z: Measured 2026-11-17: gate_ledger.py --report shows NO 'bazel //:precommit' row and unchanged n (=4) across every commit this session, although every commit ran the gate. Cause [inferred from .githooks/pre-commit L107]: run() calls 'python3 $ROOT/scripts/gate_ledger.py --record', and under mikemol-commit's isolation $ROOT is the throwaway snapshot, so each run's rows are written into the snapshot and discarded. Consequences: the fail-fast order and med_s are frozen at pre-isolation history, github-cb's slow-rows-first ranking rests on stale med_s, and the tick-19 queue commit's ~68 min wall time (vs ~15-20 before) cannot be attributed. Related: W375 / mtools:W2605 (per-run row query). | 2026-11-17T01:53:09Z: github-cb ruling 2026-11-17: W387 goes AHEAD of W386, because ranking on stale med_s is ranking by recall. Shape: services, not a file write into MIKEMOL_REAL_ROOT (memory feedback-log-to-services-not-files, feedback-metrics-not-spot-measurements). PARTIAL ATTRIBUTION NOW [measured: the bazel row's own output folded into 8ac8a2c's message, invocation 49e22117-8afb-401b-b3a2-e4e15c68949b]: 'Elapsed time: 21.827s, Critical Path: 0.20s'; 'Executed 0 out of 3 tests: 3 tests pass'; '28 action cache hit, 2 disk cache hit'. So the bazel row cost ~22 s WALL with every target served from cache, and it is NOT the ~68 min regression, which lies in the bash rows. CPU seconds for the bazel row are not in this output; the pinned tool set has no mikemol-buildlog; BuildBuddy is readable per the bes-logs skill. | 2026-11-17T01:55:43Z: github-cb 2026-11-17: no sanctioned BuildBuddy reader in the pinned set (no buildlog or bb_log under live/); mtools' buildtel bb_log is reachable only through mtools' checkout venv, a sibling path. Asked mtools to include it in mtools:W2613 (publish missing console scripts); W387's CPU part is blocked on W2613. Interim reading for the bazel row: wall time plus cache hits (~22 s, 0 of 3 executed). The bazel row works as intended (the cache serves unchanged rows), as the operator's L179677 ruling asked.",
+      "issued_at": "2026-11-17T01:51:17Z",
+      "minted_during": "interrupt",
+      "caused_by": "W377",
+      "last_worked": "2026-11-17T01:55:43Z",
+      "ticks_blocked": 0,
+      "weight": 95,
+      "prior_status": "ready"
     }
   ],
   "residue": [
@@ -9938,6 +9958,7 @@
     "Every dispatch prompt carries this clause verbatim: 'Finish or kill any background work before hand-back and state which; heavy non-Agda runs wait on W379.' Standing rules do not reach a subagent except through its prompt.",
     "--tick-close never names a block that does not hold. A read-scoped tick on a ready card closes with no block and the reason 'G0 scope: read'. If the writer refuses that, ask nemik for a form that admits it rather than supplying a false edge.",
     "After --tick-close, G0 and G1 go to the warm reviewer before any interrupt work starts, including operator-directed work, unless the operator's words make it urgent. In that case, ledger a '-' line saying so. Review artifacts (readiness revisions, plans) land in their own commit, with their card named in the subject, separate from queue commits.",
+    "A G0 that edits a measured artifact (the hook, a roster, a census input) lists every census that reads it as a predicted change, and re-syncs them in the same commit. The list comes from a tool where one exists (W386 scope).",
     "A set of rows taken from a log or a tool's output is produced by a tool mode, never a hand filter. If no mode exists, store the log as a git blob, cite its sha, and card the missing mode (summit capability first) before relying on the rows."
   ],
   "tick_hooks": [],
@@ -10903,7 +10924,54 @@
         }
       ],
       "id": "substrate:R19"
+    },
+    {
+      "card": "W377",
+      "trigger": "tick 19: one commit 1e25c3c (pre-amend 408fa9fbb) of 4 reviewed blobs; all four G0 witnesses met (hook 100755, 3/3, the snapshot bazel row runs, both converted rows gone from FAILED); the hook roster went 38->37, so build census and gate census went red; re-synced and landed 2fe9d98 (W361); FAILED 16; W357, W361, W378 done; github-cb ruled W386 (census-neutral roster) ahead of the next conversion; ATOMIZE W377 printed after a landing. Interrupt before the tick: operator ruling d629192a verified and warranted; feature_coverage conversion with W357 repair (Scenario declared, never existed), mtools pins, measured closures (tool defects fixed: by-path loads, warm cache), check_makefiles agda_lex import fix, snapshot pattern adopted, bite test; mtools:W2585 second symptom reported",
+      "root": "the hook is both the edited artifact and the input of two censuses, so any hook edit moves those censuses, and G0 did not predict it",
+      "contributing": [
+        "no tool answers 'which censuses read this path', so the prediction depends on memory",
+        "the writer printed ATOMIZE after a landing, plausibly because it recorded the pre-amend sha 408fa9fbb that the post-commit amend replaced",
+        "W357's repair declared a Scenario to match the test; whether it describes the tested behaviour is unverified",
+        "--update-many refuses done without per-card evidence (correct; cost extra calls)"
+      ],
+      "precommit": "G0 tick 19 (own call, before open, vector set): advances W377 with ONE commit of the 4 reviewed blobs. Witnesses: mode 100755; 3/3; the snapshot bazel row runs; both converted rows gone from FAILED.",
+      "delta": "Met: all four witnesses. Unpredicted: two census rows went red (repaired in the same tick, 2fe9d98). Net FAILED 18 -> 16. Unplanned: W386 ruled ahead of the next conversion.",
+      "sustain": [
+        "operator ruling verified in the transcript before acting on a relay",
+        "the measuring tool's own defects found and fixed before trusting its output",
+        "a self-caused regression found by the isolated gate and repaired in the same tick",
+        "G1 sent immediately after close (standing 25)",
+        "per-card done with each card's own witness"
+      ],
+      "enforcement_layer": "instructions",
+      "handoff": {
+        "instrument": "the next hook-editing G0 lists the gate and build censuses as predicted changes with their re-sync in the same commit; W377 evidence records the declined ATOMIZE and the pre-amend sha question; W357 evidence states the declared Scenario matches the tested behaviour",
+        "channel": "G0 text; writer --update; nemik ask",
+        "operator": "self"
+      },
+      "findings": [
+        {
+          "finding_card": "W357",
+          "finding_owner": "substrate-a5",
+          "due": "2026-11-18",
+          "finding_witness": "W357 evidence quotes the declared Scenario beside the test body it names and states they describe the same behaviour (or reopens W357)"
+        },
+        {
+          "finding_card": "W377",
+          "finding_owner": "substrate-a5",
+          "due": "2026-11-18",
+          "finding_witness": "W377 evidence records 'ATOMIZE declined: umbrella for the shared conversion pattern; per-row conversions ride W355-W374 or are minted lazily in slow-first order', and states whether the ledger recorded 408fa9fbb (pre-amend) for the landing; if so, a nemik ask linked to nemik:W2227 exists"
+        },
+        {
+          "finding_card": "W386",
+          "finding_owner": "substrate-a5",
+          "due": "2026-11-19",
+          "finding_witness": "W386 scope or evidence names the tool mode that answers 'which censuses read path X', or a card for it"
+        }
+      ],
+      "id": "substrate:R20"
     }
   ],
-  "retro_counter": 19
+  "retro_counter": 20
 }
