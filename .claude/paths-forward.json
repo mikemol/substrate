@@ -9879,11 +9879,11 @@
       "blocked_on": [],
       "blocked_kind": null,
       "next_bounded_step": "teach gen_build_makefiles' build census and scripts/gate_census.py to read the roster as (hook run rows, minus the 'bazel //:precommit' container row) plus the members of //:precommit's test_suite (bazel query 'tests(//:precommit)' or BUILD.bazel parsed, never a grep); each entry is tagged bash or bazel; witness: re-render after 1e25c3c gives 38 declared gates (37 rows + 1 extra member), and a test conversion leaves the count unchanged",
-      "evidence": "2026-11-17T00:09:57Z: github-cb ruling 2026-11-16: neither option (re-sync per conversion / exclude bazel rows). The gate roster is bash rows PLUS //:precommit's targets, and the bazel row is a CONTAINER, not a gate. Ahead of the next conversion (velocity first, W56). Until it lands, every conversion's G0 includes re-syncing both censuses (stopgap). | 2026-11-17T00:38:56Z: R20 finding 3: in scope, the tool mode that answers 'which censuses read path X', so G0 can list predicted census changes by tool, not memory (standing 26). Until it exists, a hook-editing G0 lists both the gate census and the build census and re-syncs them in the same commit.",
+      "evidence": "2026-11-17T00:09:57Z: github-cb ruling 2026-11-16: neither option (re-sync per conversion / exclude bazel rows). The gate roster is bash rows PLUS //:precommit's targets, and the bazel row is a CONTAINER, not a gate. Ahead of the next conversion (velocity first, W56). Until it lands, every conversion's G0 includes re-syncing both censuses (stopgap). | 2026-11-17T00:38:56Z: R20 finding 3: in scope, the tool mode that answers 'which censuses read path X', so G0 can list predicted census changes by tool, not memory (standing 26). Until it exists, a hook-editing G0 lists both the gate census and the build census and re-syncs them in the same commit. | 2026-11-17T16:08:37Z: 2026-11-17 measured: every queue-only commit runs the full gate, and a888286 took over 20 min, so per-card queue commits (the github-cb request) trip the 1200 s watchdog each time. Cutting gate wall time is in W386/W387 scope. Separately, the watchdog's wake text names a by-sha python path that vanished twice today (exit 127); the restart now uses live/nemik/bin/mikemol-watchdog. nemik: ask 2026-11-17 — the wake text should name the live launcher.",
       "issued_at": "2026-11-17T00:09:48Z",
       "minted_during": "interrupt",
       "caused_by": "W377",
-      "last_worked": "2026-11-17T00:38:56Z",
+      "last_worked": "2026-11-17T16:08:37Z",
       "ticks_blocked": 0,
       "weight": 90
     },
