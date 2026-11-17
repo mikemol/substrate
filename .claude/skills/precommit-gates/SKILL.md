@@ -123,7 +123,7 @@ It owns what that cannot see: blocking-vs-advisory, kind, and baseline HEALTH.
 
 ```
 ── BLOCKING vs ADVISORY  (⚑ the distinction the name list cannot show)
-   38 BLOCKING gate(s) — routed through the hook's `run()`, which sets `fail`
+   37 BLOCKING gate(s) — routed through the hook's `run()`, which sets `fail`
    2 ADVISORY  — a bare invocation with `|| true`, DELIBERATELY outside `run()`
      · collapse_check.py                  scripts/collapse_check.py
      · reuse_sweep.py                     scripts/reuse_sweep.py
@@ -157,8 +157,8 @@ It owns what that cannot see: blocking-vs-advisory, kind, and baseline HEALTH.
    gate                                   baseline                           state   keys
    scripts/check_ban_ratchet.py           ban_ratchet_baseline.txt           ok      15552
    scripts/check_cap_ratchet.py           cap_ratchet_baseline.txt           EMPTY   0   ⚑
-   scripts/check_carrier_locality.py      carrier_locality_baseline.txt      ok      5
-   scripts/check_claims.py                claims_baseline.txt                ok      14
+   scripts/check_carrier_locality.py      carrier_locality_baseline.txt      ok      4
+   scripts/check_claims.py                claims_baseline.txt                ok      13
    scripts/check_clause_audit.py          clause_unused_baseline.txt         EMPTY   0   ⚑
    scripts/check_discharge_ratchet.py     discharge_baseline.txt             ok      28
    scripts/check_divergence_ratchet.py    divergence_ratchet_baseline.txt    EMPTY   0   ⚑
@@ -219,7 +219,7 @@ machine they differ, and that is correct. **Re-run before asserting any.**
    Whole roster:  python3 scripts/build_census.py --gates
    ⚑ There is NO whole-pipeline read mode — see `Growing this`.
 
-── THE OUTCOME LEDGER (last written 2026-08-25 09:03)
+── THE OUTCOME LEDGER (last written 2026-10-10 12:30)
    scripts/gate_ledger.py --order / --report
    ⚑ OBSERVED, NEVER DECLARED, and it prints no recency — so a stale, partial
      ledger reads as a complete current ranking. Cross-check the declared

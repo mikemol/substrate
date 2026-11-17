@@ -181,17 +181,16 @@ hardware-specific; gating them would fail on every machine and after every build
         modules. Asking it about a module returns nothing, and that is a fact
         about the ledger, not the module.
 
-── THE GATE PIPELINE — 38 DECLARED gates
+── THE GATE PIPELINE — 37 DECLARED gates
    ⚑ DECLARED, from the hook's own `run` call sites. `gate_ledger.py --report`
      ranks only what it has OBSERVED and reads as complete — a different number.
    Phase A — cheap gates (BEFORE the build)
+     · bazel //:precommit
      · tool unit tests
      · selftest roster current
      · tool selftests
-     · feature coverage
      · def/proof separation
      · UP non-vacuity
-     · build makefiles in sync
      · build census in sync
      · gate census in sync
      · baseline health
