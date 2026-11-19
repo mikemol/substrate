@@ -871,3 +871,4 @@
 2026-11-19T03:52:40Z  tick  --   spender   explore   "spender: Explore (github-00 round 2, el-atlas decision rule) start"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
 2026-11-19T03:54:43Z  tick  --   spender   explore   "spender: Explore a3a231d2756a76ed5 return"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
 2026-11-19T04:00:23Z  interrupt W388 minted    -         "el-atlas-spec §11.4: fix the common-mode form of the two-readout instrument"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
+2026-11-19T10:25:19Z  interrupt W389 minted    -         "scratch/pycodemod.py: AttributeError on Python 3.14 makes --calls/--source skip files"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
