@@ -10977,7 +10977,66 @@
         }
       ],
       "id": "substrate:R20"
+    },
+    {
+      "card": "W386",
+      "trigger": "tick 20: read-scoped tick on W386; two summit misses (census-readers, path-consumers); struct-tools census modes promised by G0 but not read; --tick-close refused (no read-scoped close), --tick-roll used; mtools carded W2689/W2690; nemik-check exited 1 with W9 and its earlier lines unread. Before the tick: 5 queue-only commits, each >20 min in the full gate, about 10 watchdog exit-8s, by-sha restart path exit 127 twice, one commit refused for a leading Co-Authored-By trailer",
+      "root": "G0 named two actuators but the tick closed after one, and nothing compares G0's actuator list with G1's actions before close",
+      "contributing": [
+        "summit miss was not turned into an asks.bib entry, though G0 named that as the expected output",
+        "no read-scoped close exists (mtools:W2689)",
+        "nemik-check output read only at its last line",
+        "queue-only commits run the full gate (W386/W387 scope)",
+        "commit body was assembled with the trailer first"
+      ],
+      "precommit": "G0 tick 20 (quoted above), vector WV:1/R:L/E:N/C:N/I:L/A:L/X:N/S:U/F:K/W:Y",
+      "delta": "Met: summit read, UNKNOWN stated, misses worded correctly as index misses. Not met: struct-tools census modes not read; no summit ask filed. Unplanned: close refused, so --tick-roll; two mtools cards.",
+      "sustain": [
+        "miss reported as 'no entry for that spelling', not as absence",
+        "false --blocked-by declined per standing 23",
+        "mtools asked before a workaround was invented",
+        "workaround recorded on the card until W2689 lands"
+      ],
+      "enforcement_layer": "instructions",
+      "handoff": {
+        "instrument": "W386 evidence quotes the struct-tools census-mode output and names an asks.bib key for census-readers; nemik-check --warnings read in full",
+        "channel": "writer --update; ~/github/summit/floor/asks.bib",
+        "operator": "self"
+      },
+      "findings": [
+        {
+          "finding_card": "W386",
+          "finding_owner": "substrate-a5",
+          "due": "2026-11-18",
+          "finding_witness": "W386 evidence quotes the struct-tools SKILL.md census mode lines (or the tool run bare) for 'which censuses read path X', or states UNKNOWN after reading them"
+        },
+        {
+          "finding_card": "W386",
+          "finding_owner": "substrate-a5",
+          "due": "2026-11-19",
+          "finding_witness": "summit/floor/asks.bib holds an entry for census-readers whose check fails while open, and W386 evidence names its key"
+        },
+        {
+          "finding_card": "W342",
+          "finding_owner": "substrate-a5",
+          "due": "2026-11-18",
+          "finding_witness": "--show W342 (and W353) carries a --warrant with a host transcript uuid for each github-cb-relayed ruling, or the prose is marked 'relayed, unverified'; nemik-check no longer prints W9 for it"
+        },
+        {
+          "finding_card": "W386",
+          "finding_owner": "substrate-a5",
+          "due": "2026-11-18",
+          "finding_witness": "the next G1 quotes the full nemik-check --warnings output (all lines), with a disposition per line"
+        },
+        {
+          "finding_card": "W387",
+          "finding_owner": "substrate-a5",
+          "due": "2026-11-20",
+          "finding_witness": "W387 evidence holds a measured wall time for a queue-only commit through the gate, with a plan or ask that cuts it below the 1200 s watchdog window"
+        }
+      ],
+      "id": "substrate:R21"
     }
   ],
-  "retro_counter": 20
+  "retro_counter": 21
 }

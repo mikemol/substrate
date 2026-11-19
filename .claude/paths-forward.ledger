@@ -864,3 +864,5 @@
 2026-11-17T01:51:17Z  interrupt W387 minted    -         "gate outcome ledger records into the discarded isolated snapshot, so no commit's gate timings accumulate"  session=ba7f487c-25c3-489f-8632-92b4da805cb9  evidence=W377
 2026-11-17T01:55:43Z  status W387 ready>blocked writer    "ready -> blocked"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
 2026-11-17T17:30:03Z  tick  W386 read      summit    "tick 20: look-only round; two summit misses; census-reader mode UNKNOWN; no read-scoped close exists, mtools asked 2026-11-17 [rolled; advanced 0]"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
+2026-11-17T18:15:53Z  tick  --   spender   reviewer  "spender: warm-reviewer (respawn after compaction) start"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
+2026-11-17T18:20:04Z  tick  --   spender   reviewer  "spender: warm-reviewer a4ec6ac7a68c1c9a1 return"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
