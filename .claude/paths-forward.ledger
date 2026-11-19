@@ -866,3 +866,8 @@
 2026-11-17T17:30:03Z  tick  W386 read      summit    "tick 20: look-only round; two summit misses; census-reader mode UNKNOWN; no read-scoped close exists, mtools asked 2026-11-17 [rolled; advanced 0]"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
 2026-11-17T18:15:53Z  tick  --   spender   reviewer  "spender: warm-reviewer (respawn after compaction) start"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
 2026-11-17T18:20:04Z  tick  --   spender   reviewer  "spender: warm-reviewer a4ec6ac7a68c1c9a1 return"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
+2026-11-19T03:48:03Z  tick  --   spender   explore   "spender: Explore (github-00 design-question survey) start"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
+2026-11-19T03:50:39Z  tick  --   spender   explore   "spender: Explore a1b5ca301327328b6 return"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
+2026-11-19T03:52:40Z  tick  --   spender   explore   "spender: Explore (github-00 round 2, el-atlas decision rule) start"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
+2026-11-19T03:54:43Z  tick  --   spender   explore   "spender: Explore a3a231d2756a76ed5 return"  session=ba7f487c-25c3-489f-8632-92b4da805cb9
+2026-11-19T04:00:23Z  interrupt W388 minted    -         "el-atlas-spec §11.4: fix the common-mode form of the two-readout instrument"  session=ba7f487c-25c3-489f-8632-92b4da805cb9

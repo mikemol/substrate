@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project_root": "/home/mikemol/github/substrate",
-  "counter": 387,
+  "counter": 388,
   "armed_at": "2026-09-19T00:00:00Z",
   "heartbeat": "2026-10-10T17:20:38Z",
   "job_id": "c2013646",
@@ -9911,6 +9911,22 @@
       "ticks_blocked": 1,
       "weight": 95,
       "prior_status": "ready"
+    },
+    {
+      "symbol": "W388",
+      "title": "el-atlas-spec §11.4: fix the common-mode form of the two-readout instrument",
+      "status": "ready",
+      "enables": [],
+      "touches": [],
+      "blocked_on": [],
+      "blocked_kind": null,
+      "next_bounded_step": "State the common-mode form in el-atlas/el-atlas-spec.md §11.4 (lines 1371-1380 at 1673d08d2). It currently says only 'common-mode output reads mass'. Either adopt the geometric mean sqrt(E+ E-), which is self-dual under the rail swap, or say why not. Grade the choice. Asked by github-00 for nemik's ranking decoder, 2026-11-18.",
+      "evidence": "",
+      "issued_at": "2026-11-19T04:00:23Z",
+      "minted_during": "interrupt",
+      "caused_by": null,
+      "last_worked": null,
+      "ticks_blocked": 0
     }
   ],
   "residue": [
